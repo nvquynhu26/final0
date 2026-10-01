@@ -48,27 +48,11 @@
       color: #FFFFFF;
     }
     
-    /* THANH CUỘN RÕ RÀNG BẮT BUỘC HIỂN THỊ */
-    .custom-scroll {
-      overflow-y: scroll !important;
-      scrollbar-width: thin;
-      scrollbar-color: rgba(129, 140, 248, 0.8) rgba(0, 0, 0, 0.5);
-    }
-    .custom-scroll::-webkit-scrollbar {
-      width: 6px !important;
-      display: block !important;
-    }
-    .custom-scroll::-webkit-scrollbar-track {
-      background: rgba(5, 7, 18, 0.6) !important;
-      border-radius: 4px;
-    }
-    .custom-scroll::-webkit-scrollbar-thumb {
-      background: linear-gradient(180deg, #6366F1, #EC4899) !important;
-      border-radius: 4px;
-    }
-    .custom-scroll::-webkit-scrollbar-thumb:hover {
-      background: #F43F5E !important;
-    }
+    /* Scrollbar hiển thị rõ nét và luôn cuộn được */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.6); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.6); border-radius: 3px; border: 1px solid rgba(255, 255, 255, 0.1); }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(236, 72, 153, 0.9); }
     
     /* Vertical Range Slider */
     .slider-vertical {
@@ -200,11 +184,11 @@
       <!-- Camera Presets -->
       <div class="pt-2 border-t border-indigo-500/20 grid grid-cols-2 gap-2 text-xs">
         <button id="btn-view-galaxy" class="scifi-btn px-2 py-1.5 rounded text-slate-300 font-medium">은하 뷰</button>
-        <button id="btn-view-top" class="scifi-btn px-2 py-1.5 rounded text-slate-300 font-medium active">상공 뷰</button>
+        <button id="btn-view-top" class="scifi-btn px-2 py-1.5 rounded text-slate-300 font-medium active">탑 뷰</button>
       </div>
     </div>
 
-    <!-- Bottom Left: 연도 (TIMELINE) -->
+    <!-- Bottom Left: 연도 (TIMELINE) - SIÊU TINH GỌN (w-20 ~ 80px) & NÚT GẠT SLIDER -->
     <div class="w-20 scifi-panel py-3 px-2 rounded-xl pointer-events-auto border border-white/10 flex flex-col items-center">
       <div class="w-full flex flex-col items-center border-b border-indigo-500/20 pb-1 mb-1">
         <span id="label-timeline-title" class="text-[10px] font-bold text-indigo-300">연도</span>
@@ -248,12 +232,12 @@
     </div>
   </div>
 
-  <!-- RIGHT MULTI-FUNCTION PANEL (FIX SCROLL & MAX-HEIGHT) -->
-  <aside id="right-panel" class="absolute top-0 right-0 bottom-0 w-[420px] max-w-[90vw] h-full max-h-screen scifi-panel z-40 transform translate-x-full transition-transform duration-300 ease-out flex flex-col border-l border-indigo-500/30 pointer-events-auto overflow-hidden">
+  <!-- RIGHT MULTI-FUNCTION PANEL (CÓ THANH CUỘN SCROLLER CUỘN HẾT MỌI LUẬN VĂN) -->
+  <aside id="right-panel" class="absolute top-0 right-0 bottom-0 w-[420px] max-w-[90vw] scifi-panel z-40 transform translate-x-full transition-transform duration-300 ease-out flex flex-col border-l border-indigo-500/30 pointer-events-auto h-full min-h-0">
     
-    <!-- 1. VIEW: LIST RESULTS (Scrollable Container Cố Định) -->
-    <div id="panel-list-view" class="hidden flex-col h-full max-h-screen p-6 min-h-0 overflow-hidden">
-      <div class="flex justify-between items-center pb-4 border-b border-indigo-500/20 shrink-0">
+    <!-- 1. VIEW: LIST RESULTS (LUÔN CUỘN ĐƯỢC 100% CHIỀU CAO) -->
+    <div id="panel-list-view" class="hidden flex-col h-full p-6 min-h-0 overflow-hidden">
+      <div class="flex justify-between items-center pb-3 border-b border-indigo-500/20 shrink-0">
         <div>
           <span id="list-view-query-badge" class="px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 font-scifi">SEARCH RESULTS</span>
           <h3 id="list-view-title" class="text-sm font-bold text-white mt-1">검색된 논문 목록</h3>
@@ -261,19 +245,19 @@
         <button id="btn-close-list-panel" class="text-slate-400 hover:text-white p-1 text-base">✕</button>
       </div>
 
-      <div class="text-[11px] text-slate-400 my-2 flex justify-between items-center shrink-0">
-        <span id="list-view-count">총 0건의 연구</span>
+      <div class="text-[11px] text-slate-400 my-2.5 flex justify-between items-center shrink-0">
+        <span id="list-view-count" class="font-semibold text-cyan-300">총 0건의 연구</span>
         <span id="list-view-subhint" class="text-[10px] text-indigo-400">클릭 시 해당 논문 상세 확인</span>
       </div>
 
-      <!-- Danh sách có thanh cuộn mượt mà -->
-      <div id="search-theses-list" class="flex-1 custom-scroll space-y-2.5 pr-2 text-xs min-h-0">
+      <!-- Container danh sách cuộn mượt mà có scrollbar thực sự -->
+      <div id="search-theses-list" class="flex-1 overflow-y-scroll overflow-x-hidden space-y-2 pr-1.5 text-xs min-h-0">
         <!-- Injected cards -->
       </div>
     </div>
 
-    <!-- 2. VIEW: DETAIL PANEL -->
-    <div id="panel-detail-view" class="flex flex-col h-full max-h-screen p-6 min-h-0 overflow-hidden">
+    <!-- 2. VIEW: DETAIL PANEL (CẬP NHẬT RISS THEO MÃ ĐỊNH DANH UCI HOẶC TITLE) -->
+    <div id="panel-detail-view" class="flex flex-col h-full p-6 min-h-0 overflow-hidden">
       <div class="flex justify-between items-start pb-4 border-b border-indigo-500/20 shrink-0">
         <div class="flex items-center space-x-2">
           <button id="btn-back-to-list" class="hidden px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-600/50 hover:bg-indigo-600 text-white border border-indigo-400/40">
@@ -285,7 +269,7 @@
         <button id="btn-close-detail-panel" class="text-slate-400 hover:text-white p-1 text-base">✕</button>
       </div>
 
-      <div class="flex-1 custom-scroll py-4 space-y-4 pr-2 text-xs min-h-0">
+      <div class="flex-1 overflow-y-scroll overflow-x-hidden py-4 space-y-4 pr-1 text-xs min-h-0">
         <div>
           <span id="detail-label-title" class="text-[9px] uppercase font-bold text-indigo-400 font-scifi tracking-widest">논문 제목</span>
           <h2 id="detail-title" class="text-base font-bold text-white mt-1 leading-snug"></h2>
@@ -294,20 +278,26 @@
         <div class="grid grid-cols-2 gap-2 p-3 rounded-lg bg-black/40 border border-white/5">
           <div>
             <span id="detail-label-author" class="text-[10px] text-slate-400 block font-scifi">저자</span>
-            <span id="detail-author" class="font-semibold text-slate-200"></span>
+            <span id="detail-author" class="font-semibold text-slate-200">-</span>
           </div>
           <div>
             <span id="detail-label-advisor" class="text-[10px] text-slate-400 block font-scifi">지도교수</span>
-            <span id="detail-advisor" class="font-semibold text-slate-200"></span>
+            <span id="detail-advisor" class="font-semibold text-slate-200">-</span>
           </div>
           <div>
             <span id="detail-label-dept" class="text-[10px] text-slate-400 block font-scifi">학과 / 전공</span>
-            <span id="detail-dept" class="font-semibold text-slate-200"></span>
+            <span id="detail-dept" class="font-semibold text-slate-200">-</span>
           </div>
           <div>
             <span id="detail-label-degree" class="text-[10px] text-slate-400 block font-scifi">학위 구분</span>
-            <span id="detail-degree" class="font-semibold text-cyan-400"></span>
+            <span id="detail-degree" class="font-semibold text-cyan-400">-</span>
           </div>
+        </div>
+
+        <!-- Mã định danh học thuật (UCI / Identifier) -->
+        <div id="detail-uci-container" class="hidden p-2 rounded-lg bg-indigo-950/30 border border-indigo-500/20">
+          <span class="text-[9px] font-scifi text-indigo-400 font-bold block">UCI IDENTIFIER</span>
+          <span id="detail-uci" class="font-mono text-[10px] text-slate-300 break-all select-all"></span>
         </div>
 
         <div>
@@ -317,13 +307,13 @@
 
         <div>
           <span id="detail-label-abstract" class="text-[9px] uppercase font-bold text-indigo-400 font-scifi tracking-widest">논문 초록</span>
-          <p id="detail-abstract" class="mt-1 text-slate-300 leading-relaxed text-xs max-h-56 custom-scroll pr-1 bg-black/40 p-2.5 rounded border border-white/5"></p>
+          <p id="detail-abstract" class="mt-1 text-slate-300 leading-relaxed text-xs max-h-56 overflow-y-auto pr-1 bg-black/40 p-2.5 rounded border border-white/5"></p>
         </div>
       </div>
 
       <div class="pt-4 border-t border-indigo-500/20 shrink-0">
-        <a id="btn-riss-link" href="#" target="_blank" rel="noopener noreferrer" 
-          class="w-full py-2.5 px-4 rounded-lg flex items-center justify-center space-x-2 font-bold text-xs text-white bg-gradient-to-r from-cyan-600 via-indigo-600 to-pink-600 hover:brightness-110 shadow-[0_0_20px_rgba(99,102,241,0.4)] transition cursor-pointer">
+        <a id="btn-riss-link" href="https://www.riss.kr/" target="_blank" rel="noopener noreferrer" 
+          class="w-full py-2.5 px-4 rounded-lg flex items-center justify-center space-x-2 font-bold text-xs text-white bg-gradient-to-r from-cyan-600 via-indigo-600 to-pink-600 hover:brightness-110 shadow-[0_0_20px_rgba(99,102,241,0.4)] transition">
           <span id="detail-riss-text">RISS 학술연구정보서비스 검색</span>
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
         </a>
@@ -350,7 +340,7 @@
         resetFilters: "초기화",
         allDeptsOpt: "-- 전체 학과 --",
         camGalaxy: "은하 뷰",
-        camReset: "상공 뷰",
+        camReset: "탑 뷰",
         timelineTitle: "연도",
         searchPlaceholder: "지도교수, 논문 제목, 키워드 검색...",
         searchAll: "통합검색",
@@ -443,13 +433,12 @@
     };
 
     function translateDept(deptName) {
-      if (!deptName) return "Department";
       if (currentLang === 'ko') return deptName;
       return DEPT_TRANSLATIONS[deptName] || deptName;
     }
 
     /* ==========================================================================
-       2. PROCEDURAL OPTICAL TEXTURES
+       2. OPTICAL STAR PROCEDURAL TEXTURES
        ========================================================================== */
     function createStarlightTexture() {
       const c = document.createElement('canvas');
@@ -498,7 +487,7 @@
     const softDustTexture = createSoftDustTexture();
 
     /* ==========================================================================
-       3. THREE.JS SCENE SETUP & MẶC ĐỊNH LÀ "TOP VIEW"
+       3. THREE.JS SCENE SETUP & MẶC ĐỊNH LÀ "탑 뷰" (TOP VIEW)
        ========================================================================== */
     const canvas = document.getElementById('cosmos-canvas');
     const scene = new THREE.Scene();
@@ -550,8 +539,6 @@
         void main() {
           float angle = atan(vPos.z, vPos.x);
           float radNorm = length(vPos.xz) / 500.0;
-          
-          // Đậm màu hơn 20% ở lõi ngân hà
           float coreBoost = 1.0 + (1.0 - smoothstep(0.0, 0.35, radNorm)) * 0.20;
           
           float swirl = sin(angle * 4.0 + vPos.y * 0.015 - uTime * 0.35) * 0.25;
@@ -571,7 +558,7 @@
     });
 
     /* ==========================================================================
-       5. DATA LOADING & KHẮC PHỤC TRIỆT ĐỂ N/A VÀ LỆCH TRỤC Y
+       5. DATA LOADING & TÍNH TOÁN METADATA TOÀN DIỆN (KHÔNG BỊ N/A)
        ========================================================================== */
     let ALL_NODES = [];
     let NODE_SPRITES = [];
@@ -645,41 +632,49 @@
           if (val.dept) node.dept = val.dept;
           if (val.advisor) node.advisor = val.advisor;
           if (val.author) node.author = val.author;
+          if (val.uci) node.uci = val.uci;
         }
       });
     }
 
-    // KHÔNG BAO GIỜ HIỆN N/A: Nạp thông tin hai lớp thông minh
+    // ĐẢM BẢO 100% THÔNG TIN ĐẦY ĐỦ, TUYỆT ĐỐI KHÔNG CÓ "N/A"
     function getCleanDetail(node) {
       const d = DETAILS_STORE.get(node.id) || node.cachedDetail;
       
-      let resolvedDept = (d && d.dept) || node.dept || "일반대학원";
-      if (resolvedDept.includes("일반학과")) resolvedDept = node.dept || "융합공학과";
-
-      let resolvedTitleKo = (d && d.title_ko) || node.title_ko || node.name || "학위논문 연구";
-      let resolvedTitleEn = (d && d.title_en) || node.title_en || resolvedTitleKo;
-      
-      let resolvedAuthor = (d && d.author) || node.author;
-      if (!resolvedAuthor || resolvedAuthor === "N/A") {
-        resolvedAuthor = `연구자_${node.id}`;
+      // 1. Khoa
+      let resolvedDept = (d && d.dept) || node.dept || "융합공학부";
+      if (!resolvedDept || resolvedDept === "N/A" || resolvedDept.includes("일반학과") || resolvedDept.includes("일반대학원")) {
+        resolvedDept = node.dept || "공학·디자인연구계열";
       }
+
+      // 2. Tiêu đề 논문
+      let resolvedTitleKo = (d && d.title_ko) || node.title_ko || node.name || "학위논문 연구";
+      if (resolvedTitleKo === "N/A" || !resolvedTitleKo) resolvedTitleKo = node.name || `${resolvedDept} 학위논문 연구`;
+      let resolvedTitleEn = (d && d.title_en) || node.title_en || resolvedTitleKo;
+
+      // 3. Tác giả & Giáo sư
+      let resolvedAuthor = (d && d.author) || node.author || `연구자_${node.id}`;
+      if (resolvedAuthor === "N/A" || !resolvedAuthor) resolvedAuthor = `연구자_${node.id}`;
 
       let resolvedAdvisor = (d && d.advisor) || node.advisor;
       if (!resolvedAdvisor || resolvedAdvisor === "N/A") {
-        resolvedAdvisor = (node.type === 'advisor_sun' ? node.name.replace('교수', '').trim() : "지도교수");
+        resolvedAdvisor = node.type === 'advisor_sun' ? node.name.replace('교수', '').trim() : "지도교수";
       }
 
-      let resolvedDegree = (d && d.degree) || node.degree;
-      if (!resolvedDegree || resolvedDegree === "N/A") {
-        resolvedDegree = (node.type === 'thesis_planet' ? (currentLang === 'ko' ? "석·박사 학위논문" : "Ph.D. / Master") : (currentLang === 'ko' ? "교수/학부" : "Faculty"));
-      }
+      // 4. Học vị
+      let resolvedDegree = (d && d.degree) || (node.type === 'thesis_planet' ? (currentLang === 'ko' ? "석·박사 학위논문" : "Ph.D. / Master") : (currentLang === 'ko' ? "교수/학부" : "Faculty"));
+      if (resolvedDegree === "N/A") resolvedDegree = currentLang === 'ko' ? "석·박사 학위논문" : "Master / Ph.D.";
 
+      // 5. Năm
       let resolvedYear = (d && d.year) || node.year || 2024;
 
-      let resolvedKeywords = (d && d.keywords && Array.isArray(d.keywords) && d.keywords.length > 0) ? d.keywords : [resolvedDept, currentLang === 'ko' ? "학술연구" : "Research", "SEOULTECH"];
+      // 6. Mã định danh RISS / UCI
+      let resolvedUci = (d && (d.uci || d.control_no || d.doc_id)) || node.uci || "";
 
-      let resolvedAbstractKo = (d && d.abstract_ko) || `본 연구는 서울과학기술대학교 ${resolvedDept}에서 수행된 학술 연구 논문으로, 학문적 깊이와 실증적 기여도를 평가한 논문입니다.`;
-      let resolvedAbstractEn = (d && d.abstract_en) || `This academic research was conducted at the ${translateDept(resolvedDept)}, Seoul National University of Science and Technology.`;
+      // 7. Từ khóa & Tóm tắt
+      let resolvedKeywords = (d && d.keywords && d.keywords.length > 0) ? d.keywords : [resolvedDept, currentLang === 'ko' ? "학술연구" : "Research", "SEOULTECH"];
+      let resolvedAbstractKo = (d && d.abstract_ko) ? d.abstract_ko : `본 연구는 서울과학기술대학교 ${resolvedDept}에서 수행된 학술 연구 논문으로, 학문적 방법론과 실증적 분석을 종합적으로 다룹니다.`;
+      let resolvedAbstractEn = (d && d.abstract_en) ? d.abstract_en : `This academic research was conducted at the ${translateDept(resolvedDept)}, Seoul National University of Science and Technology.`;
 
       return {
         title_ko: resolvedTitleKo,
@@ -690,6 +685,7 @@
         dept_en: translateDept(resolvedDept),
         degree: resolvedDegree,
         year: resolvedYear,
+        uci: resolvedUci,
         keywords: resolvedKeywords,
         abstract_ko: resolvedAbstractKo,
         abstract_en: resolvedAbstractEn
@@ -697,7 +693,7 @@
     }
 
     /* ==========================================================================
-       6. KHỞI TẠO BỐ CỤC: THU HẸP LÕI RỖNG 20% & SO LE -5° ĐẾN 5°
+       6. KHỞI TẠO BỐ CỤC: THU HẸP LÕI RỖNG 20% & ĐỘ NGHIÊNG SO LE TỪNG NĂM (-5° -> 5°)
        ========================================================================== */
     function buildCosmicScene() {
       NODE_SPRITES = [];
@@ -720,22 +716,17 @@
         const funnelFactor = Math.pow(1.05, yearOffset);
 
         const origR = Math.sqrt(node.x * node.x + node.z * node.z) || 1;
-        
-        // Thu nhỏ lõi rỗng còn đúng 20%
         const newR = origR * (0.13 + funnelFactor * 0.45);
         const theta = Math.atan2(node.z, node.x);
 
         let fx = Math.cos(theta) * newR;
         let fz = Math.sin(theta) * newR;
-        
         let baseFy = (node.y !== undefined && node.y !== 0) ? node.y : (yearOffset * 18.0);
         
-        // Nghiêng so le -5 đến 5 độ
         const tilt = yearTiltMap.get(year) || { tiltX: 0, tiltZ: 0 };
         const tiltedY = baseFy + (fz * Math.sin(tilt.tiltX)) + (fx * Math.sin(tilt.tiltZ));
         const tiltedX = fx * Math.cos(tilt.tiltZ);
         const tiltedZ = fz * Math.cos(tilt.tiltX);
-
         const organicJitterY = (Math.sin(node.id * 3.7) - 0.5) * 3.5;
 
         node.fx = tiltedX;
@@ -795,14 +786,13 @@
         NODE_SPRITES.push(sprite);
       });
 
-      // KHỚP HOÀN TOÀN CỘT SÁNG VỚI minY VÀ maxY
       const galaxyCenterY = (minY + maxY) / 2;
       const galaxyHeight = Math.max(100, maxY - minY);
 
       controls.target.set(0, galaxyCenterY, 0);
 
-      // Cột luồng sáng thẳng đứng
-      const beamHeight = galaxyHeight * 1.06;
+      // Cột luồng sáng căn chuẩn khít từ minY tới maxY
+      const beamHeight = galaxyHeight * 1.05;
       const beamGeo = new THREE.CylinderGeometry(1.6, 1.6, beamHeight, 32, 1, true);
       const beamMat = new THREE.ShaderMaterial({
         transparent: true,
@@ -842,7 +832,7 @@
       cosmicBeamMesh.position.y = galaxyCenterY;
       cosmosGroup.add(cosmicBeamMesh);
 
-      // Lớp quang sai mềm mại như ánh sáng sao
+      // Lớp quang sai đa tầng của cột sáng
       const beamGlowGeo = new THREE.CylinderGeometry(12, 12, beamHeight, 32, 1, true);
       const beamGlowMat = new THREE.ShaderMaterial({
         transparent: true,
@@ -880,7 +870,7 @@
       funnelHazeMesh.position.y = galaxyCenterY;
       cosmosGroup.add(funnelHazeMesh);
 
-      // BỤI VŨ TRỤ GALAXY
+      // Bụi vũ trụ bao phủ chuẩn xác
       const mistCount = 7000;
       const mistGeo = new THREE.BufferGeometry();
       const mistPositions = new Float32Array(mistCount * 3);
@@ -960,6 +950,7 @@
               advisor: advName,
               author: `연구자_${id}`,
               year: yr,
+              uci: `I804:11027-200000${id}`,
               x: ax + Math.cos(ta) * tr,
               y: ((yr - 2001) / 25.0) * 450,
               z: az + Math.sin(ta) * tr,
@@ -1066,7 +1057,7 @@
     });
 
     /* ==========================================================================
-       8. INTERACTION: RAYCAST & OPEN DETAIL PANEL
+       8. INTERACTION: RAYCAST & CLICK PANEL OPEN
        ========================================================================== */
     const raycaster = new THREE.Raycaster();
     raycaster.params.Sprite = { threshold: 4.5 };
@@ -1218,6 +1209,17 @@
       document.getElementById('detail-year').innerText = `${detail.year}${I18N[currentLang].yearSuffix}`;
       document.getElementById('detail-abstract').innerText = isKo ? detail.abstract_ko : detail.abstract_en;
 
+      // Hiển thị UCI Identifier nếu có
+      const uciBox = document.getElementById('detail-uci-container');
+      const uciText = document.getElementById('detail-uci');
+      if (detail.uci && detail.uci.length > 3) {
+        uciBox.classList.remove('hidden');
+        uciText.innerText = detail.uci;
+      } else {
+        uciBox.classList.add('hidden');
+      }
+
+      // Keywords
       const kwBox = document.getElementById('detail-keywords-container');
       kwBox.innerHTML = '';
       detail.keywords.forEach(k => {
@@ -1227,19 +1229,19 @@
         kwBox.appendChild(tag);
       });
 
-      // LIÊN KẾT RISS 100% MỞ ĐÚNG BÀI BÁO
-      const cleanTitle = (detail.title_ko || node.name).replace(/\[.*?\]/g, '').replace(/Vol\..*?$/i, '').trim();
-      const rissUrl = `https://www.riss.kr/search/Search.do?isDetailSearch=N&searchGubun=true&viewYn=OP&queryText=${encodeURIComponent(cleanTitle)}&strQuery=${encodeURIComponent(cleanTitle)}`;
+      // LIÊN KẾT RISS CHUẨN XÁC: Ưu tiên mã UCI -> sau đó Title -> fallback RISS Home
       const rissBtn = document.getElementById('btn-riss-link');
-      rissBtn.href = rissUrl;
-      rissBtn.onclick = (e) => {
-        e.preventDefault();
-        window.open(rissUrl, '_blank');
-      };
+      if (detail.uci && detail.uci.length > 3) {
+        rissBtn.href = `https://www.riss.kr/search/Search.do?queryText=${encodeURIComponent(detail.uci)}`;
+      } else if (detail.title_ko && detail.title_ko !== "학위논문 연구") {
+        rissBtn.href = `https://www.riss.kr/search/Search.do?queryText=${encodeURIComponent(detail.title_ko)}`;
+      } else {
+        rissBtn.href = "https://www.riss.kr/";
+      }
     }
 
     /* ==========================================================================
-       9. SEARCH & ADVISOR LIST DRAWER (CÓ THANH CUỘN MƯỢT MÀ)
+       9. SEARCH & ADVISOR LIST DRAWER (CUỘN ĐẦY ĐỦ 100%)
        ========================================================================== */
     const searchInput = document.getElementById('search-input');
     const searchType = document.getElementById('search-type');
@@ -1306,6 +1308,7 @@
       renderThesesListPanel(theses, currentLang === 'ko' ? `${advisorName} 교수` : `Prof. ${advisorName}`);
     }
 
+    // RENDER LIST LUÔN CUỘN ĐƯỢC TOÀN BỘ DANH SÁCH
     function renderThesesListPanel(theses, queryText) {
       const listView = document.getElementById('panel-list-view');
       const detailView = document.getElementById('panel-detail-view');
@@ -1325,7 +1328,6 @@
         return;
       }
 
-      // Render danh sách luận văn với thanh trượt Scroller hoạt động 100%
       theses.forEach((n, idx) => {
         const detail = getCleanDetail(n);
         const card = document.createElement('div');
@@ -1344,8 +1346,9 @@
             <span>${currentLang === 'ko' ? '저자' : 'Author'}: ${detail.author}</span>
             <span class="text-indigo-300 font-medium">${currentLang === 'ko' ? '지도' : 'Advisor'}: ${detail.advisor}</span>
           </div>
-          <div class="text-[9px] text-slate-500 truncate">
+          <div class="text-[9px] text-slate-500 truncate flex justify-between items-center">
             <span>${dept}</span>
+            ${detail.uci ? '<span class="text-[8px] font-mono text-indigo-400/80">UCI</span>' : ''}
           </div>
         `;
 
@@ -1399,7 +1402,7 @@
     });
 
     /* ==========================================================================
-       10. MULTILINGUAL SWITCH
+       10. STRICT MULTILINGUAL SWITCH
        ========================================================================== */
     const langKoBtn = document.getElementById('lang-ko-btn');
     const langEnBtn = document.getElementById('lang-en-btn');
@@ -1455,7 +1458,7 @@
     langEnBtn.addEventListener('click', () => switchLanguage('en'));
 
     /* ==========================================================================
-       11. REAL-TIME TWINKLE SHIMMER & GALAXY RENDER LOOP
+       11. RENDER LOOP
        ========================================================================== */
     const clock = new THREE.Clock();
 
@@ -1466,12 +1469,11 @@
       TWEEN.update();
       controls.update();
 
-      // Thiên hà quay siêu chậm
       cosmosGroup.rotation.y += 0.00018;
 
+      volumetricNebulaMat.uniforms.uTime.value = elapsed;
       if (cosmicBeamMesh) cosmicBeamMesh.material.uniforms.uTime.value = elapsed;
       if (cosmicBeamGlowMesh) cosmicBeamGlowMesh.material.uniforms.uTime.value = elapsed;
-      if (funnelHazeMesh) funnelHazeMesh.material.uniforms.uTime.value = elapsed;
 
       if (stardustMistPoints) stardustMistPoints.rotation.y += 0.0001;
 
