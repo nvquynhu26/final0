@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>SEOULTECH RESEARCH COSMOS</title>
   
   <!-- Tailwind CSS & Fonts -->
@@ -111,9 +111,38 @@
       background: radial-gradient(circle at center, transparent 35%, rgba(2, 3, 6, 0.88) 100%);
       pointer-events: none;
     }
+
+    /* Responsive Overrides for Mobile */
+    @media (max-width: 768px) {
+      .mobile-center-panel {
+        position: fixed !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        max-width: 92vw !important;
+        width: 360px !important;
+        max-height: 80vh !important;
+        z-index: 50 !important;
+      }
+      .mobile-center-panel.mobile-hidden {
+        display: none !important;
+      }
+      #right-panel.mobile-active {
+        top: 50% !important;
+        left: 50% !important;
+        bottom: auto !important;
+        right: auto !important;
+        transform: translate(-50%, -50%) !important;
+        max-width: 92vw !important;
+        width: 380px !important;
+        max-height: 80vh !important;
+        border-radius: 1rem;
+        border: 1px solid rgba(129, 140, 248, 0.4);
+      }
+    }
   </style>
 </head>
-<body class="relative w-screen h-screen">
+<body class="relative w-screen h-screen overflow-hidden">
 
   <canvas id="cosmos-canvas" class="absolute inset-0 z-0 pointer-events-auto cursor-grab active:cursor-grabbing"></canvas>
   <div class="vignette-overlay absolute inset-0 z-10 pointer-events-none"></div>
@@ -133,35 +162,45 @@
   </div>
 
   <!-- HEADER -->
-  <header class="absolute top-0 left-0 right-0 z-20 flex justify-between items-start p-5 pointer-events-none">
-    <div class="pointer-events-auto">
-      <div class="flex items-center space-x-2.5 mb-0.5">
-        <div class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_10px_#22D3EE]"></div>
-        <h1 id="app-title" class="text-xl md:text-2xl font-black tracking-widest uppercase bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-indigo-200 to-pink-500">
+  <header class="absolute top-0 left-0 right-0 z-20 flex justify-between items-start p-3 sm:p-5 pointer-events-none">
+    <div class="pointer-events-auto flex flex-col items-start max-w-[70vw]">
+      <div class="flex items-center space-x-2 mb-0.5">
+        <div class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_10px_#22D3EE] shrink-0"></div>
+        <h1 id="app-title" class="text-sm sm:text-xl md:text-2xl font-black tracking-widest uppercase bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-indigo-200 to-pink-500 truncate">
           서울과학기술대학교 연구 은하
         </h1>
       </div>
-      <p id="app-subtitle" class="text-xs text-slate-400 tracking-wider font-light">
+      <p id="app-subtitle" class="text-[10px] sm:text-xs text-slate-400 tracking-wider font-light truncate">
         학위논문 및 지식 네트워크 시각화
       </p>
+
+      <!-- Nút dấu cộng toggle panel department trên Mobile -->
+      <button id="btn-toggle-dept-mobile" class="md:hidden mt-1.5 flex items-center space-x-1.5 px-2.5 py-1 rounded-full scifi-panel border border-cyan-400/40 text-cyan-300 text-xs font-scifi active:scale-95 transition">
+        <span class="text-sm font-bold leading-none">+</span>
+        <span class="text-[10px] font-medium tracking-wide">학과 필터</span>
+      </button>
     </div>
 
-    <div class="flex items-center space-x-2 pointer-events-auto">
+    <div class="flex items-center space-x-2 pointer-events-auto shrink-0">
       <div class="scifi-panel p-1 rounded-full flex items-center border border-indigo-500/30">
-        <button id="lang-ko-btn" class="px-3 py-1 rounded-full text-xs font-bold bg-indigo-600 text-white">KO</button>
-        <button id="lang-en-btn" class="px-3 py-1 rounded-full text-xs font-semibold text-slate-400 hover:text-white">EN</button>
+        <button id="lang-ko-btn" class="px-2.5 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold bg-indigo-600 text-white">KO</button>
+        <button id="lang-en-btn" class="px-2.5 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-semibold text-slate-400 hover:text-white">EN</button>
       </div>
     </div>
   </header>
 
   <!-- LEFT CONTROL PANELS -->
-  <div class="absolute left-6 top-24 bottom-24 z-20 pointer-events-none flex flex-col justify-between">
+  <div class="absolute left-3 sm:left-6 top-24 bottom-24 z-20 pointer-events-none flex flex-col justify-between">
     
     <!-- Top Left: 학과 필터 (DEPARTMENTS) -->
-    <div class="w-80 scifi-panel p-4 rounded-xl pointer-events-auto border border-white/10 flex flex-col space-y-3">
+    <div id="dept-panel-container" class="w-80 mobile-center-panel mobile-hidden md:block scifi-panel p-4 rounded-xl pointer-events-auto border border-white/10 flex flex-col space-y-3">
       <div class="flex items-center justify-between border-b border-indigo-500/20 pb-2">
         <span id="label-college-filters" class="text-xs font-bold text-indigo-300 tracking-widest uppercase font-scifi">학과 필터</span>
-        <button id="btn-reset-filters" class="text-[10px] text-cyan-400 hover:underline font-scifi">초기화</button>
+        <div class="flex items-center space-x-2">
+          <button id="btn-reset-filters" class="text-[10px] text-cyan-400 hover:underline font-scifi">초기화</button>
+          <!-- Nút thu nhỏ trên màn hình điện thoại -->
+          <button id="btn-collapse-dept-mobile" class="md:hidden text-slate-400 hover:text-white px-1.5 py-0.5 rounded bg-white/10 text-xs leading-none">━</button>
+        </div>
       </div>
 
       <!-- Quick Group Buttons -->
@@ -188,15 +227,15 @@
       </div>
     </div>
 
-    <!-- Bottom Left: 연도 (TIMELINE) -->
-    <div class="w-20 scifi-panel py-3 px-2 rounded-xl pointer-events-auto border border-white/10 flex flex-col items-center">
+    <!-- Bottom Left: 연도 (TIMELINE) - VẪN Ở BÊN TRÁI MÀN HÌNH -->
+    <div class="w-16 sm:w-20 scifi-panel py-3 px-1.5 sm:px-2 rounded-xl pointer-events-auto border border-white/10 flex flex-col items-center">
       <div class="w-full flex flex-col items-center border-b border-indigo-500/20 pb-1 mb-1">
-        <span id="label-timeline-title" class="text-[10px] font-bold text-indigo-300">연도</span>
-        <span id="timeline-year-badge" class="font-scifi text-xs font-bold text-cyan-400">2026</span>
+        <span id="label-timeline-title" class="text-[9px] sm:text-[10px] font-bold text-indigo-300">연도</span>
+        <span id="timeline-year-badge" class="font-scifi text-[11px] sm:text-xs font-bold text-cyan-400">2026</span>
       </div>
 
       <!-- Vertical Slider -->
-      <div class="h-32 w-full flex items-center justify-center relative my-1">
+      <div class="h-28 sm:h-32 w-full flex items-center justify-center relative my-1">
         <input id="timeline-slider" type="range" min="2001" max="2026" value="2026" step="1" class="slider-vertical">
       </div>
 
@@ -211,10 +250,10 @@
     </div>
   </div>
 
-  <!-- BOTTOM SEARCH BAR -->
-  <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 w-11/12 max-w-2xl pointer-events-auto flex flex-col items-center">
-    <div class="w-full scifi-panel rounded-full px-4 py-2 flex items-center space-x-3 border border-indigo-500/40 shadow-[0_0_30px_rgba(79,70,229,0.3)]">
-      <select id="search-type" class="bg-black/60 text-slate-300 text-xs rounded-full px-3 py-1.5 border border-indigo-500/30 focus:outline-none focus:border-cyan-400 cursor-pointer font-medium">
+  <!-- BOTTOM SEARCH BAR - CĂN GIỮA MÀN HÌNH ĐIỆN THOẠI -->
+  <div class="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-20 w-[94vw] max-w-2xl pointer-events-auto flex flex-col items-center">
+    <div class="w-full scifi-panel rounded-full px-3 py-1.5 sm:px-4 sm:py-2 flex items-center space-x-2 sm:space-x-3 border border-indigo-500/40 shadow-[0_0_30px_rgba(79,70,229,0.3)]">
+      <select id="search-type" class="bg-black/60 text-slate-300 text-[10px] sm:text-xs rounded-full px-2 py-1 sm:px-3 sm:py-1.5 border border-indigo-500/30 focus:outline-none focus:border-cyan-400 cursor-pointer font-medium shrink-0">
         <option value="advisor">지도교수</option>
         <option value="all">통합검색</option>
         <option value="keyword">주제어</option>
@@ -224,23 +263,23 @@
       </select>
       
       <input id="search-input" type="text" placeholder="지도교수, 논문 제목, 키워드 검색..." 
-        class="bg-transparent flex-1 text-sm text-white placeholder-slate-500 focus:outline-none tracking-wide" />
+        class="bg-transparent flex-1 min-w-0 text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none tracking-wide" />
       
-      <button id="search-submit-btn" class="bg-gradient-to-r from-cyan-500 via-indigo-600 to-pink-500 text-white p-2 rounded-full hover:brightness-125 transition transform active:scale-95 shadow-[0_0_12px_rgba(6,182,212,0.5)]">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+      <button id="search-submit-btn" class="bg-gradient-to-r from-cyan-500 via-indigo-600 to-pink-500 text-white p-1.5 sm:p-2 rounded-full hover:brightness-125 transition transform active:scale-95 shadow-[0_0_12px_rgba(6,182,212,0.5)] shrink-0">
+        <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
       </button>
     </div>
   </div>
 
-  <!-- RIGHT MULTI-FUNCTION PANEL -->
-  <aside id="right-panel" class="absolute top-0 right-0 bottom-0 w-[420px] max-w-[90vw] scifi-panel z-40 transform translate-x-full transition-transform duration-300 ease-out flex flex-col border-l border-indigo-500/30 pointer-events-auto">
+  <!-- RIGHT MULTI-FUNCTION PANEL (KHI ẤN TÌM KIẾM SẼ HIỆN RA CHÍNH GIỮA MÀN HÌNH TRÊN ĐIỆN THOẠI) -->
+  <aside id="right-panel" class="absolute top-0 right-0 bottom-0 w-[420px] max-w-[92vw] scifi-panel z-40 transform translate-x-full transition-transform duration-300 ease-out flex flex-col border-l border-indigo-500/30 pointer-events-auto">
     
-    <!-- 1. VIEW: LIST RESULTS (Hỗ trợ cuộn mượt mà trọn vẹn) -->
-    <div id="panel-list-view" class="hidden flex flex-col h-full p-6 min-h-0">
-      <div class="flex justify-between items-center pb-4 border-b border-indigo-500/20 shrink-0">
+    <!-- 1. VIEW: LIST RESULTS -->
+    <div id="panel-list-view" class="hidden flex flex-col h-full p-4 sm:p-6 min-h-0">
+      <div class="flex justify-between items-center pb-3 border-b border-indigo-500/20 shrink-0">
         <div>
           <span id="list-view-query-badge" class="px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 font-scifi">SEARCH RESULTS</span>
-          <h3 id="list-view-title" class="text-sm font-bold text-white mt-1">검색된 논문 목록</h3>
+          <h3 id="list-view-title" class="text-sm font-bold text-white mt-1 truncate">검색된 논문 목록</h3>
         </div>
         <button id="btn-close-list-panel" class="text-slate-400 hover:text-white p-1 text-base">✕</button>
       </div>
@@ -256,8 +295,8 @@
     </div>
 
     <!-- 2. VIEW: DETAIL PANEL -->
-    <div id="panel-detail-view" class="flex flex-col h-full p-6 min-h-0">
-      <div class="flex justify-between items-start pb-4 border-b border-indigo-500/20 shrink-0">
+    <div id="panel-detail-view" class="flex flex-col h-full p-4 sm:p-6 min-h-0">
+      <div class="flex justify-between items-start pb-3 border-b border-indigo-500/20 shrink-0">
         <div class="flex items-center space-x-2">
           <button id="btn-back-to-list" class="hidden px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-600/50 hover:bg-indigo-600 text-white border border-indigo-400/40">
             ← 목록으로
@@ -268,10 +307,10 @@
         <button id="btn-close-detail-panel" class="text-slate-400 hover:text-white p-1 text-base">✕</button>
       </div>
 
-      <div class="flex-1 overflow-y-auto py-4 space-y-4 pr-1 text-xs min-h-0">
+      <div class="flex-1 overflow-y-auto py-3 space-y-3.5 pr-1 text-xs min-h-0">
         <div>
           <span id="detail-label-title" class="text-[9px] uppercase font-bold text-indigo-400 font-scifi tracking-widest">논문 제목</span>
-          <h2 id="detail-title" class="text-base font-bold text-white mt-1 leading-snug"></h2>
+          <h2 id="detail-title" class="text-sm sm:text-base font-bold text-white mt-1 leading-snug"></h2>
         </div>
 
         <div class="grid grid-cols-2 gap-2 p-3 rounded-lg bg-black/40 border border-white/5">
@@ -293,7 +332,7 @@
           </div>
         </div>
 
-        <!-- Mã định danh UCI (Luôn hiển thị 100%) -->
+        <!-- UCI -->
         <div class="p-2.5 rounded-lg bg-black/50 border border-indigo-500/20">
           <span id="detail-label-uci" class="text-[9px] uppercase font-bold text-indigo-400 font-scifi tracking-widest block mb-0.5">UCI 등록번호 (UCI Identifier)</span>
           <span id="detail-uci" class="font-scifi text-xs text-cyan-300 font-semibold select-all break-all tracking-wide">N/A</span>
@@ -306,14 +345,14 @@
 
         <div>
           <span id="detail-label-abstract" class="text-[9px] uppercase font-bold text-indigo-400 font-scifi tracking-widest">논문 초록 (Abstract)</span>
-          <p id="detail-abstract" class="mt-1 text-slate-300 leading-relaxed text-xs max-h-60 overflow-y-auto pr-1 bg-black/40 p-2.5 rounded border border-white/5"></p>
+          <p id="detail-abstract" class="mt-1 text-slate-300 leading-relaxed text-xs max-h-48 sm:max-h-60 overflow-y-auto pr-1 bg-black/40 p-2.5 rounded border border-white/5"></p>
         </div>
       </div>
     </div>
   </aside>
 
   <!-- FOOTER -->
-  <footer class="absolute bottom-2 left-6 z-10 pointer-events-none text-[10px] text-slate-600 font-scifi tracking-wider">
+  <footer class="absolute bottom-1 sm:bottom-2 left-3 sm:left-6 z-10 pointer-events-none text-[9px] sm:text-[10px] text-slate-600 font-scifi tracking-wider">
     Data Visualization Design Project - By Youme
   </footer>
 
@@ -558,7 +597,7 @@
     let DEPT_MAP = new Map();
     const DETAILS_STORE = new Map();
     let hasSearchHistory = false;
-    let isSearchActive = false; // CỜ QUẢN LÝ CHẾ ĐỘ GIẢM ĐỘ SÁNG KHI TÌM KIẾM
+    let isSearchActive = false;
     let cosmicBeamMesh, cosmicBeamGlowMesh;
     let stardustMistPoints;
 
@@ -638,7 +677,6 @@
       });
     }
 
-    // Bóc tách siêu chuẩn 100%: UCI luôn có, Abstract luôn đầy đủ
     function getCleanDetail(node) {
       const d = DETAILS_STORE.get(node.id) || node.cachedDetail;
       
@@ -654,7 +692,6 @@
       let resolvedDegree = (d && (d.degree || d.degree_name)) || node.degree || (node.type === 'thesis_planet' ? (currentLang === 'ko' ? "석·박사 학위논문" : "Ph.D. / Master") : (currentLang === 'ko' ? "교수/학부" : "Faculty"));
       let resolvedYear = (d && d.year) || node.year || 2024;
       
-      // XỬ LÝ MÃ UCI: Quét toàn diện các trường, nếu chưa có thì gán mã UCI chuẩn quốc gia theo ID
       let resolvedUci = (d && (d.uci || d.uci_code || d.d_uci || d.identifier)) || node.uci;
       if (!resolvedUci || resolvedUci === "N/A" || resolvedUci.trim() === "") {
         if (node.type === 'thesis_planet') {
@@ -664,7 +701,6 @@
         }
       }
       
-      // XỬ LÝ ABSTRACT: Luôn có văn bản tóm tắt
       let resolvedAbstractKo = (d && (d.abstract_ko || d.abstract || d.abstract_en)) || node.abstract_ko;
       if (!resolvedAbstractKo || resolvedAbstractKo.trim() === "") {
         resolvedAbstractKo = `본 연구는 서울과학기술대학교 ${resolvedDept}에서 수행된 학위논문으로, 주제와 관련된 심층적인 학술 분석과 연구 방법론을 종합적으로 기술하고 있습니다.`;
@@ -690,7 +726,7 @@
     }
 
     /* ==========================================================================
-       6. KHỞI TẠO BỐ CỤC: THU HẸP LÕI RỖNG 20% & ĐỘ NGHIÊNG SO LE TỪNG NĂM
+       6. KHỞI TẠO BỐ CỤC THREE.JS
        ========================================================================== */
     function buildCosmicScene() {
       NODE_SPRITES = [];
@@ -959,12 +995,27 @@
     }
 
     /* ==========================================================================
-       7. UI FILTERS SETUP
+       7. UI FILTERS SETUP & MOBILE LOGIC
        ========================================================================== */
     let selectedCluster = 'all';
     let selectedDept = 'ALL';
     let activeTimelineYear = 2026;
     let isCumulativeMode = true;
+
+    // Mobile Toggle for Department Filter Panel
+    const btnToggleDeptMobile = document.getElementById('btn-toggle-dept-mobile');
+    const btnCollapseDeptMobile = document.getElementById('btn-collapse-dept-mobile');
+    const deptPanelContainer = document.getElementById('dept-panel-container');
+
+    btnToggleDeptMobile.addEventListener('click', () => {
+      deptPanelContainer.classList.remove('mobile-hidden');
+      btnToggleDeptMobile.classList.add('hidden');
+    });
+
+    btnCollapseDeptMobile.addEventListener('click', () => {
+      deptPanelContainer.classList.add('mobile-hidden');
+      btnToggleDeptMobile.classList.remove('hidden');
+    });
 
     function isDeptMatchingCluster(deptName, cluster) {
       if (!deptName) return false;
@@ -1186,7 +1237,11 @@
         backBtn.classList.add('hidden');
       }
 
-      document.getElementById('right-panel').classList.remove('translate-x-full');
+      const rightPanel = document.getElementById('right-panel');
+      rightPanel.classList.remove('translate-x-full');
+      if (window.innerWidth <= 768) {
+        rightPanel.classList.add('mobile-active');
+      }
 
       const camPos = new THREE.Vector3(node.fx + 26, node.fy + 14, node.fz + 34);
       const targetPos = new THREE.Vector3(node.fx, node.fy, node.fz);
@@ -1225,11 +1280,7 @@
       document.getElementById('detail-dept').innerText = isKo ? detail.dept : detail.dept_en;
       document.getElementById('detail-degree').innerText = detail.degree;
       document.getElementById('detail-year').innerText = `${detail.year}${I18N[currentLang].yearSuffix}`;
-      
-      // Render mã UCI (Hiển thị đầy đủ, không bao giờ mất)
       document.getElementById('detail-uci').innerText = detail.uci || "N/A";
-      
-      // Render 초록 (Abstract 100% đầy đủ)
       document.getElementById('detail-abstract').innerText = isKo ? detail.abstract_ko : detail.abstract_en;
 
       const kwBox = document.getElementById('detail-keywords-container');
@@ -1243,7 +1294,7 @@
     }
 
     /* ==========================================================================
-       9. SEARCH & ADVISOR LIST DRAWER (GIẢM 50% CÁC SAO KHÁC KHI TÌM KIẾM)
+       9. SEARCH & ADVISOR LIST DRAWER
        ========================================================================== */
     const searchInput = document.getElementById('search-input');
     const searchType = document.getElementById('search-type');
@@ -1255,7 +1306,7 @@
 
       if (!q) {
         resetSearchHighlight();
-        document.getElementById('right-panel').classList.add('translate-x-full');
+        closeRightPanel();
         hasSearchHistory = false;
         return;
       }
@@ -1282,16 +1333,12 @@
       });
 
       hasSearchHistory = true;
-      isSearchActive = true; // KÍCH HOẠT CHẾ ĐỘ GIẢM ĐỘ SÁNG CÁC SAO KHÁC
+      isSearchActive = true;
 
       const matchSet = new Set(matchedTheses.map(m => m.id));
       NODE_SPRITES.forEach(s => {
         const id = s.userData.nodeData.id;
-        if (matchSet.has(id)) {
-          s.userData.isHighlight = true;
-        } else {
-          s.userData.isHighlight = false;
-        }
+        s.userData.isHighlight = matchSet.has(id);
       });
 
       renderThesesListPanel(matchedTheses, q);
@@ -1306,7 +1353,7 @@
       });
 
       hasSearchHistory = true;
-      isSearchActive = true; // KÍCH HOẠT CHẾ ĐỘ GIẢM ĐỘ SÁNG CÁC SAO KHÁC
+      isSearchActive = true;
 
       const matchSet = new Set(theses.map(m => m.id));
       NODE_SPRITES.forEach(s => {
@@ -1321,10 +1368,15 @@
       const listView = document.getElementById('panel-list-view');
       const detailView = document.getElementById('panel-detail-view');
       const container = document.getElementById('search-theses-list');
+      const rightPanel = document.getElementById('right-panel');
 
       listView.classList.remove('hidden');
       detailView.classList.add('hidden');
-      document.getElementById('right-panel').classList.remove('translate-x-full');
+      
+      rightPanel.classList.remove('translate-x-full');
+      if (window.innerWidth <= 768) {
+        rightPanel.classList.add('mobile-active');
+      }
 
       document.getElementById('list-view-title').innerText = currentLang === 'ko' ? `"${queryText}" 연구 목록` : `Theses for "${queryText}"`;
       document.getElementById('list-view-count').innerText = I18N[currentLang].searchResultsCount(theses.length);
@@ -1369,9 +1421,15 @@
       });
     }
 
-    // TẮT PANEL -> HỒI PHỤC ĐỘ SÁNG BAN ĐẦU CỦA TẤT CẢ CÁC SAO
+    function closeRightPanel() {
+      const rightPanel = document.getElementById('right-panel');
+      rightPanel.classList.add('translate-x-full');
+      rightPanel.classList.remove('mobile-active');
+      resetSearchHighlight();
+    }
+
     function resetSearchHighlight() {
-      isSearchActive = false; // TẮT CHẾ ĐỘ GIẢM ĐỘ SÁNG
+      isSearchActive = false;
       NODE_SPRITES.forEach(s => {
         s.userData.isHighlight = false;
         if (s.visible) {
@@ -1385,15 +1443,8 @@
       document.getElementById('panel-list-view').classList.remove('hidden');
     });
 
-    // Bấm nút đóng Panel (✕) -> Tự động khôi phục độ sáng các sao 100%
-    document.getElementById('btn-close-list-panel').addEventListener('click', () => {
-      document.getElementById('right-panel').classList.add('translate-x-full');
-      resetSearchHighlight();
-    });
-    document.getElementById('btn-close-detail-panel').addEventListener('click', () => {
-      document.getElementById('right-panel').classList.add('translate-x-full');
-      resetSearchHighlight();
-    });
+    document.getElementById('btn-close-list-panel').addEventListener('click', closeRightPanel);
+    document.getElementById('btn-close-detail-panel').addEventListener('click', closeRightPanel);
 
     searchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') performSearch(); });
     searchBtn.addEventListener('click', performSearch);
@@ -1415,7 +1466,7 @@
     });
 
     /* ==========================================================================
-       10. STRICT 100% MULTILINGUAL SWITCH
+       10. MULTILINGUAL SWITCH
        ========================================================================== */
     const langKoBtn = document.getElementById('lang-ko-btn');
     const langEnBtn = document.getElementById('lang-en-btn');
@@ -1425,11 +1476,11 @@
       const dict = I18N[lang];
 
       if (lang === 'ko') {
-        langKoBtn.className = "px-3 py-1 rounded-full text-xs font-bold bg-indigo-600 text-white";
-        langEnBtn.className = "px-3 py-1 rounded-full text-xs font-semibold text-slate-400 hover:text-white";
+        langKoBtn.className = "px-2.5 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold bg-indigo-600 text-white";
+        langEnBtn.className = "px-2.5 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-semibold text-slate-400 hover:text-white";
       } else {
-        langEnBtn.className = "px-3 py-1 rounded-full text-xs font-bold bg-indigo-600 text-white";
-        langKoBtn.className = "px-3 py-1 rounded-full text-xs font-semibold text-slate-400 hover:text-white";
+        langEnBtn.className = "px-2.5 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold bg-indigo-600 text-white";
+        langKoBtn.className = "px-2.5 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-semibold text-slate-400 hover:text-white";
       }
 
       document.getElementById('app-title').innerText = dict.appTitle;
@@ -1459,7 +1510,7 @@
       document.getElementById('detail-label-author').innerText = dict.detailAuthorLabel;
       document.getElementById('detail-label-advisor').innerText = dict.detailAdvisorLabel;
       document.getElementById('detail-label-dept').innerText = dict.detailDeptLabel;
-      document.getElementById('detail-label-degree').innerText = dict.detailDegreeLabel;
+      document.getElementById('detail-degree').innerText = dict.detailDegreeLabel;
       document.getElementById('detail-label-uci').innerText = dict.detailUciLabel;
       document.getElementById('detail-label-keywords').innerText = dict.detailKeywordsLabel;
       document.getElementById('detail-label-abstract').innerText = dict.detailAbstractLabel;
@@ -1471,7 +1522,7 @@
     langEnBtn.addEventListener('click', () => switchLanguage('en'));
 
     /* ==========================================================================
-       11. REAL-TIME TWINKLE & TỰ ĐỘNG GIẢM 50% ĐỘ SÁNG KHI TÌM KIẾM
+       11. REAL-TIME RENDER LOOP
        ========================================================================== */
     const clock = new THREE.Clock();
 
@@ -1496,21 +1547,17 @@
       NODE_SPRITES.forEach(s => {
         if (s.visible) {
           if (isSearchActive) {
-            // ĐANG TÌM KIẾM:
             if (s.userData.isHighlight) {
-              // SAO LIÊN QUAN: NHẤP NHÁY STROBE BEACON NỔI BẬT RỰC RỠ
               const strobe = 1.0 + Math.abs(Math.sin(elapsed * 7.5)) * 0.9;
               const b = s.userData.baseSize * 1.8;
               s.scale.set(b * strobe, b * strobe, 1);
               s.material.opacity = 1.0;
             } else {
-              // CÁC SAO KHÁC: TỰ ĐỘNG GIẢM 50% ÁNH SÁNG & THU NHỎ
               const b = (s.userData.baseSize * distFactor) * 0.6;
               s.scale.set(b, b, 1);
-              s.material.opacity = 0.22; // Giảm hơn 50% độ sáng
+              s.material.opacity = 0.22;
             }
           } else {
-            // TRẠNG THÁI BÌNH THƯỜNG: QUANG SAI LẤP LÁNH TỰ NHIÊN
             const tSpeed = s.userData.twinkleSpeed;
             const shimmer = Math.sin(elapsed * tSpeed + s.userData.pulseOffset) * Math.cos(elapsed * (tSpeed * 0.5)) * s.userData.shimmerAmp;
             
@@ -1529,6 +1576,15 @@
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
+
+      // Cập nhật lại trạng thái hiển thị của panel khi chuyển đổi độ phân giải màn hình
+      if (window.innerWidth > 768) {
+        deptPanelContainer.classList.remove('mobile-hidden');
+        btnToggleDeptMobile.classList.add('hidden');
+      } else {
+        deptPanelContainer.classList.add('mobile-hidden');
+        btnToggleDeptMobile.classList.remove('hidden');
+      }
     });
 
     // Boot
