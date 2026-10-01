@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>SEOULTECH RESEARCH COSMOS</title>
   
   <!-- Tailwind CSS & Fonts -->
@@ -20,6 +20,7 @@
     * { box-sizing: border-box; user-select: none; }
     body, html {
       margin: 0; padding: 0; width: 100%; height: 100%;
+      height: 100dvh;
       overflow: hidden; background-color: #020306;
       font-family: 'Pretendard', sans-serif; color: #E2E8F0;
     }
@@ -112,33 +113,11 @@
       pointer-events: none;
     }
 
-    /* Responsive Overrides for Mobile */
-    @media (max-width: 768px) {
-      .mobile-center-panel {
-        position: fixed !important;
-        top: 50% !important;
-        left: 50% !important;
-        transform: translate(-50%, -50%) !important;
-        max-width: 92vw !important;
-        width: 360px !important;
-        max-height: 80vh !important;
-        z-index: 50 !important;
-      }
-      .mobile-center-panel.mobile-hidden {
-        display: none !important;
-      }
-      #right-panel.mobile-active {
-        top: 50% !important;
-        left: 50% !important;
-        bottom: auto !important;
-        right: auto !important;
-        transform: translate(-50%, -50%) !important;
-        max-width: 92vw !important;
-        width: 380px !important;
-        max-height: 80vh !important;
-        border-radius: 1rem;
-        border: 1px solid rgba(129, 140, 248, 0.4);
-      }
+    /* Modal Backdrop on Mobile */
+    .dept-modal-backdrop {
+      background: rgba(2, 3, 6, 0.75);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
     }
   </style>
 </head>
@@ -163,43 +142,44 @@
 
   <!-- HEADER -->
   <header class="absolute top-0 left-0 right-0 z-20 flex justify-between items-start p-3 sm:p-5 pointer-events-none">
-    <div class="pointer-events-auto flex flex-col items-start max-w-[70vw]">
+    <div class="pointer-events-auto">
       <div class="flex items-center space-x-2 mb-0.5">
-        <div class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_10px_#22D3EE] shrink-0"></div>
-        <h1 id="app-title" class="text-sm sm:text-xl md:text-2xl font-black tracking-widest uppercase bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-indigo-200 to-pink-500 truncate">
+        <div class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_10px_#22D3EE] shrink-0"></div>
+        <h1 id="app-title" class="text-base sm:text-xl md:text-2xl font-black tracking-wider sm:tracking-widest uppercase bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-indigo-200 to-pink-500 truncate">
           서울과학기술대학교 연구 은하
         </h1>
       </div>
-      <p id="app-subtitle" class="text-[10px] sm:text-xs text-slate-400 tracking-wider font-light truncate">
+      <p id="app-subtitle" class="text-[10px] sm:text-xs text-slate-400 tracking-wider font-light">
         학위논문 및 지식 네트워크 시각화
       </p>
 
-      <!-- Nút dấu cộng toggle panel department trên Mobile -->
-      <button id="btn-toggle-dept-mobile" class="md:hidden mt-1.5 flex items-center space-x-1.5 px-2.5 py-1 rounded-full scifi-panel border border-cyan-400/40 text-cyan-300 text-xs font-scifi active:scale-95 transition">
-        <span class="text-sm font-bold leading-none">+</span>
-        <span class="text-[10px] font-medium tracking-wide">학과 필터</span>
+      <!-- Nút dấu cộng mở Panel Department trên điện thoại -->
+      <button id="btn-open-dept-mobile" class="md:hidden mt-2 scifi-panel px-2.5 py-1 rounded-full border border-cyan-400/40 text-cyan-300 text-xs font-semibold flex items-center space-x-1.5 shadow-lg active:scale-95 transition-transform" title="학과 필터 열기">
+        <svg class="w-3.5 h-3.5 text-cyan-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+        <span class="text-[10px] tracking-wider uppercase font-scifi">DEPT</span>
       </button>
     </div>
 
     <div class="flex items-center space-x-2 pointer-events-auto shrink-0">
       <div class="scifi-panel p-1 rounded-full flex items-center border border-indigo-500/30">
-        <button id="lang-ko-btn" class="px-2.5 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold bg-indigo-600 text-white">KO</button>
-        <button id="lang-en-btn" class="px-2.5 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-semibold text-slate-400 hover:text-white">EN</button>
+        <button id="lang-ko-btn" class="px-2.5 sm:px-3 py-1 rounded-full text-[11px] sm:text-xs font-bold bg-indigo-600 text-white">KO</button>
+        <button id="lang-en-btn" class="px-2.5 sm:px-3 py-1 rounded-full text-[11px] sm:text-xs font-semibold text-slate-400 hover:text-white">EN</button>
       </div>
     </div>
   </header>
 
-  <!-- LEFT CONTROL PANELS -->
-  <div class="absolute left-3 sm:left-6 top-24 bottom-24 z-20 pointer-events-none flex flex-col justify-between">
-    
-    <!-- Top Left: 학과 필터 (DEPARTMENTS) -->
-    <div id="dept-panel-container" class="w-80 mobile-center-panel mobile-hidden md:block scifi-panel p-4 rounded-xl pointer-events-auto border border-white/10 flex flex-col space-y-3">
+  <!-- BACKDROP MODAL TRÊN MOBILE KHI MỞ DEPARTMENT -->
+  <div id="dept-modal-overlay" class="fixed inset-0 z-30 dept-modal-backdrop hidden md:hidden flex items-center justify-center p-4"></div>
+
+  <!-- DEPARTMENT PANEL: Căn giữa màn hình trên Mobile, ở góc trái trên Desktop -->
+  <div id="dept-panel-wrapper" class="hidden md:block fixed md:absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 md:top-24 md:left-6 md:translate-x-0 md:translate-y-0 z-40 md:z-20 w-[90vw] max-w-[340px] md:w-80 pointer-events-auto">
+    <div class="scifi-panel p-4 rounded-xl border border-white/10 flex flex-col space-y-3 shadow-2xl">
       <div class="flex items-center justify-between border-b border-indigo-500/20 pb-2">
         <span id="label-college-filters" class="text-xs font-bold text-indigo-300 tracking-widest uppercase font-scifi">학과 필터</span>
         <div class="flex items-center space-x-2">
           <button id="btn-reset-filters" class="text-[10px] text-cyan-400 hover:underline font-scifi">초기화</button>
-          <!-- Nút thu nhỏ trên màn hình điện thoại -->
-          <button id="btn-collapse-dept-mobile" class="md:hidden text-slate-400 hover:text-white px-1.5 py-0.5 rounded bg-white/10 text-xs leading-none">━</button>
+          <!-- Nút thu nhỏ trên Mobile -->
+          <button id="btn-close-dept-mobile" class="md:hidden text-slate-400 hover:text-white p-1 text-sm leading-none" title="Đóng panel">✕</button>
         </div>
       </div>
 
@@ -226,12 +206,14 @@
         <button id="btn-view-top" class="scifi-btn px-2 py-1.5 rounded text-slate-300 font-medium active">탑 뷰</button>
       </div>
     </div>
+  </div>
 
-    <!-- Bottom Left: 연도 (TIMELINE) - VẪN Ở BÊN TRÁI MÀN HÌNH -->
-    <div class="w-16 sm:w-20 scifi-panel py-3 px-1.5 sm:px-2 rounded-xl pointer-events-auto border border-white/10 flex flex-col items-center">
+  <!-- TIMELINE PANEL: Luôn ở bên trái màn hình -->
+  <div class="absolute left-3 sm:left-6 bottom-24 sm:bottom-24 z-20 pointer-events-auto">
+    <div class="w-16 sm:w-20 scifi-panel py-3 px-1.5 sm:px-2 rounded-xl border border-white/10 flex flex-col items-center shadow-lg">
       <div class="w-full flex flex-col items-center border-b border-indigo-500/20 pb-1 mb-1">
         <span id="label-timeline-title" class="text-[9px] sm:text-[10px] font-bold text-indigo-300">연도</span>
-        <span id="timeline-year-badge" class="font-scifi text-[11px] sm:text-xs font-bold text-cyan-400">2026</span>
+        <span id="timeline-year-badge" class="font-scifi text-xs font-bold text-cyan-400">2026</span>
       </div>
 
       <!-- Vertical Slider -->
@@ -241,7 +223,7 @@
 
       <!-- Compact Mode Slider Switch -->
       <div class="flex flex-col items-center mt-1">
-        <div id="mode-toggle-switch" class="switch-container" title="누적 / 단일 연도 전환">
+        <div id="mode-toggle-switch" class="switch-container scale-90 sm:scale-100" title="누적 / 단일 연도 전환">
           <span class="text-[8px] font-bold text-white z-10 pl-0.5 pointer-events-none">누적</span>
           <span class="text-[8px] font-bold text-slate-300 z-10 pr-0.5 pointer-events-none">단일</span>
           <div id="switch-handle" class="switch-handle"></div>
@@ -250,10 +232,10 @@
     </div>
   </div>
 
-  <!-- BOTTOM SEARCH BAR - CĂN GIỮA MÀN HÌNH ĐIỆN THOẠI -->
-  <div class="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-20 w-[94vw] max-w-2xl pointer-events-auto flex flex-col items-center">
-    <div class="w-full scifi-panel rounded-full px-3 py-1.5 sm:px-4 sm:py-2 flex items-center space-x-2 sm:space-x-3 border border-indigo-500/40 shadow-[0_0_30px_rgba(79,70,229,0.3)]">
-      <select id="search-type" class="bg-black/60 text-slate-300 text-[10px] sm:text-xs rounded-full px-2 py-1 sm:px-3 sm:py-1.5 border border-indigo-500/30 focus:outline-none focus:border-cyan-400 cursor-pointer font-medium shrink-0">
+  <!-- BOTTOM SEARCH BAR: Căn giữa, nâng cao trên điện thoại tránh thanh điều hướng -->
+  <div class="absolute bottom-16 sm:bottom-6 left-1/2 -translate-x-1/2 z-20 w-[94vw] max-w-2xl pointer-events-auto flex flex-col items-center px-1">
+    <div class="w-full scifi-panel rounded-full px-2.5 sm:px-4 py-1.5 sm:py-2 flex items-center space-x-2 sm:space-x-3 border border-indigo-500/40 shadow-[0_0_30px_rgba(79,70,229,0.3)]">
+      <select id="search-type" class="bg-black/60 text-slate-300 text-[11px] sm:text-xs rounded-full px-2 sm:px-3 py-1 sm:py-1.5 border border-indigo-500/30 focus:outline-none focus:border-cyan-400 cursor-pointer font-medium max-w-[85px] sm:max-w-none">
         <option value="advisor">지도교수</option>
         <option value="all">통합검색</option>
         <option value="keyword">주제어</option>
@@ -263,7 +245,7 @@
       </select>
       
       <input id="search-input" type="text" placeholder="지도교수, 논문 제목, 키워드 검색..." 
-        class="bg-transparent flex-1 min-w-0 text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none tracking-wide" />
+        class="bg-transparent flex-1 text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none tracking-wide min-w-0" />
       
       <button id="search-submit-btn" class="bg-gradient-to-r from-cyan-500 via-indigo-600 to-pink-500 text-white p-1.5 sm:p-2 rounded-full hover:brightness-125 transition transform active:scale-95 shadow-[0_0_12px_rgba(6,182,212,0.5)] shrink-0">
         <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
@@ -271,15 +253,15 @@
     </div>
   </div>
 
-  <!-- RIGHT MULTI-FUNCTION PANEL (KHI ẤN TÌM KIẾM SẼ HIỆN RA CHÍNH GIỮA MÀN HÌNH TRÊN ĐIỆN THOẠI) -->
-  <aside id="right-panel" class="absolute top-0 right-0 bottom-0 w-[420px] max-w-[92vw] scifi-panel z-40 transform translate-x-full transition-transform duration-300 ease-out flex flex-col border-l border-indigo-500/30 pointer-events-auto">
+  <!-- MULTI-FUNCTION PANEL: Căn giữa màn hình trên Mobile, trượt từ bên phải vào trên Desktop -->
+  <aside id="right-panel" class="fixed md:absolute md:top-0 md:right-0 md:bottom-0 top-1/2 left-1/2 md:left-auto -translate-x-1/2 -translate-y-1/2 md:translate-y-0 w-[92vw] max-w-[420px] h-[78vh] md:h-full scifi-panel z-40 rounded-2xl md:rounded-none transform translate-y-full md:translate-y-0 md:translate-x-full transition-all duration-300 ease-out flex flex-col border border-indigo-500/40 md:border-y-0 md:border-r-0 md:border-l md:border-indigo-500/30 pointer-events-auto shadow-2xl">
     
     <!-- 1. VIEW: LIST RESULTS -->
     <div id="panel-list-view" class="hidden flex flex-col h-full p-4 sm:p-6 min-h-0">
-      <div class="flex justify-between items-center pb-3 border-b border-indigo-500/20 shrink-0">
+      <div class="flex justify-between items-center pb-3 sm:pb-4 border-b border-indigo-500/20 shrink-0">
         <div>
           <span id="list-view-query-badge" class="px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 font-scifi">SEARCH RESULTS</span>
-          <h3 id="list-view-title" class="text-sm font-bold text-white mt-1 truncate">검색된 논문 목록</h3>
+          <h3 id="list-view-title" class="text-xs sm:text-sm font-bold text-white mt-1">검색된 논문 목록</h3>
         </div>
         <button id="btn-close-list-panel" class="text-slate-400 hover:text-white p-1 text-base">✕</button>
       </div>
@@ -289,14 +271,14 @@
         <span id="list-view-subhint" class="text-[10px] text-indigo-400">클릭 시 해당 논문 상세 확인</span>
       </div>
 
-      <div id="search-theses-list" class="flex-1 overflow-y-auto space-y-2 pr-1.5 text-xs min-h-0">
+      <div id="search-theses-list" class="flex-1 overflow-y-auto space-y-2 pr-1 text-xs min-h-0">
         <!-- Injected thesis cards -->
       </div>
     </div>
 
     <!-- 2. VIEW: DETAIL PANEL -->
     <div id="panel-detail-view" class="flex flex-col h-full p-4 sm:p-6 min-h-0">
-      <div class="flex justify-between items-start pb-3 border-b border-indigo-500/20 shrink-0">
+      <div class="flex justify-between items-start pb-3 sm:pb-4 border-b border-indigo-500/20 shrink-0">
         <div class="flex items-center space-x-2">
           <button id="btn-back-to-list" class="hidden px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-600/50 hover:bg-indigo-600 text-white border border-indigo-400/40">
             ← 목록으로
@@ -307,13 +289,13 @@
         <button id="btn-close-detail-panel" class="text-slate-400 hover:text-white p-1 text-base">✕</button>
       </div>
 
-      <div class="flex-1 overflow-y-auto py-3 space-y-3.5 pr-1 text-xs min-h-0">
+      <div class="flex-1 overflow-y-auto py-3 space-y-3 sm:space-y-4 pr-1 text-xs min-h-0">
         <div>
           <span id="detail-label-title" class="text-[9px] uppercase font-bold text-indigo-400 font-scifi tracking-widest">논문 제목</span>
           <h2 id="detail-title" class="text-sm sm:text-base font-bold text-white mt-1 leading-snug"></h2>
         </div>
 
-        <div class="grid grid-cols-2 gap-2 p-3 rounded-lg bg-black/40 border border-white/5">
+        <div class="grid grid-cols-2 gap-2 p-2.5 sm:p-3 rounded-lg bg-black/40 border border-white/5">
           <div>
             <span id="detail-label-author" class="text-[10px] text-slate-400 block font-scifi">저자</span>
             <span id="detail-author" class="font-semibold text-slate-200">-</span>
@@ -332,8 +314,8 @@
           </div>
         </div>
 
-        <!-- UCI -->
-        <div class="p-2.5 rounded-lg bg-black/50 border border-indigo-500/20">
+        <!-- UCI Identifier -->
+        <div class="p-2 sm:p-2.5 rounded-lg bg-black/50 border border-indigo-500/20">
           <span id="detail-label-uci" class="text-[9px] uppercase font-bold text-indigo-400 font-scifi tracking-widest block mb-0.5">UCI 등록번호 (UCI Identifier)</span>
           <span id="detail-uci" class="font-scifi text-xs text-cyan-300 font-semibold select-all break-all tracking-wide">N/A</span>
         </div>
@@ -352,7 +334,7 @@
   </aside>
 
   <!-- FOOTER -->
-  <footer class="absolute bottom-1 sm:bottom-2 left-3 sm:left-6 z-10 pointer-events-none text-[9px] sm:text-[10px] text-slate-600 font-scifi tracking-wider">
+  <footer class="hidden sm:block absolute bottom-2 left-6 z-10 pointer-events-none text-[10px] text-slate-600 font-scifi tracking-wider">
     Data Visualization Design Project - By Youme
   </footer>
 
@@ -519,7 +501,7 @@
     const softDustTexture = createSoftDustTexture();
 
     /* ==========================================================================
-       3. THREE.JS SCENE SETUP & MẶC ĐỊNH LÀ "탑 뷰" (TOP VIEW)
+       3. THREE.JS SCENE SETUP
        ========================================================================== */
     const canvas = document.getElementById('cosmos-canvas');
     const scene = new THREE.Scene();
@@ -542,7 +524,7 @@
     scene.add(cosmosGroup);
 
     /* ==========================================================================
-       4. QUẦNG SÁNG GALAXY THỂ TÍCH
+       4. VOLUMETRIC GALAXY HAZE
        ========================================================================== */
     let funnelHazeMesh;
     const volumetricNebulaMat = new THREE.ShaderMaterial({
@@ -590,7 +572,7 @@
     });
 
     /* ==========================================================================
-       5. DATA LOADING & ROBUST METADATA BINDING
+       5. DATA LOADING & METADATA BINDING
        ========================================================================== */
     let ALL_NODES = [];
     let NODE_SPRITES = [];
@@ -726,7 +708,7 @@
     }
 
     /* ==========================================================================
-       6. KHỞI TẠO BỐ CỤC THREE.JS
+       6. BUILD SCENE
        ========================================================================== */
     function buildCosmicScene() {
       NODE_SPRITES = [];
@@ -875,8 +857,10 @@
         uniforms: { uTime: { value: 0 } },
         vertexShader: `
           varying vec2 vUv;
+          varying vec3 vPos;
           void main() {
             vUv = uv;
+            vPos = position;
             gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
           }
         `,
@@ -995,27 +979,34 @@
     }
 
     /* ==========================================================================
-       7. UI FILTERS SETUP & MOBILE LOGIC
+       7. UI FILTERS SETUP & MOBILE ADAPTATION
        ========================================================================== */
     let selectedCluster = 'all';
     let selectedDept = 'ALL';
     let activeTimelineYear = 2026;
     let isCumulativeMode = true;
 
-    // Mobile Toggle for Department Filter Panel
-    const btnToggleDeptMobile = document.getElementById('btn-toggle-dept-mobile');
-    const btnCollapseDeptMobile = document.getElementById('btn-collapse-dept-mobile');
-    const deptPanelContainer = document.getElementById('dept-panel-container');
+    // Mobile Department Panel Controls
+    const btnOpenDeptMobile = document.getElementById('btn-open-dept-mobile');
+    const btnCloseDeptMobile = document.getElementById('btn-close-dept-mobile');
+    const deptPanelWrapper = document.getElementById('dept-panel-wrapper');
+    const deptModalOverlay = document.getElementById('dept-modal-overlay');
 
-    btnToggleDeptMobile.addEventListener('click', () => {
-      deptPanelContainer.classList.remove('mobile-hidden');
-      btnToggleDeptMobile.classList.add('hidden');
-    });
+    function openDeptPanelMobile() {
+      deptPanelWrapper.classList.remove('hidden');
+      deptModalOverlay.classList.remove('hidden');
+    }
 
-    btnCollapseDeptMobile.addEventListener('click', () => {
-      deptPanelContainer.classList.add('mobile-hidden');
-      btnToggleDeptMobile.classList.remove('hidden');
-    });
+    function closeDeptPanelMobile() {
+      if (window.innerWidth < 768) {
+        deptPanelWrapper.classList.add('hidden');
+        deptModalOverlay.classList.add('hidden');
+      }
+    }
+
+    btnOpenDeptMobile.addEventListener('click', openDeptPanelMobile);
+    btnCloseDeptMobile.addEventListener('click', closeDeptPanelMobile);
+    deptModalOverlay.addEventListener('click', closeDeptPanelMobile);
 
     function isDeptMatchingCluster(deptName, cluster) {
       if (!deptName) return false;
@@ -1147,8 +1138,8 @@
     window.addEventListener('mousemove', (e) => {
       mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
       mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
-      tooltipEl.style.left = `${e.clientX + 16}px`;
-      tooltipEl.style.top = `${e.clientY + 16}px`;
+      tooltipEl.style.left = `${Math.min(window.innerWidth - 220, e.clientX + 16)}px`;
+      tooltipEl.style.top = `${Math.min(window.innerHeight - 100, e.clientY + 16)}px`;
     });
 
     function checkRaycast() {
@@ -1201,7 +1192,7 @@
     }
 
     window.addEventListener('pointerup', (e) => {
-      if (e.target.closest('aside') || e.target.closest('header') || e.target.closest('.pointer-events-auto:not(#cosmos-canvas)')) return;
+      if (e.target.closest('aside') || e.target.closest('header') || e.target.closest('#dept-panel-wrapper') || e.target.closest('.pointer-events-auto:not(#cosmos-canvas)')) return;
 
       const dist = Math.hypot(e.clientX - pointerDownPos.x, e.clientY - pointerDownPos.y);
       if (dist > 6) return;
@@ -1223,6 +1214,24 @@
       }
     });
 
+    function showRightPanel() {
+      const panel = document.getElementById('right-panel');
+      if (window.innerWidth < 768) {
+        panel.classList.remove('translate-y-full');
+      } else {
+        panel.classList.remove('translate-x-full');
+      }
+    }
+
+    function hideRightPanel() {
+      const panel = document.getElementById('right-panel');
+      if (window.innerWidth < 768) {
+        panel.classList.add('translate-y-full');
+      } else {
+        panel.classList.add('translate-x-full');
+      }
+    }
+
     function openSingleDetailView(node, sprite = null, fromList = false) {
       const detail = getCleanDetail(node);
       renderDetailContent(node, detail);
@@ -1237,11 +1246,7 @@
         backBtn.classList.add('hidden');
       }
 
-      const rightPanel = document.getElementById('right-panel');
-      rightPanel.classList.remove('translate-x-full');
-      if (window.innerWidth <= 768) {
-        rightPanel.classList.add('mobile-active');
-      }
+      showRightPanel();
 
       const camPos = new THREE.Vector3(node.fx + 26, node.fy + 14, node.fz + 34);
       const targetPos = new THREE.Vector3(node.fx, node.fy, node.fz);
@@ -1280,6 +1285,7 @@
       document.getElementById('detail-dept').innerText = isKo ? detail.dept : detail.dept_en;
       document.getElementById('detail-degree').innerText = detail.degree;
       document.getElementById('detail-year').innerText = `${detail.year}${I18N[currentLang].yearSuffix}`;
+      
       document.getElementById('detail-uci').innerText = detail.uci || "N/A";
       document.getElementById('detail-abstract').innerText = isKo ? detail.abstract_ko : detail.abstract_en;
 
@@ -1306,7 +1312,7 @@
 
       if (!q) {
         resetSearchHighlight();
-        closeRightPanel();
+        hideRightPanel();
         hasSearchHistory = false;
         return;
       }
@@ -1368,15 +1374,10 @@
       const listView = document.getElementById('panel-list-view');
       const detailView = document.getElementById('panel-detail-view');
       const container = document.getElementById('search-theses-list');
-      const rightPanel = document.getElementById('right-panel');
 
       listView.classList.remove('hidden');
       detailView.classList.add('hidden');
-      
-      rightPanel.classList.remove('translate-x-full');
-      if (window.innerWidth <= 768) {
-        rightPanel.classList.add('mobile-active');
-      }
+      showRightPanel();
 
       document.getElementById('list-view-title').innerText = currentLang === 'ko' ? `"${queryText}" 연구 목록` : `Theses for "${queryText}"`;
       document.getElementById('list-view-count').innerText = I18N[currentLang].searchResultsCount(theses.length);
@@ -1421,13 +1422,6 @@
       });
     }
 
-    function closeRightPanel() {
-      const rightPanel = document.getElementById('right-panel');
-      rightPanel.classList.add('translate-x-full');
-      rightPanel.classList.remove('mobile-active');
-      resetSearchHighlight();
-    }
-
     function resetSearchHighlight() {
       isSearchActive = false;
       NODE_SPRITES.forEach(s => {
@@ -1443,8 +1437,14 @@
       document.getElementById('panel-list-view').classList.remove('hidden');
     });
 
-    document.getElementById('btn-close-list-panel').addEventListener('click', closeRightPanel);
-    document.getElementById('btn-close-detail-panel').addEventListener('click', closeRightPanel);
+    document.getElementById('btn-close-list-panel').addEventListener('click', () => {
+      hideRightPanel();
+      resetSearchHighlight();
+    });
+    document.getElementById('btn-close-detail-panel').addEventListener('click', () => {
+      hideRightPanel();
+      resetSearchHighlight();
+    });
 
     searchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') performSearch(); });
     searchBtn.addEventListener('click', performSearch);
@@ -1456,6 +1456,7 @@
       const targetY = controls.target.y || 200;
       new TWEEN.Tween(camera.position).to({ x: 0, y: targetY + 180, z: 720 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
       new TWEEN.Tween(controls.target).to({ x: 0, y: targetY, z: 0 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
+      closeDeptPanelMobile();
     });
     document.getElementById('btn-view-top').addEventListener('click', () => {
       document.getElementById('btn-view-top').classList.add('active');
@@ -1463,6 +1464,7 @@
       const targetY = controls.target.y || 200;
       new TWEEN.Tween(camera.position).to({ x: 0, y: 950, z: 0.001 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
       new TWEEN.Tween(controls.target).to({ x: 0, y: targetY, z: 0 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
+      closeDeptPanelMobile();
     });
 
     /* ==========================================================================
@@ -1476,11 +1478,11 @@
       const dict = I18N[lang];
 
       if (lang === 'ko') {
-        langKoBtn.className = "px-2.5 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold bg-indigo-600 text-white";
-        langEnBtn.className = "px-2.5 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-semibold text-slate-400 hover:text-white";
+        langKoBtn.className = "px-2.5 sm:px-3 py-1 rounded-full text-[11px] sm:text-xs font-bold bg-indigo-600 text-white";
+        langEnBtn.className = "px-2.5 sm:px-3 py-1 rounded-full text-[11px] sm:text-xs font-semibold text-slate-400 hover:text-white";
       } else {
-        langEnBtn.className = "px-2.5 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold bg-indigo-600 text-white";
-        langKoBtn.className = "px-2.5 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-semibold text-slate-400 hover:text-white";
+        langEnBtn.className = "px-2.5 sm:px-3 py-1 rounded-full text-[11px] sm:text-xs font-bold bg-indigo-600 text-white";
+        langKoBtn.className = "px-2.5 sm:px-3 py-1 rounded-full text-[11px] sm:text-xs font-semibold text-slate-400 hover:text-white";
       }
 
       document.getElementById('app-title').innerText = dict.appTitle;
@@ -1522,7 +1524,7 @@
     langEnBtn.addEventListener('click', () => switchLanguage('en'));
 
     /* ==========================================================================
-       11. REAL-TIME RENDER LOOP
+       11. REAL-TIME TWINKLE & RENDER LOOP
        ========================================================================== */
     const clock = new THREE.Clock();
 
@@ -1577,13 +1579,12 @@
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
 
-      // Cập nhật lại trạng thái hiển thị của panel khi chuyển đổi độ phân giải màn hình
-      if (window.innerWidth > 768) {
-        deptPanelContainer.classList.remove('mobile-hidden');
-        btnToggleDeptMobile.classList.add('hidden');
+      // Đồng bộ lại hiển thị panel department theo breakpoint
+      if (window.innerWidth >= 768) {
+        deptPanelWrapper.classList.remove('hidden');
+        deptModalOverlay.classList.add('hidden');
       } else {
-        deptPanelContainer.classList.add('mobile-hidden');
-        btnToggleDeptMobile.classList.remove('hidden');
+        deptPanelWrapper.classList.add('hidden');
       }
     });
 
