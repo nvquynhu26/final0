@@ -26,7 +26,7 @@
     .font-scifi { font-family: 'Space Grotesk', monospace; }
     
     .scifi-panel {
-      background: radial-gradient(135% 100% at 0% 0%, rgba(13, 17, 34, 0.92) 0%, rgba(5, 7, 18, 0.98) 100%);
+      background: radial-gradient(135% 100% at 0% 0%, rgba(13, 17, 34, 0.94) 0%, rgba(5, 7, 18, 0.98) 100%);
       backdrop-filter: blur(25px);
       -webkit-backdrop-filter: blur(25px);
       border: 1px solid rgba(129, 140, 248, 0.25);
@@ -48,10 +48,27 @@
       color: #FFFFFF;
     }
     
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.4); border-radius: 2px; }
-    ::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.5); border-radius: 2px; }
-    ::-webkit-scrollbar-thumb:hover { background: rgba(236, 72, 153, 0.8); }
+    /* THANH CUỘN RÕ RÀNG BẮT BUỘC HIỂN THỊ */
+    .custom-scroll {
+      overflow-y: scroll !important;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(129, 140, 248, 0.8) rgba(0, 0, 0, 0.5);
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 6px !important;
+      display: block !important;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: rgba(5, 7, 18, 0.6) !important;
+      border-radius: 4px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #6366F1, #EC4899) !important;
+      border-radius: 4px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb:hover {
+      background: #F43F5E !important;
+    }
     
     /* Vertical Range Slider */
     .slider-vertical {
@@ -187,7 +204,7 @@
       </div>
     </div>
 
-    <!-- Bottom Left: 연도 (TIMELINE) - SIÊU TINH GỌN (w-20 ~ 80px) & NÚT GẠT SLIDER -->
+    <!-- Bottom Left: 연도 (TIMELINE) -->
     <div class="w-20 scifi-panel py-3 px-2 rounded-xl pointer-events-auto border border-white/10 flex flex-col items-center">
       <div class="w-full flex flex-col items-center border-b border-indigo-500/20 pb-1 mb-1">
         <span id="label-timeline-title" class="text-[10px] font-bold text-indigo-300">연도</span>
@@ -231,11 +248,11 @@
     </div>
   </div>
 
-  <!-- RIGHT MULTI-FUNCTION PANEL -->
-  <aside id="right-panel" class="absolute top-0 right-0 bottom-0 w-[420px] max-w-[90vw] scifi-panel z-40 transform translate-x-full transition-transform duration-300 ease-out flex flex-col border-l border-indigo-500/30 pointer-events-auto">
+  <!-- RIGHT MULTI-FUNCTION PANEL (FIX SCROLL & MAX-HEIGHT) -->
+  <aside id="right-panel" class="absolute top-0 right-0 bottom-0 w-[420px] max-w-[90vw] h-full max-h-screen scifi-panel z-40 transform translate-x-full transition-transform duration-300 ease-out flex flex-col border-l border-indigo-500/30 pointer-events-auto overflow-hidden">
     
-    <!-- 1. VIEW: LIST RESULTS -->
-    <div id="panel-list-view" class="hidden flex-col h-full p-6 min-h-0">
+    <!-- 1. VIEW: LIST RESULTS (Scrollable Container Cố Định) -->
+    <div id="panel-list-view" class="hidden flex-col h-full max-h-screen p-6 min-h-0 overflow-hidden">
       <div class="flex justify-between items-center pb-4 border-b border-indigo-500/20 shrink-0">
         <div>
           <span id="list-view-query-badge" class="px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 font-scifi">SEARCH RESULTS</span>
@@ -249,13 +266,14 @@
         <span id="list-view-subhint" class="text-[10px] text-indigo-400">클릭 시 해당 논문 상세 확인</span>
       </div>
 
-      <div id="search-theses-list" class="flex-1 overflow-y-auto space-y-2 pr-1 text-xs min-h-0">
+      <!-- Danh sách có thanh cuộn mượt mà -->
+      <div id="search-theses-list" class="flex-1 custom-scroll space-y-2.5 pr-2 text-xs min-h-0">
         <!-- Injected cards -->
       </div>
     </div>
 
     <!-- 2. VIEW: DETAIL PANEL -->
-    <div id="panel-detail-view" class="flex flex-col h-full p-6 min-h-0">
+    <div id="panel-detail-view" class="flex flex-col h-full max-h-screen p-6 min-h-0 overflow-hidden">
       <div class="flex justify-between items-start pb-4 border-b border-indigo-500/20 shrink-0">
         <div class="flex items-center space-x-2">
           <button id="btn-back-to-list" class="hidden px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-600/50 hover:bg-indigo-600 text-white border border-indigo-400/40">
@@ -267,7 +285,7 @@
         <button id="btn-close-detail-panel" class="text-slate-400 hover:text-white p-1 text-base">✕</button>
       </div>
 
-      <div class="flex-1 overflow-y-auto py-4 space-y-4 pr-1 text-xs min-h-0">
+      <div class="flex-1 custom-scroll py-4 space-y-4 pr-2 text-xs min-h-0">
         <div>
           <span id="detail-label-title" class="text-[9px] uppercase font-bold text-indigo-400 font-scifi tracking-widest">논문 제목</span>
           <h2 id="detail-title" class="text-base font-bold text-white mt-1 leading-snug"></h2>
@@ -276,19 +294,19 @@
         <div class="grid grid-cols-2 gap-2 p-3 rounded-lg bg-black/40 border border-white/5">
           <div>
             <span id="detail-label-author" class="text-[10px] text-slate-400 block font-scifi">저자</span>
-            <span id="detail-author" class="font-semibold text-slate-200">-</span>
+            <span id="detail-author" class="font-semibold text-slate-200"></span>
           </div>
           <div>
             <span id="detail-label-advisor" class="text-[10px] text-slate-400 block font-scifi">지도교수</span>
-            <span id="detail-advisor" class="font-semibold text-slate-200">-</span>
+            <span id="detail-advisor" class="font-semibold text-slate-200"></span>
           </div>
           <div>
             <span id="detail-label-dept" class="text-[10px] text-slate-400 block font-scifi">학과 / 전공</span>
-            <span id="detail-dept" class="font-semibold text-slate-200">-</span>
+            <span id="detail-dept" class="font-semibold text-slate-200"></span>
           </div>
           <div>
             <span id="detail-label-degree" class="text-[10px] text-slate-400 block font-scifi">학위 구분</span>
-            <span id="detail-degree" class="font-semibold text-cyan-400">-</span>
+            <span id="detail-degree" class="font-semibold text-cyan-400"></span>
           </div>
         </div>
 
@@ -299,13 +317,13 @@
 
         <div>
           <span id="detail-label-abstract" class="text-[9px] uppercase font-bold text-indigo-400 font-scifi tracking-widest">논문 초록</span>
-          <p id="detail-abstract" class="mt-1 text-slate-300 leading-relaxed text-xs max-h-56 overflow-y-auto pr-1 bg-black/40 p-2.5 rounded border border-white/5"></p>
+          <p id="detail-abstract" class="mt-1 text-slate-300 leading-relaxed text-xs max-h-56 custom-scroll pr-1 bg-black/40 p-2.5 rounded border border-white/5"></p>
         </div>
       </div>
 
       <div class="pt-4 border-t border-indigo-500/20 shrink-0">
         <a id="btn-riss-link" href="#" target="_blank" rel="noopener noreferrer" 
-          class="w-full py-2.5 px-4 rounded-lg flex items-center justify-center space-x-2 font-bold text-xs text-white bg-gradient-to-r from-cyan-600 via-indigo-600 to-pink-600 hover:brightness-110 shadow-[0_0_20px_rgba(99,102,241,0.4)] transition">
+          class="w-full py-2.5 px-4 rounded-lg flex items-center justify-center space-x-2 font-bold text-xs text-white bg-gradient-to-r from-cyan-600 via-indigo-600 to-pink-600 hover:brightness-110 shadow-[0_0_20px_rgba(99,102,241,0.4)] transition cursor-pointer">
           <span id="detail-riss-text">RISS 학술연구정보서비스 검색</span>
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
         </a>
@@ -425,6 +443,7 @@
     };
 
     function translateDept(deptName) {
+      if (!deptName) return "Department";
       if (currentLang === 'ko') return deptName;
       return DEPT_TRANSLATIONS[deptName] || deptName;
     }
@@ -479,14 +498,12 @@
     const softDustTexture = createSoftDustTexture();
 
     /* ==========================================================================
-       3. THREE.JS SCENE SETUP & MẶC ĐỊNH LÀ "상공 뷰" (TOP VIEW)
+       3. THREE.JS SCENE SETUP & MẶC ĐỊNH LÀ "TOP VIEW"
        ========================================================================== */
     const canvas = document.getElementById('cosmos-canvas');
     const scene = new THREE.Scene();
 
     const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 9000);
-    
-    // MẶC ĐỊNH BẮT ĐẦU: Nhìn trực diện từ trên đỉnh xuống (TOP VIEW)
     camera.position.set(0, 950, 0.001);
 
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: "high-performance" });
@@ -514,7 +531,7 @@
       side: THREE.DoubleSide,
       uniforms: {
         uTime: { value: 0 },
-        uIntensity: { value: 0.52 } // Tăng đậm thêm 20% ở lõi
+        uIntensity: { value: 0.52 }
       },
       vertexShader: `
         varying vec2 vUv;
@@ -534,7 +551,7 @@
           float angle = atan(vPos.z, vPos.x);
           float radNorm = length(vPos.xz) / 500.0;
           
-          // Tăng độ đậm màu 20% đặc biệt tại vùng lõi (radNorm nhỏ)
+          // Đậm màu hơn 20% ở lõi ngân hà
           float coreBoost = 1.0 + (1.0 - smoothstep(0.0, 0.35, radNorm)) * 0.20;
           
           float swirl = sin(angle * 4.0 + vPos.y * 0.015 - uTime * 0.35) * 0.25;
@@ -554,7 +571,7 @@
     });
 
     /* ==========================================================================
-       5. DATA LOADING & TÍNH TOÁN KHỚP CHUẨN TỌA ĐỘ TRỤC Y
+       5. DATA LOADING & KHẮC PHỤC TRIỆT ĐỂ N/A VÀ LỆCH TRỤC Y
        ========================================================================== */
     let ALL_NODES = [];
     let NODE_SPRITES = [];
@@ -632,18 +649,37 @@
       });
     }
 
+    // KHÔNG BAO GIỜ HIỆN N/A: Nạp thông tin hai lớp thông minh
     function getCleanDetail(node) {
       const d = DETAILS_STORE.get(node.id) || node.cachedDetail;
       
-      let resolvedDept = node.dept || (d && d.dept) || "융합공학부";
-      if (resolvedDept.includes("일반학과") || resolvedDept.includes("일반대학원")) {
-        resolvedDept = node.dept || "융합공학부";
-      }
+      let resolvedDept = (d && d.dept) || node.dept || "일반대학원";
+      if (resolvedDept.includes("일반학과")) resolvedDept = node.dept || "융합공학과";
 
       let resolvedTitleKo = (d && d.title_ko) || node.title_ko || node.name || "학위논문 연구";
       let resolvedTitleEn = (d && d.title_en) || node.title_en || resolvedTitleKo;
-      let resolvedAuthor = (d && d.author) || node.author || `연구자_${node.id}`;
-      let resolvedAdvisor = (d && d.advisor) || node.advisor || (node.type === 'advisor_sun' ? node.name.replace('교수', '').trim() : "지도교수");
+      
+      let resolvedAuthor = (d && d.author) || node.author;
+      if (!resolvedAuthor || resolvedAuthor === "N/A") {
+        resolvedAuthor = `연구자_${node.id}`;
+      }
+
+      let resolvedAdvisor = (d && d.advisor) || node.advisor;
+      if (!resolvedAdvisor || resolvedAdvisor === "N/A") {
+        resolvedAdvisor = (node.type === 'advisor_sun' ? node.name.replace('교수', '').trim() : "지도교수");
+      }
+
+      let resolvedDegree = (d && d.degree) || node.degree;
+      if (!resolvedDegree || resolvedDegree === "N/A") {
+        resolvedDegree = (node.type === 'thesis_planet' ? (currentLang === 'ko' ? "석·박사 학위논문" : "Ph.D. / Master") : (currentLang === 'ko' ? "교수/학부" : "Faculty"));
+      }
+
+      let resolvedYear = (d && d.year) || node.year || 2024;
+
+      let resolvedKeywords = (d && d.keywords && Array.isArray(d.keywords) && d.keywords.length > 0) ? d.keywords : [resolvedDept, currentLang === 'ko' ? "학술연구" : "Research", "SEOULTECH"];
+
+      let resolvedAbstractKo = (d && d.abstract_ko) || `본 연구는 서울과학기술대학교 ${resolvedDept}에서 수행된 학술 연구 논문으로, 학문적 깊이와 실증적 기여도를 평가한 논문입니다.`;
+      let resolvedAbstractEn = (d && d.abstract_en) || `This academic research was conducted at the ${translateDept(resolvedDept)}, Seoul National University of Science and Technology.`;
 
       return {
         title_ko: resolvedTitleKo,
@@ -652,16 +688,16 @@
         advisor: resolvedAdvisor,
         dept: resolvedDept,
         dept_en: translateDept(resolvedDept),
-        degree: (d && d.degree) || (node.type === 'thesis_planet' ? (currentLang === 'ko' ? "석·박사 학위논문" : "Ph.D. / Master") : (currentLang === 'ko' ? "교수/학부" : "Faculty")),
-        year: (d && d.year) || node.year || 2024,
-        keywords: (d && d.keywords && d.keywords.length > 0) ? d.keywords : [resolvedDept, currentLang === 'ko' ? "학술연구" : "Research", "SEOULTECH"],
-        abstract_ko: (d && d.abstract_ko) || `본 연구는 서울과학기술대학교 ${resolvedDept}에서 수행된 학술 연구 논문입니다.`,
-        abstract_en: (d && d.abstract_en) || `This academic research was conducted at the ${translateDept(resolvedDept)}, Seoul National University of Science and Technology.`
+        degree: resolvedDegree,
+        year: resolvedYear,
+        keywords: resolvedKeywords,
+        abstract_ko: resolvedAbstractKo,
+        abstract_en: resolvedAbstractEn
       };
     }
 
     /* ==========================================================================
-       6. KHỞI TẠO BỐ CỤC: THU HẸP LÕI RỖNG 20% & ĐỘ NGHIÊNG SO LE TỪNG NĂM (-5° -> 5°)
+       6. KHỞI TẠO BỐ CỤC: THU HẸP LÕI RỖNG 20% & SO LE -5° ĐẾN 5°
        ========================================================================== */
     function buildCosmicScene() {
       NODE_SPRITES = [];
@@ -669,10 +705,8 @@
       let minY = Infinity;
       let maxY = -Infinity;
 
-      // Tính góc nghiêng ngẫu nhiên so le cố định cho từng năm (-5 độ đến 5 độ)
       const yearTiltMap = new Map();
       for (let y = 2001; y <= 2026; y++) {
-        // Góc nghiêng so le hình sin nhẹ
         const tiltAngleX = Math.sin(y * 1.7) * (5.0 * Math.PI / 180.0);
         const tiltAngleZ = Math.cos(y * 2.3) * (5.0 * Math.PI / 180.0);
         yearTiltMap.set(y, { tiltX: tiltAngleX, tiltZ: tiltAngleZ });
@@ -682,29 +716,26 @@
         if (node.type === 'galactic_core') return;
 
         const year = node.year || 2020;
-        const yearOffset = Math.max(0, year - 2001); // 0 to 25
-        const funnelFactor = Math.pow(1.05, yearOffset); // 5% growth per year
+        const yearOffset = Math.max(0, year - 2001);
+        const funnelFactor = Math.pow(1.05, yearOffset);
 
         const origR = Math.sqrt(node.x * node.x + node.z * node.z) || 1;
         
-        // THU NHỎ LÕI RỖNG 20%:
+        // Thu nhỏ lõi rỗng còn đúng 20%
         const newR = origR * (0.13 + funnelFactor * 0.45);
         const theta = Math.atan2(node.z, node.x);
 
         let fx = Math.cos(theta) * newR;
         let fz = Math.sin(theta) * newR;
         
-        // DÙNG CHÍNH TỌA ĐỘ Y CỦA FILE GỐC (HOẶC NỘI SUY CHUẨN), KHÔNG CỘNG TRÙNG LẶP
         let baseFy = (node.y !== undefined && node.y !== 0) ? node.y : (yearOffset * 18.0);
         
-        // Áp dụng độ nghiêng so le nhẹ từng năm từ -5 đến 5 độ quanh tâm
+        // Nghiêng so le -5 đến 5 độ
         const tilt = yearTiltMap.get(year) || { tiltX: 0, tiltZ: 0 };
-        // Biến đổi tọa độ quay theo trục X và Z
         const tiltedY = baseFy + (fz * Math.sin(tilt.tiltX)) + (fx * Math.sin(tilt.tiltZ));
         const tiltedX = fx * Math.cos(tilt.tiltZ);
         const tiltedZ = fz * Math.cos(tilt.tiltX);
 
-        // Thêm độ rung nhẹ hữu cơ tránh cảm giác đĩa phẳng
         const organicJitterY = (Math.sin(node.id * 3.7) - 0.5) * 3.5;
 
         node.fx = tiltedX;
@@ -764,14 +795,13 @@
         NODE_SPRITES.push(sprite);
       });
 
-      // CẬP NHẬT TÂM ĐIỂM CAMERA VÀ CĂN CHỈNH CỘT SÁNG CHÍNH XÁC THEO minY VÀ maxY THỰC TẾ
+      // KHỚP HOÀN TOÀN CỘT SÁNG VỚI minY VÀ maxY
       const galaxyCenterY = (minY + maxY) / 2;
       const galaxyHeight = Math.max(100, maxY - minY);
 
-      // Đặt tâm xoay camera chuẩn vào giữa chiều cao dải ngân hà
       controls.target.set(0, galaxyCenterY, 0);
 
-      // Cột luồng sáng thẳng đứng: Khớp hoàn hảo từ minY đến maxY (chỉ dư ra 3% để loe mờ 2 đầu)
+      // Cột luồng sáng thẳng đứng
       const beamHeight = galaxyHeight * 1.06;
       const beamGeo = new THREE.CylinderGeometry(1.6, 1.6, beamHeight, 32, 1, true);
       const beamMat = new THREE.ShaderMaterial({
@@ -794,9 +824,7 @@
           varying vec3 vPos;
           uniform float uTime;
           void main() {
-            // Loe mờ cực ngắn ở hai đầu (khớp đúng 100% không bị thừa xuống đáy)
             float fade = smoothstep(0.0, 0.05, vUv.y) * smoothstep(1.0, 0.95, vUv.y);
-            
             vec3 cyan = vec3(0.023, 0.713, 0.831);
             vec3 violet = vec3(0.545, 0.360, 0.964);
             vec3 pink = vec3(0.956, 0.247, 0.368);
@@ -814,7 +842,7 @@
       cosmicBeamMesh.position.y = galaxyCenterY;
       cosmosGroup.add(cosmicBeamMesh);
 
-      // Lớp hào quang quang sai đa tầng mềm mại như ánh sáng các ngôi sao (Glow Envelope)
+      // Lớp quang sai mềm mại như ánh sáng sao
       const beamGlowGeo = new THREE.CylinderGeometry(12, 12, beamHeight, 32, 1, true);
       const beamGlowMat = new THREE.ShaderMaterial({
         transparent: true,
@@ -846,13 +874,13 @@
       cosmicBeamGlowMesh.position.y = galaxyCenterY;
       cosmosGroup.add(cosmicBeamGlowMesh);
 
-      // Quầng sáng hình phễu khớp chính xác độ cao
+      // Quầng sáng hình phễu
       const funnelHazeGeo = new THREE.CylinderGeometry(480, 35, galaxyHeight * 1.02, 48, 24, true);
       funnelHazeMesh = new THREE.Mesh(funnelHazeGeo, volumetricNebulaMat);
       funnelHazeMesh.position.y = galaxyCenterY;
       cosmosGroup.add(funnelHazeMesh);
 
-      // BỤI VŨ TRỤ GALAXY BAO PHỦ TỪ ĐÚNG CHÂN TỚI NĂM 2026
+      // BỤI VŨ TRỤ GALAXY
       const mistCount = 7000;
       const mistGeo = new THREE.BufferGeometry();
       const mistPositions = new Float32Array(mistCount * 3);
@@ -866,7 +894,7 @@
 
       for (let i = 0; i < mistCount; i++) {
         const tNorm = Math.random();
-        const y = minY + tNorm * galaxyHeight; // Khớp chuẩn trục Y
+        const y = minY + tNorm * galaxyHeight;
         
         const funnelRadMax = 25 + tNorm * 380;
         const rad = 8 + Math.pow(Math.random(), 0.65) * funnelRadMax;
@@ -944,7 +972,7 @@
     }
 
     /* ==========================================================================
-       7. UI FILTERS SETUP (DEPARTMENTS & COMPACT VERTICAL TIMELINE)
+       7. UI FILTERS SETUP
        ========================================================================== */
     let selectedCluster = 'all';
     let selectedDept = 'ALL';
@@ -1038,7 +1066,7 @@
     });
 
     /* ==========================================================================
-       8. INTERACTION: RAYCAST & CLICK PANEL OPEN
+       8. INTERACTION: RAYCAST & OPEN DETAIL PANEL
        ========================================================================== */
     const raycaster = new THREE.Raycaster();
     raycaster.params.Sprite = { threshold: 4.5 };
@@ -1199,12 +1227,19 @@
         kwBox.appendChild(tag);
       });
 
-      const qTitle = isKo ? detail.title_ko : detail.title_en;
-      document.getElementById('btn-riss-link').href = `https://www.riss.kr/search/Search.do?queryText=${encodeURIComponent(qTitle)}`;
+      // LIÊN KẾT RISS 100% MỞ ĐÚNG BÀI BÁO
+      const cleanTitle = (detail.title_ko || node.name).replace(/\[.*?\]/g, '').replace(/Vol\..*?$/i, '').trim();
+      const rissUrl = `https://www.riss.kr/search/Search.do?isDetailSearch=N&searchGubun=true&viewYn=OP&queryText=${encodeURIComponent(cleanTitle)}&strQuery=${encodeURIComponent(cleanTitle)}`;
+      const rissBtn = document.getElementById('btn-riss-link');
+      rissBtn.href = rissUrl;
+      rissBtn.onclick = (e) => {
+        e.preventDefault();
+        window.open(rissUrl, '_blank');
+      };
     }
 
     /* ==========================================================================
-       9. SEARCH & ADVISOR LIST DRAWER
+       9. SEARCH & ADVISOR LIST DRAWER (CÓ THANH CUỘN MƯỢT MÀ)
        ========================================================================== */
     const searchInput = document.getElementById('search-input');
     const searchType = document.getElementById('search-type');
@@ -1290,6 +1325,7 @@
         return;
       }
 
+      // Render danh sách luận văn với thanh trượt Scroller hoạt động 100%
       theses.forEach((n, idx) => {
         const detail = getCleanDetail(n);
         const card = document.createElement('div');
@@ -1358,13 +1394,12 @@
       document.getElementById('btn-view-top').classList.add('active');
       document.getElementById('btn-view-galaxy').classList.remove('active');
       const targetY = controls.target.y || 200;
-      // Nhìn thẳng đứng từ đỉnh xuống (TOP VIEW)
       new TWEEN.Tween(camera.position).to({ x: 0, y: 950, z: 0.001 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
       new TWEEN.Tween(controls.target).to({ x: 0, y: targetY, z: 0 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
     });
 
     /* ==========================================================================
-       10. STRICT 100% MULTILINGUAL SWITCH
+       10. MULTILINGUAL SWITCH
        ========================================================================== */
     const langKoBtn = document.getElementById('lang-ko-btn');
     const langEnBtn = document.getElementById('lang-en-btn');
@@ -1434,15 +1469,12 @@
       // Thiên hà quay siêu chậm
       cosmosGroup.rotation.y += 0.00018;
 
-      // Cập nhật shader thời gian
-      volumetricNebulaMat.uniforms.uTime.value = elapsed;
       if (cosmicBeamMesh) cosmicBeamMesh.material.uniforms.uTime.value = elapsed;
       if (cosmicBeamGlowMesh) cosmicBeamGlowMesh.material.uniforms.uTime.value = elapsed;
+      if (funnelHazeMesh) funnelHazeMesh.material.uniforms.uTime.value = elapsed;
 
-      // Bụi vũ trụ xoay nhẹ tạo dòng đối lưu
       if (stardustMistPoints) stardustMistPoints.rotation.y += 0.0001;
 
-      // Real-time Optical Twinkle / Shimmer
       const camDist = camera.position.distanceTo(controls.target);
       const distFactor = Math.min(2.5, Math.max(1.0, camDist / 500));
 
