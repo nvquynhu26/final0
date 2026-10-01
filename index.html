@@ -26,11 +26,11 @@
     .font-scifi { font-family: 'Space Grotesk', monospace; }
     
     .scifi-panel {
-      background: radial-gradient(135% 100% at 0% 0%, rgba(13, 17, 34, 0.92) 0%, rgba(5, 7, 18, 0.97) 100%);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      background: radial-gradient(135% 100% at 0% 0%, rgba(13, 17, 34, 0.92) 0%, rgba(5, 7, 18, 0.98) 100%);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
       border: 1px solid rgba(129, 140, 248, 0.25);
-      box-shadow: 0 0 35px rgba(0, 0, 0, 0.85);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.85);
     }
     .scifi-btn {
       background: rgba(255, 255, 255, 0.05);
@@ -54,34 +54,30 @@
     ::-webkit-scrollbar-thumb:hover { background: rgba(236, 72, 153, 0.8); }
     
     /* Vertical Range Slider */
-    input[type=range].vertical-slider {
-      writing-mode: vertical-lr;
-      direction: rtl;
-      appearance: none;
+    .slider-vertical {
+      -webkit-appearance: none;
+      writing-mode: bt-lr;
+      transform: rotate(-90deg);
       background: transparent;
-      width: 14px;
-      height: 100%;
+      outline: none;
       cursor: pointer;
     }
-    input[type=range].vertical-slider::-webkit-slider-runnable-track {
-      width: 3px;
-      height: 100%;
-      background: linear-gradient(180deg, #F43F5E, #8B5CF6, #06B6D4);
+    .slider-vertical::-webkit-slider-runnable-track {
+      width: 140px; height: 3px;
+      background: linear-gradient(90deg, #06B6D4, #8B5CF6, #F43F5E);
       border-radius: 2px;
     }
-    input[type=range].vertical-slider::-webkit-slider-thumb {
-      appearance: none;
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
+    .slider-vertical::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 14px; width: 14px; border-radius: 50%;
       background: #FFFFFF;
+      margin-top: -5.5px;
       box-shadow: 0 0 10px #818CF8;
       cursor: pointer;
-      margin-left: -5.5px;
     }
-    
+
     .vignette-overlay {
-      background: radial-gradient(circle at center, transparent 35%, rgba(3, 4, 8, 0.88) 100%);
+      background: radial-gradient(circle at center, transparent 40%, rgba(3, 4, 8, 0.85) 100%);
       pointer-events: none;
     }
   </style>
@@ -99,10 +95,10 @@
   </div>
 
   <!-- Loading Screen -->
-  <div id="loader-overlay" class="absolute inset-0 z-50 bg-[#04050A] flex flex-col items-center justify-center transition-opacity duration-500 pointer-events-none">
+  <div id="loader-overlay" class="absolute inset-0 z-50 bg-[#030408] flex flex-col items-center justify-center transition-opacity duration-500 pointer-events-none">
     <div class="w-14 h-14 rounded-full border-2 border-indigo-500/20 border-t-cyan-400 animate-spin mb-4"></div>
-    <div id="loader-text" class="text-xs font-scifi tracking-widest text-cyan-300 uppercase">GALAXY INITIALIZING...</div>
-    <div id="loader-sub" class="text-[10px] text-slate-500 font-scifi mt-1">SEOULTECH RESEARCH COSMOS SIMULATION</div>
+    <div id="loader-text" class="text-xs font-scifi tracking-widest text-cyan-300 uppercase">COSMOS INITIALIZING...</div>
+    <div id="loader-sub" class="text-[10px] text-slate-500 font-scifi mt-1">SEOULTECH GALAXY SIMULATION</div>
   </div>
 
   <!-- HEADER -->
@@ -127,69 +123,59 @@
     </div>
   </header>
 
-  <!-- LEFT MINIMAL CONTROL PANEL (TÍCH HỢP DỌC) -->
-  <aside class="absolute left-6 top-24 bottom-24 w-72 z-20 pointer-events-none flex flex-col justify-start space-y-3">
+  <!-- LEFT CONTROL PANELS (TỐI GIẢN TÊN & TIMELINE DỌC THU NHỎ 1/2) -->
+  <div class="absolute left-6 top-24 bottom-24 z-20 pointer-events-none flex flex-col justify-between">
     
-    <!-- 1. Bộ lọc Khoa tối giản -->
-    <div class="scifi-panel p-3.5 rounded-xl pointer-events-auto border border-white/10 flex flex-col space-y-2.5">
-      <div class="flex items-center justify-between border-b border-indigo-500/20 pb-1.5">
+    <!-- Top Left: 학과 필터 (DEPARTMENTS) -->
+    <div class="w-80 scifi-panel p-4 rounded-xl pointer-events-auto border border-white/10 flex flex-col space-y-3">
+      <div class="flex items-center justify-between border-b border-indigo-500/20 pb-2">
         <span id="label-college-filters" class="text-xs font-bold text-indigo-300 tracking-widest uppercase font-scifi">학과 필터</span>
         <button id="btn-reset-filters" class="text-[10px] text-cyan-400 hover:underline font-scifi">초기화</button>
       </div>
 
-      <!-- Quick Cluster Pills -->
-      <div class="grid grid-cols-3 gap-1 text-[11px]">
-        <button class="cluster-btn scifi-btn py-1 rounded text-center active" data-cluster="all">전체</button>
-        <button class="cluster-btn scifi-btn py-1 rounded text-center" data-cluster="공학">공학</button>
-        <button class="cluster-btn scifi-btn py-1 rounded text-center" data-cluster="디자인">디자인</button>
-        <button class="cluster-btn scifi-btn py-1 rounded text-center" data-cluster="융합">융합</button>
-        <button class="cluster-btn scifi-btn py-1 rounded text-center" data-cluster="경영">경영</button>
-        <button class="cluster-btn scifi-btn py-1 rounded text-center" data-cluster="인문">인문</button>
+      <!-- Quick Group Buttons -->
+      <div class="grid grid-cols-3 gap-1.5 text-[11px]" id="cluster-btn-group">
+        <button class="cluster-btn scifi-btn py-1.5 px-1 rounded text-center active" data-cluster="all">전체</button>
+        <button class="cluster-btn scifi-btn py-1.5 px-1 rounded text-center" data-cluster="공학">공학</button>
+        <button class="cluster-btn scifi-btn py-1.5 px-1 rounded text-center" data-cluster="디자인">디자인</button>
+        <button class="cluster-btn scifi-btn py-1.5 px-1 rounded text-center" data-cluster="융합">융합</button>
+        <button class="cluster-btn scifi-btn py-1.5 px-1 rounded text-center" data-cluster="경영">경영</button>
+        <button class="cluster-btn scifi-btn py-1.5 px-1 rounded text-center" data-cluster="인문">인문</button>
       </div>
 
       <!-- Department Dropdown -->
-      <div>
-        <select id="dept-dropdown" class="w-full bg-black/60 text-slate-200 text-xs rounded-lg p-1.5 border border-indigo-500/30 focus:outline-none focus:border-cyan-400 cursor-pointer">
-          <option value="ALL">전체 학과</option>
+      <div class="relative pt-1">
+        <select id="dept-dropdown" class="w-full bg-black/60 text-slate-200 text-xs rounded-lg p-2 border border-indigo-500/30 focus:outline-none focus:border-cyan-400 cursor-pointer">
+          <option value="ALL">-- 전체 학과 --</option>
         </select>
       </div>
 
-      <!-- Camera Views -->
-      <div class="grid grid-cols-2 gap-1.5 pt-1 text-xs">
-        <button id="btn-view-galaxy" class="scifi-btn px-2 py-1 rounded text-slate-300 font-medium">은하 뷰</button>
-        <button id="btn-view-top" class="scifi-btn px-2 py-1 rounded text-slate-300 font-medium">상공 뷰</button>
+      <!-- Camera Presets -->
+      <div class="pt-2 border-t border-indigo-500/20 grid grid-cols-2 gap-2 text-xs">
+        <button id="btn-view-galaxy" class="scifi-btn px-2 py-1.5 rounded text-slate-300 font-medium">은하 뷰</button>
+        <button id="btn-view-top" class="scifi-btn px-2 py-1.5 rounded text-slate-300 font-medium">상공 뷰</button>
       </div>
     </div>
 
-    <!-- 2. Timeline tích hợp dọc (Nằm ngay dưới bộ lọc khoa) -->
-    <div class="scifi-panel p-3.5 rounded-xl pointer-events-auto border border-white/10 flex-1 flex flex-col justify-between min-h-[220px] max-h-[320px]">
-      <div class="flex items-center justify-between border-b border-indigo-500/20 pb-1">
-        <span id="label-timeline-title" class="text-xs font-bold text-indigo-300 font-scifi">연도</span>
-        <span id="timeline-year-badge" class="font-scifi text-sm font-bold text-cyan-400">2026</span>
+    <!-- Bottom Left: 연도 (TIMELINE) - THANH TRƯỢT DỌC CHIỀU NGANG THU NHỎ 1/2 (w-36) -->
+    <div class="w-36 scifi-panel p-3 rounded-xl pointer-events-auto border border-white/10 flex flex-col items-center">
+      <div class="w-full flex justify-between items-center border-b border-indigo-500/20 pb-1 mb-2">
+        <span id="label-timeline-title" class="text-[11px] font-bold text-indigo-300">연도</span>
+        <span id="timeline-year-badge" class="font-scifi text-xs font-bold text-cyan-400">2026</span>
       </div>
 
-      <!-- Bố cục thanh trượt dọc trực quan -->
-      <div class="flex items-center justify-between flex-1 py-2 px-1">
-        <div class="flex flex-col justify-between h-full text-[10px] font-scifi text-slate-500 py-1">
-          <span>2026</span>
-          <span>2020</span>
-          <span>2015</span>
-          <span>2010</span>
-          <span>2001</span>
-        </div>
-        
-        <div class="h-full flex items-center justify-center px-2">
-          <input id="timeline-slider" type="range" min="2001" max="2026" value="2026" step="1" class="vertical-slider">
-        </div>
+      <!-- Vertical Slider Container -->
+      <div class="h-36 w-full flex items-center justify-center relative my-1">
+        <input id="timeline-slider" type="range" min="2001" max="2026" value="2026" step="1" class="slider-vertical">
+      </div>
 
-        <!-- Mode Buttons dọc tinh gọn -->
-        <div class="flex flex-col space-y-1.5 text-[10px]">
-          <button id="mode-cumulative-btn" class="px-2 py-1.5 rounded font-bold bg-indigo-600/80 text-white shadow">누적</button>
-          <button id="mode-single-btn" class="px-2 py-1.5 rounded font-medium text-slate-400 hover:text-white scifi-btn">단일</button>
-        </div>
+      <!-- Mode Toggle -->
+      <div class="w-full grid grid-cols-2 gap-1 p-0.5 bg-black/60 rounded border border-white/10 text-[9px] mt-1 text-center">
+        <button id="mode-cumulative-btn" class="py-1 rounded font-bold bg-indigo-600/80 text-white">누적</button>
+        <button id="mode-single-btn" class="py-1 rounded font-medium text-slate-400 hover:text-white">단일</button>
       </div>
     </div>
-  </aside>
+  </div>
 
   <!-- BOTTOM SEARCH BAR -->
   <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 w-11/12 max-w-2xl pointer-events-auto flex flex-col items-center">
@@ -203,7 +189,7 @@
         <option value="dept">학과</option>
       </select>
       
-      <input id="search-input" type="text" placeholder="지도교수 이름, 논문 제목, 키워드를 입력하세요..." 
+      <input id="search-input" type="text" placeholder="지도교수, 논문 제목, 키워드 검색..." 
         class="bg-transparent flex-1 text-sm text-white placeholder-slate-500 focus:outline-none tracking-wide" />
       
       <button id="search-submit-btn" class="bg-gradient-to-r from-cyan-500 via-indigo-600 to-pink-500 text-white p-2 rounded-full hover:brightness-125 transition transform active:scale-95 shadow-[0_0_12px_rgba(6,182,212,0.5)]">
@@ -215,7 +201,7 @@
   <!-- RIGHT MULTI-FUNCTION PANEL -->
   <aside id="right-panel" class="absolute top-0 right-0 bottom-0 w-[420px] max-w-[90vw] scifi-panel z-40 transform translate-x-full transition-transform duration-300 ease-out flex flex-col border-l border-indigo-500/30 pointer-events-auto">
     
-    <!-- 1. Danh sách kết quả tìm kiếm -->
+    <!-- 1. VIEW: LIST RESULTS (Scrollable) -->
     <div id="panel-list-view" class="hidden flex-col h-full p-6 min-h-0">
       <div class="flex justify-between items-center pb-4 border-b border-indigo-500/20 shrink-0">
         <div>
@@ -227,13 +213,15 @@
 
       <div class="text-[11px] text-slate-400 my-2 flex justify-between items-center shrink-0">
         <span id="list-view-count">총 0건의 연구</span>
-        <span id="list-view-tip" class="text-[10px] text-indigo-400">클릭 시 해당 논문 상세/위치 확인</span>
+        <span id="list-view-subhint" class="text-[10px] text-indigo-400">클릭 시 해당 논문 상세 확인</span>
       </div>
 
-      <div id="search-theses-list" class="flex-1 overflow-y-auto space-y-2 pr-1 text-xs min-h-0"></div>
+      <div id="search-theses-list" class="flex-1 overflow-y-auto space-y-2 pr-1 text-xs min-h-0">
+        <!-- Injected thesis cards -->
+      </div>
     </div>
 
-    <!-- 2. Chi tiết luận văn -->
+    <!-- 2. VIEW: DETAIL PANEL -->
     <div id="panel-detail-view" class="flex flex-col h-full p-6 min-h-0">
       <div class="flex justify-between items-start pb-4 border-b border-indigo-500/20 shrink-0">
         <div class="flex items-center space-x-2">
@@ -277,7 +265,7 @@
         </div>
 
         <div>
-          <span id="detail-label-abstract" class="text-[9px] uppercase font-bold text-indigo-400 font-scifi tracking-widest">논문 초록 (Abstract)</span>
+          <span id="detail-label-abstract" class="text-[9px] uppercase font-bold text-indigo-400 font-scifi tracking-widest">논문 초록</span>
           <p id="detail-abstract" class="mt-1 text-slate-300 leading-relaxed text-xs max-h-56 overflow-y-auto pr-1 bg-black/40 p-2.5 rounded border border-white/5"></p>
         </div>
       </div>
@@ -299,34 +287,9 @@
 
   <script>
     /* ==========================================================================
-       1. I18N DICTIONARY & DEPARTMENT MAPPING (KO / EN ONLY)
+       1. 100% PURE MULTILINGUAL SYSTEM (KO ↔ EN)
        ========================================================================== */
     let currentLang = 'ko';
-
-    // Bảng dịch chuẩn tên các khoa tại SeoulTech
-    const DEPT_TRANSLATIONS = {
-      "컴퓨터공학과": "Dept. of Computer Science & Eng.",
-      "기계시스템디자인공학과": "Dept. of Mechanical System Design Eng.",
-      "기계공학과": "Dept. of Mechanical Engineering",
-      "시각디자인전공": "Visual Design Major",
-      "시각디자인학과": "Dept. of Visual Design",
-      "도예학과": "Dept. of Ceramic Arts & Design",
-      "인공지능응용학과": "Dept. of Applied Artificial Intelligence",
-      "지능형반도체공학과": "Dept. of Intelligent Semiconductor Eng.",
-      "신소재공학과": "Dept. of Materials Science & Eng.",
-      "전기정보공학과": "Dept. of Electrical & Information Eng.",
-      "경영학과": "Dept. of Business Administration",
-      "행정학과": "Dept. of Public Administration",
-      "영어영문학과": "Dept. of English Language & Literature",
-      "산업경영공학과": "Dept. of Industrial & Management Eng.",
-      "화학공학과": "Dept. of Chemical Engineering",
-      "환경공학과": "Dept. of Environmental Engineering"
-    };
-
-    const CLUSTER_TRANSLATIONS = {
-      ko: { all: "전체", "공학": "공학", "디자인": "디자인", "융합": "융합", "경영": "경영", "인문": "인문" },
-      en: { all: "All", "공학": "Eng.", "디자인": "Design", "융합": "Converg.", "경영": "Biz", "인문": "Human." }
-    };
 
     const I18N = {
       ko: {
@@ -334,46 +297,45 @@
         appSubtitle: "학위논문 및 지식 네트워크 시각화",
         collegesTitle: "학과 필터",
         resetFilters: "초기화",
-        allDepts: "전체 학과",
+        allDeptsOpt: "-- 전체 학과 --",
         camGalaxy: "은하 뷰",
         camReset: "상공 뷰",
         timelineTitle: "연도",
         modeCumulative: "누적",
         modeSingle: "단일",
-        searchPlaceholder: "지도교수 이름, 논문 제목, 키워드를 입력하세요...",
+        searchPlaceholder: "지도교수, 논문 제목, 키워드 검색...",
         searchAll: "통합검색",
         searchAdvisor: "지도교수",
         searchKeyword: "주제어",
         searchName: "논문제목",
         searchAuthor: "저자",
         searchDept: "학과",
-        searchResultsCount: (c) => `총 ${c}건의 연구`,
-        searchResultsTitle: (q) => `"${q}" 검색 목록`,
-        tipClickToView: "클릭 시 해당 논문 상세/위치 확인",
-        btnBackToList: "← 목록으로",
+        searchResultsCount: (c) => `총 ${c}건의 논문`,
+        listViewSubhint: "클릭 시 해당 논문 상세 확인",
         viewDetail: "상세보기",
+        backToList: "← 목록으로",
         detailTitleLabel: "논문 제목",
         detailAuthorLabel: "저자",
         detailAdvisorLabel: "지도교수",
         detailDeptLabel: "학과 / 전공",
         detailDegreeLabel: "학위 구분",
         detailKeywordsLabel: "주제어 키워드",
-        detailAbstractLabel: "논문 초록 (Abstract)",
+        detailAbstractLabel: "논문 초록",
         detailRissBtn: "RISS 학술연구정보서비스 검색",
         yearSuffix: "년",
-        advisorPrefix: "지도: "
+        clusterButtons: { all: "전체", "공학": "공학", "디자인": "디자인", "융합": "융합", "경영": "경영", "인문": "인문" }
       },
       en: {
         appTitle: "SEOULTECH RESEARCH COSMOS",
         appSubtitle: "Visualizing Academic Theses & Knowledge Networks",
         collegesTitle: "DEPARTMENTS",
-        resetFilters: "Reset",
-        allDepts: "All Departments",
-        camGalaxy: "Galaxy View",
-        camReset: "Top View",
+        resetFilters: "RESET",
+        allDeptsOpt: "-- All Departments --",
+        camGalaxy: "GALAXY",
+        camReset: "ELEVATION",
         timelineTitle: "TIMELINE",
-        modeCumulative: "Cumul.",
-        modeSingle: "Single",
+        modeCumulative: "CUMUL",
+        modeSingle: "SINGLE",
         searchPlaceholder: "Search advisor, title, keywords...",
         searchAll: "All Fields",
         searchAdvisor: "Advisor",
@@ -382,10 +344,9 @@
         searchAuthor: "Author",
         searchDept: "Department",
         searchResultsCount: (c) => `Total ${c} theses`,
-        searchResultsTitle: (q) => `Search: "${q}"`,
-        tipClickToView: "Click to focus and view detail",
-        btnBackToList: "← Back to List",
+        listViewSubhint: "Click to inspect node details",
         viewDetail: "Inspect",
+        backToList: "← Back to List",
         detailTitleLabel: "THESIS TITLE",
         detailAuthorLabel: "AUTHOR",
         detailAdvisorLabel: "ADVISOR",
@@ -395,82 +356,94 @@
         detailAbstractLabel: "ABSTRACT",
         detailRissBtn: "Search on RISS Database",
         yearSuffix: "",
-        advisorPrefix: "Advisor: "
+        clusterButtons: { all: "All", "공학": "Eng", "디자인": "Design", "융합": "Converg", "경영": "Business", "인문": "Humanities" }
       }
     };
 
+    // Department Korean to English Dictionary
+    const DEPT_TRANSLATIONS = {
+      "컴퓨터공학과": "Computer Science & Engineering",
+      "기계시스템디자인공학과": "Mechanical System Design Engineering",
+      "기계공학과": "Mechanical Engineering",
+      "기계설계·로봇공학과": "Mechanical Design & Robot Engineering",
+      "전기정보공학과": "Electrical & Information Engineering",
+      "전자공학과": "Electronic Engineering",
+      "스마트ICT융합공학과": "Smart ICT Convergence Engineering",
+      "신소재공학과": "Materials Science & Engineering",
+      "화학공학과": "Chemical Engineering",
+      "화공생명공학과": "Chemical & Biological Engineering",
+      "환경공학과": "Environmental Engineering",
+      "건설시스템공학과": "Civil System Engineering",
+      "건축학부": "School of Architecture",
+      "산업경영공학과": "Industrial & Information Systems Engineering",
+      "MSDE학과": "MSDE (Manufacturing Systems & Design Eng)",
+      "IT·디자인융합프로그램": "IT & Design Convergence Program",
+      "시각디자인전공": "Visual Communication Design",
+      "디자인학과": "Department of Design",
+      "산업디자인전공": "Industrial Design",
+      "도예학과": "Ceramic Arts & Glass",
+      "금속공예디자인학과": "Metal Art & Jewelry Design",
+      "조형예술학과": "Fine Arts",
+      "인공지능응용학과": "Applied Artificial Intelligence",
+      "지능형반도체공학과": "Intelligent Semiconductor Engineering",
+      "미래에너지융합학과": "Future Energy Convergence",
+      "경영학과": "Business Administration",
+      "기술경영학과": "Technology Management",
+      "글로벌경영학과": "Global Business Administration",
+      "행정학과": "Public Administration",
+      "영어영문학과": "English Language & Literature",
+      "문예창작학과": "Creative Writing",
+      "융합공학부": "School of Convergence Engineering"
+    };
+
+    function translateDept(deptName) {
+      if (currentLang === 'ko') return deptName;
+      return DEPT_TRANSLATIONS[deptName] || deptName;
+    }
+
     /* ==========================================================================
-       2. PROCEDURAL HIGH-LUMINESCENCE SHIMMER TEXTURES
+       2. PROCEDURAL OPTICAL TEXTURES (TWINKLE & SHIMMER CORE)
        ========================================================================== */
-    // Tạo texture ngôi sao đa lớp phát sáng lấp lánh (Không còn dạng bi nhựa)
-    function createGlimmerStarTexture() {
+    function createStarlightTexture() {
       const c = document.createElement('canvas');
       c.width = 128; c.height = 128;
       const ctx = c.getContext('2d');
-
-      // Điểm tâm rực sáng (Core)
       const grad = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
       grad.addColorStop(0.0, 'rgba(255, 255, 255, 1.0)');
       grad.addColorStop(0.12, 'rgba(255, 255, 255, 0.95)');
-      grad.addColorStop(0.28, 'rgba(255, 255, 255, 0.45)');
-      grad.addColorStop(0.6, 'rgba(255, 255, 255, 0.12)');
+      grad.addColorStop(0.28, 'rgba(255, 255, 255, 0.6)');
+      grad.addColorStop(0.55, 'rgba(255, 255, 255, 0.15)');
       grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, 128, 128);
-
-      // 4 tia sáng kim cương lung linh (Diffraction Spikes)
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
-      ctx.lineWidth = 1.5;
-      ctx.beginPath();
-      ctx.moveTo(64, 16); ctx.lineTo(64, 112);
-      ctx.moveTo(16, 64); ctx.lineTo(112, 64);
-      ctx.stroke();
-
       return new THREE.CanvasTexture(c);
     }
 
-    // Mặt trời giáo sư & khoa vàng rực rỡ
     function createModerateSunTexture() {
       const c = document.createElement('canvas');
       c.width = 128; c.height = 128;
       const ctx = c.getContext('2d');
       const grad = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
       grad.addColorStop(0.0, 'rgba(255, 255, 255, 1.0)');
-      grad.addColorStop(0.25, 'rgba(254, 240, 138, 0.85)');
-      grad.addColorStop(0.5, 'rgba(234, 179, 8, 0.28)');
+      grad.addColorStop(0.22, 'rgba(254, 240, 138, 0.85)');
+      grad.addColorStop(0.48, 'rgba(234, 179, 8, 0.25)');
       grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, 128, 128);
       return new THREE.CanvasTexture(c);
     }
 
-    // Màn khói gradient Hồng - Tím - Xanh
-    function createCosmicGlowHazeTexture() {
-      const c = document.createElement('canvas');
-      c.width = 256; c.height = 256;
-      const ctx = c.getContext('2d');
-      const grad = ctx.createRadialGradient(128, 128, 10, 128, 128, 128);
-      grad.addColorStop(0.0, 'rgba(255, 255, 255, 0.8)');
-      grad.addColorStop(0.35, 'rgba(255, 255, 255, 0.25)');
-      grad.addColorStop(0.7, 'rgba(255, 255, 255, 0.05)');
-      grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, 256, 256);
-      return new THREE.CanvasTexture(c);
-    }
-
-    const starTexture = createGlimmerStarTexture();
+    const starTexture = createStarlightTexture();
     const moderateSunTexture = createModerateSunTexture();
-    const hazeTexture = createCosmicGlowHazeTexture();
 
     /* ==========================================================================
-       3. THREE.JS SCENE SETUP & QUẦNG SÁNG HỒNG-TÍM-XANH (GALAXY HALO)
+       3. THREE.JS SCENE SETUP
        ========================================================================== */
     const canvas = document.getElementById('cosmos-canvas');
     const scene = new THREE.Scene();
 
-    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 8000);
-    camera.position.set(0, 360, 720);
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 9000);
+    camera.position.set(0, 380, 720);
 
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: "high-performance" });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -479,101 +452,63 @@
     const controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
-    controls.maxDistance = 3500;
+    controls.maxDistance = 4000;
     controls.minDistance = 15;
 
     const cosmosGroup = new THREE.Group();
     scene.add(cosmosGroup);
 
-    /* --- QUẦNG SÁNG GRADIENT HỒNG - TÍM - XANH DƯƠNG BAO BỌC TOÀN BỘ NGÂN HÀ --- */
-    const galaxyHaloGroup = new THREE.Group();
-    cosmosGroup.add(galaxyHaloGroup);
-
-    const haloCount = 140; // 140 cụm tinh vân mờ xếp lớp gradient
-    const haloGeo = new THREE.BufferGeometry();
-    const haloPositions = new Float32Array(haloCount * 3);
-    const haloColors = new Float32Array(haloCount * 3);
-
-    const haloTones = [
-      new THREE.Color("#F43F5E"), // Cosmic Pink
-      new THREE.Color("#EC4899"), // Magenta
-      new THREE.Color("#8B5CF6"), // Quantum Violet
-      new THREE.Color("#6366F1"), // Indigo
-      new THREE.Color("#06B6D4"), // Electric Cyan
-      new THREE.Color("#0284C7")  // Deep Sky
-    ];
-
-    for (let i = 0; i < haloCount; i++) {
-      const angle = (i / haloCount) * Math.PI * 4.0;
-      const radius = 60 + Math.pow(Math.random(), 0.8) * 380;
-      
-      haloPositions[i * 3] = Math.cos(angle) * radius + (Math.random() - 0.5) * 50;
-      haloPositions[i * 3 + 1] = (Math.random() - 0.5) * 60 + (radius * 0.1);
-      haloPositions[i * 3 + 2] = Math.sin(angle) * radius + (Math.random() - 0.5) * 50;
-
-      // Phối màu theo khoảng cách bán kính (Hồng tâm -> Tím trung gian -> Xanh rìa)
-      const t = Math.min(1.0, radius / 400);
-      let c;
-      if (t < 0.35) c = haloTones[0].clone().lerp(haloTones[1], t / 0.35);
-      else if (t < 0.7) c = haloTones[2].clone().lerp(haloTones[3], (t - 0.35) / 0.35);
-      else c = haloTones[4].clone().lerp(haloTones[5], (t - 0.7) / 0.3);
-
-      haloColors[i * 3] = c.r;
-      haloColors[i * 3 + 1] = c.g;
-      haloColors[i * 3 + 2] = c.b;
-    }
-
-    haloGeo.setAttribute('position', new THREE.BufferAttribute(haloPositions, 3));
-    haloGeo.setAttribute('color', new THREE.BufferAttribute(haloColors, 3));
-
-    const haloMat = new THREE.PointsMaterial({
-      size: 160,
-      map: hazeTexture,
-      vertexColors: true,
+    /* ==========================================================================
+       4. VOLUMETRIC COSMIC NEBULA HAZE (3-COLOR GRADIENT GLOW HALO)
+       Cosmic Pink (#F43F5E), Quantum Violet (#8B5CF6), Deep Cyan (#06B6D4)
+       ========================================================================== */
+    const nebulaGeo = new THREE.PlaneGeometry(1500, 1500);
+    const nebulaMat = new THREE.ShaderMaterial({
       transparent: true,
-      opacity: 0.14,
+      depthWrite: false,
       blending: THREE.AdditiveBlending,
-      depthWrite: false
+      side: THREE.DoubleSide,
+      uniforms: {
+        uTime: { value: 0 }
+      },
+      vertexShader: `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        varying vec2 vUv;
+        uniform float uTime;
+        void main() {
+          vec2 p = vUv * 2.0 - 1.0;
+          float dist = length(p);
+          
+          // Noise swirl wave
+          float angle = atan(p.y, p.x);
+          float wave = sin(angle * 3.0 + uTime * 0.15) * 0.12 + cos(dist * 5.0 - uTime * 0.1) * 0.08;
+          float falloff = smoothstep(1.1, 0.05, dist + wave);
+          
+          vec3 pink = vec3(0.956, 0.247, 0.368);   // #F43F5E
+          vec3 violet = vec3(0.545, 0.360, 0.964); // #8B5CF6
+          vec3 cyan = vec3(0.023, 0.713, 0.831);   // #06B6D4
+          
+          vec3 col = mix(cyan, violet, clamp((p.x + 1.0) * 0.5, 0.0, 1.0));
+          col = mix(col, pink, clamp((p.y + 1.0) * 0.5 + sin(uTime * 0.2) * 0.15, 0.0, 1.0));
+          
+          gl_FragColor = vec4(col * falloff * 0.35, falloff * 0.4);
+        }
+      `
     });
-    galaxyHaloGroup.add(new THREE.Points(haloGeo, haloMat));
 
-    /* --- BỤI TINH TÚ LẤP LÁNH ĐIỂM XUYẾT --- */
-    const dustCount = 4200;
-    const dustGeo = new THREE.BufferGeometry();
-    const dustPositions = new Float32Array(dustCount * 3);
-    const dustColors = new Float32Array(dustCount * 3);
-
-    for (let i = 0; i < dustCount; i++) {
-      const angle = (i % 6) * (Math.PI / 3) + (Math.random() * 4.0);
-      const rad = 25 + Math.pow(Math.random(), 0.7) * 440;
-      const spread = (Math.random() - 0.5) * 35;
-      
-      dustPositions[i * 3] = Math.cos(angle) * rad + spread;
-      dustPositions[i * 3 + 1] = (Math.random() - 0.5) * 40 + (rad * 0.12);
-      dustPositions[i * 3 + 2] = Math.sin(angle) * rad + spread;
-
-      const col = haloTones[Math.floor(Math.random() * haloTones.length)];
-      dustColors[i * 3] = col.r;
-      dustColors[i * 3 + 1] = col.g;
-      dustColors[i * 3 + 2] = col.b;
-    }
-
-    dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPositions, 3));
-    dustGeo.setAttribute('color', new THREE.BufferAttribute(dustColors, 3));
-
-    const dustMat = new THREE.PointsMaterial({
-      size: 5.5,
-      map: starTexture,
-      vertexColors: true,
-      transparent: true,
-      opacity: 0.45,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false
-    });
-    cosmosGroup.add(new THREE.Points(dustGeo, dustMat));
+    const nebulaMesh = new THREE.Mesh(nebulaGeo, nebulaMat);
+    nebulaMesh.rotation.x = -Math.PI / 2;
+    nebulaMesh.position.y = -20;
+    cosmosGroup.add(nebulaMesh);
 
     /* ==========================================================================
-       4. DATA SYSTEM & CHUẨN HÓA KHOA HỌC
+       5. DATA LOADING & ROBUST METADATA BINDING
        ========================================================================== */
     let ALL_NODES = [];
     let NODE_SPRITES = [];
@@ -587,7 +522,7 @@
       const nodeFiles = ['galaxy_nodes.json', 'galaxy_nodes_2.json'];
       for (const fname of nodeFiles) {
         try {
-          loaderText.innerText = `NẠP ${fname}...`;
+          loaderText.innerText = `LOADING ${fname}...`;
           const res = await fetch(fname);
           if (res.ok) {
             const data = await res.json();
@@ -603,7 +538,7 @@
         ALL_NODES = generateRealisticNodes();
       }
 
-      loaderText.innerText = "NẠP METADATA CHI TIẾT TỪ DETAILS_0..16.JSON...";
+      loaderText.innerText = "PRELOADING DETAILS_0..16.JSON...";
       await preloadAllDetails();
 
       buildCosmicScene();
@@ -642,7 +577,7 @@
         if (node) {
           node.cachedDetail = val;
           if (val.title_ko) node.title_ko = val.title_ko;
-          if (val.dept && !val.dept.includes("일반학과")) node.dept = val.dept;
+          if (val.dept) node.dept = val.dept;
           if (val.advisor) node.advisor = val.advisor;
           if (val.author) node.author = val.author;
         }
@@ -652,40 +587,41 @@
     function getCleanDetail(node) {
       const d = DETAILS_STORE.get(node.id) || node.cachedDetail;
       
-      // Tuyệt đối không để hiện "일반학과"
       let resolvedDept = node.dept || (d && d.dept) || "융합공학부";
       if (resolvedDept.includes("일반학과") || resolvedDept.includes("일반대학원")) {
-        resolvedDept = "공학·디자인연구계열";
+        resolvedDept = node.dept || "융합공학부";
       }
 
-      let resolvedTitle = (d && d.title_ko) || node.title_ko || node.name || "학위논문 연구";
+      let resolvedTitleKo = (d && d.title_ko) || node.title_ko || node.name || "학위논문 연구";
+      let resolvedTitleEn = (d && d.title_en) || node.title_en || resolvedTitleKo;
       let resolvedAuthor = (d && d.author) || node.author || `연구자_${node.id}`;
       let resolvedAdvisor = (d && d.advisor) || node.advisor || (node.type === 'advisor_sun' ? node.name.replace('교수', '').trim() : "지도교수");
 
       return {
-        title_ko: resolvedTitle,
-        title_en: (d && d.title_en) || resolvedTitle,
+        title_ko: resolvedTitleKo,
+        title_en: resolvedTitleEn,
         author: resolvedAuthor,
         advisor: resolvedAdvisor,
         dept: resolvedDept,
-        degree: (d && d.degree) || (node.type === 'thesis_planet' ? "석·박사 학위논문" : "교수/학부"),
+        dept_en: translateDept(resolvedDept),
+        degree: (d && d.degree) || (node.type === 'thesis_planet' ? (currentLang === 'ko' ? "석·박사 학위논문" : "Ph.D. / Master") : (currentLang === 'ko' ? "교수/학부" : "Faculty")),
         year: (d && d.year) || node.year || 2024,
-        keywords: (d && d.keywords && d.keywords.length > 0) ? d.keywords : [resolvedDept, "학술연구", "서울과기대"],
-        abstract_ko: (d && d.abstract_ko) || `본 논문은 서울과학기술대학교 ${resolvedDept}에서 수행된 학위논문 연구입니다.`,
-        abstract_en: (d && d.abstract_en) || "Conducted at Seoul National University of Science and Technology."
+        keywords: (d && d.keywords && d.keywords.length > 0) ? d.keywords : [resolvedDept, currentLang === 'ko' ? "학술연구" : "Research", "SEOULTECH"],
+        abstract_ko: (d && d.abstract_ko) || `본 연구는 서울과학기술대학교 ${resolvedDept}에서 수행된 학술 연구 논문입니다.`,
+        abstract_en: (d && d.abstract_en) || `This academic research was conducted at the ${translateDept(resolvedDept)}, Seoul National University of Science and Technology.`
       };
     }
 
-    // Xây dựng hình phễu 3D (Mỗi năm nở 5%)
+    // Build Cosmic Scene with 5% Radius Funnel
     function buildCosmicScene() {
       NODE_SPRITES = [];
 
       ALL_NODES.forEach((node) => {
-        if (node.type === 'galactic_core') return; // Xóa dải sáng vô duyên ở tâm
+        if (node.type === 'galactic_core') return;
 
         const year = node.year || 2020;
         const yearOffset = Math.max(0, year - 2001);
-        const funnelFactor = Math.pow(1.05, yearOffset);
+        const funnelFactor = Math.pow(1.05, yearOffset); // 5% per year
 
         const origR = Math.sqrt(node.x * node.x + node.z * node.z) || 1;
         const newR = origR * (0.65 + funnelFactor * 0.45);
@@ -695,7 +631,7 @@
         node.fz = Math.sin(theta) * newR;
         node.fy = (node.y || 0) + (yearOffset * 4.5);
 
-        if (node.dept && !node.dept.includes("일반학과")) {
+        if (node.dept) {
           DEPT_MAP.set(node.dept, (DEPT_MAP.get(node.dept) || 0) + 1);
         }
 
@@ -711,18 +647,18 @@
             map: moderateSunTexture,
             color: new THREE.Color("#FDE047"),
             transparent: true,
-            opacity: 0.85,
+            opacity: 0.9,
             blending: THREE.AdditiveBlending,
             depthWrite: false
           });
         } else {
-          // Ngôi sao lấp lánh (Glimmer)
-          scaleSize = 3.6 + Math.min(2.2, (node.size || 1.5) * 0.5);
+          // Thesis Planet
+          scaleSize = 3.2 + Math.min(2.0, (node.size || 1.5) * 0.5);
           spriteMat = new THREE.SpriteMaterial({
             map: starTexture,
             color: new THREE.Color(node.color || "#06B6D4"),
             transparent: true,
-            opacity: 0.85,
+            opacity: 0.88,
             blending: THREE.AdditiveBlending,
             depthWrite: false
           });
@@ -736,8 +672,9 @@
           nodeData: node,
           baseSize: scaleSize,
           isSun: isDept || isAdvisor,
-          shimmerSpeed: 2.0 + Math.random() * 3.5, // Tốc độ lấp lánh ngẫu nhiên
-          shimmerPhase: Math.random() * Math.PI * 2,
+          pulseOffset: Math.random() * Math.PI * 2,
+          twinkleSpeed: 2.0 + Math.random() * 4.0,
+          shimmerAmp: 0.15 + Math.random() * 0.2,
           isHighlight: false
         };
 
@@ -748,7 +685,7 @@
 
     function generateRealisticNodes() {
       const nodes = [];
-      const depts = ["컴퓨터공학과", "기계시스템디자인공학과", "시각디자인학과", "인공지능응용학과", "신소재공학과", "경영학과", "행정학과"];
+      const depts = ["컴퓨터공학과", "기계시스템디자인공학과", "시각디자인전공", "인공지능응용학과", "신소재공학과", "경영학과", "행정학과"];
       const colors = ["#F43F5E", "#06B6D4", "#8B5CF6", "#F59E0B", "#10B981"];
       let id = 1;
 
@@ -773,6 +710,8 @@
             nodes.push({
               id: id++,
               name: `딥러닝 기반 ${d} 최적화 연구 Vol.${t}`,
+              title_ko: `딥러닝 기반 ${d} 최적화 연구 Vol.${t}`,
+              title_en: `Optimization Study in ${translateDept(d)} Vol.${t}`,
               type: 'thesis_planet',
               dept: d,
               advisor: advName,
@@ -790,7 +729,7 @@
     }
 
     /* ==========================================================================
-       5. DEPARTMENT FILTER & TIMELINE SETUP
+       6. UI FILTERS SETUP (DEPARTMENTS & VERTICAL TIMELINE)
        ========================================================================== */
     let selectedCluster = 'all';
     let selectedDept = 'ALL';
@@ -799,13 +738,12 @@
 
     function setupDepartmentFilterUI() {
       const dropdown = document.getElementById('dept-dropdown');
-      dropdown.innerHTML = `<option value="ALL">${I18N[currentLang].allDepts}</option>`;
+      dropdown.innerHTML = `<option value="ALL">${I18N[currentLang].allDeptsOpt}</option>`;
 
       Array.from(DEPT_MAP.keys()).sort().forEach(dept => {
         const opt = document.createElement('option');
         opt.value = dept;
-        const displayName = (currentLang === 'en' && DEPT_TRANSLATIONS[dept]) ? DEPT_TRANSLATIONS[dept] : dept;
-        opt.innerText = `${displayName} (${DEPT_MAP.get(dept)})`;
+        opt.innerText = `${translateDept(dept)} (${DEPT_MAP.get(dept)})`;
         dropdown.appendChild(opt);
       });
 
@@ -854,13 +792,14 @@
         s.visible = visible;
 
         if (visible && !s.userData.isHighlight) {
-          s.material.opacity = (n.type === 'thesis_planet') ? 0.85 : 0.95;
+          s.material.opacity = (n.type === 'thesis_planet') ? 0.88 : 0.95;
         } else if (!visible) {
           s.material.opacity = 0.0;
         }
       });
     }
 
+    // Vertical Timeline Slider
     const timelineSlider = document.getElementById('timeline-slider');
     const timelineBadge = document.getElementById('timeline-year-badge');
     timelineSlider.addEventListener('input', (e) => {
@@ -871,20 +810,20 @@
 
     document.getElementById('mode-cumulative-btn').addEventListener('click', function() {
       isCumulativeMode = true;
-      this.className = "px-2 py-1.5 rounded font-bold bg-indigo-600/80 text-white shadow";
-      document.getElementById('mode-single-btn').className = "px-2 py-1.5 rounded font-medium text-slate-400 hover:text-white scifi-btn";
+      this.className = "py-1 rounded font-bold bg-indigo-600/80 text-white";
+      document.getElementById('mode-single-btn').className = "py-1 rounded font-medium text-slate-400 hover:text-white";
       applyFilters();
     });
 
     document.getElementById('mode-single-btn').addEventListener('click', function() {
       isCumulativeMode = false;
-      this.className = "px-2 py-1.5 rounded font-bold bg-indigo-600/80 text-white shadow";
-      document.getElementById('mode-cumulative-btn').className = "px-2 py-1.5 rounded font-medium text-slate-400 hover:text-white scifi-btn";
+      this.className = "py-1 rounded font-bold bg-indigo-600/80 text-white";
+      document.getElementById('mode-cumulative-btn').className = "py-1 rounded font-medium text-slate-400 hover:text-white";
       applyFilters();
     });
 
     /* ==========================================================================
-       6. RAYCASTING & CLICK MỞ PANEL CHẮC CHẮN 100%
+       7. INTERACTION: RAYCAST & CLICK PANEL OPEN (100% RELIABLE)
        ========================================================================== */
     const raycaster = new THREE.Raycaster();
     raycaster.params.Sprite = { threshold: 4.5 };
@@ -927,24 +866,21 @@
 
           tooltipEl.classList.remove('hidden');
 
-          const deptName = (currentLang === 'en' && DEPT_TRANSLATIONS[detail.dept]) ? DEPT_TRANSLATIONS[detail.dept] : detail.dept;
-          const yrSuffix = I18N[currentLang].yearSuffix;
-
           if (n.type === 'dept_sun') {
             hoverBadgeEl.innerText = "DEPARTMENT SUN";
             hoverBadgeEl.className = "inline-block px-1.5 py-0.5 rounded text-[9px] font-scifi font-bold mb-1 bg-amber-500/20 text-amber-300";
-            hoverTitleEl.innerText = (currentLang === 'en' && DEPT_TRANSLATIONS[n.name]) ? DEPT_TRANSLATIONS[n.name] : n.name;
-            hoverSubEl.innerText = currentLang === 'ko' ? `학과 중심 태양` : "Department Star Hub";
+            hoverTitleEl.innerText = currentLang === 'ko' ? n.name : translateDept(n.name);
+            hoverSubEl.innerText = currentLang === 'ko' ? "학과 중심 태양" : "Department Hub";
           } else if (n.type === 'advisor_sun') {
             hoverBadgeEl.innerText = "ADVISOR SUN";
             hoverBadgeEl.className = "inline-block px-1.5 py-0.5 rounded text-[9px] font-scifi font-bold mb-1 bg-yellow-500/20 text-yellow-300";
             hoverTitleEl.innerText = n.name;
-            hoverSubEl.innerText = currentLang === 'ko' ? `${deptName} 지도교수` : `Advisor of ${deptName}`;
+            hoverSubEl.innerText = `${currentLang === 'ko' ? detail.dept : detail.dept_en} · ${currentLang === 'ko' ? '지도교수' : 'Advisor'}`;
           } else {
             hoverBadgeEl.innerText = "THESIS PLANET";
             hoverBadgeEl.className = "inline-block px-1.5 py-0.5 rounded text-[9px] font-scifi font-bold mb-1 bg-pink-500/20 text-pink-300";
             hoverTitleEl.innerText = currentLang === 'ko' ? detail.title_ko : detail.title_en;
-            hoverSubEl.innerText = `${deptName} · ${I18N[currentLang].advisorPrefix}${detail.advisor} · ${detail.year}${yrSuffix}`;
+            hoverSubEl.innerText = `${currentLang === 'ko' ? detail.dept : detail.dept_en} · ${detail.advisor} · ${detail.year}${I18N[currentLang].yearSuffix}`;
           }
         }
       } else {
@@ -961,7 +897,6 @@
       tooltipEl.classList.add('hidden');
     }
 
-    // Bắt sự kiện Click chắc chắn vào hành tinh
     window.addEventListener('pointerup', (e) => {
       if (e.target.closest('aside') || e.target.closest('header') || e.target.closest('.pointer-events-auto:not(#cosmos-canvas)')) return;
 
@@ -1032,13 +967,11 @@
         badge.className = "px-2 py-0.5 rounded text-[10px] font-bold bg-pink-500/20 text-pink-300 border border-pink-400/30";
       }
 
-      const deptName = (currentLang === 'en' && DEPT_TRANSLATIONS[detail.dept]) ? DEPT_TRANSLATIONS[detail.dept] : detail.dept;
-
       document.getElementById('detail-title').innerText = isKo ? detail.title_ko : detail.title_en;
       document.getElementById('detail-author').innerText = detail.author;
       document.getElementById('detail-advisor').innerText = detail.advisor;
-      document.getElementById('detail-dept').innerText = deptName;
-      document.getElementById('detail-degree').innerText = isKo ? detail.degree : (detail.degree.includes("박사") ? "Ph.D." : "Master's");
+      document.getElementById('detail-dept').innerText = isKo ? detail.dept : detail.dept_en;
+      document.getElementById('detail-degree').innerText = detail.degree;
       document.getElementById('detail-year').innerText = `${detail.year}${I18N[currentLang].yearSuffix}`;
       document.getElementById('detail-abstract').innerText = isKo ? detail.abstract_ko : detail.abstract_en;
 
@@ -1056,7 +989,7 @@
     }
 
     /* ==========================================================================
-       7. SEARCH ENGINE & INFINITE SCROLL LIST PANEL
+       8. SEARCH & ADVISOR LIST DRAWER (SMOOTH SCROLLING)
        ========================================================================== */
     const searchInput = document.getElementById('search-input');
     const searchType = document.getElementById('search-type');
@@ -1082,7 +1015,7 @@
         const titleMatch = detail.title_ko.toLowerCase().includes(q) || detail.title_en.toLowerCase().includes(q);
         const authorMatch = detail.author.toLowerCase().includes(q);
         const advisorMatch = detail.advisor.toLowerCase().includes(q) || detail.advisor.toLowerCase().includes(cleanProfName);
-        const deptMatch = detail.dept.toLowerCase().includes(q);
+        const deptMatch = detail.dept.toLowerCase().includes(q) || detail.dept_en.toLowerCase().includes(q);
         const kwMatch = detail.keywords.some(k => k.toLowerCase().includes(q));
 
         if (type === 'advisor') return advisorMatch;
@@ -1120,7 +1053,7 @@
       });
 
       hasSearchHistory = true;
-      renderThesesListPanel(theses, `${advisorName}`);
+      renderThesesListPanel(theses, currentLang === 'ko' ? `${advisorName} 교수` : `Prof. ${advisorName}`);
     }
 
     function renderThesesListPanel(theses, queryText) {
@@ -1132,12 +1065,13 @@
       detailView.classList.add('hidden');
       document.getElementById('right-panel').classList.remove('translate-x-full');
 
-      document.getElementById('list-view-title').innerText = I18N[currentLang].searchResultsTitle(queryText);
+      document.getElementById('list-view-title').innerText = currentLang === 'ko' ? `"${queryText}" 연구 목록` : `Theses for "${queryText}"`;
       document.getElementById('list-view-count').innerText = I18N[currentLang].searchResultsCount(theses.length);
+      document.getElementById('list-view-subhint').innerText = I18N[currentLang].listViewSubhint;
       container.innerHTML = '';
 
       if (theses.length === 0) {
-        container.innerHTML = `<div class="text-slate-500 py-8 text-center text-xs">${currentLang === 'ko' ? '일치하는 학위논문을 찾을 수 없습니다.' : 'No academic theses found.'}</div>`;
+        container.innerHTML = `<div class="text-slate-500 py-8 text-center text-xs">${currentLang === 'ko' ? '일치하는 학위논문을 찾을 수 없습니다.' : 'No matched academic theses found.'}</div>`;
         return;
       }
 
@@ -1146,21 +1080,21 @@
         const card = document.createElement('div');
         card.className = "p-3 rounded-lg bg-black/50 hover:bg-indigo-900/40 border border-white/10 hover:border-cyan-400/50 transition cursor-pointer flex flex-col space-y-1.5 shrink-0";
         
-        const yrSuffix = I18N[currentLang].yearSuffix;
-        const deptName = (currentLang === 'en' && DEPT_TRANSLATIONS[detail.dept]) ? DEPT_TRANSLATIONS[detail.dept] : detail.dept;
+        const title = currentLang === 'ko' ? detail.title_ko : detail.title_en;
+        const dept = currentLang === 'ko' ? detail.dept : detail.dept_en;
 
         card.innerHTML = `
           <div class="flex items-center justify-between">
             <span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-pink-500/20 text-pink-300 font-scifi">#${idx + 1}</span>
-            <span class="text-cyan-400 font-scifi text-[10px]">${detail.year}${yrSuffix}</span>
+            <span class="text-cyan-400 font-scifi text-[10px]">${detail.year}${I18N[currentLang].yearSuffix}</span>
           </div>
-          <h4 class="font-bold text-white text-xs leading-snug line-clamp-2">${currentLang === 'ko' ? detail.title_ko : detail.title_en}</h4>
+          <h4 class="font-bold text-white text-xs leading-snug line-clamp-2">${title}</h4>
           <div class="text-[10px] text-slate-400 flex items-center justify-between pt-1 border-t border-white/5">
-            <span>${currentLang === 'ko' ? '저자: ' : 'Author: '}${detail.author}</span>
-            <span class="text-indigo-300 font-medium">${I18N[currentLang].advisorPrefix}${detail.advisor}</span>
+            <span>${currentLang === 'ko' ? '저자' : 'Author'}: ${detail.author}</span>
+            <span class="text-indigo-300 font-medium">${currentLang === 'ko' ? '지도' : 'Advisor'}: ${detail.advisor}</span>
           </div>
           <div class="text-[9px] text-slate-500 truncate">
-            <span>${deptName}</span>
+            <span>${dept}</span>
           </div>
         `;
 
@@ -1176,7 +1110,7 @@
     function resetSearchHighlight() {
       NODE_SPRITES.forEach(s => {
         s.userData.isHighlight = false;
-        if (s.visible) s.material.opacity = (s.userData.nodeData.type === 'thesis_planet') ? 0.85 : 0.95;
+        if (s.visible) s.material.opacity = (s.userData.nodeData.type === 'thesis_planet') ? 0.88 : 0.95;
       });
     }
 
@@ -1199,7 +1133,7 @@
 
     // Camera Presets
     document.getElementById('btn-view-galaxy').addEventListener('click', () => {
-      new TWEEN.Tween(camera.position).to({ x: 0, y: 360, z: 720 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
+      new TWEEN.Tween(camera.position).to({ x: 0, y: 380, z: 720 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
       new TWEEN.Tween(controls.target).to({ x: 0, y: 0, z: 0 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
     });
     document.getElementById('btn-view-top').addEventListener('click', () => {
@@ -1208,7 +1142,7 @@
     });
 
     /* ==========================================================================
-       8. STRICT MULTILINGUAL SWITCH (100% KO / EN ONLY)
+       9. STRICT 100% MULTILINGUAL SWITCH
        ========================================================================== */
     const langKoBtn = document.getElementById('lang-ko-btn');
     const langEnBtn = document.getElementById('lang-en-btn');
@@ -1235,16 +1169,15 @@
       document.getElementById('mode-cumulative-btn').innerText = dict.modeCumulative;
       document.getElementById('mode-single-btn').innerText = dict.modeSingle;
       document.getElementById('search-input').placeholder = dict.searchPlaceholder;
-      document.getElementById('btn-back-to-list').innerText = dict.btnBackToList;
-      document.getElementById('list-view-tip').innerText = dict.tipClickToView;
+      document.getElementById('btn-back-to-list').innerText = dict.backToList;
 
-      // Cập nhật tên các nút Pill
+      // Cluster Buttons Translation
       document.querySelectorAll('.cluster-btn').forEach(btn => {
         const clusterKey = btn.getAttribute('data-cluster');
-        btn.innerText = CLUSTER_TRANSLATIONS[lang][clusterKey] || clusterKey;
+        btn.innerText = dict.clusterButtons[clusterKey] || clusterKey;
       });
 
-      // Cập nhật Select search
+      // Search Type Dropdown
       const opts = document.getElementById('search-type').options;
       opts[0].text = dict.searchAdvisor;
       opts[1].text = dict.searchAll;
@@ -1253,7 +1186,7 @@
       opts[4].text = dict.searchAuthor;
       opts[5].text = dict.searchDept;
 
-      // Cập nhật Detail Panel
+      // Detail Panel Labels
       document.getElementById('detail-label-title').innerText = dict.detailTitleLabel;
       document.getElementById('detail-label-author').innerText = dict.detailAuthorLabel;
       document.getElementById('detail-label-advisor').innerText = dict.detailAdvisorLabel;
@@ -1263,7 +1196,7 @@
       document.getElementById('detail-label-abstract').innerText = dict.detailAbstractLabel;
       document.getElementById('detail-riss-text').innerText = dict.detailRissBtn;
 
-      // Re-populate Dropdown theo ngôn ngữ mới
+      // Re-populate Department Dropdown with translated names
       setupDepartmentFilterUI();
     }
 
@@ -1271,7 +1204,7 @@
     langEnBtn.addEventListener('click', () => switchLanguage('en'));
 
     /* ==========================================================================
-       9. ANIMATION LOOP (LẤP LÁNH THỰC THỜI & QUAY CHẬM)
+       10. REAL-TIME TWINKLE SHIMMER & GALAXY RENDER LOOP
        ========================================================================== */
     const clock = new THREE.Clock();
 
@@ -1282,26 +1215,30 @@
       TWEEN.update();
       controls.update();
 
-      // Thiên hà quay siêu chậm
+      // Slow Galaxy Rotation
       cosmosGroup.rotation.y += 0.00018;
-      galaxyHaloGroup.rotation.y -= 0.00008; // Quầng sáng xoay nghịch chiều nhẹ tạo chiều sâu
 
-      // Hiệu ứng lấp lánh (Shimmer & Twinkle)
+      // Volumetric Nebula Haze Shader Animation
+      nebulaMat.uniforms.uTime.value = elapsed;
+
+      // Real-time Optical Twinkle / Pulsing Shimmer
+      const camDist = camera.position.distanceTo(controls.target);
+      const distFactor = Math.min(2.5, Math.max(1.0, camDist / 500)); // Maintain brightness when zoomed out
+
       NODE_SPRITES.forEach(s => {
         if (s.visible) {
           if (!s.userData.isHighlight) {
-            const freq = s.userData.shimmerSpeed;
-            const phase = s.userData.shimmerPhase;
+            // Algorithmic Twinkle: Multiple sinusoidal harmonic shimmer
+            const tSpeed = s.userData.twinkleSpeed;
+            const shimmer = Math.sin(elapsed * tSpeed + s.userData.pulseOffset) * Math.cos(elapsed * (tSpeed * 0.5)) * s.userData.shimmerAmp;
             
-            // Tính toán độ lấp lánh ngẫu nhiên
-            const shimmer = Math.sin(elapsed * freq + phase) * 0.18 + Math.cos(elapsed * (freq * 0.5) + phase) * 0.08;
-            const b = s.userData.baseSize;
-            s.scale.set(b * (1 + shimmer), b * (1 + shimmer), 1);
-            s.material.opacity = (s.userData.isSun ? 0.88 : 0.78) + shimmer * 0.2;
+            const b = s.userData.baseSize * distFactor;
+            s.scale.set(b * (1.0 + shimmer), b * (1.0 + shimmer), 1);
+            s.material.opacity = Math.min(1.0, 0.78 + Math.abs(shimmer) * 0.4);
           } else {
-            // Strobing beacon khi tìm kiếm
+            // High-visibility beacon for search results
             const strobe = 1.0 + Math.abs(Math.sin(elapsed * 7.0)) * 0.9;
-            const b = s.userData.baseSize;
+            const b = s.userData.baseSize * 1.8;
             s.scale.set(b * strobe, b * strobe, 1);
             s.material.opacity = 1.0;
           }
