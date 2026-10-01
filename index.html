@@ -56,24 +56,54 @@
     /* Vertical Range Slider */
     .slider-vertical {
       -webkit-appearance: none;
-      writing-mode: bt-lr;
       transform: rotate(-90deg);
       background: transparent;
       outline: none;
       cursor: pointer;
     }
     .slider-vertical::-webkit-slider-runnable-track {
-      width: 140px; height: 3px;
+      width: 130px; height: 3px;
       background: linear-gradient(90deg, #06B6D4, #8B5CF6, #F43F5E);
       border-radius: 2px;
     }
     .slider-vertical::-webkit-slider-thumb {
       -webkit-appearance: none;
-      height: 14px; width: 14px; border-radius: 50%;
+      height: 13px; width: 13px; border-radius: 50%;
       background: #FFFFFF;
-      margin-top: -5.5px;
+      margin-top: -5px;
       box-shadow: 0 0 10px #818CF8;
       cursor: pointer;
+    }
+
+    /* Compact Mode Switch Slider */
+    .switch-container {
+      position: relative;
+      width: 52px;
+      height: 20px;
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 4px;
+    }
+    .switch-handle {
+      position: absolute;
+      top: 1px;
+      left: 2px;
+      width: 24px;
+      height: 16px;
+      background: linear-gradient(135deg, #6366F1, #EC4899);
+      border-radius: 8px;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 0 8px rgba(236, 72, 153, 0.5);
+    }
+    .switch-handle.single-active {
+      transform: translateX(23px);
+      background: linear-gradient(135deg, #06B6D4, #3B82F6);
+      box-shadow: 0 0 8px rgba(6, 182, 212, 0.5);
     }
 
     .vignette-overlay {
@@ -123,7 +153,7 @@
     </div>
   </header>
 
-  <!-- LEFT CONTROL PANELS (TỐI GIẢN TÊN & TIMELINE DỌC THU NHỎ 1/2) -->
+  <!-- LEFT CONTROL PANELS -->
   <div class="absolute left-6 top-24 bottom-24 z-20 pointer-events-none flex flex-col justify-between">
     
     <!-- Top Left: 학과 필터 (DEPARTMENTS) -->
@@ -153,26 +183,29 @@
       <!-- Camera Presets -->
       <div class="pt-2 border-t border-indigo-500/20 grid grid-cols-2 gap-2 text-xs">
         <button id="btn-view-galaxy" class="scifi-btn px-2 py-1.5 rounded text-slate-300 font-medium">은하 뷰</button>
-        <button id="btn-view-top" class="scifi-btn px-2 py-1.5 rounded text-slate-300 font-medium">상공 뷰</button>
+        <button id="btn-view-top" class="scifi-btn px-2 py-1.5 rounded text-slate-300 font-medium active">상공 뷰</button>
       </div>
     </div>
 
-    <!-- Bottom Left: 연도 (TIMELINE) - THANH TRƯỢT DỌC CHIỀU NGANG THU NHỎ 1/2 (w-36) -->
-    <div class="w-36 scifi-panel p-3 rounded-xl pointer-events-auto border border-white/10 flex flex-col items-center">
-      <div class="w-full flex justify-between items-center border-b border-indigo-500/20 pb-1 mb-2">
-        <span id="label-timeline-title" class="text-[11px] font-bold text-indigo-300">연도</span>
+    <!-- Bottom Left: 연도 (TIMELINE) - SIÊU TINH GỌN (w-20 ~ 80px) & NÚT GẠT SLIDER -->
+    <div class="w-20 scifi-panel py-3 px-2 rounded-xl pointer-events-auto border border-white/10 flex flex-col items-center">
+      <div class="w-full flex flex-col items-center border-b border-indigo-500/20 pb-1 mb-1">
+        <span id="label-timeline-title" class="text-[10px] font-bold text-indigo-300">연도</span>
         <span id="timeline-year-badge" class="font-scifi text-xs font-bold text-cyan-400">2026</span>
       </div>
 
-      <!-- Vertical Slider Container -->
-      <div class="h-36 w-full flex items-center justify-center relative my-1">
+      <!-- Vertical Slider -->
+      <div class="h-32 w-full flex items-center justify-center relative my-1">
         <input id="timeline-slider" type="range" min="2001" max="2026" value="2026" step="1" class="slider-vertical">
       </div>
 
-      <!-- Mode Toggle -->
-      <div class="w-full grid grid-cols-2 gap-1 p-0.5 bg-black/60 rounded border border-white/10 text-[9px] mt-1 text-center">
-        <button id="mode-cumulative-btn" class="py-1 rounded font-bold bg-indigo-600/80 text-white">누적</button>
-        <button id="mode-single-btn" class="py-1 rounded font-medium text-slate-400 hover:text-white">단일</button>
+      <!-- Compact Mode Slider Switch -->
+      <div class="flex flex-col items-center mt-1">
+        <div id="mode-toggle-switch" class="switch-container" title="누적 / 단일 연도 전환">
+          <span class="text-[8px] font-bold text-white z-10 pl-0.5 pointer-events-none">누적</span>
+          <span class="text-[8px] font-bold text-slate-300 z-10 pr-0.5 pointer-events-none">단일</span>
+          <div id="switch-handle" class="switch-handle"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -201,7 +234,7 @@
   <!-- RIGHT MULTI-FUNCTION PANEL -->
   <aside id="right-panel" class="absolute top-0 right-0 bottom-0 w-[420px] max-w-[90vw] scifi-panel z-40 transform translate-x-full transition-transform duration-300 ease-out flex flex-col border-l border-indigo-500/30 pointer-events-auto">
     
-    <!-- 1. VIEW: LIST RESULTS (Scrollable) -->
+    <!-- 1. VIEW: LIST RESULTS -->
     <div id="panel-list-view" class="hidden flex-col h-full p-6 min-h-0">
       <div class="flex justify-between items-center pb-4 border-b border-indigo-500/20 shrink-0">
         <div>
@@ -217,7 +250,7 @@
       </div>
 
       <div id="search-theses-list" class="flex-1 overflow-y-auto space-y-2 pr-1 text-xs min-h-0">
-        <!-- Injected thesis cards -->
+        <!-- Injected cards -->
       </div>
     </div>
 
@@ -301,8 +334,8 @@
         camGalaxy: "은하 뷰",
         camReset: "상공 뷰",
         timelineTitle: "연도",
-        modeCumulative: "누적",
-        modeSingle: "단일",
+        modeCumulativeLabel: "누적",
+        modeSingleLabel: "단일",
         searchPlaceholder: "지도교수, 논문 제목, 키워드 검색...",
         searchAll: "통합검색",
         searchAdvisor: "지도교수",
@@ -334,8 +367,8 @@
         camGalaxy: "GALAXY",
         camReset: "ELEVATION",
         timelineTitle: "TIMELINE",
-        modeCumulative: "CUMUL",
-        modeSingle: "SINGLE",
+        modeCumulativeLabel: "CUMUL",
+        modeSingleLabel: "SINGL",
         searchPlaceholder: "Search advisor, title, keywords...",
         searchAll: "All Fields",
         searchAdvisor: "Advisor",
@@ -360,7 +393,6 @@
       }
     };
 
-    // Department Korean to English Dictionary
     const DEPT_TRANSLATIONS = {
       "컴퓨터공학과": "Computer Science & Engineering",
       "기계시스템디자인공학과": "Mechanical System Design Engineering",
@@ -402,7 +434,7 @@
     }
 
     /* ==========================================================================
-       2. PROCEDURAL OPTICAL TEXTURES (TWINKLE & SHIMMER CORE)
+       2. PROCEDURAL OPTICAL TEXTURES
        ========================================================================== */
     function createStarlightTexture() {
       const c = document.createElement('canvas');
@@ -433,17 +465,33 @@
       return new THREE.CanvasTexture(c);
     }
 
+    function createSoftDustTexture() {
+      const c = document.createElement('canvas');
+      c.width = 64; c.height = 64;
+      const ctx = c.getContext('2d');
+      const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+      grad.addColorStop(0.0, 'rgba(255, 255, 255, 0.8)');
+      grad.addColorStop(0.3, 'rgba(255, 255, 255, 0.2)');
+      grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 64, 64);
+      return new THREE.CanvasTexture(c);
+    }
+
     const starTexture = createStarlightTexture();
     const moderateSunTexture = createModerateSunTexture();
+    const softDustTexture = createSoftDustTexture();
 
     /* ==========================================================================
-       3. THREE.JS SCENE SETUP
+       3. THREE.JS SCENE SETUP & MẶC ĐỊNH LÀ "상공 뷰" (TOP ELEVATION)
        ========================================================================== */
     const canvas = document.getElementById('cosmos-canvas');
     const scene = new THREE.Scene();
 
     const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 9000);
-    camera.position.set(0, 380, 720);
+    
+    // MẶC ĐỊNH BẮT ĐẦU: 상공 뷰 (Top Elevation View)
+    camera.position.set(0, 850, 40);
 
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: "high-performance" });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -454,22 +502,102 @@
     controls.dampingFactor = 0.05;
     controls.maxDistance = 4000;
     controls.minDistance = 15;
+    controls.target.set(0, 40, 0);
 
     const cosmosGroup = new THREE.Group();
     scene.add(cosmosGroup);
 
     /* ==========================================================================
-       4. VOLUMETRIC COSMIC NEBULA HAZE (3-COLOR GRADIENT GLOW HALO)
-       Cosmic Pink (#F43F5E), Quantum Violet (#8B5CF6), Deep Cyan (#06B6D4)
+       4. LÕI NGÂN HÀ BÉ LẠI CÒN 5% & LUỒNG ÁNH SÁNG GRADIENT CHIẾU THẲNG (COSMIC BEAM)
        ========================================================================== */
-    const nebulaGeo = new THREE.PlaneGeometry(1500, 1500);
-    const nebulaMat = new THREE.ShaderMaterial({
+    // Lõi tinh vi siêu nhỏ (còn đúng 5% kích thước ban đầu: scale ~ 0.8)
+    const microCoreMat = new THREE.SpriteMaterial({
+      map: starTexture,
+      color: 0xFFFFFF,
+      transparent: true,
+      opacity: 0.95,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    });
+    const microCoreSprite = new THREE.Sprite(microCoreMat);
+    microCoreSprite.scale.set(0.8, 0.8, 1);
+    cosmosGroup.add(microCoreSprite);
+
+    // LUỒNG ÁNH SÁNG GRADIENT XUYÊN TÂM VŨ TRỤ (2 ĐẦU NHỎ, GIỮA PHÌNH TO)
+    // Chiếu từ Y = -350 đến Y = 450
+    const beamGeo = new THREE.CylinderGeometry(1.5, 1.5, 800, 32, 64, true);
+    
+    // Deform cylinder: Giữa phình to, 2 đầu nhỏ dạng Conical Waist
+    const posAttr = beamGeo.attributes.position;
+    for (let i = 0; i < posAttr.count; i++) {
+      const y = posAttr.getY(i);
+      // Normalized y: -1 to 1
+      const ny = y / 400.0;
+      // Parabolic bulge at center (y = 0)
+      const bulge = Math.max(0.08, 1.0 - ny * ny * 0.92);
+      posAttr.setX(i, posAttr.getX(i) * (bulge * 5.5));
+      posAttr.setZ(i, posAttr.getZ(i) * (bulge * 5.5));
+    }
+    beamGeo.computeVertexNormals();
+
+    const beamMat = new THREE.ShaderMaterial({
       transparent: true,
       depthWrite: false,
       blending: THREE.AdditiveBlending,
       side: THREE.DoubleSide,
       uniforms: {
         uTime: { value: 0 }
+      },
+      vertexShader: `
+        varying vec2 vUv;
+        varying vec3 vPos;
+        void main() {
+          vUv = uv;
+          vPos = position;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        varying vec2 vUv;
+        varying vec3 vPos;
+        uniform float uTime;
+        void main() {
+          float heightFactor = 1.0 - abs(vPos.y / 400.0);
+          heightFactor = pow(clamp(heightFactor, 0.0, 1.0), 1.8);
+          
+          // Cosmic Colors: Cyan -> Violet -> Pink
+          vec3 cyan = vec3(0.023, 0.713, 0.831);
+          vec3 violet = vec3(0.545, 0.360, 0.964);
+          vec3 pink = vec3(0.956, 0.247, 0.368);
+          
+          float wave = sin(vPos.y * 0.04 - uTime * 2.5) * 0.5 + 0.5;
+          vec3 col = mix(cyan, violet, clamp(vUv.y, 0.0, 1.0));
+          col = mix(col, pink, wave * 0.6);
+          
+          float alpha = heightFactor * (0.35 + sin(uTime * 3.0 + vPos.y * 0.02) * 0.08);
+          gl_FragColor = vec4(col * alpha * 1.5, alpha);
+        }
+      `
+    });
+    const cosmicLightBeam = new THREE.Mesh(beamGeo, beamMat);
+    cosmicLightBeam.position.y = 50;
+    cosmosGroup.add(cosmicLightBeam);
+
+    /* ==========================================================================
+       5. QUẦNG SÁNG GALAXY THỂ TÍCH BAO TRÙM TOÀN BỘ NGANG & CAO (ĐẬM HƠN 10%)
+       ========================================================================== */
+    // Tạo 3 lớp tinh vân thể tích lồng nhau theo chiều ngang X, Z và cả chiều cao Y
+    const nebulaVolumeGroup = new THREE.Group();
+    cosmosGroup.add(nebulaVolumeGroup);
+
+    const volumetricNebulaMat = new THREE.ShaderMaterial({
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+      side: THREE.DoubleSide,
+      uniforms: {
+        uTime: { value: 0 },
+        uIntensity: { value: 0.44 } // Đã tăng đậm thêm 10% (0.40 -> 0.44)
       },
       vertexShader: `
         varying vec2 vUv;
@@ -481,34 +609,106 @@
       fragmentShader: `
         varying vec2 vUv;
         uniform float uTime;
+        uniform float uIntensity;
         void main() {
           vec2 p = vUv * 2.0 - 1.0;
           float dist = length(p);
           
-          // Noise swirl wave
           float angle = atan(p.y, p.x);
-          float wave = sin(angle * 3.0 + uTime * 0.15) * 0.12 + cos(dist * 5.0 - uTime * 0.1) * 0.08;
-          float falloff = smoothstep(1.1, 0.05, dist + wave);
+          float wave = sin(angle * 3.0 + uTime * 0.12) * 0.14 + cos(dist * 4.0 - uTime * 0.08) * 0.1;
+          float falloff = smoothstep(1.15, 0.02, dist + wave);
           
-          vec3 pink = vec3(0.956, 0.247, 0.368);   // #F43F5E
-          vec3 violet = vec3(0.545, 0.360, 0.964); // #8B5CF6
-          vec3 cyan = vec3(0.023, 0.713, 0.831);   // #06B6D4
+          // Đậm màu hơn 10%
+          vec3 pink = vec3(0.98, 0.22, 0.38);
+          vec3 violet = vec3(0.58, 0.34, 0.98);
+          vec3 cyan = vec3(0.01, 0.76, 0.90);
           
           vec3 col = mix(cyan, violet, clamp((p.x + 1.0) * 0.5, 0.0, 1.0));
-          col = mix(col, pink, clamp((p.y + 1.0) * 0.5 + sin(uTime * 0.2) * 0.15, 0.0, 1.0));
+          col = mix(col, pink, clamp((p.y + 1.0) * 0.5 + sin(uTime * 0.18) * 0.15, 0.0, 1.0));
           
-          gl_FragColor = vec4(col * falloff * 0.35, falloff * 0.4);
+          gl_FragColor = vec4(col * falloff * uIntensity * 1.1, falloff * uIntensity);
         }
       `
     });
 
-    const nebulaMesh = new THREE.Mesh(nebulaGeo, nebulaMat);
-    nebulaMesh.rotation.x = -Math.PI / 2;
-    nebulaMesh.position.y = -20;
-    cosmosGroup.add(nebulaMesh);
+    // Lớp ngang đáy (X-Z)
+    const nebBaseGeo = new THREE.PlaneGeometry(1600, 1600);
+    const nebBaseMesh = new THREE.Mesh(nebBaseGeo, volumetricNebulaMat);
+    nebBaseMesh.rotation.x = -Math.PI / 2;
+    nebBaseMesh.position.y = -10;
+    nebulaVolumeGroup.add(nebBaseMesh);
+
+    // Lớp nghiêng chéo bao trùm chiều cao (Y-Z / X-Y)
+    const nebHeightMesh1 = new THREE.Mesh(new THREE.PlaneGeometry(1500, 700), volumetricNebulaMat);
+    nebHeightMesh1.rotation.y = Math.PI / 4;
+    nebHeightMesh1.position.y = 80;
+    nebulaVolumeGroup.add(nebHeightMesh1);
+
+    const nebHeightMesh2 = new THREE.Mesh(new THREE.PlaneGeometry(1500, 700), volumetricNebulaMat);
+    nebHeightMesh2.rotation.y = -Math.PI / 4;
+    nebHeightMesh2.position.y = 80;
+    nebulaVolumeGroup.add(nebHeightMesh2);
 
     /* ==========================================================================
-       5. DATA LOADING & ROBUST METADATA BINDING
+       6. HIỆU ỨNG BỤI VŨ TRỤ MÀU SẮC GALAXY MỜ ẢO TRONG LÒNG NGÂN HÀ (STARDUST MIST)
+       ========================================================================== */
+    const mistCount = 6000;
+    const mistGeo = new THREE.BufferGeometry();
+    const mistPositions = new Float32Array(mistCount * 3);
+    const mistColors = new Float32Array(mistCount * 3);
+    const mistSizes = new Float32Array(mistCount);
+
+    const mistPalette = [
+      new THREE.Color("#F43F5E"), // Pink
+      new THREE.Color("#EC4899"), // Magenta
+      new THREE.Color("#8B5CF6"), // Quantum Violet
+      new THREE.Color("#6366F1"), // Indigo
+      new THREE.Color("#06B6D4"), // Deep Cyan
+      new THREE.Color("#38BDF8")  // Starlight Sky
+    ];
+
+    for (let i = 0; i < mistCount; i++) {
+      // Phân bố xoắn ốc phễu bên trong ngân hà
+      const armAngle = (i % 6) * (Math.PI / 3) + Math.random() * 4.5;
+      const radius = 15 + Math.pow(Math.random(), 0.75) * 440;
+      const spreadX = (Math.random() - 0.5) * 45;
+      const spreadZ = (Math.random() - 0.5) * 45;
+
+      const x = Math.cos(armAngle) * radius + spreadX;
+      const z = Math.sin(armAngle) * radius + spreadZ;
+      // Bao phủ trọn vẹn cả chiều cao Y
+      const y = (radius * 0.18) + (Math.random() - 0.5) * 70;
+
+      mistPositions[i * 3] = x;
+      mistPositions[i * 3 + 1] = y;
+      mistPositions[i * 3 + 2] = z;
+
+      const colorPick = mistPalette[Math.floor(Math.random() * mistPalette.length)];
+      mistColors[i * 3] = colorPick.r;
+      mistColors[i * 3 + 1] = colorPick.g;
+      mistColors[i * 3 + 2] = colorPick.b;
+
+      mistSizes[i] = 4.0 + Math.random() * 8.0;
+    }
+
+    mistGeo.setAttribute('position', new THREE.BufferAttribute(mistPositions, 3));
+    mistGeo.setAttribute('color', new THREE.BufferAttribute(mistColors, 3));
+    mistGeo.setAttribute('size', new THREE.BufferAttribute(mistSizes, 1));
+
+    const mistMat = new THREE.PointsMaterial({
+      size: 6.5,
+      map: softDustTexture,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.38, // Mờ ảo, mịn màng
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    });
+    const stardustMistPoints = new THREE.Points(mistGeo, mistMat);
+    cosmosGroup.add(stardustMistPoints);
+
+    /* ==========================================================================
+       7. DATA LOADING & ROBUST METADATA BINDING
        ========================================================================== */
     let ALL_NODES = [];
     let NODE_SPRITES = [];
@@ -729,7 +929,7 @@
     }
 
     /* ==========================================================================
-       6. UI FILTERS SETUP (DEPARTMENTS & VERTICAL TIMELINE)
+       8. UI FILTERS SETUP (DEPARTMENTS & COMPACT VERTICAL TIMELINE)
        ========================================================================== */
     let selectedCluster = 'all';
     let selectedDept = 'ALL';
@@ -808,22 +1008,22 @@
       applyFilters();
     });
 
-    document.getElementById('mode-cumulative-btn').addEventListener('click', function() {
-      isCumulativeMode = true;
-      this.className = "py-1 rounded font-bold bg-indigo-600/80 text-white";
-      document.getElementById('mode-single-btn').className = "py-1 rounded font-medium text-slate-400 hover:text-white";
-      applyFilters();
-    });
+    // COMPACT SLIDER SWITCH (누적 ↔ 단일)
+    const switchContainer = document.getElementById('mode-toggle-switch');
+    const switchHandle = document.getElementById('switch-handle');
 
-    document.getElementById('mode-single-btn').addEventListener('click', function() {
-      isCumulativeMode = false;
-      this.className = "py-1 rounded font-bold bg-indigo-600/80 text-white";
-      document.getElementById('mode-cumulative-btn').className = "py-1 rounded font-medium text-slate-400 hover:text-white";
+    switchContainer.addEventListener('click', () => {
+      isCumulativeMode = !isCumulativeMode;
+      if (isCumulativeMode) {
+        switchHandle.classList.remove('single-active');
+      } else {
+        switchHandle.classList.add('single-active');
+      }
       applyFilters();
     });
 
     /* ==========================================================================
-       7. INTERACTION: RAYCAST & CLICK PANEL OPEN (100% RELIABLE)
+       9. INTERACTION: RAYCAST & CLICK PANEL OPEN
        ========================================================================== */
     const raycaster = new THREE.Raycaster();
     raycaster.params.Sprite = { threshold: 4.5 };
@@ -989,7 +1189,7 @@
     }
 
     /* ==========================================================================
-       8. SEARCH & ADVISOR LIST DRAWER (SMOOTH SCROLLING)
+       10. SEARCH & ADVISOR LIST DRAWER
        ========================================================================== */
     const searchInput = document.getElementById('search-input');
     const searchType = document.getElementById('search-type');
@@ -1133,16 +1333,20 @@
 
     // Camera Presets
     document.getElementById('btn-view-galaxy').addEventListener('click', () => {
+      document.getElementById('btn-view-galaxy').classList.add('active');
+      document.getElementById('btn-view-top').classList.remove('active');
       new TWEEN.Tween(camera.position).to({ x: 0, y: 380, z: 720 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
-      new TWEEN.Tween(controls.target).to({ x: 0, y: 0, z: 0 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
+      new TWEEN.Tween(controls.target).to({ x: 0, y: 40, z: 0 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
     });
     document.getElementById('btn-view-top').addEventListener('click', () => {
-      new TWEEN.Tween(camera.position).to({ x: 0, y: 800, z: 20 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
-      new TWEEN.Tween(controls.target).to({ x: 0, y: 0, z: 0 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
+      document.getElementById('btn-view-top').classList.add('active');
+      document.getElementById('btn-view-galaxy').classList.remove('active');
+      new TWEEN.Tween(camera.position).to({ x: 0, y: 850, z: 40 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
+      new TWEEN.Tween(controls.target).to({ x: 0, y: 40, z: 0 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
     });
 
     /* ==========================================================================
-       9. STRICT 100% MULTILINGUAL SWITCH
+       11. STRICT 100% MULTILINGUAL SWITCH
        ========================================================================== */
     const langKoBtn = document.getElementById('lang-ko-btn');
     const langEnBtn = document.getElementById('lang-en-btn');
@@ -1166,8 +1370,6 @@
       document.getElementById('btn-view-galaxy').innerText = dict.camGalaxy;
       document.getElementById('btn-view-top').innerText = dict.camReset;
       document.getElementById('label-timeline-title').innerText = dict.timelineTitle;
-      document.getElementById('mode-cumulative-btn').innerText = dict.modeCumulative;
-      document.getElementById('mode-single-btn').innerText = dict.modeSingle;
       document.getElementById('search-input').placeholder = dict.searchPlaceholder;
       document.getElementById('btn-back-to-list').innerText = dict.backToList;
 
@@ -1204,7 +1406,7 @@
     langEnBtn.addEventListener('click', () => switchLanguage('en'));
 
     /* ==========================================================================
-       10. REAL-TIME TWINKLE SHIMMER & GALAXY RENDER LOOP
+       12. REAL-TIME TWINKLE SHIMMER & GALAXY RENDER LOOP
        ========================================================================== */
     const clock = new THREE.Clock();
 
@@ -1215,20 +1417,23 @@
       TWEEN.update();
       controls.update();
 
-      // Slow Galaxy Rotation
+      // Thiên hà quay siêu chậm
       cosmosGroup.rotation.y += 0.00018;
 
-      // Volumetric Nebula Haze Shader Animation
-      nebulaMat.uniforms.uTime.value = elapsed;
+      // Cập nhật shader thời gian
+      volumetricNebulaMat.uniforms.uTime.value = elapsed;
+      beamMat.uniforms.uTime.value = elapsed;
+
+      // Bụi stardust xoay nhẹ tạo dòng đối lưu vũ trụ
+      stardustMistPoints.rotation.y += 0.00008;
 
       // Real-time Optical Twinkle / Pulsing Shimmer
       const camDist = camera.position.distanceTo(controls.target);
-      const distFactor = Math.min(2.5, Math.max(1.0, camDist / 500)); // Maintain brightness when zoomed out
+      const distFactor = Math.min(2.5, Math.max(1.0, camDist / 500));
 
       NODE_SPRITES.forEach(s => {
         if (s.visible) {
           if (!s.userData.isHighlight) {
-            // Algorithmic Twinkle: Multiple sinusoidal harmonic shimmer
             const tSpeed = s.userData.twinkleSpeed;
             const shimmer = Math.sin(elapsed * tSpeed + s.userData.pulseOffset) * Math.cos(elapsed * (tSpeed * 0.5)) * s.userData.shimmerAmp;
             
@@ -1236,7 +1441,6 @@
             s.scale.set(b * (1.0 + shimmer), b * (1.0 + shimmer), 1);
             s.material.opacity = Math.min(1.0, 0.78 + Math.abs(shimmer) * 0.4);
           } else {
-            // High-visibility beacon for search results
             const strobe = 1.0 + Math.abs(Math.sin(elapsed * 7.0)) * 0.9;
             const b = s.userData.baseSize * 1.8;
             s.scale.set(b * strobe, b * strobe, 1);
