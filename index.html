@@ -1,907 +1,1314 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SEOULTECH RESEARCH COSMOS</title>
-  <!-- Three.js, Controls & Tween -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>서울과학기술대학교 연구 은하 - SEOULTECH RESEARCH COSMOS</title>
+  
+  <!-- Tailwind CSS & Fonts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Three.js & TWEEN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
+
   <style>
-    :root {
-      --bg-space: #0B0C16;
-      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
-      --panel-bg: rgba(11, 12, 22, 0.82);
-      --border-glow: rgba(255, 255, 255, 0.15);
-      --accent-pink: #F43F5E;
-      --accent-cyan: #06B6D4;
-      --accent-purple: #8B5CF6;
-      --accent-amber: #F59E0B;
-      --accent-emerald: #10B981;
-      --accent-slate: #E2E8F0;
+    * {
+      box-sizing: border-box;
+      user-select: none;
     }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body, html { width: 100%; height: 100%; overflow: hidden; background: var(--bg-space); font-family: var(--font-family); color: #fff; user-select: none; }
-    #canvas-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
-
-    /* Top Left Header */
-    .brand-header {
-      position: absolute; top: 24px; left: 30px; z-index: 10;
-      pointer-events: none;
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #0B0C16;
+      font-family: 'Pretendard', sans-serif;
+      color: #E2E8F0;
     }
-    .main-title { font-size: 26px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; background: linear-gradient(120deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .sub-korean { font-size: 15px; font-weight: 500; color: #94A3B8; margin-top: 2px; }
-    .subtitle { font-size: 12px; color: #64748B; margin-top: 4px; letter-spacing: 0.5px; }
-
-    /* Top Right Author / Course & Lang Toggle */
-    .top-right-bar {
-      position: absolute; top: 24px; right: 30px; z-index: 10;
-      display: flex; align-items: center; gap: 16px;
+    .font-mono-num {
+      font-family: 'Space Grotesk', monospace;
     }
-    .author-tag {
-      font-size: 13px; color: #94A3B8; background: rgba(255, 255, 255, 0.05);
-      padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border-glow);
+    /* Glassmorphism Styles */
+    .glass-panel {
+      background: rgba(11, 12, 22, 0.72);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    }
+    .glass-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       backdrop-filter: blur(8px);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .lang-btn {
-      background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.25);
-      color: #fff; padding: 6px 16px; border-radius: 20px; cursor: pointer;
-      font-weight: 600; font-size: 12px; transition: 0.3s;
+    .glass-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-1px);
     }
-    .lang-btn:hover { background: #fff; color: #000; }
-
-    /* Left Sidebar: Timeline Slider & Cluster Filter */
-    .left-controls {
-      position: absolute; left: 30px; top: 120px; z-index: 10;
-      background: var(--panel-bg); backdrop-filter: blur(12px);
-      padding: 18px 20px; border-radius: 14px; border: 1px solid var(--border-glow);
-      width: 250px; display: flex; flex-direction: column; gap: 18px;
+    .glass-btn.active {
+      background: rgba(99, 102, 241, 0.3);
+      border-color: rgba(129, 140, 248, 0.8);
+      box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
     }
-    .control-group label { font-size: 12px; font-weight: 700; color: #CBD5E1; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; display: block; }
-    .toggle-row { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #94A3B8; }
-    .switch { position: relative; display: inline-block; width: 44px; height: 22px; }
-    .switch input { opacity: 0; width: 0; height: 0; }
-    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #334155; transition: .3s; border-radius: 22px; }
-    .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
-    input:checked + .slider { background-color: var(--accent-pink); }
-    input:checked + .slider:before { transform: translateX(22px); }
-    
-    .timeline-range { width: 100%; margin-top: 8px; accent-color: var(--accent-pink); cursor: pointer; }
-    .year-display { font-size: 18px; font-weight: 800; color: #fff; text-align: center; margin-top: 4px; }
-
-    .cluster-filter { display: flex; flex-direction: column; gap: 6px; }
-    .filter-item {
-      display: flex; align-items: center; gap: 10px; font-size: 12px; color: #CBD5E1;
-      cursor: pointer; padding: 4px 6px; border-radius: 6px; transition: 0.2s;
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 5px;
     }
-    .filter-item:hover { background: rgba(255, 255, 255, 0.08); }
-    .filter-dot { width: 10px; height: 10px; border-radius: 50%; }
-    .cam-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 4px; }
-    .cam-btn {
-      background: rgba(255, 255, 255, 0.06); border: 1px solid var(--border-glow);
-      color: #94A3B8; font-size: 11px; padding: 6px; border-radius: 6px; cursor: pointer; text-align: center;
+    ::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.02);
     }
-    .cam-btn:hover { background: rgba(255, 255, 255, 0.15); color: #fff; }
-
-    /* Bottom Search Area */
-    .bottom-search-wrapper {
-      position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
-      z-index: 10; width: 560px; max-width: 90vw;
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
     }
-    .search-box {
-      background: rgba(11, 12, 22, 0.75); backdrop-filter: blur(12px);
-      border: 1px solid rgba(139, 92, 246, 0.4); border-radius: 28px;
-      padding: 6px 14px; display: flex; align-items: center; gap: 10px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.4);
     }
-    .search-type-select {
-      background: transparent; border: none; color: #A5B4FC; font-size: 13px;
-      outline: none; cursor: pointer; padding-right: 6px; border-right: 1px solid rgba(255,255,255,0.15);
+    /* Custom Range Slider */
+    input[type=range] {
+      -webkit-appearance: none;
+      background: transparent;
     }
-    .search-type-select option { background: #0B0C16; color: #fff; }
-    .search-input {
-      flex: 1; background: transparent; border: none; outline: none;
-      color: #fff; font-size: 14px; padding: 6px 0;
+    input[type=range]:focus {
+      outline: none;
     }
-    .search-input::placeholder { color: #64748B; }
-
-    /* Right Detail / Results Panel */
-    .side-panel {
-      position: absolute; right: 30px; top: 90px; bottom: 30px; width: 380px;
-      background: var(--panel-bg); backdrop-filter: blur(16px);
-      border-radius: 16px; border: 1px solid var(--border-glow);
-      z-index: 15; transform: translateX(430px); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-      display: flex; flex-direction: column; overflow: hidden;
-      box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+    input[type=range]::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 4px;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 2px;
     }
-    .side-panel.open { transform: translateX(0); }
-    .panel-header {
-      padding: 16px 20px; border-bottom: 1px solid var(--border-glow);
-      display: flex; justify-content: space-between; align-items: center;
+    input[type=range]::-webkit-slider-thumb {
+      height: 16px;
+      width: 16px;
+      border-radius: 50%;
+      background: #818CF8;
+      cursor: pointer;
+      -webkit-appearance: none;
+      margin-top: -6px;
+      box-shadow: 0 0 10px #818CF8;
+      transition: transform 0.1s;
     }
-    .panel-header h3 { font-size: 15px; font-weight: 700; color: #F8FAFC; }
-    .close-btn {
-      background: transparent; border: none; color: #94A3B8; font-size: 20px;
-      cursor: pointer; line-height: 1;
-    }
-    .close-btn:hover { color: #fff; }
-    .panel-content { padding: 20px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 14px; }
-    
-    /* Metadata Detail Styles */
-    .thesis-tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 12px; background: rgba(244, 63, 94, 0.2); color: #FDA4AF; border: 1px solid rgba(244, 63, 94, 0.4); margin-bottom: 6px; }
-    .thesis-title { font-size: 17px; font-weight: 700; line-height: 1.4; color: #FFFFFF; }
-    .detail-row { display: flex; flex-direction: column; gap: 2px; }
-    .detail-label { font-size: 11px; font-weight: 700; color: #64748B; text-transform: uppercase; }
-    .detail-val { font-size: 13px; color: #E2E8F0; }
-    .abstract-box { font-size: 12px; line-height: 1.6; color: #94A3B8; max-height: 180px; overflow-y: auto; background: rgba(0,0,0,0.25); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); }
-    .btn-riss {
-      margin-top: 10px; background: linear-gradient(135deg, #2563EB, #06B6D4);
-      color: #fff; border: none; padding: 10px 14px; border-radius: 8px;
-      font-weight: 600; font-size: 13px; cursor: pointer; text-align: center; text-decoration: none;
-      display: inline-block;
-    }
-    .btn-riss:hover { opacity: 0.9; }
-
-    /* Search Results List inside Panel */
-    .results-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
-    .result-item {
-      background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-glow);
-      padding: 12px; border-radius: 10px; cursor: pointer; transition: 0.2s;
-    }
-    .result-item:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255,255,255,0.3); }
-    .result-title { font-size: 13px; font-weight: 600; color: #fff; line-height: 1.4; }
-    .result-sub { font-size: 11px; color: #94A3B8; margin-top: 4px; }
-    .btn-view-item {
-      margin-top: 8px; font-size: 11px; background: rgba(255,255,255,0.1); border: none;
-      color: #A5B4FC; padding: 4px 8px; border-radius: 4px; cursor: pointer; float: right;
-    }
-    .btn-view-item:hover { background: #A5B4FC; color: #000; }
-
-    /* Hover Tooltip */
-    #tooltip {
-      position: absolute; z-index: 20; pointer-events: none;
-      background: rgba(11, 12, 22, 0.85); backdrop-filter: blur(8px);
-      border: 1px solid var(--border-glow); padding: 6px 12px;
-      border-radius: 6px; font-size: 12px; color: #fff; display: none;
-      transform: translate(-50%, -120%);
+    input[type=range]::-webkit-slider-thumb:hover {
+      transform: scale(1.25);
     }
   </style>
 </head>
-<body>
+<body class="relative w-screen h-screen">
 
-  <div id="canvas-container"></div>
-  <div id="tooltip"></div>
+  <!-- 3D WebGL Canvas Layer -->
+  <canvas id="cosmos-canvas" class="absolute inset-0 z-0 pointer-events-auto"></canvas>
 
-  <!-- Main Branding -->
-  <div class="brand-header">
-    <div class="main-title">SEOULTECH RESEARCH COSMOS</div>
-    <div class="sub-korean" id="txt-subkorean">서울과학기술대학교 연구 은하</div>
-    <div class="subtitle" id="txt-subtitle">Visualizing 8,000 Academic Theses & Knowledge Networks (2010–2026)</div>
-  </div>
-
-  <!-- Top Right Author & Lang -->
-  <div class="top-right-bar">
-    <div class="author-tag">Data Visualization Design Project - By Youme</div>
-    <button class="lang-btn" id="lang-btn">한국어 / English</button>
-  </div>
-
-  <!-- Left Sidebar Controls -->
-  <div class="left-controls">
-    <div class="control-group">
-      <label id="lbl-timeline">Timeline Control</label>
-      <div class="toggle-row">
-        <span id="lbl-mode">Single Year</span>
-        <label class="switch">
-          <input type="checkbox" id="mode-toggle" checked>
-          <span class="slider"></span>
-        </label>
-        <span id="lbl-mode-cum">Cumulative</span>
-      </div>
-      <input type="range" class="timeline-range" id="timeline-slider" min="2010" max="2026" value="2026" step="1">
-      <div class="year-display" id="year-label">2026</div>
-    </div>
-
-    <div class="control-group">
-      <label id="lbl-clusters">Academic Clusters</label>
-      <div class="cluster-filter" id="cluster-list">
-        <!-- Rendered by JS -->
-      </div>
-    </div>
-
-    <div class="control-group">
-      <label id="lbl-camera">Camera Focus</label>
-      <div class="cam-btns">
-        <div class="cam-btn" onclick="focusCamera('all')">Overview</div>
-        <div class="cam-btn" onclick="focusCamera(0)">Art & Design</div>
-        <div class="cam-btn" onclick="focusCamera(1)">Engineering</div>
-        <div class="cam-btn" onclick="focusCamera(2)">Convergence</div>
-        <div class="cam-btn" onclick="focusCamera(3)">Business</div>
-        <div class="cam-btn" onclick="focusCamera(4)">Humanities</div>
-      </div>
+  <!-- 2D HUD Canvas for Labels / Tooltips -->
+  <div id="hud-overlay" class="absolute inset-0 pointer-events-none z-10">
+    <div id="hover-tooltip" class="absolute hidden glass-panel px-3 py-1.5 rounded-lg border border-white/20 text-xs pointer-events-none transition-opacity duration-200">
+      <div id="hover-title" class="font-bold text-white mb-0.5"></div>
+      <div id="hover-sub" class="text-white/70 text-[10px]"></div>
     </div>
   </div>
 
-  <!-- Bottom Search Bar -->
-  <div class="bottom-search-wrapper">
-    <div class="search-box">
-      <select class="search-type-select" id="search-type">
-        <option value="all">전체 / All</option>
-        <option value="keyword">주제어 / Keyword</option>
-        <option value="advisor">지도교수 / Advisor</option>
-        <option value="author">저자 / Author</option>
-        <option value="title">논문명 / Title</option>
+  <!-- TOP HEADER / BRANDING & I18N -->
+  <header class="absolute top-0 left-0 right-0 z-20 flex justify-between items-start p-6 pointer-events-none">
+    <div class="pointer-events-auto">
+      <div class="flex items-center space-x-3 mb-1">
+        <div class="w-3 h-3 rounded-full bg-indigo-500 animate-pulse shadow-[0_0_12px_#6366F1]"></div>
+        <h1 id="app-title" class="text-xl md:text-2xl font-black tracking-wider uppercase bg-clip-text text-transparent bg-gradient-to-r from-white via-indigo-200 to-pink-300">
+          서울과학기술대학교 연구 은하
+        </h1>
+      </div>
+      <p id="app-subtitle" class="text-xs md:text-sm text-slate-400 tracking-wide font-normal">
+        8,000편의 학위논문 및 지식 네트워크 시각화 (2010–2026)
+      </p>
+    </div>
+
+    <!-- Right Top: Language Switcher & Fullscreen -->
+    <div class="flex items-center space-x-2 pointer-events-auto">
+      <div class="glass-panel p-1 rounded-full flex items-center border border-white/10">
+        <button id="lang-ko-btn" class="px-3 py-1 rounded-full text-xs font-bold transition-colors bg-indigo-600 text-white shadow">KO</button>
+        <button id="lang-en-btn" class="px-3 py-1 rounded-full text-xs font-semibold text-slate-400 hover:text-white transition-colors">EN</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- LEFT CONTROL PANEL (TIMELINE & FILTERS) -->
+  <aside class="absolute left-6 top-28 bottom-28 w-72 z-20 pointer-events-none flex flex-col justify-between">
+    <!-- Filters Container -->
+    <div class="glass-panel p-5 rounded-2xl pointer-events-auto border border-white/10 flex flex-col space-y-4 max-h-[60%] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-white/10 pb-2">
+        <span id="label-college-filters" class="text-xs font-bold text-slate-300 tracking-wider">단과대학 필터</span>
+        <button id="btn-toggle-all-colleges" class="text-[10px] text-indigo-400 hover:underline">전체</button>
+      </div>
+      
+      <!-- 6 College Filters -->
+      <div id="colleges-list" class="space-y-2 text-xs">
+        <!-- Injected via JavaScript -->
+      </div>
+
+      <!-- Camera Presets -->
+      <div class="pt-2 border-t border-white/10">
+        <div id="label-camera-presets" class="text-[11px] font-bold text-slate-400 mb-2">카메라 뷰</div>
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <button id="btn-view-galaxy" class="glass-btn px-2.5 py-1.5 rounded-lg text-slate-200">전체 은하</button>
+          <button id="btn-view-reset" class="glass-btn px-2.5 py-1.5 rounded-lg text-slate-200">중심 리셋</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Timeline Slider Panel -->
+    <div class="glass-panel p-4 rounded-2xl pointer-events-auto border border-white/10 mt-3">
+      <div class="flex justify-between items-center mb-2">
+        <span id="label-timeline-title" class="text-xs font-bold text-slate-300">발행 연도 타임라인</span>
+        <span id="timeline-year-badge" class="font-mono-num text-sm font-bold text-indigo-400">2026</span>
+      </div>
+      
+      <input id="timeline-slider" type="range" min="2010" max="2026" value="2026" step="1" class="w-full mb-3">
+      
+      <!-- Dual Mode Toggle -->
+      <div class="grid grid-cols-2 gap-1 p-1 bg-black/40 rounded-xl border border-white/5 text-[11px]">
+        <button id="mode-cumulative-btn" class="py-1 rounded-lg font-bold bg-indigo-600/80 text-white">누적 보기</button>
+        <button id="mode-single-btn" class="py-1 rounded-lg font-medium text-slate-400 hover:text-white">단일 연도</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- BOTTOM SEARCH CONSOLE & DRAWER -->
+  <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 w-11/12 max-w-2xl pointer-events-auto flex flex-col items-center">
+    <!-- Search Results Drawer (Slide-up) -->
+    <div id="search-drawer" class="w-full mb-2 glass-panel rounded-2xl p-4 border border-white/15 hidden max-h-64 overflow-y-auto">
+      <div class="flex justify-between items-center pb-2 border-b border-white/10 mb-2">
+        <span id="search-results-count" class="text-xs font-semibold text-indigo-300">검색 결과 0건</span>
+        <button id="btn-close-search" class="text-slate-400 hover:text-white text-xs">✕</button>
+      </div>
+      <div id="search-results-list" class="space-y-2 text-xs">
+        <!-- Results injected here -->
+      </div>
+    </div>
+
+    <!-- Bottom Search Bar -->
+    <div class="w-full glass-panel rounded-full px-4 py-2.5 flex items-center space-x-3 border border-indigo-500/30 shadow-[0_0_25px_rgba(99,102,241,0.25)]">
+      <!-- Search Filter Type Dropdown -->
+      <select id="search-type" class="bg-white/5 text-slate-200 text-xs rounded-full px-3 py-1.5 border border-white/10 focus:outline-none focus:border-indigo-400 cursor-pointer">
+        <option value="all" class="bg-slate-900 text-slate-200">통합검색</option>
+        <option value="keyword" class="bg-slate-900 text-slate-200">주제어</option>
+        <option value="advisor" class="bg-slate-900 text-slate-200">지도교수</option>
+        <option value="author" class="bg-slate-900 text-slate-200">저자</option>
+        <option value="title" class="bg-slate-900 text-slate-200">논문제목</option>
       </select>
-      <input type="text" class="search-input" id="search-input" placeholder="검색어를 입력하고 Enter를 누르세요 / Press Enter to search...">
+      
+      <input id="search-input" type="text" placeholder="검색어를 입력하고 은하계 내 연구를 탐색하세요..." 
+        class="bg-transparent flex-1 text-sm text-white placeholder-slate-500 focus:outline-none" />
+      
+      <button id="search-submit-btn" class="bg-gradient-to-r from-indigo-500 to-pink-500 text-white p-2 rounded-full hover:opacity-90 transition transform active:scale-95 shadow-md">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+      </button>
     </div>
   </div>
 
-  <!-- Right Slide Panel -->
-  <div class="side-panel" id="side-panel">
-    <div class="panel-header">
-      <h3 id="panel-title">Details</h3>
-      <button class="close-btn" id="close-panel-btn">&times;</button>
+  <!-- RIGHT THESIS DETAIL PANEL (Slide-over) -->
+  <aside id="detail-panel" class="absolute top-0 right-0 bottom-0 w-96 max-w-[90vw] glass-panel z-30 transform translate-x-full transition-transform duration-300 ease-out flex flex-col border-l border-white/15 p-6 pointer-events-auto">
+    <!-- Header -->
+    <div class="flex justify-between items-start pb-4 border-b border-white/10">
+      <div class="flex items-center space-x-2">
+        <span id="detail-supernova-badge" class="hidden px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-400/40">SUPERNOVA</span>
+        <span id="detail-degree" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-400/30">석사</span>
+      </div>
+      <button id="btn-close-detail" class="text-slate-400 hover:text-white p-1 text-base">✕</button>
     </div>
-    <div class="panel-content" id="panel-body">
-      <!-- Dynamic Content -->
-    </div>
-  </div>
 
+    <!-- Scrollable Content -->
+    <div class="flex-1 overflow-y-auto py-4 space-y-4 pr-1 text-xs">
+      <div>
+        <span id="detail-label-title" class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">논문 제목</span>
+        <h2 id="detail-title" class="text-base font-bold text-white mt-1 leading-snug"></h2>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 p-3 rounded-xl bg-white/5 border border-white/5">
+        <div>
+          <span id="detail-label-author" class="text-[10px] text-slate-400 block">저자</span>
+          <span id="detail-author" class="font-semibold text-slate-200"></span>
+        </div>
+        <div>
+          <span id="detail-label-advisor" class="text-[10px] text-slate-400 block">지도교수</span>
+          <span id="detail-advisor" class="font-semibold text-slate-200"></span>
+        </div>
+        <div>
+          <span id="detail-label-dept" class="text-[10px] text-slate-400 block">학과</span>
+          <span id="detail-dept" class="font-semibold text-slate-200"></span>
+        </div>
+        <div>
+          <span id="detail-label-year" class="text-[10px] text-slate-400 block">발행연도</span>
+          <span id="detail-year" class="font-mono-num font-semibold text-indigo-300"></span>
+        </div>
+      </div>
+
+      <!-- Network Metrics -->
+      <div>
+        <span id="detail-label-metrics" class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">지식 네트워크 영향력 지표</span>
+        <div class="grid grid-cols-3 gap-2 mt-1.5 text-center">
+          <div class="bg-black/30 p-2 rounded-lg border border-white/5">
+            <div id="detail-metric-degree" class="font-mono-num text-sm font-bold text-cyan-400">0</div>
+            <div id="detail-label-deg" class="text-[9px] text-slate-400">연결도 (Degree)</div>
+          </div>
+          <div class="bg-black/30 p-2 rounded-lg border border-white/5">
+            <div id="detail-metric-betweenness" class="font-mono-num text-sm font-bold text-pink-400">0.00</div>
+            <div id="detail-label-bet" class="text-[9px] text-slate-400">매개도 (Bridge)</div>
+          </div>
+          <div class="bg-black/30 p-2 rounded-lg border border-white/5">
+            <div id="detail-metric-pagerank" class="font-mono-num text-sm font-bold text-amber-400">0.00</div>
+            <div id="detail-label-page" class="text-[9px] text-slate-400">PageRank</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Keywords -->
+      <div>
+        <span id="detail-label-keywords" class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">주제어</span>
+        <div id="detail-keywords-container" class="flex flex-wrap gap-1.5 mt-1.5">
+          <!-- Badges -->
+        </div>
+      </div>
+
+      <!-- Abstract -->
+      <div>
+        <span id="detail-label-abstract" class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">국문 초록</span>
+        <p id="detail-abstract" class="mt-1 text-slate-300 leading-relaxed text-xs max-h-48 overflow-y-auto pr-1 bg-black/20 p-2.5 rounded-lg border border-white/5">
+        </p>
+      </div>
+    </div>
+
+    <!-- External Link Button (RISS) -->
+    <div class="pt-4 border-t border-white/10">
+      <a id="btn-riss-link" href="#" target="_blank" rel="noopener noreferrer" 
+        class="w-full py-2.5 px-4 rounded-xl flex items-center justify-center space-x-2 font-bold text-xs text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:opacity-95 shadow-[0_0_15px_rgba(79,70,229,0.3)] transition transform active:scale-98">
+        <span id="detail-riss-text">RISS에서 검색</span>
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+      </a>
+    </div>
+  </aside>
+
+  <!-- FOOTER WATERMARK -->
+  <footer class="absolute bottom-2 left-6 z-10 pointer-events-none text-[11px] text-slate-600 font-medium">
+    Data Visualization Design Project - By Youme
+  </footer>
+
+  <!-- SCRIPT LOGIC -->
   <script>
-    /* =========================================================================
-       1. DATA CONFIGURATION & LOCALIZATION
-       ========================================================================= */
-    let currentLang = 'ko'; // 'ko' or 'en'
+    /* ==========================================================================
+       1. I18N DICTIONARY & STATE MANAGEMENT
+       ========================================================================== */
+    let currentLang = 'ko'; // 'ko' | 'en'
 
     const I18N = {
       ko: {
-        subkorean: "서울과학기술대학교 연구 은하",
-        subtitle: "8,000편의 학위논문 및 지식 네트워크 시각화 (2010–2026)",
-        timeline: "시간축 제어",
-        singleYear: "단일 연도",
-        cumulative: "누적 성장",
-        clusters: "단과대학 및 클러스터",
-        camera: "카메라 시점 전환",
-        camOverview: "은하 전체",
-        searchPlaceholder: "검색어를 입력하고 Enter를 누르세요...",
-        searchOpts: { all: "전체", keyword: "주제어", advisor: "지도교수", author: "저자", title: "논문명" },
-        panelTitleDetails: "논문 세부 정보",
-        panelTitleResults: "검색 결과 목록",
-        author: "저자",
-        advisor: "지도교수",
-        yearDegree: "발행연도 / 학위",
-        dept: "소속 학과",
-        keywords: "주제어",
-        abstract: "국문 초록",
-        viewRiss: "RISS에서 전체 논문 검색",
-        viewBtn: "상세보기",
-        backBtn: "← 검색 결과 목록으로 돌아가기",
-        noResults: "일치하는 논문이 없습니다."
+        appTitle: "서울과학기술대학교 연구 은하",
+        appSubtitle: "8,000편의 학위논문 및 지식 네트워크 시각화 (2010–2026)",
+        collegesTitle: "단과대학 필터",
+        toggleAll: "전체 선택/해제",
+        camPresets: "카메라 뷰",
+        camGalaxy: "전체 은하",
+        camReset: "중심 리셋",
+        timelineTitle: "발행 연도 타임라인",
+        modeCumulative: "누적 보기",
+        modeSingle: "단일 연도",
+        searchPlaceholder: "검색어를 입력하고 은하계 내 연구를 탐색하세요...",
+        searchAll: "통합검색",
+        searchKeyword: "주제어",
+        searchAdvisor: "지도교수",
+        searchAuthor: "저자",
+        searchTitle: "논문제목",
+        searchResultsCount: (count) => `검색 결과 ${count}건`,
+        viewDetail: "상세보기",
+        detailTitleLabel: "논문 제목",
+        detailAuthorLabel: "저자",
+        detailAdvisorLabel: "지도교수",
+        detailDeptLabel: "학과",
+        detailYearLabel: "발행연도",
+        detailMetricsLabel: "지식 네트워크 영향력 지표",
+        detailDegLabel: "연결도 (Degree)",
+        detailBetLabel: "매개도 (Bridge)",
+        detailPageLabel: "PageRank",
+        detailKeywordsLabel: "주제어",
+        detailAbstractLabel: "국문 초록",
+        detailRissBtn: "RISS에서 검색",
+        degreeDoctor: "박사",
+        degreeMaster: "석사",
+        colleges: {
+          art: "디자인·예술",
+          engineering: "공학·정보기술",
+          future: "융합·미래기술",
+          business: "경영·기술",
+          humanities: "인문·사회과학",
+          lifelong: "평생·개방교육"
+        }
       },
       en: {
-        subkorean: "SEOUL NATIONAL UNIVERSITY OF SCIENCE AND TECHNOLOGY",
-        subtitle: "Visualizing 8,000 Academic Theses & Knowledge Networks (2010–2026)",
-        timeline: "Timeline Control",
-        singleYear: "Single Year",
-        cumulative: "Cumulative",
-        clusters: "Academic Clusters",
-        camera: "Camera Perspectives",
-        camOverview: "Galaxy Overview",
-        searchPlaceholder: "Enter search term and press Enter...",
-        searchOpts: { all: "All", keyword: "Keyword", advisor: "Advisor", author: "Author", title: "Title" },
-        panelTitleDetails: "Thesis Details",
-        panelTitleResults: "Search Results",
-        author: "Author",
-        advisor: "Advisor",
-        yearDegree: "Year / Degree",
-        dept: "Department",
-        keywords: "Keywords",
-        abstract: "Abstract",
-        viewRiss: "Search on RISS Full-text",
-        viewBtn: "View Details",
-        backBtn: "← Back to results",
-        noResults: "No thesis matching your criteria."
+        appTitle: "SEOULTECH RESEARCH COSMOS",
+        appSubtitle: "Visualizing 8,000 Academic Theses & Knowledge Networks (2010–2026)",
+        collegesTitle: "COLLEGE CLUSTERS",
+        toggleAll: "Toggle All",
+        camPresets: "CAMERA PRESETS",
+        camGalaxy: "Galaxy View",
+        camReset: "Reset Orbit",
+        timelineTitle: "PUBLICATION TIMELINE",
+        modeCumulative: "Cumulative",
+        modeSingle: "Single Year",
+        searchPlaceholder: "Enter search terms to explore research in cosmos...",
+        searchAll: "All Fields",
+        searchKeyword: "Keyword",
+        searchAdvisor: "Advisor",
+        searchAuthor: "Author",
+        searchTitle: "Thesis Title",
+        searchResultsCount: (count) => `Found ${count} results`,
+        viewDetail: "View Details",
+        detailTitleLabel: "THESIS TITLE",
+        detailAuthorLabel: "AUTHOR",
+        detailAdvisorLabel: "ADVISOR",
+        detailDeptLabel: "DEPARTMENT",
+        detailYearLabel: "YEAR",
+        detailMetricsLabel: "KNOWLEDGE NETWORK METRICS",
+        detailDegLabel: "Degree",
+        detailBetLabel: "Betweenness",
+        detailPageLabel: "PageRank",
+        detailKeywordsLabel: "KEYWORDS",
+        detailAbstractLabel: "ABSTRACT",
+        detailRissBtn: "View on RISS",
+        degreeDoctor: "Ph.D.",
+        degreeMaster: "Master",
+        colleges: {
+          art: "Art & Design",
+          engineering: "Engineering & IT",
+          future: "Convergence & Future Tech",
+          business: "Business & Technology",
+          humanities: "Humanities & Social Sciences",
+          lifelong: "Lifelong & Open Education"
+        }
       }
     };
 
-    const CLUSTER_CONFIG = [
-      { id: 0, ko: "조형대학 (Art & Design)", en: "Art & Design Cluster", color: "#F43F5E", pos: [-160, 20, -60] },
-      { id: 1, ko: "공과대학 / 정보통신 (Engineering & IT)", en: "Engineering & IT Cluster", color: "#06B6D4", pos: [180, 50, -80] },
-      { id: 2, ko: "융합기술 / 미래기술 (Convergence & Future Tech)", en: "Convergence & Future Tech", color: "#8B5CF6", pos: [-60, 90, 160] },
-      { id: 3, ko: "기술경영 / 경영 (Business & Tech)", en: "Business & Tech Cluster", color: "#F59E0B", pos: [120, -50, 120] },
-      { id: 4, ko: "인문사회 (Humanities & Social)", en: "Humanities & Social Cluster", color: "#10B981", pos: [-140, -60, -120] },
-      { id: 5, ko: "평생교육 (Lifelong Education)", en: "Lifelong Education Cluster", color: "#E2E8F0", pos: [50, -90, -140] }
+    /* ==========================================================================
+       2. COLLEGE DEFINITIONS & COLOR SYSTEM
+       ========================================================================== */
+    const COLLEGE_DEFS = [
+      {
+        id: "art",
+        koName: "디자인·예술",
+        enName: "Art & Design",
+        baseColor: 0xF43F5E,
+        hex: "#F43F5E",
+        targetPos: new THREE.Vector3(-140, 20, 100)
+      },
+      {
+        id: "engineering",
+        koName: "공학·정보기술",
+        enName: "Engineering & IT",
+        baseColor: 0x06B6D4,
+        hex: "#06B6D4",
+        targetPos: new THREE.Vector3(130, -30, -110)
+      },
+      {
+        id: "future",
+        koName: "융합·미래기술",
+        enName: "Convergence & Future Tech",
+        baseColor: 0x8B5CF6,
+        hex: "#8B5CF6",
+        targetPos: new THREE.Vector3(120, 70, 90)
+      },
+      {
+        id: "business",
+        koName: "경영·기술",
+        enName: "Business & Technology",
+        baseColor: 0xF59E0B,
+        hex: "#F59E0B",
+        targetPos: new THREE.Vector3(-110, -50, -120)
+      },
+      {
+        id: "humanities",
+        koName: "인문·사회과학",
+        enName: "Humanities & Social Sciences",
+        baseColor: 0x10B981,
+        hex: "#10B981",
+        targetPos: new THREE.Vector3(0, 130, -60)
+      },
+      {
+        id: "lifelong",
+        koName: "평생·개방교육",
+        enName: "Lifelong & Open Education",
+        baseColor: 0xE2E8F0,
+        hex: "#E2E8F0",
+        targetPos: new THREE.Vector3(0, -130, 80)
+      }
     ];
 
-    /* =========================================================================
-       2. THREE.JS INITIALIZATION & COSMOS ENVIRONMENT
-       ========================================================================= */
-    const container = document.getElementById('canvas-container');
+    /* ==========================================================================
+       3. MOCK DATA GENERATION (~90 Representative Theses)
+       ========================================================================== */
+    const MOCK_DATA = [];
+    const PROFESSORS = {
+      art: ["김디자인", "이시각", "박공예", "최인터", "정조형"],
+      engineering: ["강기계", "윤컴공", "배신소재", "송전자", "조화공"],
+      future: ["문인공지능", "황반도체", "신모빌리티", "서데이터", "류융합"],
+      business: ["오경영", "한산업", "권기술", "고글로벌", "백재무"],
+      humanities: ["노문학", "유행정", "민콘텐츠", "양미디어", "안언론"],
+      lifelong: ["심평생", "탁융합", "남복지", "진교육", "곽사회"]
+    };
+
+    const TOPICS = {
+      art: [
+        { ko: "생성형 AI를 활용한 인터랙티브 그래픽 디자인 연구", en: "A Study on Interactive Graphic Design Using Generative AI", kw: ["생성형 AI", "인터랙션", "시각디자인"] },
+        { ko: "전통 도자 기법의 현대적 조형 조명 디자인 응용", en: "Modern Sculptural Lighting Design Using Traditional Ceramic Techniques", kw: ["도자예술", "조형디자인", "전통기법"] },
+        { ko: "증강현실(AR) 환경에서의 몰입형 UX/UI 인터페이스 평가", en: "Evaluation of Immersive UX/UI Interface in Augmented Reality Environment", kw: ["증강현실", "UX/UI", "메타버스"] }
+      ],
+      engineering: [
+        { ko: "딥러닝 기반 도심형 자율주행 차량의 다중 센서 융합 측위", en: "Multi-Sensor Fusion Positioning for Autonomous Urban Driving Using Deep Learning", kw: ["자율주행", "센서융합", "딥러닝"] },
+        { ko: "차세대 전고체 리튬이온 배터리의 계면 안정성 향상 연구", en: "Interfacial Stability Improvement in Next-Generation All-Solid-State Lithium Batteries", kw: ["전고체배터리", "에너지", "나노소재"] },
+        { ko: "엣지 컴퓨팅 기반 실시간 스마트 제조 공정 모니터링 시스템", en: "Edge Computing-Based Real-Time Smart Manufacturing Monitoring System", kw: ["스마트팩토리", "엣지컴퓨팅", "IoT"] }
+      ],
+      future: [
+        { ko: "뉴로모픽 반도체 구조를 위한 초저전력 멤리스터 소자 설계", en: "Design of Ultra-Low Power Memristor for Neuromorphic Computing", kw: ["인공지능반도체", "뉴로모픽", "나노소재"] },
+        { ko: "생성형 언어 모델의 설명 가능성(XAI)을 위한 주의 집중 메커니즘 분석", en: "Attention Mechanism Analysis for Explainable Generative Language Models", kw: ["생성형 AI", "XAI", "자연어처리"] },
+        { ko: "도심 항공 모빌리티(UAM) 최적 항로 제어를 위한 강화학습 알고리즘", en: "Reinforcement Learning Algorithm for Optimal UAM Air Route Control", kw: ["UAM", "강화학습", "모빌리티"] }
+      ],
+      business: [
+        { ko: "디지털 전환(DX) 시대 기술혁신 기업의 공급망 회복탄력성 실증", en: "Empirical Analysis of Supply Chain Resilience in Technology-Driven Enterprises", kw: ["디지털전환", "공급망", "기술경영"] },
+        { ko: "ESG 경영 활동이 기업 가치 및 주가 수익률에 미치는 영향", en: "The Impact of ESG Management Activities on Corporate Valuation", kw: ["ESG", "경영전략", "지속가능성"] },
+        { ko: "블록체인 기반 지능형 지식재산권(IP) 거래 플랫폼 모델", en: "Blockchain-Based Intelligent IP Rights Trading Platform Model", kw: ["블록체인", "지식재산", "핀테크"] }
+      ],
+      humanities: [
+        { ko: "인공지능 창작물의 저작권 귀속 및 윤리적 책임에 관한 법제도 고찰", en: "Legal and Ethical Review on Authorship and Accountability of AI Content", kw: ["AI윤리", "지식재산", "행정정책"] },
+        { ko: "디지털 휴머니티 관점에서의 현대 미디어 서사 구조 변화", en: "Structural Evolution of Modern Media Narrative from Digital Humanities Viewpoint", kw: ["디지털인문학", "미디어", "스토리텔링"] },
+        { ko: "공공 데이터 개방이 시민 참여형 거버넌스 형성에 미치는 영향", en: "Impact of Public Data Sharing on Citizen-Participatory Governance", kw: ["공공데이터", "거버넌스", "행정학"] }
+      ],
+      lifelong: [
+        { ko: "초고령 사회 진입에 따른 시니어 맞춤형 디지털 역량 강화 프로그램", en: "Senior Digital Competency Empowerment Programs in Super-Aged Society", kw: ["평생학습", "디지털교육", "사회복지"] },
+        { ko: "온-오프라인 하이브리드 직업 재교육 모델의 효과성 분석", en: "Effectiveness of Hybrid On-Offline Lifelong Vocational Reskilling Model", kw: ["하이브리드러닝", "직업재교육", "사회융합"] },
+        { ko: "지역사회 커뮤니티 기반 개방형 평생교육 플랫폼 구축 방안", en: "Open Lifelong Learning Platform Based on Community Ecosystems", kw: ["지역사회", "오픈에듀케이션", "평생학습"] }
+      ]
+    };
+
+    // Helper to generate pseudorandom distribution
+    let seed = 42;
+    function random() {
+      const x = Math.sin(seed++) * 10000;
+      return x - Math.floor(x);
+    }
+
+    // Build ~90 mock records
+    let idCounter = 1;
+    COLLEGE_DEFS.forEach((col) => {
+      const profs = PROFESSORS[col.id];
+      const topics = TOPICS[col.id];
+
+      // 15 items per college = 90 nodes
+      for (let i = 0; i < 15; i++) {
+        const topic = topics[i % topics.length];
+        const prof = profs[i % profs.length];
+        const year = 2010 + Math.floor(random() * 17); // 2010 ~ 2026
+        const isDoctor = random() > 0.65;
+        const pageCount = isDoctor ? Math.floor(120 + random() * 100) : Math.floor(50 + random() * 50);
+        
+        // Betweenness & Degree setup
+        const isSupernova = (i === 0 || i === 4) && (col.id === 'art' || col.id === 'future' || col.id === 'engineering');
+        const degree = Math.floor(3 + random() * 12);
+        const betweenness = isSupernova ? 0.85 + random() * 0.14 : random() * 0.45;
+        const pagerank = (degree * 0.05 + betweenness * 0.8).toFixed(2);
+
+        // Position offset within cluster
+        const radius = 25 + random() * 65;
+        const theta = random() * Math.PI * 2;
+        const phi = (random() - 0.5) * Math.PI;
+
+        const pos = new THREE.Vector3(
+          col.targetPos.x + radius * Math.cos(theta) * Math.cos(phi),
+          col.targetPos.y + radius * Math.sin(phi) * 0.8,
+          col.targetPos.z + radius * Math.sin(theta) * Math.cos(phi)
+        );
+
+        MOCK_DATA.push({
+          id: idCounter++,
+          collegeId: col.id,
+          collegeKo: col.koName,
+          collegeEn: col.enName,
+          baseColor: col.baseColor,
+          hex: col.hex,
+          titleKo: topic.ko + (i > 2 ? ` #${i+1}` : ''),
+          titleEn: topic.en + (i > 2 ? ` (Vol. ${i+1})` : ''),
+          authorKo: `연구자_${idCounter}`,
+          authorEn: `Researcher_${idCounter}`,
+          advisorKo: prof,
+          advisorEn: `Prof. ${prof}`,
+          year: year,
+          degreeKo: isDoctor ? "박사" : "석사",
+          degreeEn: isDoctor ? "Ph.D." : "Master",
+          pageCount: pageCount,
+          keywords: topic.kw,
+          abstractKo: `본 연구는 서울과학기술대학교 ${col.koName} 분야에서 수행된 학위논문으로서, ${topic.kw.join(', ')}를 중심으로 최신 패러다임과 학술적 응용을 종합적으로 분석하고 실험적 검증을 거쳐 새로운 방법론을 제시한다.`,
+          abstractEn: `Conducted at Seoul National University of Science and Technology in ${col.enName}, this study comprehensively synthesizes ${topic.kw.join(', ')} to provide theoretical and empirical validation for next-generation paradigms.`,
+          isSupernova: isSupernova,
+          degreeCount: degree,
+          betweenness: betweenness.toFixed(3),
+          pagerank: pagerank,
+          position: pos,
+          visible: true
+        });
+      }
+    });
+
+    /* ==========================================================================
+       4. THREE.JS SCENE SETUP & SHADERS
+       ========================================================================== */
+    const canvas = document.getElementById('cosmos-canvas');
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x0B0C16, 0.0012);
+    scene.fog = new THREE.FogExp2(0x0B0C16, 0.0018);
 
     const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 3000);
-    camera.position.set(0, 260, 520);
+    camera.position.set(0, 180, 480);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    container.appendChild(renderer.domElement);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.15;
 
     const controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
-    controls.maxDistance = 1400;
+    controls.maxDistance = 1200;
     controls.minDistance = 20;
 
-    // Ambient & Space Light
-    scene.add(new THREE.AmbientLight(0x404060, 1.5));
-    const centerPointLight = new THREE.PointLight(0xffffff, 2, 800);
-    scene.add(centerPointLight);
+    // Ambient & Point Lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+    scene.add(ambientLight);
 
-    // Stardust & Pink/Purple Aurora Background
-    function createAuroraGalaxyBackground() {
-      // 1. Aurora Soft Glow Dome
-      const canvas = document.createElement('canvas');
-      canvas.width = 512; canvas.height = 512;
-      const ctx = canvas.getContext('2d');
-      const grad = ctx.createRadialGradient(256, 256, 10, 256, 256, 250);
-      grad.addColorStop(0, 'rgba(236, 72, 153, 0.25)'); // Pink
-      grad.addColorStop(0.4, 'rgba(139, 92, 246, 0.15)'); // Purple
-      grad.addColorStop(0.8, 'rgba(6, 182, 212, 0.05)'); // Cyan
-      grad.addColorStop(1, 'rgba(11, 12, 22, 0)');
-      ctx.fillStyle = grad; ctx.fillRect(0,0,512,512);
+    const coreLight = new THREE.PointLight(0x818CF8, 2.5, 900);
+    coreLight.position.set(0, 0, 0);
+    scene.add(coreLight);
 
-      const texture = new THREE.CanvasTexture(canvas);
-      const spriteMat = new THREE.SpriteMaterial({ map: texture, transparent: true, blending: THREE.AdditiveBlending });
-      const aurora = new THREE.Sprite(spriteMat);
-      aurora.scale.set(1100, 1100, 1);
-      aurora.position.set(0, 0, -350);
-      scene.add(aurora);
+    /* --- Aurora Pink-Violet Background Glow (Backdrop Mesh) --- */
+    const auroraGeo = new THREE.PlaneGeometry(1600, 1000);
+    const auroraMat = new THREE.ShaderMaterial({
+      transparent: true,
+      depthWrite: false,
+      uniforms: {
+        uTime: { value: 0 },
+        uIntensity: { value: 0.0 } // Controlled during opening
+      },
+      vertexShader: `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform float uTime;
+        uniform float uIntensity;
+        varying vec2 vUv;
+        void main() {
+          vec2 p = vUv * 2.0 - 1.0;
+          float r = length(p);
+          float wave = sin(p.x * 3.0 + uTime * 0.4) * 0.15 + cos(p.y * 2.0 - uTime * 0.3) * 0.15;
+          float glow = smoothstep(1.2, 0.1, r + wave);
+          vec3 pink = vec3(0.95, 0.25, 0.6);
+          vec3 violet = vec3(0.5, 0.2, 0.95);
+          vec3 col = mix(violet, pink, p.y + 0.5) * glow * uIntensity * 0.45;
+          gl_FragColor = vec4(col, glow * uIntensity * 0.5);
+        }
+      `
+    });
+    const auroraMesh = new THREE.Mesh(auroraGeo, auroraMat);
+    auroraMesh.position.set(0, 0, -500);
+    scene.add(auroraMesh);
 
-      // 2. Subtle Background Stardust
-      const starGeo = new THREE.BufferGeometry();
-      const starCount = 3000;
-      const starPos = new Float32Array(starCount * 3);
-      for(let i = 0; i < starCount * 3; i += 3) {
-        starPos[i] = (Math.random() - 0.5) * 2200;
-        starPos[i+1] = (Math.random() - 0.5) * 1600;
-        starPos[i+2] = (Math.random() - 0.5) * 2200;
-      }
-      starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
-      const starMat = new THREE.PointsMaterial({ color: 0x94A3B8, size: 1.5, transparent: true, opacity: 0.6 });
-      scene.add(new THREE.Points(starGeo, starMat));
+    /* --- Stardust Background (4,000 Particles) --- */
+    const starCount = 4000;
+    const starGeo = new THREE.BufferGeometry();
+    const starCoords = new Float32Array(starCount * 3);
+    for (let i = 0; i < starCount * 3; i += 3) {
+      starCoords[i] = (Math.random() - 0.5) * 2200;
+      starCoords[i + 1] = (Math.random() - 0.5) * 2200;
+      starCoords[i + 2] = (Math.random() - 0.5) * 2200;
     }
-    createAuroraGalaxyBackground();
+    starGeo.setAttribute('position', new THREE.BufferAttribute(starCoords, 3));
+    const starMat = new THREE.PointsMaterial({
+      color: 0xE2E8F0,
+      size: 1.5,
+      transparent: true,
+      opacity: 0.6,
+      sizeAttenuation: true
+    });
+    const starField = new THREE.Points(starGeo, starMat);
+    scene.add(starField);
 
-    /* =========================================================================
-       3. DATA SYNTHESIS & GRAPH GENERATION
-       ========================================================================= */
-    const galaxyRoot = new THREE.Group();
-    scene.add(galaxyRoot);
+    /* --- Main Galaxy Group --- */
+    const galaxyGroup = new THREE.Group();
+    scene.add(galaxyGroup);
 
-    const clusterHubs = [];
-    const thesisNodes = [];
-    let edgesGroup = new THREE.Group();
-    galaxyRoot.add(edgesGroup);
+    /* ==========================================================================
+       5. PLANET & SUPERNOVA MESHES CREATION
+       ========================================================================== */
+    const planetMeshes = [];
+    const sharedSphereGeo = new THREE.SphereGeometry(1, 24, 24);
 
-    // Create Cluster Hubs (Suns)
-    CLUSTER_CONFIG.forEach(cfg => {
-      const hubGeo = new THREE.SphereGeometry(7, 32, 32);
-      const hubMat = new THREE.MeshBasicMaterial({ color: cfg.color });
-      const hubMesh = new THREE.Mesh(hubGeo, hubMat);
-      hubMesh.position.set(...cfg.pos);
-      hubMesh.userData = { isHub: true, clusterId: cfg.id, name: cfg.ko, nameEn: cfg.en };
+    MOCK_DATA.forEach((item) => {
+      // Size calculation: Doctor > Master, Page count factor, Supernova size
+      let baseScale = (item.degreeKo === "박사" ? 3.4 : 2.2) + (item.pageCount / 140);
+      if (item.isSupernova) baseScale *= 2.2;
 
-      // Halo
-      const haloGeo = new THREE.SphereGeometry(11, 24, 24);
-      const haloMat = new THREE.MeshBasicMaterial({ color: cfg.color, transparent: true, opacity: 0.25, wireframe: true });
-      hubMesh.add(new THREE.Mesh(haloGeo, haloMat));
+      const mat = new THREE.MeshStandardMaterial({
+        color: item.baseColor,
+        roughness: 0.35,
+        metalness: 0.2,
+        emissive: item.baseColor,
+        emissiveIntensity: item.isSupernova ? 0.9 : 0.25,
+        transparent: true,
+        opacity: 0.0 // starts at 0 for 5s opening
+      });
 
-      galaxyRoot.add(hubMesh);
-      clusterHubs.push(hubMesh);
+      const mesh = new THREE.Mesh(sharedSphereGeo, mat);
+      mesh.position.copy(item.position);
+      mesh.scale.setScalar(baseScale);
+      
+      // Store user data
+      mesh.userData = {
+        thesis: item,
+        originalScale: baseScale,
+        rotSpeed: (1 / baseScale) * 0.02,
+        pulseOffset: Math.random() * Math.PI * 2,
+        isHighlight: false
+      };
+
+      // Supernova Halo Corona
+      if (item.isSupernova) {
+        const haloGeo = new THREE.RingGeometry(baseScale * 1.3, baseScale * 2.2, 32);
+        const haloMat = new THREE.MeshBasicMaterial({
+          color: item.baseColor,
+          side: THREE.DoubleSide,
+          transparent: true,
+          opacity: 0.4
+        });
+        const haloMesh = new THREE.Mesh(haloGeo, haloMat);
+        haloMesh.rotation.x = Math.PI / 2;
+        mesh.add(haloMesh);
+        mesh.userData.haloMesh = haloMesh;
+      }
+
+      galaxyGroup.add(mesh);
+      planetMeshes.push(mesh);
     });
 
-    // Procedural Node Synthesizer (Simulating 8,000 Thesis Planets scaled down to sample instances)
-    const SAMPLE_KEYWORDS = ["생성형 AI", "RAG", "UX 디자인", "스마트 팩토리", "반도체 패키징", "전기차 배터리", "메타버스", "도시 재생"];
-    const SAMPLE_AUTHORS = ["김민준", "이서연", "박도현", "최유진", "정시우", "이지민", "한도경", "윤서진"];
-    const SAMPLE_ADVISORS = ["강동호 교수", "송미경 교수", "임태원 교수", "배성준 교수", "조수영 교수"];
+    /* ==========================================================================
+       6. INTERDISCIPLINARY NETWORK EDGES (Graph Theory)
+       ========================================================================== */
+    const edgeLines = [];
+    const edgeMaterialMap = new Map();
 
-    function generateTheses(count = 750) {
-      for(let i = 0; i < count; i++) {
-        const clusterId = Math.floor(Math.random() * 6);
-        const cluster = CLUSTER_CONFIG[clusterId];
-        const year = 2010 + Math.floor(Math.random() * 17); // 2010 to 2026
-        const pages = 40 + Math.floor(Math.random() * 160); // 40 ~ 200 pages
+    // Connect nodes sharing keywords or Supernovas
+    for (let i = 0; i < MOCK_DATA.length; i++) {
+      for (let j = i + 1; j < MOCK_DATA.length; j++) {
+        const a = MOCK_DATA[i];
+        const b = MOCK_DATA[j];
 
-        // Radial dispersion around Cluster Hub
-        const angle = Math.random() * Math.PI * 2;
-        const radius = 25 + Math.random() * 110;
-        const elevation = (Math.random() - 0.5) * 55;
+        // Shared keywords check
+        const commonKw = a.keywords.filter(k => b.keywords.includes(k));
+        const connectSupernova = a.isSupernova && b.isSupernova;
 
-        const posX = cluster.pos[0] + Math.cos(angle) * radius;
-        const posY = cluster.pos[1] + elevation;
-        const posZ = cluster.pos[2] + Math.sin(angle) * radius;
+        if (commonKw.length > 0 || connectSupernova) {
+          const geom = new THREE.BufferGeometry().setFromPoints([a.position, b.position]);
+          
+          // Color blending
+          const cA = new THREE.Color(a.baseColor);
+          const cB = new THREE.Color(b.baseColor);
+          const mixedColor = cA.clone().lerp(cB, 0.5);
 
-        // Size formula: Supernova if betweenness high, base size calculated from pages
-        const isSupernova = (Math.random() < 0.05); // 5% supernovas
-        const baseSize = isSupernova ? 4.5 : (1.4 + (pages / 200) * 1.6);
-        // Rotation speed: larger / heavier pages -> rotates slower
-        const selfRotSpeed = (0.008 / (pages / 50));
+          const mat = new THREE.LineBasicMaterial({
+            color: mixedColor,
+            transparent: true,
+            opacity: 0.0, // Hidden by default as requested
+            blending: THREE.AdditiveBlending
+          });
 
-        const sphereGeo = new THREE.SphereGeometry(baseSize, 16, 16);
-        const sphereMat = new THREE.MeshBasicMaterial({
-          color: new THREE.Color(cluster.color),
-          transparent: true,
-          opacity: 0.85
-        });
-
-        const mesh = new THREE.Mesh(sphereGeo, sphereMat);
-        mesh.position.set(posX, posY, posZ);
-
-        // Keywords & Cross-disciplinary linkage
-        const kwCount = 2 + Math.floor(Math.random() * 3);
-        const kws = [];
-        for(let k=0; k<kwCount; k++) {
-          kws.push(SAMPLE_KEYWORDS[Math.floor(Math.random() * SAMPLE_KEYWORDS.length)]);
-        }
-
-        mesh.userData = {
-          isPlanet: true,
-          id: i + 1,
-          title: `연구논문: ${kws[0]} 기반의 ${cluster.ko.split(' ')[0]} 융합 분석 프레임워크 연구`,
-          author: SAMPLE_AUTHORS[Math.floor(Math.random() * SAMPLE_AUTHORS.length)],
-          advisor: SAMPLE_ADVISORS[Math.floor(Math.random() * SAMPLE_ADVISORS.length)],
-          year: year,
-          degree: Math.random() > 0.3 ? "석사" : "박사",
-          dept: cluster.ko,
-          keywords: kws,
-          abstract: `본 연구는 ${year}년도 서울과학기술대학교 ${cluster.ko}에서 진행된 연구로, ${kws.join(', ')} 등의 첨단 기술 및 방법론을 접목하여 학문적, 실무적 혁신 솔루션을 제시한다. 지식 네트워크 상에서 다학제 간 융합 잠재력을 극대화하도록 설계되었다.`,
-          clusterId: clusterId,
-          baseColor: cluster.color,
-          pages: pages,
-          isSupernova: isSupernova,
-          selfRotSpeed: selfRotSpeed,
-          pulsePhase: Math.random() * Math.PI * 2,
-          visibleByYear: true,
-          visibleByCluster: true
-        };
-
-        galaxyRoot.add(mesh);
-        thesisNodes.push(mesh);
-      }
-    }
-    generateTheses();
-
-    // Create Initial Supernova Knowledge Edges (Graph Network)
-    function buildKnowledgeGraph() {
-      const supernovas = thesisNodes.filter(n => n.userData.isSupernova);
-      for(let i = 0; i < supernovas.length; i++) {
-        for(let j = i + 1; j < supernovas.length; j++) {
-          const nA = supernovas[i];
-          const nB = supernovas[j];
-          // Check shared keywords
-          const common = nA.userData.keywords.filter(k => nB.userData.keywords.includes(k));
-          if(common.length > 0) {
-            drawEdge(nA.position, nB.position, nA.userData.baseColor, nB.userData.baseColor, 0.18);
-          }
+          const line = new THREE.Line(geom, mat);
+          line.userData = { nodeA: a.id, nodeB: b.id, isSuperEdge: connectSupernova };
+          galaxyGroup.add(line);
+          edgeLines.push(line);
         }
       }
     }
 
-    function drawEdge(posA, posB, colorHexA, colorHexB, opacity = 0.25) {
-      const geometry = new THREE.BufferGeometry().setFromPoints([posA, posB]);
-      const colorA = new THREE.Color(colorHexA);
-      const colorB = new THREE.Color(colorHexB);
-      const colors = new Float32Array([
-        colorA.r, colorA.g, colorA.b,
-        colorB.r, colorB.g, colorB.b
-      ]);
-      geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-      const material = new THREE.LineBasicMaterial({
-        vertexColors: true,
-        transparent: true,
-        opacity: opacity,
-        blending: THREE.AdditiveBlending
+    // Default: Show Supernova interconnecting lines lightly
+    edgeLines.forEach(line => {
+      if (line.userData.isSuperEdge) {
+        line.material.opacity = 0.25;
+      }
+    });
+
+    /* ==========================================================================
+       7. OPENING SEQUENCE (5 Seconds Cinematic Ignition)
+       ========================================================================== */
+    let openingProgress = 0;
+    const openingDuration = 5.0; // 5 seconds
+    let clock = new THREE.Clock();
+    let isOpening = true;
+
+    // Smooth opening interpolation
+    function updateOpeningSequence(dt) {
+      if (!isOpening) return;
+      openingProgress += dt / openingDuration;
+
+      // Aurora ramp up
+      auroraMat.uniforms.uIntensity.value = Math.min(1.0, openingProgress * 1.2);
+
+      // Light & planets brighten by publication year order (from 2010 to 2026)
+      const currentYearReveal = 2010 + openingProgress * (2026 - 2010 + 2);
+
+      planetMeshes.forEach(mesh => {
+        const item = mesh.userData.thesis;
+        if (item.year <= currentYearReveal) {
+          const targetOp = 0.95;
+          mesh.material.opacity = THREE.MathUtils.lerp(mesh.material.opacity, targetOp, 0.08);
+        }
       });
-      const line = new THREE.Line(geometry, material);
-      edgesGroup.add(line);
-      return line;
-    }
-    buildKnowledgeGraph();
 
-    /* =========================================================================
-       4. 5-SECOND INCOMING GALAXY ENTRANCE ANIMATION
-       ========================================================================= */
-    function playCosmicEntranceAnimation() {
-      thesisNodes.forEach(node => {
-        node.scale.set(0.0001, 0.0001, 0.0001);
+      if (openingProgress >= 1.0) {
+        isOpening = false;
+        auroraMat.uniforms.uIntensity.value = 1.0;
+        planetMeshes.forEach(mesh => { mesh.material.opacity = 0.95; });
+      }
+    }
+
+    /* ==========================================================================
+       8. TIMELINE & FILTER LOGIC
+       ========================================================================== */
+    let filterYear = 2026;
+    let isCumulativeMode = true; // true = cumulative, false = single year
+    const activeColleges = new Set(COLLEGE_DEFS.map(c => c.id));
+
+    function applyFilterRules() {
+      planetMeshes.forEach(mesh => {
+        const item = mesh.userData.thesis;
+        const matchesCollege = activeColleges.has(item.collegeId);
+        let matchesYear = false;
+
+        if (isCumulativeMode) {
+          matchesYear = item.year <= filterYear;
+        } else {
+          matchesYear = item.year === filterYear;
+        }
+
+        const visible = matchesCollege && matchesYear;
+        item.visible = visible;
+        mesh.visible = visible;
+
+        // Reset highlight styling if filtered out
+        if (!visible) {
+          mesh.material.opacity = 0.0;
+        } else if (!mesh.userData.isHighlight) {
+          mesh.material.opacity = 0.95;
+        }
       });
 
-      const startTime = Date.now();
-      const duration = 5000; // 5 seconds light-up
-
-      const interval = setInterval(() => {
-        const elapsed = Date.now() - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        const currentTargetYear = 2010 + Math.floor(progress * (2026 - 2010));
-
-        thesisNodes.forEach(node => {
-          if (node.userData.year <= currentTargetYear && node.scale.x < 1) {
-            new TWEEN.Tween(node.scale)
-              .to({ x: 1, y: 1, z: 1 }, 700)
-              .easing(TWEEN.Easing.Back.Out)
-              .start();
-          }
-        });
-
-        if(progress >= 1) clearInterval(interval);
-      }, 100);
+      // Update edges visibility
+      edgeLines.forEach(line => {
+        const aVisible = MOCK_DATA.find(d => d.id === line.userData.nodeA)?.visible;
+        const bVisible = MOCK_DATA.find(d => d.id === line.userData.nodeB)?.visible;
+        line.visible = aVisible && bVisible;
+      });
     }
-    playCosmicEntranceAnimation();
 
-    /* =========================================================================
-       5. INTERACTION: RAYCASTING & CLICK SELECTION
-       ========================================================================= */
+    /* ==========================================================================
+       9. INTERACTION: RAYCASTING & DETAIL PANEL
+       ========================================================================== */
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
-    const tooltip = document.getElementById('tooltip');
-    let highlightedMesh = null;
-    let dynamicHoverEdges = [];
+    let hoveredMesh = null;
+    let selectedThesisId = null;
+
+    const tooltipEl = document.getElementById('hover-tooltip');
+    const hoverTitleEl = document.getElementById('hover-title');
+    const hoverSubEl = document.getElementById('hover-sub');
 
     window.addEventListener('mousemove', (e) => {
       mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
       mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
 
-      tooltip.style.left = `${e.clientX}px`;
-      tooltip.style.top = `${e.clientY}px`;
+      // LOD tooltip positioning
+      tooltipEl.style.left = `${e.clientX + 14}px`;
+      tooltipEl.style.top = `${e.clientY + 14}px`;
+    });
 
+    function handleRaycastLOD() {
+      if (isOpening) return;
       raycaster.setFromCamera(mouse, camera);
-      const intersects = raycaster.intersectObjects([...thesisNodes, ...clusterHubs]);
-
       const dist = camera.position.distanceTo(controls.target);
+      const intersects = raycaster.intersectObjects(planetMeshes.filter(m => m.visible));
 
       if (intersects.length > 0) {
-        const obj = intersects[0].object;
-        if(obj.userData.isHub) {
-          tooltip.style.display = 'block';
-          tooltip.innerText = currentLang === 'ko' ? obj.userData.name : obj.userData.nameEn;
-        } else if(obj.userData.isPlanet && dist < 450) {
-          // Show professor/dept only when zoomed closer
-          tooltip.style.display = 'block';
-          tooltip.innerText = `[${obj.userData.dept}] ${obj.userData.advisor} | ${obj.userData.author}`;
-        } else {
-          tooltip.style.display = 'none';
-        }
-      } else {
-        tooltip.style.display = 'none';
-      }
-    });
+        const mesh = intersects[0].object;
+        if (hoveredMesh !== mesh) {
+          resetHoverState();
+          hoveredMesh = mesh;
+          mesh.scale.setScalar(mesh.userData.originalScale * 1.35);
 
-    window.addEventListener('click', (e) => {
-      // Avoid clicks if inside controls
-      if(e.target.closest('.left-controls') || e.target.closest('.bottom-search-wrapper') || e.target.closest('.side-panel')) return;
+          // Reveal connected edges on hover
+          highlightConnectedEdges(mesh.userData.thesis.id, true);
 
-      raycaster.setFromCamera(mouse, camera);
-      const intersects = raycaster.intersectObjects(thesisNodes);
-
-      if (intersects.length > 0) {
-        selectThesisPlanet(intersects[0].object);
-      }
-    });
-
-    function clearDynamicEdges() {
-      dynamicHoverEdges.forEach(edge => edgesGroup.remove(edge));
-      dynamicHoverEdges = [];
-    }
-
-    function selectThesisPlanet(mesh) {
-      highlightedMesh = mesh;
-      clearDynamicEdges();
-
-      // Connect lines to semantically related papers across galaxy
-      const kws = mesh.userData.keywords;
-      thesisNodes.forEach(other => {
-        if(other !== mesh) {
-          const match = other.userData.keywords.some(k => kws.includes(k));
-          if(match) {
-            const edge = drawEdge(mesh.position, other.position, mesh.userData.baseColor, other.userData.baseColor, 0.45);
-            dynamicHoverEdges.push(edge);
+          // LOD Tooltip
+          const t = mesh.userData.thesis;
+          tooltipEl.classList.remove('hidden');
+          if (dist > 450) {
+            // Far LOD: College Hubs only
+            hoverTitleEl.innerText = currentLang === 'ko' ? t.collegeKo : t.collegeEn;
+            hoverSubEl.innerText = `${t.year} Academic Hub`;
+          } else {
+            // Close LOD: Advisor & Dept
+            hoverTitleEl.innerText = currentLang === 'ko' ? t.titleKo : t.titleEn;
+            hoverSubEl.innerText = `${currentLang === 'ko' ? t.advisorKo : t.advisorEn} | ${currentLang === 'ko' ? t.collegeKo : t.collegeEn}`;
           }
         }
+      } else {
+        if (hoveredMesh) {
+          resetHoverState();
+        }
+      }
+    }
+
+    function resetHoverState() {
+      if (hoveredMesh) {
+        hoveredMesh.scale.setScalar(hoveredMesh.userData.originalScale);
+        highlightConnectedEdges(hoveredMesh.userData.thesis.id, false);
+        hoveredMesh = null;
+      }
+      tooltipEl.classList.add('hidden');
+    }
+
+    function highlightConnectedEdges(nodeId, show) {
+      edgeLines.forEach(line => {
+        if (line.userData.nodeA === nodeId || line.userData.nodeB === nodeId) {
+          line.material.opacity = show ? 0.8 : (line.userData.isSuperEdge ? 0.25 : 0.0);
+        }
+      });
+    }
+
+    // Click to Inspect Thesis
+    window.addEventListener('click', (e) => {
+      if (e.target.closest('#detail-panel') || e.target.closest('aside') || e.target.closest('footer') || e.target.closest('.pointer-events-auto')) {
+        return;
+      }
+      if (hoveredMesh && hoveredMesh.visible) {
+        inspectThesis(hoveredMesh.userData.thesis, hoveredMesh);
+      }
+    });
+
+    function inspectThesis(thesis, mesh = null) {
+      selectedThesisId = thesis.id;
+
+      // Camera Fly-To animation
+      const targetPos = thesis.position;
+      const camEndPos = new THREE.Vector3(
+        targetPos.x + 35,
+        targetPos.y + 25,
+        targetPos.z + 45
+      );
+
+      new TWEEN.Tween(camera.position)
+        .to(camEndPos, 1400)
+        .easing(TWEEN.Easing.Cubic.Out)
+        .start();
+
+      new TWEEN.Tween(controls.target)
+        .to(targetPos, 1400)
+        .easing(TWEEN.Easing.Cubic.Out)
+        .start();
+
+      // Seamless Detail Panel Update
+      updateDetailPanelContent(thesis);
+      document.getElementById('detail-panel').classList.remove('translate-x-full');
+
+      // Highlight target node
+      if (mesh) {
+        pulseHighlightMesh(mesh);
+      }
+    }
+
+    function pulseHighlightMesh(mesh) {
+      new TWEEN.Tween(mesh.scale)
+        .to(mesh.userData.originalScale * 2.0, 300)
+        .yoyo(true)
+        .repeat(3)
+        .easing(TWEEN.Easing.Quadratic.InOut)
+        .onComplete(() => {
+          mesh.scale.setScalar(mesh.userData.originalScale);
+        })
+        .start();
+    }
+
+    /* ==========================================================================
+       10. UI & DETAIL PANEL RENDERING
+       ========================================================================== */
+    function updateDetailPanelContent(t) {
+      const isKo = currentLang === 'ko';
+      document.getElementById('detail-title').innerText = isKo ? t.titleKo : t.titleEn;
+      document.getElementById('detail-author').innerText = isKo ? t.authorKo : t.authorEn;
+      document.getElementById('detail-advisor').innerText = isKo ? t.advisorKo : t.advisorEn;
+      document.getElementById('detail-dept').innerText = isKo ? t.collegeKo : t.collegeEn;
+      document.getElementById('detail-year').innerText = t.year;
+      document.getElementById('detail-degree').innerText = isKo ? t.degreeKo : t.degreeEn;
+      document.getElementById('detail-abstract').innerText = isKo ? t.abstractKo : t.abstractEn;
+
+      // Supernova badge
+      const sBadge = document.getElementById('detail-supernova-badge');
+      if (t.isSupernova) {
+        sBadge.classList.remove('hidden');
+      } else {
+        sBadge.classList.add('hidden');
+      }
+
+      // Metrics
+      document.getElementById('detail-metric-degree').innerText = t.degreeCount;
+      document.getElementById('detail-metric-betweenness').innerText = t.betweenness;
+      document.getElementById('detail-metric-pagerank').innerText = t.pagerank;
+
+      // Keywords
+      const kwContainer = document.getElementById('detail-keywords-container');
+      kwContainer.innerHTML = '';
+      t.keywords.forEach(kw => {
+        const badge = document.createElement('span');
+        badge.className = 'px-2 py-0.5 rounded-md text-[11px] bg-white/10 text-indigo-200 border border-white/10';
+        badge.innerText = `#${kw}`;
+        kwContainer.appendChild(badge);
       });
 
-      renderDetailPanel(mesh.userData);
-      openPanel();
+      // RISS Direct Link
+      const searchTitle = isKo ? t.titleKo : t.titleEn;
+      const rissUrl = `https://www.riss.kr/search/Search.do?queryText=${encodeURIComponent(searchTitle)}`;
+      document.getElementById('btn-riss-link').setAttribute('href', rissUrl);
     }
 
-    /* =========================================================================
-       6. UI RENDERING & I18N UPDATES
-       ========================================================================= */
-    const sidePanel = document.getElementById('side-panel');
-    const panelTitle = document.getElementById('panel-title');
-    const panelBody = document.getElementById('panel-body');
-    let lastSearchResults = null;
+    /* ==========================================================================
+       11. SEARCH CONSOLE LOGIC
+       ========================================================================== */
+    const searchInput = document.getElementById('search-input');
+    const searchType = document.getElementById('search-type');
+    const searchBtn = document.getElementById('search-submit-btn');
+    const searchDrawer = document.getElementById('search-drawer');
+    const searchResultsList = document.getElementById('search-results-list');
+    const searchResultsCount = document.getElementById('search-results-count');
 
-    function renderDetailPanel(data) {
-      const t = I18N[currentLang];
-      panelTitle.innerText = t.panelTitleDetails;
+    function performSearch() {
+      const q = searchInput.value.trim().toLowerCase();
+      const type = searchType.value;
 
-      const rissSearchUrl = `https://www.riss.kr/search/Search.do?query=${encodeURIComponent(data.title)}`;
-
-      panelBody.innerHTML = `
-        ${lastSearchResults ? `<button class="cam-btn" style="margin-bottom:12px;" onclick="renderSearchResults(lastSearchResults)">${t.backBtn}</button>` : ''}
-        <div>
-          <span class="thesis-tag">${data.dept}</span>
-          <div class="thesis-title">${data.title}</div>
-        </div>
-        <div class="detail-row">
-          <span class="detail-label">${t.author} & ${t.advisor}</span>
-          <span class="detail-val">${data.author} | ${data.advisor}</span>
-        </div>
-        <div class="detail-row">
-          <span class="detail-label">${t.yearDegree}</span>
-          <span class="detail-val">${data.year}년 / ${data.degree}</span>
-        </div>
-        <div class="detail-row">
-          <span class="detail-label">${t.keywords}</span>
-          <span class="detail-val">${data.keywords.join(', ')}</span>
-        </div>
-        <div class="detail-row">
-          <span class="detail-label">${t.abstract}</span>
-          <div class="abstract-box">${data.abstract}</div>
-        </div>
-        <a class="btn-riss" href="${rissSearchUrl}" target="_blank" rel="noopener noreferrer">${t.viewRiss}</a>
-      `;
-    }
-
-    function renderSearchResults(results) {
-      lastSearchResults = results;
-      const t = I18N[currentLang];
-      panelTitle.innerText = `${t.panelTitleResults} (${results.length})`;
-
-      if(results.length === 0) {
-        panelBody.innerHTML = `<div style="color:#64748B; padding:20px 0;">${t.noResults}</div>`;
+      if (!q) {
+        resetSearchHighlights();
+        searchDrawer.classList.add('hidden');
         return;
       }
 
-      let html = `<ul class="results-list">`;
-      results.forEach((node, idx) => {
-        const d = node.userData;
-        html += `
-          <li class="result-item" onclick="zoomToPlanetById(${d.id})">
-            <div class="result-title">${d.title}</div>
-            <div class="result-sub">${d.author} · ${d.advisor} (${d.year})</div>
-            <button class="btn-view-item" onclick="event.stopPropagation(); viewDetailFromList(${d.id})">${t.viewBtn}</button>
-          </li>
-        `;
+      const matchedTheses = MOCK_DATA.filter(t => {
+        if (!t.visible) return false;
+        if (type === 'keyword') return t.keywords.some(k => k.toLowerCase().includes(q));
+        if (type === 'advisor') return t.advisorKo.toLowerCase().includes(q) || t.advisorEn.toLowerCase().includes(q);
+        if (type === 'author') return t.authorKo.toLowerCase().includes(q) || t.authorEn.toLowerCase().includes(q);
+        if (type === 'title') return t.titleKo.toLowerCase().includes(q) || t.titleEn.toLowerCase().includes(q);
+        // All fields
+        return t.titleKo.toLowerCase().includes(q) ||
+               t.titleEn.toLowerCase().includes(q) ||
+               t.advisorKo.toLowerCase().includes(q) ||
+               t.authorKo.toLowerCase().includes(q) ||
+               t.keywords.some(k => k.toLowerCase().includes(q));
       });
-      html += `</ul>`;
-      panelBody.innerHTML = html;
-      openPanel();
-    }
 
-    window.viewDetailFromList = function(id) {
-      const node = thesisNodes.find(n => n.userData.id === id);
-      if(node) selectThesisPlanet(node);
-    };
-
-    window.zoomToPlanetById = function(id) {
-      const node = thesisNodes.find(n => n.userData.id === id);
-      if(node) {
-        highlightedMesh = node;
-        // Fly camera to target
-        new TWEEN.Tween(camera.position)
-          .to({ x: node.position.x + 30, y: node.position.y + 20, z: node.position.z + 40 }, 1200)
-          .easing(TWEEN.Easing.Cubic.Out)
-          .start();
-        new TWEEN.Tween(controls.target)
-          .to({ x: node.position.x, y: node.position.y, z: node.position.z }, 1200)
-          .easing(TWEEN.Easing.Cubic.Out)
-          .start();
-      }
-    };
-
-    function openPanel() { sidePanel.classList.add('open'); }
-    function closePanel() { sidePanel.classList.remove('open'); }
-    document.getElementById('close-panel-btn').addEventListener('click', closePanel);
-
-    /* =========================================================================
-       7. TIMELINE & FILTER LOGIC
-       ========================================================================= */
-    const timelineSlider = document.getElementById('timeline-slider');
-    const modeToggle = document.getElementById('mode-toggle');
-    const yearLabel = document.getElementById('year-label');
-
-    function updateTimelineFilter() {
-      const isCumulative = modeToggle.checked;
-      const targetYear = parseInt(timelineSlider.value);
-      yearLabel.innerText = targetYear;
-
-      thesisNodes.forEach(node => {
-        const y = node.userData.year;
-        const visible = isCumulative ? (y <= targetYear) : (y === targetYear);
-        node.userData.visibleByYear = visible;
-        applyVisibility(node);
-      });
-    }
-
-    timelineSlider.addEventListener('input', updateTimelineFilter);
-    modeToggle.addEventListener('change', updateTimelineFilter);
-
-    // Cluster Toggles UI
-    const clusterListUI = document.getElementById('cluster-list');
-    CLUSTER_CONFIG.forEach(c => {
-      const row = document.createElement('div');
-      row.className = 'filter-item';
-      row.innerHTML = `<span class="filter-dot" style="background:${c.color}"></span><span>${c.ko.split(' ')[0]}</span>`;
-      let active = true;
-      row.addEventListener('click', () => {
-        active = !active;
-        row.style.opacity = active ? "1" : "0.35";
-        thesisNodes.forEach(node => {
-          if(node.userData.clusterId === c.id) {
-            node.userData.visibleByCluster = active;
-            applyVisibility(node);
-          }
-        });
-      });
-      clusterListUI.appendChild(row);
-    });
-
-    function applyVisibility(node) {
-      node.visible = (node.userData.visibleByYear && node.userData.visibleByCluster);
-    }
-
-    /* =========================================================================
-       8. BOTTOM SEARCH BAR (FLASHING PLANETS & DIMMING OTHERS)
-       ========================================================================= */
-    const searchInput = document.getElementById('search-input');
-    const searchType = document.getElementById('search-type');
-    let matchingNodes = [];
-
-    searchInput.addEventListener('keydown', (e) => {
-      if(e.key === 'Enter') {
-        const val = searchInput.value.trim().toLowerCase();
-        const type = searchType.value;
-
-        if(!val) {
-          // Reset styling
-          thesisNodes.forEach(n => {
-            n.material.color.set(n.userData.baseColor);
-            n.material.opacity = 0.85;
-          });
-          matchingNodes = [];
-          return;
+      // Update 3D scene visual beacons
+      const matchedIds = new Set(matchedTheses.map(t => t.id));
+      planetMeshes.forEach(mesh => {
+        const id = mesh.userData.thesis.id;
+        if (matchedIds.has(id)) {
+          mesh.userData.isHighlight = true;
+          mesh.material.opacity = 1.0;
+        } else {
+          mesh.userData.isHighlight = false;
+          mesh.material.opacity = 0.12; // Dim non-matched
         }
+      });
 
-        matchingNodes = thesisNodes.filter(n => {
-          const d = n.userData;
-          if(type === 'keyword') return d.keywords.some(k => k.toLowerCase().includes(val));
-          if(type === 'advisor') return d.advisor.toLowerCase().includes(val);
-          if(type === 'author') return d.author.toLowerCase().includes(val);
-          if(type === 'title') return d.title.toLowerCase().includes(val);
-          // all
-          return d.keywords.some(k => k.toLowerCase().includes(val)) ||
-                 d.advisor.toLowerCase().includes(val) ||
-                 d.author.toLowerCase().includes(val) ||
-                 d.title.toLowerCase().includes(val);
-        });
+      renderSearchResultsDrawer(matchedTheses);
+    }
 
-        // Dim non-matching nodes
-        thesisNodes.forEach(n => {
-          if(matchingNodes.includes(n)) {
-            n.material.opacity = 1.0;
-          } else {
-            n.material.opacity = 0.1;
-          }
-        });
+    function resetSearchHighlights() {
+      planetMeshes.forEach(mesh => {
+        mesh.userData.isHighlight = false;
+        if (mesh.userData.thesis.visible) {
+          mesh.material.opacity = 0.95;
+        }
+      });
+    }
 
-        renderSearchResults(matchingNodes);
+    function renderSearchResultsDrawer(results) {
+      searchDrawer.classList.remove('hidden');
+      searchResultsCount.innerText = I18N[currentLang].searchResultsCount(results.length);
+      searchResultsList.innerHTML = '';
+
+      if (results.length === 0) {
+        searchResultsList.innerHTML = `<div class="text-slate-500 py-3 text-center">검색 결과가 없습니다.</div>`;
+        return;
       }
+
+      results.forEach(t => {
+        const itemEl = document.createElement('div');
+        itemEl.className = 'p-2.5 rounded-xl bg-white/5 hover:bg-white/10 transition border border-white/5 flex justify-between items-center cursor-pointer';
+        
+        const isKo = currentLang === 'ko';
+        itemEl.innerHTML = `
+          <div class="flex-1 pr-3">
+            <div class="font-semibold text-slate-100 line-clamp-1">${isKo ? t.titleKo : t.titleEn}</div>
+            <div class="text-[10px] text-slate-400 mt-0.5">
+              <span>${isKo ? t.authorKo : t.authorEn}</span> · 
+              <span>${isKo ? t.advisorKo : t.advisorEn}</span> · 
+              <span class="font-mono-num text-indigo-300">${t.year}</span>
+            </div>
+          </div>
+          <button class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-indigo-600/60 hover:bg-indigo-600 text-white shrink-0">
+            ${I18N[currentLang].viewDetail}
+          </button>
+        `;
+
+        // Click to Fly-To & Inspect
+        itemEl.addEventListener('click', () => {
+          const targetMesh = planetMeshes.find(m => m.userData.thesis.id === t.id);
+          inspectThesis(t, targetMesh);
+        });
+
+        searchResultsList.appendChild(itemEl);
+      });
+    }
+
+    searchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') performSearch(); });
+    searchBtn.addEventListener('click', performSearch);
+    document.getElementById('btn-close-search').addEventListener('click', () => {
+      searchDrawer.classList.add('hidden');
+      resetSearchHighlights();
     });
 
-    /* =========================================================================
-       9. CAMERA PERSPECTIVES
-       ========================================================================= */
-    window.focusCamera = function(target) {
-      let targetPos, lookAtPos;
-      if(target === 'all') {
-        targetPos = { x: 0, y: 260, z: 520 };
-        lookAtPos = { x: 0, y: 0, z: 0 };
+    /* ==========================================================================
+       12. CONTROLS, FILTERS & UI LISTENERS
+       ========================================================================== */
+    // College Filter list population
+    const collegesListEl = document.getElementById('colleges-list');
+    function renderCollegeFilters() {
+      collegesListEl.innerHTML = '';
+      COLLEGE_DEFS.forEach(col => {
+        const row = document.createElement('div');
+        row.className = 'flex items-center justify-between p-1.5 rounded-lg bg-white/5 border border-white/5';
+        
+        row.innerHTML = `
+          <label class="flex items-center space-x-2 cursor-pointer">
+            <span class="w-2.5 h-2.5 rounded-full" style="background-color: ${col.hex}; box-shadow: 0 0 6px ${col.hex}"></span>
+            <span class="text-slate-300 font-medium">${currentLang === 'ko' ? col.koName : col.enName}</span>
+          </label>
+          <input type="checkbox" checked value="${col.id}" class="rounded border-slate-600 text-indigo-600 focus:ring-0 cursor-pointer">
+        `;
+
+        const cb = row.querySelector('input');
+        cb.addEventListener('change', (e) => {
+          if (e.target.checked) activeColleges.add(col.id);
+          else activeColleges.delete(col.id);
+          applyFilterRules();
+        });
+
+        collegesListEl.appendChild(row);
+      });
+    }
+
+    // Toggle All Colleges
+    document.getElementById('btn-toggle-all-colleges').addEventListener('click', () => {
+      const checkboxes = collegesListEl.querySelectorAll('input[type=checkbox]');
+      const allActive = activeColleges.size === COLLEGE_DEFS.length;
+      checkboxes.forEach(cb => {
+        cb.checked = !allActive;
+        if (!allActive) activeColleges.add(cb.value);
+        else activeColleges.delete(cb.value);
+      });
+      applyFilterRules();
+    });
+
+    // Timeline Slider
+    const timelineSlider = document.getElementById('timeline-slider');
+    const timelineBadge = document.getElementById('timeline-year-badge');
+    timelineSlider.addEventListener('input', (e) => {
+      filterYear = parseInt(e.target.value, 10);
+      timelineBadge.innerText = filterYear;
+      applyFilterRules();
+    });
+
+    // Cumulative vs Single Year Mode Toggle
+    const modeCumBtn = document.getElementById('mode-cumulative-btn');
+    const modeSinBtn = document.getElementById('mode-single-btn');
+    modeCumBtn.addEventListener('click', () => {
+      isCumulativeMode = true;
+      modeCumBtn.className = "py-1 rounded-lg font-bold bg-indigo-600/80 text-white";
+      modeSinBtn.className = "py-1 rounded-lg font-medium text-slate-400 hover:text-white";
+      applyFilterRules();
+    });
+    modeSinBtn.addEventListener('click', () => {
+      isCumulativeMode = false;
+      modeSinBtn.className = "py-1 rounded-lg font-bold bg-indigo-600/80 text-white";
+      modeCumBtn.className = "py-1 rounded-lg font-medium text-slate-400 hover:text-white";
+      applyFilterRules();
+    });
+
+    // Camera Presets
+    document.getElementById('btn-view-galaxy').addEventListener('click', () => {
+      new TWEEN.Tween(camera.position).to({ x: 0, y: 220, z: 520 }, 1500).easing(TWEEN.Easing.Cubic.Out).start();
+      new TWEEN.Tween(controls.target).to({ x: 0, y: 0, z: 0 }, 1500).easing(TWEEN.Easing.Cubic.Out).start();
+    });
+    document.getElementById('btn-view-reset').addEventListener('click', () => {
+      new TWEEN.Tween(camera.position).to({ x: 0, y: 140, z: 380 }, 1200).easing(TWEEN.Easing.Cubic.Out).start();
+      new TWEEN.Tween(controls.target).to({ x: 0, y: 0, z: 0 }, 1200).easing(TWEEN.Easing.Cubic.Out).start();
+    });
+
+    // Close Detail Panel
+    document.getElementById('btn-close-detail').addEventListener('click', () => {
+      document.getElementById('detail-panel').classList.add('translate-x-full');
+      selectedThesisId = null;
+    });
+
+    /* ==========================================================================
+       13. 100% STRICT I18N SWITCHER
+       ========================================================================== */
+    const langKoBtn = document.getElementById('lang-ko-btn');
+    const langEnBtn = document.getElementById('lang-en-btn');
+
+    function updateLanguage(lang) {
+      currentLang = lang;
+      const dict = I18N[lang];
+
+      // Button styles
+      if (lang === 'ko') {
+        langKoBtn.className = "px-3 py-1 rounded-full text-xs font-bold transition-colors bg-indigo-600 text-white shadow";
+        langEnBtn.className = "px-3 py-1 rounded-full text-xs font-semibold text-slate-400 hover:text-white transition-colors";
       } else {
-        const cluster = CLUSTER_CONFIG[target];
-        targetPos = { x: cluster.pos[0] + 60, y: cluster.pos[1] + 40, z: cluster.pos[2] + 80 };
-        lookAtPos = { x: cluster.pos[0], y: cluster.pos[1], z: cluster.pos[2] };
+        langEnBtn.className = "px-3 py-1 rounded-full text-xs font-bold transition-colors bg-indigo-600 text-white shadow";
+        langKoBtn.className = "px-3 py-1 rounded-full text-xs font-semibold text-slate-400 hover:text-white transition-colors";
       }
 
-      new TWEEN.Tween(camera.position).to(targetPos, 1400).easing(TWEEN.Easing.Cubic.InOut).start();
-      new TWEEN.Tween(controls.target).to(lookAtPos, 1400).easing(TWEEN.Easing.Cubic.InOut).start();
-    };
+      // Header
+      document.getElementById('app-title').innerText = dict.appTitle;
+      document.getElementById('app-subtitle').innerText = dict.appSubtitle;
 
-    /* =========================================================================
-       10. LANGUAGE SWITCHER (100% KOREAN ON KO MODE)
-       ========================================================================= */
-    const langBtn = document.getElementById('lang-btn');
-    langBtn.addEventListener('click', () => {
-      currentLang = (currentLang === 'ko') ? 'en' : 'ko';
-      updateUILanguage();
-    });
+      // Filter titles
+      document.getElementById('label-college-filters').innerText = dict.collegesTitle;
+      document.getElementById('btn-toggle-all-colleges').innerText = dict.toggleAll;
+      document.getElementById('label-camera-presets').innerText = dict.camPresets;
+      document.getElementById('btn-view-galaxy').innerText = dict.camGalaxy;
+      document.getElementById('btn-view-reset').innerText = dict.camReset;
+      document.getElementById('label-timeline-title').innerText = dict.timelineTitle;
+      document.getElementById('mode-cumulative-btn').innerText = dict.modeCumulative;
+      document.getElementById('mode-single-btn').innerText = dict.modeSingle;
 
-    function updateUILanguage() {
-      const t = I18N[currentLang];
-      document.getElementById('txt-subkorean').innerText = t.subkorean;
-      document.getElementById('txt-subtitle').innerText = t.subtitle;
-      document.getElementById('lbl-timeline').innerText = t.timeline;
-      document.getElementById('lbl-mode').innerText = t.singleYear;
-      document.getElementById('lbl-mode-cum').innerText = t.cumulative;
-      document.getElementById('lbl-clusters').innerText = t.clusters;
-      document.getElementById('lbl-camera').innerText = t.camera;
-      document.getElementById('search-input').placeholder = t.searchPlaceholder;
+      // Search
+      document.getElementById('search-input').placeholder = dict.searchPlaceholder;
+      const opts = document.getElementById('search-type').options;
+      opts[0].text = dict.searchAll;
+      opts[1].text = dict.searchKeyword;
+      opts[2].text = dict.searchAdvisor;
+      opts[3].text = dict.searchAuthor;
+      opts[4].text = dict.searchTitle;
 
-      const opts = searchType.options;
-      opts[0].text = t.searchOpts.all;
-      opts[1].text = t.searchOpts.keyword;
-      opts[2].text = t.searchOpts.advisor;
-      opts[3].text = t.searchOpts.author;
-      opts[4].text = t.searchOpts.title;
+      // Detail Panel
+      document.getElementById('detail-label-title').innerText = dict.detailTitleLabel;
+      document.getElementById('detail-label-author').innerText = dict.detailAuthorLabel;
+      document.getElementById('detail-label-advisor').innerText = dict.detailAdvisorLabel;
+      document.getElementById('detail-label-dept').innerText = dict.detailDeptLabel;
+      document.getElementById('detail-label-year').innerText = dict.detailYearLabel;
+      document.getElementById('detail-label-metrics').innerText = dict.detailMetricsLabel;
+      document.getElementById('detail-label-deg').innerText = dict.detailDegLabel;
+      document.getElementById('detail-label-bet').innerText = dict.detailBetLabel;
+      document.getElementById('detail-label-page').innerText = dict.detailPageLabel;
+      document.getElementById('detail-label-keywords').innerText = dict.detailKeywordsLabel;
+      document.getElementById('detail-label-abstract').innerText = dict.detailAbstractLabel;
+      document.getElementById('detail-riss-text').innerText = dict.detailRissBtn;
 
-      if(highlightedMesh) {
-        renderDetailPanel(highlightedMesh.userData);
-      } else if(lastSearchResults) {
-        renderSearchResults(lastSearchResults);
+      // Re-render College checkboxes & Detail if opened
+      renderCollegeFilters();
+      if (selectedThesisId) {
+        const curThesis = MOCK_DATA.find(d => d.id === selectedThesisId);
+        if (curThesis) updateDetailPanelContent(curThesis);
       }
     }
 
-    /* =========================================================================
-       11. ANIMATION & PULSE LOOP
-       ========================================================================= */
-    const clock = new THREE.Clock();
+    langKoBtn.addEventListener('click', () => updateLanguage('ko'));
+    langEnBtn.addEventListener('click', () => updateLanguage('en'));
 
+    /* ==========================================================================
+       14. ANIMATION LOOP & RENDER
+       ========================================================================== */
     function animate() {
       requestAnimationFrame(animate);
-      const delta = clock.getDelta();
-      const time = clock.getElapsedTime();
+
+      const dt = clock.getDelta();
+      const elapsed = clock.getElapsedTime();
+
       TWEEN.update();
+      controls.update();
 
-      // Static Cluster Layout with super-slow central rotation
-      galaxyRoot.rotation.y = time * 0.015;
+      // Opening sequence progress
+      if (isOpening) {
+        updateOpeningSequence(dt);
+      }
 
-      // Planet Pulse & Self-Rotation
-      thesisNodes.forEach(node => {
-        if(node.visible) {
-          // Self-rotation around local axis
-          node.rotation.y += node.userData.selfRotSpeed;
+      // Aurora dynamic wave shader time
+      auroraMat.uniforms.uTime.value = elapsed;
 
-          // Breathing / Pulsing rhythm
-          const pulse = Math.sin(time * 2 + node.userData.pulsePhase) * 0.08;
-          node.scale.set(1 + pulse, 1 + pulse, 1 + pulse);
+      // Slow Galaxy Rotation
+      galaxyGroup.rotation.y += 0.0006;
+
+      // Planet breathing glow & axial rotation
+      planetMeshes.forEach(mesh => {
+        if (mesh.visible) {
+          // Self rotation
+          mesh.rotation.y += mesh.userData.rotSpeed;
+
+          // Subtle breathing glow
+          if (!mesh.userData.isHighlight) {
+            const pulse = Math.sin(elapsed * 2.0 + mesh.userData.pulseOffset) * 0.08;
+            mesh.material.emissiveIntensity = (mesh.userData.thesis.isSupernova ? 0.9 : 0.25) + pulse;
+          } else {
+            // Strobing beacon for search matches
+            mesh.material.emissiveIntensity = 1.0 + Math.sin(elapsed * 8.0) * 0.6;
+          }
+
+          // Rotate supernova ring if present
+          if (mesh.userData.haloMesh) {
+            mesh.userData.haloMesh.rotation.z += 0.004;
+          }
         }
       });
 
-      // Flashing matching search results continuously
-      if(matchingNodes.length > 0) {
-        const flashIntensity = (Math.sin(time * 8) + 1) / 2;
-        matchingNodes.forEach(node => {
-          node.material.color.setRGB(
-            THREE.MathUtils.lerp(1, 0, flashIntensity),
-            1,
-            1
-          );
-        });
-      }
+      // LOD & hover detection
+      handleRaycastLOD();
 
-      controls.update();
       renderer.render(scene, camera);
     }
-    animate();
 
+    // Responsive Resize
     window.addEventListener('resize', () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
     });
+
+    // Initialization
+    renderCollegeFilters();
+    animate();
   </script>
 </body>
 </html>
