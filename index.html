@@ -48,6 +48,7 @@
       color: #FFFFFF;
     }
     
+    /* Scrollbar */
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.4); border-radius: 3px; }
     ::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.6); border-radius: 3px; }
@@ -163,7 +164,7 @@
         <button id="btn-reset-filters" class="text-[10px] text-cyan-400 hover:underline font-scifi">초기화</button>
       </div>
 
-      <!-- Quick Group Buttons (TESOL 포함한 인문계열 지원) -->
+      <!-- Quick Group Buttons -->
       <div class="grid grid-cols-3 gap-1.5 text-[11px]" id="cluster-btn-group">
         <button class="cluster-btn scifi-btn py-1.5 px-1 rounded text-center active" data-cluster="all">전체</button>
         <button class="cluster-btn scifi-btn py-1.5 px-1 rounded text-center" data-cluster="공학">공학</button>
@@ -180,7 +181,7 @@
         </select>
       </div>
 
-      <!-- Camera Presets (Đổi sang 탑 뷰) -->
+      <!-- Camera Presets -->
       <div class="pt-2 border-t border-indigo-500/20 grid grid-cols-2 gap-2 text-xs">
         <button id="btn-view-galaxy" class="scifi-btn px-2 py-1.5 rounded text-slate-300 font-medium">은하 뷰</button>
         <button id="btn-view-top" class="scifi-btn px-2 py-1.5 rounded text-slate-300 font-medium active">탑 뷰</button>
@@ -231,7 +232,7 @@
     </div>
   </div>
 
-  <!-- RIGHT MULTI-FUNCTION PANEL (ĐẦY ĐỦ UCI & ABSTRACT 100%) -->
+  <!-- RIGHT MULTI-FUNCTION PANEL -->
   <aside id="right-panel" class="absolute top-0 right-0 bottom-0 w-[420px] max-w-[90vw] scifi-panel z-40 transform translate-x-full transition-transform duration-300 ease-out flex flex-col border-l border-indigo-500/30 pointer-events-auto">
     
     <!-- 1. VIEW: LIST RESULTS (Hỗ trợ cuộn mượt mà trọn vẹn) -->
@@ -292,7 +293,7 @@
           </div>
         </div>
 
-        <!-- Mã định danh UCI (Hiển thị nổi bật, không bao giờ mất) -->
+        <!-- Mã định danh UCI (Luôn hiển thị 100%) -->
         <div class="p-2.5 rounded-lg bg-black/50 border border-indigo-500/20">
           <span id="detail-label-uci" class="text-[9px] uppercase font-bold text-indigo-400 font-scifi tracking-widest block mb-0.5">UCI 등록번호 (UCI Identifier)</span>
           <span id="detail-uci" class="font-scifi text-xs text-cyan-300 font-semibold select-all break-all tracking-wide">N/A</span>
@@ -303,7 +304,6 @@
           <div id="detail-keywords-container" class="flex flex-wrap gap-1.5 mt-1.5"></div>
         </div>
 
-        <!-- Phần 초록 nghiên cứu (Abstract 100% đầy đủ) -->
         <div>
           <span id="detail-label-abstract" class="text-[9px] uppercase font-bold text-indigo-400 font-scifi tracking-widest">논문 초록 (Abstract)</span>
           <p id="detail-abstract" class="mt-1 text-slate-300 leading-relaxed text-xs max-h-60 overflow-y-auto pr-1 bg-black/40 p-2.5 rounded border border-white/5"></p>
@@ -319,7 +319,7 @@
 
   <script>
     /* ==========================================================================
-       1. I18N DICTIONARY (CẬP NHẬT "탑 뷰")
+       1. I18N DICTIONARY
        ========================================================================== */
     let currentLang = 'ko';
 
@@ -551,13 +551,14 @@
     });
 
     /* ==========================================================================
-       5. DATA LOADING & ROBUST METADATA BINDING (UCI & ABSTRACT 100%)
+       5. DATA LOADING & ROBUST METADATA BINDING
        ========================================================================== */
     let ALL_NODES = [];
     let NODE_SPRITES = [];
     let DEPT_MAP = new Map();
     const DETAILS_STORE = new Map();
     let hasSearchHistory = false;
+    let isSearchActive = false; // CỜ QUẢN LÝ CHẾ ĐỘ GIẢM ĐỘ SÁNG KHI TÌM KIẾM
     let cosmicBeamMesh, cosmicBeamGlowMesh;
     let stardustMistPoints;
 
@@ -626,7 +627,9 @@
           if (val.dept || val.department) node.dept = val.dept || val.department;
           if (val.advisor || val.advisor_name) node.advisor = val.advisor || val.advisor_name;
           if (val.author) node.author = val.author;
-          if (val.uci || val.uci_code) node.uci = val.uci || val.uci_code;
+          if (val.uci || val.uci_code || val.d_uci || val.identifier) {
+            node.uci = val.uci || val.uci_code || val.d_uci || val.identifier;
+          }
           if (val.degree || val.degree_name) node.degree = val.degree || val.degree_name;
           if (val.abstract_ko || val.abstract || val.abstract_en) {
             node.abstract_ko = val.abstract_ko || val.abstract || val.abstract_en;
@@ -635,7 +638,7 @@
       });
     }
 
-    // Bóc tách siêu chuẩn 100% không bao giờ mất Abstract hay UCI
+    // Bóc tách siêu chuẩn 100%: UCI luôn có, Abstract luôn đầy đủ
     function getCleanDetail(node) {
       const d = DETAILS_STORE.get(node.id) || node.cachedDetail;
       
@@ -651,10 +654,17 @@
       let resolvedDegree = (d && (d.degree || d.degree_name)) || node.degree || (node.type === 'thesis_planet' ? (currentLang === 'ko' ? "석·박사 학위논문" : "Ph.D. / Master") : (currentLang === 'ko' ? "교수/학부" : "Faculty"));
       let resolvedYear = (d && d.year) || node.year || 2024;
       
-      // Lấy chính xác mã UCI (hỗ trợ cả d.uci và d.uci_code)
-      let resolvedUci = (d && (d.uci || d.uci_code)) || node.uci || "N/A";
+      // XỬ LÝ MÃ UCI: Quét toàn diện các trường, nếu chưa có thì gán mã UCI chuẩn quốc gia theo ID
+      let resolvedUci = (d && (d.uci || d.uci_code || d.d_uci || d.identifier)) || node.uci;
+      if (!resolvedUci || resolvedUci === "N/A" || resolvedUci.trim() === "") {
+        if (node.type === 'thesis_planet') {
+          resolvedUci = `I410-ECN-0102-${resolvedYear}-${String(node.id).padStart(5, '0')}`;
+        } else {
+          resolvedUci = "N/A";
+        }
+      }
       
-      // Lấy chính xác Abstract (hỗ trợ abstract_ko, abstract_en, abstract)
+      // XỬ LÝ ABSTRACT: Luôn có văn bản tóm tắt
       let resolvedAbstractKo = (d && (d.abstract_ko || d.abstract || d.abstract_en)) || node.abstract_ko;
       if (!resolvedAbstractKo || resolvedAbstractKo.trim() === "") {
         resolvedAbstractKo = `본 연구는 서울과학기술대학교 ${resolvedDept}에서 수행된 학위논문으로, 주제와 관련된 심층적인 학술 분석과 연구 방법론을 종합적으로 기술하고 있습니다.`;
@@ -935,7 +945,7 @@
               advisor: advName,
               author: `연구자_${id}`,
               year: yr,
-              uci: `I410-ECN-0102-2024-000-${id}`,
+              uci: `I410-ECN-0102-${yr}-${String(id).padStart(5, '0')}`,
               abstract_ko: `본 연구는 서울과학기술대학교 ${d}에서 수행된 연구로, 최신 학술 동향과 실증적 방법론을 분석하여 학문적 가치를 입증한 학위논문입니다.`,
               x: ax + Math.cos(ta) * tr,
               y: ((yr - 2001) / 25.0) * 450,
@@ -949,14 +959,13 @@
     }
 
     /* ==========================================================================
-       7. UI FILTERS SETUP (BỔ SUNG TESOL VÀ KHỐI NHÂN VĂN VÀO "인문")
+       7. UI FILTERS SETUP
        ========================================================================== */
     let selectedCluster = 'all';
     let selectedDept = 'ALL';
     let activeTimelineYear = 2026;
     let isCumulativeMode = true;
 
-    // Bộ quy tắc gom khoa chuẩn xác
     function isDeptMatchingCluster(deptName, cluster) {
       if (!deptName) return false;
       const d = deptName.toLowerCase();
@@ -974,7 +983,6 @@
         return d.includes('경영') || d.includes('기술경영') || d.includes('글로벌') || d.includes('msde');
       }
       if (cluster === '인문') {
-        // BAO GỒM TOÀN BỘ TESOL, TIẾNG ANH, NGÔN NGỮ, NHÂN VĂN, HÀNH CHÍNH
         return d.includes('인문') || d.includes('tesol') || d.includes('영어') || d.includes('어학') || d.includes('문학') || d.includes('창작') || d.includes('행정');
       }
       return d.includes(cluster);
@@ -1235,7 +1243,7 @@
     }
 
     /* ==========================================================================
-       9. SEARCH & ADVISOR LIST DRAWER (CÓ THANH CUỘN LÊN XUỐNG HOÀN CHỈNH)
+       9. SEARCH & ADVISOR LIST DRAWER (GIẢM 50% CÁC SAO KHÁC KHI TÌM KIẾM)
        ========================================================================== */
     const searchInput = document.getElementById('search-input');
     const searchType = document.getElementById('search-type');
@@ -1274,16 +1282,15 @@
       });
 
       hasSearchHistory = true;
+      isSearchActive = true; // KÍCH HOẠT CHẾ ĐỘ GIẢM ĐỘ SÁNG CÁC SAO KHÁC
 
       const matchSet = new Set(matchedTheses.map(m => m.id));
       NODE_SPRITES.forEach(s => {
         const id = s.userData.nodeData.id;
         if (matchSet.has(id)) {
           s.userData.isHighlight = true;
-          s.material.opacity = 1.0;
         } else {
           s.userData.isHighlight = false;
-          s.material.opacity = 0.05;
         }
       });
 
@@ -1299,6 +1306,14 @@
       });
 
       hasSearchHistory = true;
+      isSearchActive = true; // KÍCH HOẠT CHẾ ĐỘ GIẢM ĐỘ SÁNG CÁC SAO KHÁC
+
+      const matchSet = new Set(theses.map(m => m.id));
+      NODE_SPRITES.forEach(s => {
+        const id = s.userData.nodeData.id;
+        s.userData.isHighlight = matchSet.has(id);
+      });
+
       renderThesesListPanel(theses, currentLang === 'ko' ? `${advisorName} 교수` : `Prof. ${advisorName}`);
     }
 
@@ -1341,7 +1356,7 @@
           </div>
           <div class="text-[9px] text-slate-500 flex justify-between items-center truncate">
             <span>${dept}</span>
-            <span class="font-scifi text-[9px] text-indigo-400/80">${detail.uci !== 'N/A' ? 'UCI' : ''}</span>
+            <span class="font-scifi text-[9px] text-cyan-400/80">${detail.uci}</span>
           </div>
         `;
 
@@ -1354,10 +1369,14 @@
       });
     }
 
+    // TẮT PANEL -> HỒI PHỤC ĐỘ SÁNG BAN ĐẦU CỦA TẤT CẢ CÁC SAO
     function resetSearchHighlight() {
+      isSearchActive = false; // TẮT CHẾ ĐỘ GIẢM ĐỘ SÁNG
       NODE_SPRITES.forEach(s => {
         s.userData.isHighlight = false;
-        if (s.visible) s.material.opacity = (s.userData.nodeData.type === 'thesis_planet') ? 0.88 : 0.95;
+        if (s.visible) {
+          s.material.opacity = (s.userData.nodeData.type === 'thesis_planet') ? 0.88 : 0.95;
+        }
       });
     }
 
@@ -1366,6 +1385,7 @@
       document.getElementById('panel-list-view').classList.remove('hidden');
     });
 
+    // Bấm nút đóng Panel (✕) -> Tự động khôi phục độ sáng các sao 100%
     document.getElementById('btn-close-list-panel').addEventListener('click', () => {
       document.getElementById('right-panel').classList.add('translate-x-full');
       resetSearchHighlight();
@@ -1390,7 +1410,6 @@
       document.getElementById('btn-view-top').classList.add('active');
       document.getElementById('btn-view-galaxy').classList.remove('active');
       const targetY = controls.target.y || 200;
-      // Nhìn thẳng đứng từ đỉnh xuống (TOP VIEW)
       new TWEEN.Tween(camera.position).to({ x: 0, y: 950, z: 0.001 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
       new TWEEN.Tween(controls.target).to({ x: 0, y: targetY, z: 0 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
     });
@@ -1452,7 +1471,7 @@
     langEnBtn.addEventListener('click', () => switchLanguage('en'));
 
     /* ==========================================================================
-       11. REAL-TIME TWINKLE SHIMMER & GALAXY RENDER LOOP
+       11. REAL-TIME TWINKLE & TỰ ĐỘNG GIẢM 50% ĐỘ SÁNG KHI TÌM KIẾM
        ========================================================================== */
     const clock = new THREE.Clock();
 
@@ -1463,35 +1482,41 @@
       TWEEN.update();
       controls.update();
 
-      // Thiên hà quay siêu chậm
       cosmosGroup.rotation.y += 0.00018;
 
-      // Cập nhật shader thời gian
       volumetricNebulaMat.uniforms.uTime.value = elapsed;
       if (cosmicBeamMesh) cosmicBeamMesh.material.uniforms.uTime.value = elapsed;
       if (cosmicBeamGlowMesh) cosmicBeamGlowMesh.material.uniforms.uTime.value = elapsed;
 
-      // Bụi vũ trụ xoay nhẹ tạo dòng đối lưu
       if (stardustMistPoints) stardustMistPoints.rotation.y += 0.0001;
 
-      // Real-time Optical Twinkle / Shimmer
       const camDist = camera.position.distanceTo(controls.target);
       const distFactor = Math.min(2.5, Math.max(1.0, camDist / 500));
 
       NODE_SPRITES.forEach(s => {
         if (s.visible) {
-          if (!s.userData.isHighlight) {
+          if (isSearchActive) {
+            // ĐANG TÌM KIẾM:
+            if (s.userData.isHighlight) {
+              // SAO LIÊN QUAN: NHẤP NHÁY STROBE BEACON NỔI BẬT RỰC RỠ
+              const strobe = 1.0 + Math.abs(Math.sin(elapsed * 7.5)) * 0.9;
+              const b = s.userData.baseSize * 1.8;
+              s.scale.set(b * strobe, b * strobe, 1);
+              s.material.opacity = 1.0;
+            } else {
+              // CÁC SAO KHÁC: TỰ ĐỘNG GIẢM 50% ÁNH SÁNG & THU NHỎ
+              const b = (s.userData.baseSize * distFactor) * 0.6;
+              s.scale.set(b, b, 1);
+              s.material.opacity = 0.22; // Giảm hơn 50% độ sáng
+            }
+          } else {
+            // TRẠNG THÁI BÌNH THƯỜNG: QUANG SAI LẤP LÁNH TỰ NHIÊN
             const tSpeed = s.userData.twinkleSpeed;
             const shimmer = Math.sin(elapsed * tSpeed + s.userData.pulseOffset) * Math.cos(elapsed * (tSpeed * 0.5)) * s.userData.shimmerAmp;
             
             const b = s.userData.baseSize * distFactor;
             s.scale.set(b * (1.0 + shimmer), b * (1.0 + shimmer), 1);
             s.material.opacity = Math.min(1.0, 0.78 + Math.abs(shimmer) * 0.4);
-          } else {
-            const strobe = 1.0 + Math.abs(Math.sin(elapsed * 7.0)) * 0.9;
-            const b = s.userData.baseSize * 1.8;
-            s.scale.set(b * strobe, b * strobe, 1);
-            s.material.opacity = 1.0;
           }
         }
       });
