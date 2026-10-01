@@ -187,7 +187,7 @@
       </div>
     </div>
 
-    <!-- Bottom Left: 연도 (TIMELINE) - SIÊU TINH GỌN (w-20) -->
+    <!-- Bottom Left: 연도 (TIMELINE) -->
     <div class="w-20 scifi-panel py-3 px-2 rounded-xl pointer-events-auto border border-white/10 flex flex-col items-center">
       <div class="w-full flex flex-col items-center border-b border-indigo-500/20 pb-1 mb-1">
         <span id="label-timeline-title" class="text-[10px] font-bold text-indigo-300">연도</span>
@@ -318,7 +318,7 @@
 
   <script>
     /* ==========================================================================
-       1. 100% PURE MULTILINGUAL SYSTEM
+       1. I18N DICTIONARY
        ========================================================================== */
     let currentLang = 'ko';
 
@@ -428,7 +428,7 @@
     }
 
     /* ==========================================================================
-       2. PROCEDURAL TEXTURES
+       2. PROCEDURAL OPTICAL TEXTURES
        ========================================================================== */
     function createStarlightTexture() {
       const c = document.createElement('canvas');
@@ -464,8 +464,8 @@
       c.width = 64; c.height = 64;
       const ctx = c.getContext('2d');
       const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
-      grad.addColorStop(0.0, 'rgba(255, 255, 255, 0.85)');
-      grad.addColorStop(0.35, 'rgba(255, 255, 255, 0.25)');
+      grad.addColorStop(0.0, 'rgba(255, 255, 255, 0.95)');
+      grad.addColorStop(0.35, 'rgba(255, 255, 255, 0.35)');
       grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, 64, 64);
@@ -477,15 +477,16 @@
     const softDustTexture = createSoftDustTexture();
 
     /* ==========================================================================
-       3. THREE.JS SCENE SETUP & MẶC ĐỊNH LÀ "탑 뷰" (TOP VIEW)
+       3. THREE.JS SCENE SETUP & MẶC ĐỊNH BẮT ĐẦU: TOP VIEW TẠI 1/2 CHIỀU CAO TRỤC Y
        ========================================================================== */
     const canvas = document.getElementById('cosmos-canvas');
     const scene = new THREE.Scene();
 
     const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 9000);
     
-    // MẶC ĐỊNH BẮT ĐẦU: TOP VIEW (NHÌN TRỰC DIỆN ĐỈNH XUỐNG TÂM CỘT SÁNG)
-    camera.position.set(0, 1050, 0.01);
+    // Tọa độ khởi động: Nhìn trực diện 탑 뷰 ở 1/2 chiều cao trục Y (Y ~ 230)
+    const midGalaxyY = 230;
+    camera.position.set(0, midGalaxyY, 780);
 
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: "high-performance" });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -496,21 +497,21 @@
     controls.dampingFactor = 0.05;
     controls.maxDistance = 4000;
     controls.minDistance = 15;
-    controls.target.set(0, 230, 0);
+    controls.target.set(0, midGalaxyY, 0);
 
     const cosmosGroup = new THREE.Group();
     scene.add(cosmosGroup);
 
     /* ==========================================================================
-       4. KHỚP ĐIỂM ĐẦU TRỤC Y VỚI ĐÁY NGÂN HÀ & CỘT SÁNG MỀM MẠI NHƯ NGÔI SAO
+       4. CỘT SÁNG THẲNG ĐỨNG VỪA KHÍT TRỤC Y & HÀO QUANG MỀM MẠI
        ========================================================================== */
-    // Đáy ngân hà: Y ≈ -30.0, Đỉnh ngân hà: Y ≈ 494.0 -> Chiều cao cột: 540 đơn vị
-    const GALAXY_Y_MIN = -30.0;
-    const GALAXY_Y_MAX = 510.0;
-    const GALAXY_Y_CENTER = (GALAXY_Y_MIN + GALAXY_Y_MAX) / 2.0; // 240.0
-    const GALAXY_HEIGHT = GALAXY_Y_MAX - GALAXY_Y_MIN; // 540.0
+    // Y của thiên hà chạy từ -30 đến ~500 -> Chiều cao thực tế là ~530
+    const galaxyYBottom = -30;
+    const galaxyYTop = 500;
+    const galaxyYHeight = galaxyYTop - galaxyYBottom;
+    const galaxyYCenter = (galaxyYTop + galaxyYBottom) / 2; // ~235
 
-    // Điểm sáng lõi siêu nhỏ (0.8)
+    // Lõi vi mô
     const microCoreMat = new THREE.SpriteMaterial({
       map: starTexture,
       color: 0xFFFFFF,
@@ -521,104 +522,109 @@
     });
     const microCoreSprite = new THREE.Sprite(microCoreMat);
     microCoreSprite.scale.set(0.8, 0.8, 1);
-    microCoreSprite.position.set(0, GALAXY_Y_MIN, 0);
+    microCoreSprite.position.set(0, galaxyYBottom, 0);
     cosmosGroup.add(microCoreSprite);
 
-    // CỘT SÁNG MỀM MẠI NHIỀU LỚP (KHÔNG DÙNG ỐNG ĐƠN ĐIỆU GÂY THÔ KHI NHÌN NGANG)
-    // 1. Tia sáng lõi mỏng (Core Beam)
-    const coreBeamGeo = new THREE.CylinderGeometry(1.2, 1.2, GALAXY_HEIGHT, 32, 1, true);
-    const coreBeamMat = new THREE.ShaderMaterial({
+    // 1. Cột lõi laser thẳng đứng (Không dư thừa xuống dưới đáy)
+    const beamGeo = new THREE.CylinderGeometry(1.4, 1.4, galaxyYHeight, 32, 1, true);
+    const beamMat = new THREE.ShaderMaterial({
       transparent: true,
       depthWrite: false,
       blending: THREE.AdditiveBlending,
       side: THREE.DoubleSide,
-      uniforms: {
-        uTime: { value: 0 }
-      },
+      uniforms: { uTime: { value: 0 } },
       vertexShader: `
         varying vec2 vUv;
+        varying vec3 vPos;
         void main() {
           vUv = uv;
+          vPos = position;
           gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
         }
       `,
       fragmentShader: `
         varying vec2 vUv;
+        varying vec3 vPos;
         uniform float uTime;
         void main() {
           float fade = smoothstep(0.0, 0.08, vUv.y) * smoothstep(1.0, 0.92, vUv.y);
-          vec3 cyan = vec3(0.02, 0.75, 0.88);
-          vec3 violet = vec3(0.58, 0.38, 0.98);
-          vec3 pink = vec3(0.96, 0.28, 0.42);
-          
-          float wave = sin(vUv.y * 12.0 - uTime * 2.5) * 0.5 + 0.5;
-          vec3 col = mix(cyan, violet, vUv.y);
-          col = mix(col, pink, wave * 0.6);
-          
-          float alpha = fade * 0.85;
-          gl_FragColor = vec4(col * alpha * 1.8, alpha);
-        }
-      `
-    });
-    const coreBeamMesh = new THREE.Mesh(coreBeamGeo, coreBeamMat);
-    coreBeamMesh.position.y = GALAXY_Y_CENTER;
-    cosmosGroup.add(coreBeamMesh);
-
-    // 2. Lớp Hào quang quang sai mềm đa tầng (Optical Glow Layer - mềm như các ngôi sao Three.js)
-    const glowPlanesGroup = new THREE.Group();
-    glowPlanesGroup.position.y = GALAXY_Y_CENTER;
-    cosmosGroup.add(glowPlanesGroup);
-
-    // 4 mặt phẳng xoay chéo nhau để nhìn góc ngang hay nhìn xiên đều phát sáng mềm mại không có cạnh sắc
-    const glowPlaneGeo = new THREE.PlaneGeometry(36, GALAXY_HEIGHT);
-    const glowPlaneMat = new THREE.ShaderMaterial({
-      transparent: true,
-      depthWrite: false,
-      blending: THREE.AdditiveBlending,
-      side: THREE.DoubleSide,
-      uniforms: {
-        uTime: { value: 0 }
-      },
-      vertexShader: `
-        varying vec2 vUv;
-        void main() {
-          vUv = uv;
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        }
-      `,
-      fragmentShader: `
-        varying vec2 vUv;
-        uniform float uTime;
-        void main() {
-          // Radial falloff từ tâm trục ra 2 biên ngang (x = -1 -> 1)
-          float xDist = abs(vUv.x - 0.5) * 2.0;
-          float radialGlow = exp(-xDist * xDist * 7.5);
-          float yFade = smoothstep(0.0, 0.06, vUv.y) * smoothstep(1.0, 0.94, vUv.y);
-          
           vec3 cyan = vec3(0.023, 0.713, 0.831);
           vec3 violet = vec3(0.545, 0.360, 0.964);
           vec3 pink = vec3(0.956, 0.247, 0.368);
           
-          vec3 col = mix(cyan, violet, vUv.y);
-          col = mix(col, pink, sin(vUv.y * 10.0 + uTime * 2.0) * 0.4 + 0.4);
+          float wave = sin(vPos.y * 0.04 - uTime * 2.2) * 0.5 + 0.5;
+          vec3 col = mix(cyan, violet, clamp(vUv.y, 0.0, 1.0));
+          col = mix(col, pink, wave * 0.7);
           
-          float alpha = radialGlow * yFade * 0.42;
+          float alpha = fade * (0.8 + sin(uTime * 3.5 + vPos.y * 0.03) * 0.15);
+          gl_FragColor = vec4(col * alpha * 1.8, alpha);
+        }
+      `
+    });
+    const cosmicBeam = new THREE.Mesh(beamGeo, beamMat);
+    cosmicBeam.position.y = galaxyYCenter;
+    cosmosGroup.add(cosmicBeam);
+
+    // 2. Lớp quang sai mềm mại bao bọc cột sáng (Glow Sleeve)
+    const beamGlowGeo = new THREE.CylinderGeometry(12, 12, galaxyYHeight, 32, 1, true);
+    const beamGlowMat = new THREE.ShaderMaterial({
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+      side: THREE.DoubleSide,
+      uniforms: { uTime: { value: 0 } },
+      vertexShader: `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        varying vec2 vUv;
+        uniform float uTime;
+        void main() {
+          float fade = smoothstep(0.0, 0.12, vUv.y) * smoothstep(1.0, 0.88, vUv.y);
+          vec3 violet = vec3(0.545, 0.360, 0.964);
+          vec3 pink = vec3(0.956, 0.247, 0.368);
+          vec3 col = mix(violet, pink, sin(vUv.y * 6.0 + uTime) * 0.5 + 0.5);
+          float alpha = fade * 0.28;
           gl_FragColor = vec4(col * alpha, alpha);
         }
       `
     });
+    const cosmicBeamGlow = new THREE.Mesh(beamGlowGeo, beamGlowMat);
+    cosmicBeamGlow.position.y = galaxyYCenter;
+    cosmosGroup.add(cosmicBeamGlow);
 
-    for (let r = 0; r < 4; r++) {
-      const plane = new THREE.Mesh(glowPlaneGeo, glowPlaneMat);
-      plane.rotation.y = (Math.PI / 4) * r;
-      glowPlanesGroup.add(plane);
+    // 3. Chuỗi hạt tinh vân quang học bám quanh cột sáng (Tạo cảm giác lung linh như các ngôi sao)
+    const columnDustCount = 350;
+    const colDustGeo = new THREE.BufferGeometry();
+    const colDustPos = new Float32Array(columnDustCount * 3);
+    for (let i = 0; i < columnDustCount; i++) {
+      const a = Math.random() * Math.PI * 2;
+      const r = 2.0 + Math.random() * 14.0;
+      colDustPos[i * 3] = Math.cos(a) * r;
+      colDustPos[i * 3 + 1] = galaxyYBottom + Math.random() * galaxyYHeight;
+      colDustPos[i * 3 + 2] = Math.sin(a) * r;
     }
+    colDustGeo.setAttribute('position', new THREE.BufferAttribute(colDustPos, 3));
+    const colDustMat = new THREE.PointsMaterial({
+      size: 4.5,
+      map: starTexture,
+      color: 0x818CF8,
+      transparent: true,
+      opacity: 0.7,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    });
+    const colDustMesh = new THREE.Points(colDustGeo, colDustMat);
+    cosmosGroup.add(colDustMesh);
 
     /* ==========================================================================
-       5. QUẦNG SÁNG GALAXY & BỤI VŨ TRỤ (ĐẬM HƠN 20%, BAO BỌC TỚI NĂM 2026)
+       5. QUẦNG SÁNG GALAXY THỂ TÍCH (ĐẬM HƠN 20%) & BỤI VŨ TRỤ BAO TRỌN NĂM 2026
        ========================================================================== */
-    // Quầng sáng hình phễu 3D đậm màu hơn 20%
-    const funnelHazeGeo = new THREE.CylinderGeometry(500, 35, GALAXY_HEIGHT, 48, 24, true);
+    const funnelHazeGeo = new THREE.CylinderGeometry(520, 35, galaxyYHeight + 40, 48, 24, true);
     const funnelHazeMat = new THREE.ShaderMaterial({
       transparent: true,
       depthWrite: false,
@@ -626,7 +632,7 @@
       side: THREE.DoubleSide,
       uniforms: {
         uTime: { value: 0 },
-        uIntensity: { value: 0.65 } // Đậm màu lên 20% (0.48 -> 0.65)
+        uIntensity: { value: 0.72 } // ĐẬM THÊM 20%
       },
       vertexShader: `
         varying vec2 vUv;
@@ -644,47 +650,49 @@
         uniform float uIntensity;
         void main() {
           float angle = atan(vPos.z, vPos.x);
-          float swirl = sin(angle * 4.0 + vPos.y * 0.02 - uTime * 0.35) * 0.3;
+          float swirl = sin(angle * 4.0 + vPos.y * 0.02 - uTime * 0.4) * 0.25;
           float fade = smoothstep(0.0, 0.1, vUv.y) * smoothstep(1.0, 0.9, vUv.y);
           
-          // Màu đậm bão hòa cao hơn 20%
-          vec3 pink = vec3(1.0, 0.20, 0.42);
-          vec3 violet = vec3(0.62, 0.32, 1.0);
-          vec3 cyan = vec3(0.0, 0.82, 0.96);
+          vec3 pink = vec3(0.98, 0.22, 0.38);
+          vec3 violet = vec3(0.58, 0.34, 0.98);
+          vec3 cyan = vec3(0.01, 0.76, 0.90);
           
           vec3 col = mix(cyan, violet, clamp(vUv.y, 0.0, 1.0));
           col = mix(col, pink, clamp(sin(angle * 3.0 + uTime * 0.3) * 0.5 + 0.5, 0.0, 1.0));
           
-          float alpha = fade * (0.40 + swirl * 0.12) * uIntensity;
+          float alpha = fade * (0.38 + swirl * 0.12) * uIntensity;
           gl_FragColor = vec4(col * alpha * 1.6, alpha);
         }
       `
     });
     const funnelHazeMesh = new THREE.Mesh(funnelHazeGeo, funnelHazeMat);
-    funnelHazeMesh.position.y = GALAXY_Y_CENTER;
+    funnelHazeMesh.position.y = galaxyYCenter;
     cosmosGroup.add(funnelHazeMesh);
 
-    // 8.500 hạt bụi vũ trụ bao trọn từ chân tới năm 2026
-    const mistCount = 8500;
+    // 8.000 HẠT BỤI VŨ TRỤ BAO TRỌN KHÔNG GIAN
+    const mistCount = 8000;
     const mistGeo = new THREE.BufferGeometry();
     const mistPositions = new Float32Array(mistCount * 3);
     const mistColors = new Float32Array(mistCount * 3);
 
     const mistPalette = [
-      new THREE.Color("#F43F5E"), new THREE.Color("#EC4899"),
-      new THREE.Color("#8B5CF6"), new THREE.Color("#6366F1"),
-      new THREE.Color("#06B6D4"), new THREE.Color("#38BDF8")
+      new THREE.Color("#F43F5E"),
+      new THREE.Color("#EC4899"),
+      new THREE.Color("#8B5CF6"),
+      new THREE.Color("#6366F1"),
+      new THREE.Color("#06B6D4"),
+      new THREE.Color("#38BDF8")
     ];
 
     for (let i = 0; i < mistCount; i++) {
-      const tNorm = Math.random(); // 0 to 1
-      const y = GALAXY_Y_MIN + tNorm * GALAXY_HEIGHT;
-      const funnelRadMax = 35 + tNorm * 440;
+      const tNorm = Math.random();
+      const y = galaxyYBottom + tNorm * galaxyYHeight;
+      const funnelRadMax = 35 + tNorm * 460;
       const rad = 8 + Math.pow(Math.random(), 0.6) * funnelRadMax;
       const angle = (i % 6) * (Math.PI / 3) + (Math.random() * 4.5);
       
       mistPositions[i * 3] = Math.cos(angle) * rad;
-      mistPositions[i * 3 + 1] = y + (Math.random() - 0.5) * 25;
+      mistPositions[i * 3 + 1] = y + (Math.random() - 0.5) * 15;
       mistPositions[i * 3 + 2] = Math.sin(angle) * rad;
 
       const col = mistPalette[Math.floor(Math.random() * mistPalette.length)];
@@ -697,11 +705,11 @@
     mistGeo.setAttribute('color', new THREE.BufferAttribute(mistColors, 3));
 
     const mistMat = new THREE.PointsMaterial({
-      size: 7.2,
+      size: 7.5,
       map: softDustTexture,
       vertexColors: true,
       transparent: true,
-      opacity: 0.48, // Đậm hơn 20%
+      opacity: 0.48, // ĐẬM ĐÀ HƠN
       blending: THREE.AdditiveBlending,
       depthWrite: false
     });
@@ -709,13 +717,25 @@
     cosmosGroup.add(stardustMistPoints);
 
     /* ==========================================================================
-       6. DATA LOADING & NGHIÊNG NHẸ TỪNG NĂM (-5° TỚI 5°) TRÁNH CHỒNG ĐĨA PHẲNG
+       6. DATA LOADING & NGHIÊNG SO LE TỪNG NĂM (-5° ĐẾN 5°)
        ========================================================================== */
     let ALL_NODES = [];
     let NODE_SPRITES = [];
     let DEPT_MAP = new Map();
     const DETAILS_STORE = new Map();
     let hasSearchHistory = false;
+
+    // Sinh ma trận xoay nghiêng ngẫu nhiên cố định cho từng năm (2001 - 2026)
+    const YEAR_TILTS = {};
+    for (let yr = 2001; yr <= 2026; yr++) {
+      // Góc nghiêng so le từ -5 đến +5 độ (đổi sang Radian)
+      const tiltXDeg = ((Math.sin(yr * 3.7) * 5.0)).toFixed(2);
+      const tiltZDeg = ((Math.cos(yr * 2.3) * 5.0)).toFixed(2);
+      YEAR_TILTS[yr] = {
+        rx: (tiltXDeg * Math.PI) / 180.0,
+        rz: (tiltZDeg * Math.PI) / 180.0
+      };
+    }
 
     async function initializeCosmos() {
       const loaderText = document.getElementById('loader-text');
@@ -813,7 +833,7 @@
       };
     }
 
-    // XÂY DỰNG KHÔNG GIAN: KHỚP TRỤC Y VÀ NGHIÊNG SO LE TỪNG NĂM -5° TỚI 5°
+    // XÂY DỰNG KHÔNG GIAN: KHÔNG CỘNG DỒN Y BỊ THỪA & XOAY NGHIÊNG SO LE TỪNG NĂM
     function buildCosmicScene() {
       NODE_SPRITES = [];
 
@@ -821,36 +841,38 @@
         if (node.type === 'galactic_core') return;
 
         const year = node.year || 2020;
-        const yearOffset = Math.max(0, year - 2001); // 0 to 25
-        const funnelFactor = Math.pow(1.05, yearOffset); // 5% mỗi năm
+        const yearOffset = Math.max(0, year - 2001);
+        const funnelFactor = Math.pow(1.05, yearOffset);
 
         const origR = Math.sqrt(node.x * node.x + node.z * node.z) || 1;
-        // Bán kính thu hẹp lõi rỗng còn 20%
+        // Bán kính lõi rỗng thu hẹp chỉ còn 20%
         const newR = origR * (0.13 + funnelFactor * 0.45);
         const theta = Math.atan2(node.z, node.x);
 
-        let px = Math.cos(theta) * newR;
-        let pz = Math.sin(theta) * newR;
+        let localX = Math.cos(theta) * newR;
+        let localZ = Math.sin(theta) * newR;
         
-        // Khớp Y chính xác với tọa độ gốc file JSON, không cộng thừa
-        let py = (node.y !== undefined) ? node.y : (GALAXY_Y_MIN + yearOffset * 20.0);
+        // Chuẩn hóa Y theo dữ liệu gốc, không cộng thừa thãi
+        let baseY = (node.y !== undefined) ? node.y : (galaxyYBottom + (yearOffset / 25.0) * galaxyYHeight);
+        
+        // Phân tán nhẹ ±5 đơn vị để không bị dẹt phẳng
+        baseY += (Math.sin(node.id * 11.0) * 5.0);
 
-        // THUẬT TOÁN NGHIÊNG NHẸ SO LE THEO NĂM (-5° TỚI 5°):
-        // Nghiêng quanh trục theo góc tiltAngle
-        const tiltAngleDeg = Math.sin(yearOffset * 1.35) * 5.0; // Dao động -5 độ đến 5 độ
-        const tiltRad = (tiltAngleDeg * Math.PI) / 180.0;
+        // ÁP DỤNG XOAY NGHIÊNG TỪNG NĂM TỪ -5° ĐẾN +5°
+        const tilt = YEAR_TILTS[year] || { rx: 0, rz: 0 };
         
-        // Áp dụng phép quay nghiêng quanh trục chéo (nx, nz)
-        const tiltCos = Math.cos(tiltRad);
-        const tiltSin = Math.sin(tiltRad);
-        
-        // Hơi lượn sóng nhẹ theo chiều cao Y, phá vỡ mặt phẳng đĩa xếp chồng
-        const tiltZ = pz * tiltCos - py * tiltSin * 0.12;
-        const tiltY = py + pz * tiltSin * 0.35 + Math.sin(theta * 3.0 + yearOffset) * 4.0;
+        // Xoay quanh trục X
+        let yAfterX = baseY * Math.cos(tilt.rx) - localZ * Math.sin(tilt.rx);
+        let zAfterX = baseY * Math.sin(tilt.rx) + localZ * Math.cos(tilt.rx);
 
-        node.fx = px;
-        node.fy = tiltY;
-        node.fz = tiltZ;
+        // Xoay quanh trục Z
+        let finalX = localX * Math.cos(tilt.rz) - yAfterX * Math.sin(tilt.rz);
+        let finalY = localX * Math.sin(tilt.rz) + yAfterX * Math.cos(tilt.rz);
+        let finalZ = zAfterX;
+
+        node.fx = finalX;
+        node.fy = finalY;
+        node.fz = finalZ;
 
         if (node.dept) {
           DEPT_MAP.set(node.dept, (DEPT_MAP.get(node.dept) || 0) + 1);
@@ -873,7 +895,6 @@
             depthWrite: false
           });
         } else {
-          // Thesis Planet
           scaleSize = 3.2 + Math.min(2.0, (node.size || 1.5) * 0.5);
           spriteMat = new THREE.SpriteMaterial({
             map: starTexture,
@@ -916,19 +937,21 @@
         const dx = Math.cos(ang) * rad;
         const dz = Math.sin(ang) * rad;
 
-        nodes.push({ id: id++, name: d, type: 'dept_sun', dept: d, year: 2026, x: dx, y: 480, z: dz, color: '#FDE047' });
+        nodes.push({ id: id++, name: d, type: 'dept_sun', dept: d, year: 2026, x: dx, y: galaxyYTop - 10, z: dz, color: '#FDE047' });
 
         for (let a = 1; a <= 2; a++) {
           const advName = `박승배`;
           const ax = dx + (Math.random() - 0.5) * 30;
           const az = dz + (Math.random() - 0.5) * 30;
-          nodes.push({ id: id++, name: `교수 ${advName}`, type: 'advisor_sun', dept: d, year: 2026, x: ax, y: 460, z: az, color: '#EAB308' });
+          nodes.push({ id: id++, name: `교수 ${advName}`, type: 'advisor_sun', dept: d, year: 2026, x: ax, y: galaxyYTop - 15, z: az, color: '#EAB308' });
 
           for (let t = 1; t <= 11; t++) {
             const yr = 2001 + Math.floor(Math.random() * 26);
-            const yPos = GALAXY_Y_MIN + (yr - 2001) * 20.0;
             const tr = 15 + Math.random() * 35;
             const ta = Math.random() * Math.PI * 2;
+            const progress = (yr - 2001) / 25.0;
+            const yPos = galaxyYBottom + progress * galaxyYHeight;
+
             nodes.push({
               id: id++,
               name: `딥러닝 기반 ${d} 최적화 연구 Vol.${t}`,
@@ -1021,7 +1044,6 @@
       });
     }
 
-    // Vertical Timeline Slider
     const timelineSlider = document.getElementById('timeline-slider');
     const timelineBadge = document.getElementById('timeline-year-badge');
     timelineSlider.addEventListener('input', (e) => {
@@ -1030,7 +1052,6 @@
       applyFilters();
     });
 
-    // COMPACT SLIDER SWITCH (누적 ↔ 단일)
     const switchContainer = document.getElementById('mode-toggle-switch');
     const switchHandle = document.getElementById('switch-handle');
 
@@ -1045,7 +1066,7 @@
     });
 
     /* ==========================================================================
-       8. INTERACTION: RAYCAST & CLICK PANEL OPEN
+       8. INTERACTION: RAYCAST & DETAIL PANEL
        ========================================================================== */
     const raycaster = new THREE.Raycaster();
     raycaster.params.Sprite = { threshold: 4.5 };
@@ -1358,18 +1379,19 @@
       document.getElementById('btn-view-galaxy').classList.add('active');
       document.getElementById('btn-view-top').classList.remove('active');
       new TWEEN.Tween(camera.position).to({ x: 0, y: 380, z: 720 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
-      new TWEEN.Tween(controls.target).to({ x: 0, y: 220, z: 0 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
+      new TWEEN.Tween(controls.target).to({ x: 0, y: midGalaxyY, z: 0 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
     });
+    
+    // Nút 탑 뷰 (Top View): Đưa về góc nhìn tại 1/2 chiều cao trục Y
     document.getElementById('btn-view-top').addEventListener('click', () => {
       document.getElementById('btn-view-top').classList.add('active');
       document.getElementById('btn-view-galaxy').classList.remove('active');
-      // Nhìn trực diện từ trên đỉnh xuống lõi cột sáng
-      new TWEEN.Tween(camera.position).to({ x: 0, y: 1050, z: 0.01 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
-      new TWEEN.Tween(controls.target).to({ x: 0, y: 230, z: 0 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
+      new TWEEN.Tween(camera.position).to({ x: 0, y: midGalaxyY, z: 780 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
+      new TWEEN.Tween(controls.target).to({ x: 0, y: midGalaxyY, z: 0 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
     });
 
     /* ==========================================================================
-       10. STRICT 100% MULTILINGUAL SWITCH
+       10. MULTILINGUAL SWITCH
        ========================================================================== */
     const langKoBtn = document.getElementById('lang-ko-btn');
     const langEnBtn = document.getElementById('lang-en-btn');
@@ -1436,18 +1458,16 @@
       TWEEN.update();
       controls.update();
 
-      // Thiên hà quay siêu chậm
+      // Thiên hà quay êm ái
       cosmosGroup.rotation.y += 0.00018;
 
-      // Cập nhật shader thời gian
-      coreBeamMat.uniforms.uTime.value = elapsed;
-      glowPlaneMat.uniforms.uTime.value = elapsed;
+      beamMat.uniforms.uTime.value = elapsed;
+      beamGlowMat.uniforms.uTime.value = elapsed;
       funnelHazeMat.uniforms.uTime.value = elapsed;
 
-      // Bụi vũ trụ xoay nhẹ tạo dòng đối lưu
       stardustMistPoints.rotation.y += 0.0001;
+      colDustMesh.rotation.y -= 0.0003;
 
-      // Real-time Optical Twinkle / Shimmer
       const camDist = camera.position.distanceTo(controls.target);
       const distFactor = Math.min(2.5, Math.max(1.0, camDist / 500));
 
