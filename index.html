@@ -8,7 +8,7 @@
   <!-- Tailwind CSS & Fonts -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
   <!-- Three.js & TWEEN -->
@@ -17,23 +17,12 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
 
   <style>
-    * {
-      box-sizing: border-box;
-      user-select: none;
-    }
+    * { box-sizing: border-box; user-select: none; }
     body, html {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background-color: #030408;
-      font-family: 'Pretendard', sans-serif;
-      color: #E2E8F0;
+      margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
+      background-color: #030408; font-family: 'Pretendard', sans-serif; color: #E2E8F0;
     }
-    .font-scifi {
-      font-family: 'Space Grotesk', monospace;
-    }
+    .font-scifi { font-family: 'Space Grotesk', monospace; }
     .scifi-panel {
       background: radial-gradient(130% 100% at 0% 0%, rgba(11, 15, 30, 0.85) 0%, rgba(5, 7, 16, 0.95) 100%);
       backdrop-filter: blur(20px);
@@ -42,50 +31,31 @@
       box-shadow: 0 0 40px rgba(0, 0, 0, 0.85), inset 0 0 15px rgba(99, 102, 241, 0.05);
     }
     .scifi-panel::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; width: 8px; height: 8px;
-      border-top: 2px solid #818CF8;
-      border-left: 2px solid #818CF8;
+      content: ''; position: absolute; top: 0; left: 0; width: 8px; height: 8px;
+      border-top: 2px solid #818CF8; border-left: 2px solid #818CF8;
     }
     .scifi-btn {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(8px);
-      transition: all 0.2s ease;
+      background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(8px); transition: all 0.2s ease;
     }
     .scifi-btn:hover {
-      background: rgba(99, 102, 241, 0.25);
-      border-color: rgba(129, 140, 248, 0.6);
-      box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
-      transform: translateY(-1px);
+      background: rgba(99, 102, 241, 0.25); border-color: rgba(129, 140, 248, 0.6);
+      box-shadow: 0 0 15px rgba(99, 102, 241, 0.4); transform: translateY(-1px);
     }
-    /* Scrollbar */
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.3); }
     ::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.4); border-radius: 2px; }
     ::-webkit-scrollbar-thumb:hover { background: rgba(244, 63, 94, 0.7); }
-    /* Range Slider */
-    input[type=range] {
-      -webkit-appearance: none;
-      background: transparent;
-    }
+    input[type=range] { -webkit-appearance: none; background: transparent; }
     input[type=range]:focus { outline: none; }
     input[type=range]::-webkit-slider-runnable-track {
-      width: 100%;
-      height: 3px;
+      width: 100%; height: 3px;
       background: linear-gradient(90deg, rgba(6, 182, 212, 0.5), rgba(99, 102, 241, 0.8), rgba(244, 63, 94, 0.5));
       border-radius: 2px;
     }
     input[type=range]::-webkit-slider-thumb {
-      height: 14px;
-      width: 14px;
-      border-radius: 50%;
-      background: #FFFFFF;
-      cursor: pointer;
-      -webkit-appearance: none;
-      margin-top: -5.5px;
-      box-shadow: 0 0 12px #818CF8, 0 0 2px #FFFFFF;
+      height: 14px; width: 14px; border-radius: 50%; background: #FFFFFF; cursor: pointer;
+      -webkit-appearance: none; margin-top: -5.5px; box-shadow: 0 0 12px #818CF8, 0 0 2px #FFFFFF;
       transition: transform 0.15s;
     }
     input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.3); }
@@ -97,7 +67,6 @@
 </head>
 <body class="relative w-screen h-screen">
 
-  <!-- Canvas WebGL Layer -->
   <canvas id="cosmos-canvas" class="absolute inset-0 z-0 pointer-events-auto"></canvas>
   <div class="vignette-overlay absolute inset-0 z-10"></div>
 
@@ -109,7 +78,7 @@
     </div>
   </div>
 
-  <!-- Loading Overlay -->
+  <!-- Loading Screen -->
   <div id="loader-overlay" class="absolute inset-0 z-50 bg-[#030408] flex flex-col items-center justify-center transition-opacity duration-700 pointer-events-none">
     <div class="relative flex items-center justify-center mb-4">
       <div class="w-16 h-16 rounded-full border-2 border-indigo-500/20 border-t-cyan-400 animate-spin"></div>
@@ -164,7 +133,7 @@
       </div>
     </div>
 
-    <!-- Timeline Chronology Slider -->
+    <!-- Timeline Slider -->
     <div class="scifi-panel p-4 rounded-xl pointer-events-auto border border-white/10 mt-3 relative">
       <div class="flex justify-between items-center mb-2">
         <span id="label-timeline-title" class="text-xs font-bold text-indigo-300 tracking-wide">발행 연도 타임라인</span>
@@ -271,9 +240,6 @@
   </footer>
 
   <script>
-    /* ==========================================================================
-       1. I18N DICTIONARY
-       ========================================================================== */
     let currentLang = 'ko';
     const I18N = {
       ko: {
@@ -332,10 +298,7 @@
       }
     };
 
-    /* ==========================================================================
-       2. PROCEDURAL HIGH-LUMINESCENCE STAR TEXTURES
-       ========================================================================== */
-    // Tạo texture ngôi sao phát sáng đa lớp gradient (Không có vòng tròn đĩa viền)
+    // Textures
     function createStarlightTexture() {
       const c = document.createElement('canvas');
       c.width = 128; c.height = 128;
@@ -343,41 +306,39 @@
       const grad = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
       grad.addColorStop(0.0, 'rgba(255, 255, 255, 1.0)');
       grad.addColorStop(0.12, 'rgba(255, 255, 255, 0.95)');
-      grad.addColorStop(0.35, 'rgba(255, 255, 255, 0.6)');
-      grad.addColorStop(0.65, 'rgba(255, 255, 255, 0.15)');
+      grad.addColorStop(0.35, 'rgba(255, 255, 255, 0.5)');
+      grad.addColorStop(0.7, 'rgba(255, 255, 255, 0.1)');
       grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, 128, 128);
       return new THREE.CanvasTexture(c);
     }
 
-    // Tạo texture mặt trời vàng rực chói lọi cho Ngành & Giáo sư
+    // Gradient mặt trời đã điều chỉnh giảm 50% độ chói
     function createSunTexture() {
       const c = document.createElement('canvas');
-      c.width = 256; c.height = 256;
+      c.width = 128; c.height = 128;
       const ctx = c.getContext('2d');
-      const grad = ctx.createRadialGradient(128, 128, 0, 128, 128, 128);
-      grad.addColorStop(0.0, 'rgba(255, 255, 255, 1.0)');
-      grad.addColorStop(0.15, 'rgba(254, 240, 138, 1.0)'); // Vàng sáng
-      grad.addColorStop(0.4, 'rgba(234, 179, 8, 0.7)');   // Vàng rực
-      grad.addColorStop(0.7, 'rgba(202, 138, 4, 0.2)');
+      const grad = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+      grad.addColorStop(0.0, 'rgba(255, 255, 255, 0.9)');
+      grad.addColorStop(0.2, 'rgba(254, 240, 138, 0.8)');
+      grad.addColorStop(0.45, 'rgba(234, 179, 8, 0.4)');
+      grad.addColorStop(0.75, 'rgba(202, 138, 4, 0.1)');
       grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
       ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, 256, 256);
+      ctx.fillRect(0, 0, 128, 128);
       return new THREE.CanvasTexture(c);
     }
 
     const starTexture = createStarlightTexture();
     const sunTexture = createSunTexture();
 
-    /* ==========================================================================
-       3. THREE.JS SCENE SETUP
-       ========================================================================== */
+    // Scene
     const canvas = document.getElementById('cosmos-canvas');
     const scene = new THREE.Scene();
 
     const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 6000);
-    camera.position.set(0, 280, 520);
+    camera.position.set(0, 260, 480);
 
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: "high-performance" });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -392,26 +353,19 @@
     const cosmosGroup = new THREE.Group();
     scene.add(cosmosGroup);
 
-    // Lõi thiên hà thu nhỏ tinh gọn
+    // Lõi thiên hà tinh gọn
     const coreMat = new THREE.SpriteMaterial({
-      map: sunTexture,
-      color: 0xFFFFFF,
-      transparent: true,
-      opacity: 0.95,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false
+      map: sunTexture, color: 0xFFFFFF, transparent: true, opacity: 0.85, blending: THREE.AdditiveBlending, depthWrite: false
     });
     const coreSprite = new THREE.Sprite(coreMat);
-    coreSprite.scale.set(35, 35, 1);
+    coreSprite.scale.set(16, 16, 1);
     cosmosGroup.add(coreSprite);
 
-    /* ==========================================================================
-       4. DATA LOADER & GALAXY NODES MANAGEMENT (TẤT CẢ FILE Ở THƯ MỤC GỐC)
-       ========================================================================== */
+    // Data Engine
     let ALL_NODES = [];
     let NODE_SPRITES = [];
     let DEPT_SET = new Set();
-    const DETAILS_CACHE = new Map(); // Cache lazy loaded details
+    const DETAILS_CACHE = new Map();
 
     async function loadCosmosData() {
       const loaderText = document.getElementById('loader-text');
@@ -419,33 +373,32 @@
       
       try {
         loaderText.innerText = "FETCHING GALAXY_NODES.JSON...";
-        // Tên file nằm ngoài cùng root theo yêu cầu
         const res = await fetch('galaxy_nodes.json');
         if (!res.ok) throw new Error("Could not find galaxy_nodes.json in root");
         const data = await res.json();
-        ALL_NODES = data.nodes || [];
-        loaderSub.innerText = `LOADED ${ALL_NODES.length} NODES ACCROSS UNIVERSE`;
+        
+        // Hỗ trợ cả hai dạng: Mảng thuần [] hoặc Object { nodes: [] }
+        ALL_NODES = Array.isArray(data) ? data : (data.nodes || []);
+        loaderSub.innerText = `LOADED ${ALL_NODES.length} NODES SUCCESSFULLY`;
       } catch (err) {
-        console.warn("Root galaxy_nodes.json not found, constructing live mock dataset for visual demonstration...", err);
-        ALL_NODES = generateCosmicDataset();
+        console.warn("Direct fetch failed, initializing local fallback array:", err);
+        ALL_NODES = generateMockFallback();
       }
 
       buildCosmosGalaxy();
       populateCollegeFilters();
       
-      // Ẩn màn hình loading mượt mà
       const loaderEl = document.getElementById('loader-overlay');
       loaderEl.classList.add('opacity-0');
       setTimeout(() => loaderEl.remove(), 700);
     }
 
-    // Lazy load chi tiết luận văn từ details_0.json đến details_16.json
+    // Lazy load details
     async function fetchThesisDetail(nodeId) {
       if (DETAILS_CACHE.has(nodeId)) return DETAILS_CACHE.get(nodeId);
 
-      const chunkIndex = Math.floor(nodeId / 500); // 500 items mỗi chunk
-      if (chunkIndex >= 0 && chunkIndex <= 16) {
-        const fileName = `details_${chunkIndex}.json`;
+      for (let i = 0; i <= 16; i++) {
+        const fileName = `details_${i}.json`;
         try {
           const res = await fetch(fileName);
           if (res.ok) {
@@ -455,35 +408,31 @@
             });
             if (DETAILS_CACHE.has(nodeId)) return DETAILS_CACHE.get(nodeId);
           }
-        } catch (e) {
-          console.warn(`Could not load ${fileName}`, e);
-        }
+        } catch (e) {}
       }
 
-      // Trả về fallback dựa trên thông tin node có sẵn
       const node = ALL_NODES.find(n => n.id === nodeId);
+      const titleName = node ? (node.title || node.name || "학위 논문") : "학위 논문";
       return {
-        title_ko: node ? node.name : "학위 논문",
-        title_en: node ? node.name : "Academic Thesis",
+        title_ko: titleName,
+        title_en: titleName,
         author: node ? (node.author || `연구자_${node.id}`) : "연구자",
         advisor: node ? (node.advisor || "지도교수") : "지도교수",
         year: node ? node.year : 2024,
         degree: "석사",
-        dept: node ? node.dept : "공학계열",
-        keywords: ["인공지능", "연구혁신", "데이터사이언스"],
-        abstract_ko: `본 연구는 서울과학기술대학교 ${node ? node.dept : '대학원'}에서 수행된 학술 연구로, 심층적인 이론적 분석과 실증 실험을 통해 학문적 가치를 입증한 논문입니다.`,
-        abstract_en: `This academic thesis is conducted at SeoulTech, investigating domain-specific paradigms and empirical verification.`
+        dept: node ? node.dept : "일반대학원",
+        keywords: ["학술연구", "서울과학기술대학교"],
+        abstract_ko: `본 연구는 서울과학기술대학교 대학원에서 수행된 학위논문 연구입니다.`,
+        abstract_en: `This research thesis was conducted at Seoul National University of Science and Technology.`
       };
     }
 
-    /* ==========================================================================
-       5. GALAXY NODES MESH & BILLBOARD GENERATION
-       ========================================================================== */
     function buildCosmosGalaxy() {
       NODE_SPRITES = [];
-      const nodeCount = ALL_NODES.length;
 
       ALL_NODES.forEach((node) => {
+        // Đảm bảo lấy đúng tên cho cả node lẫn luận văn
+        node.displayName = node.title || node.name || `Node_${node.id}`;
         if (!node.type) node.type = 'thesis_planet';
         if (node.dept) DEPT_SET.add(node.dept);
 
@@ -497,29 +446,29 @@
         let spriteMat;
 
         if (isDept || isAdvisor) {
-          // Ngôi sao Ngành học và Giáo sư: Màu vàng rực rỡ như mặt trời
-          size = isDept ? 14.0 : 8.5;
+          // GIẢM 50% KÍCH THƯỚC VÀ HÀO QUANG
+          size = isDept ? 7.0 : 4.2;
           spriteMat = new THREE.SpriteMaterial({
             map: sunTexture,
-            color: new THREE.Color("#FDE047"), // Vàng mặt trời chói lọi
+            color: new THREE.Color("#FDE047"),
             transparent: true,
-            opacity: 0.98,
+            opacity: 0.85,
             blending: THREE.AdditiveBlending,
             depthWrite: false
           });
         } else if (isCore) {
-          size = 6.0;
+          size = 4.0;
           spriteMat = new THREE.SpriteMaterial({
             map: sunTexture,
             color: new THREE.Color("#FFFFFF"),
             transparent: true,
-            opacity: 0.9,
+            opacity: 0.8,
             blending: THREE.AdditiveBlending,
             depthWrite: false
           });
         } else {
-          // Ngôi sao Luận văn: Sáng theo đúng mã màu của nó nhưng dịu nhẹ hơn
-          size = 3.6 + Math.min(size * 0.8, 3.5);
+          // Ngôi sao luận văn: Sáng dịu nhẹ theo màu sắc riêng
+          size = 2.8 + Math.min(size * 0.5, 2.5);
           spriteMat = new THREE.SpriteMaterial({
             map: starTexture,
             color: new THREE.Color(colorHex),
@@ -546,44 +495,41 @@
       });
     }
 
-    // Bộ giả lập dữ liệu chuẩn xác nếu chưa tải kịp file json
-    function generateCosmicDataset() {
+    function generateMockFallback() {
       const mock = [];
-      const depts = ["컴퓨터공학과", "기계시스템디자인공학과", "시각디자인학과", "인공지능응용학과", "신소재공학과", "경영학과", "행정학과"];
-      const colors = ["#F43F5E", "#06B6D4", "#8B5CF6", "#F59E0B", "#10B981", "#E2E8F0"];
-      
+      const depts = ["컴퓨터공학과", "기계공학과", "디자인학과", "인공지능응용학과", "신소재공학과"];
+      const colors = ["#F43F5E", "#06B6D4", "#8B5CF6", "#F59E0B", "#10B981"];
       let id = 1;
+
       depts.forEach((dept, dIdx) => {
         const angle = (Math.PI * 2 / depts.length) * dIdx;
         const color = colors[dIdx % colors.length];
+        const dx = Math.cos(angle) * 75;
+        const dz = Math.sin(angle) * 75;
 
-        // Dept Sun
-        const dx = Math.cos(angle) * 70;
-        const dz = Math.sin(angle) * 70;
-        mock.push({ id: id++, name: dept, type: 'dept_sun', dept: dept, year: 2026, x: dx, y: 15, z: dz, size: 10, color: '#FDE047' });
+        mock.push({ id: id++, name: dept, type: 'dept_sun', dept: dept, year: 2026, x: dx, y: 10, z: dz, size: 7, color: '#FDE047' });
 
-        // Advisors & Theses
-        for (let a = 0; a < 3; a++) {
-          const advName = `교수_${dept.substring(0, 2)}_${a+1}`;
-          const ax = dx + (Math.random() - 0.5) * 35;
-          const az = dz + (Math.random() - 0.5) * 35;
-          mock.push({ id: id++, name: advName, type: 'advisor_sun', dept: dept, year: 2026, x: ax, y: (Math.random() - 0.5) * 20, z: az, size: 6, color: '#EAB308' });
+        for (let a = 0; a < 2; a++) {
+          const advName = `교수_${dept.slice(0, 2)}_${a+1}`;
+          const ax = dx + (Math.random() - 0.5) * 30;
+          const az = dz + (Math.random() - 0.5) * 30;
+          mock.push({ id: id++, name: advName, type: 'advisor_sun', dept: dept, year: 2026, x: ax, y: 0, z: az, size: 4.5, color: '#EAB308' });
 
-          for (let t = 0; t < 25; t++) {
-            const year = 2005 + Math.floor(Math.random() * 22);
-            const dist = 15 + Math.random() * 45;
-            const tAngle = Math.random() * Math.PI * 2;
+          for (let t = 0; t < 30; t++) {
+            const yr = 2005 + Math.floor(Math.random() * 22);
+            const dist = 12 + Math.random() * 40;
+            const thAngle = Math.random() * Math.PI * 2;
             mock.push({
               id: id++,
-              name: `[논문] ${dept} 연구 성과 학위논문 #${id}`,
+              title: `${dept} 연구 논문 #${id}`,
               type: 'thesis_planet',
               dept: dept,
               advisor: advName,
-              year: year,
-              x: ax + Math.cos(tAngle) * dist,
-              y: ((year - 2001) - 12) * 5 + (Math.random() - 0.5) * 10,
-              z: az + Math.sin(tAngle) * dist,
-              size: 2.5 + Math.random() * 3,
+              year: yr,
+              x: ax + Math.cos(thAngle) * dist,
+              y: ((yr - 2001) - 12) * 4.5 + (Math.random() - 0.5) * 10,
+              z: az + Math.sin(thAngle) * dist,
+              size: 2.2 + Math.random() * 2,
               color: color
             });
           }
@@ -592,9 +538,7 @@
       return mock;
     }
 
-    /* ==========================================================================
-       6. TIMELINE & FILTER LOGIC
-       ========================================================================== */
+    // Filter Logic
     let currentFilterYear = 2026;
     let isCumulative = true;
     let activeDepts = new Set();
@@ -607,7 +551,6 @@
       Array.from(DEPT_SET).sort().forEach(dept => {
         const row = document.createElement('div');
         row.className = 'flex items-center justify-between p-1.5 rounded bg-black/40 border border-white/5';
-        
         row.innerHTML = `
           <label class="flex items-center space-x-2 cursor-pointer flex-1 pr-2 truncate">
             <span class="w-2 h-2 rounded-full bg-cyan-400 shrink-0"></span>
@@ -615,14 +558,12 @@
           </label>
           <input type="checkbox" checked value="${dept}" class="rounded border-slate-700 bg-slate-900 text-indigo-500 focus:ring-0 cursor-pointer">
         `;
-
         const cb = row.querySelector('input');
         cb.addEventListener('change', (e) => {
           if (e.target.checked) activeDepts.add(dept);
           else activeDepts.delete(dept);
           applyNodeFilters();
         });
-
         container.appendChild(row);
       });
     }
@@ -647,7 +588,7 @@
 
         sprite.visible = visible;
         if (visible && !sprite.userData.isHighlight) {
-          sprite.material.opacity = (n.type === 'thesis_planet') ? 0.82 : 0.98;
+          sprite.material.opacity = (n.type === 'thesis_planet') ? 0.82 : 0.85;
         } else if (!visible) {
           sprite.material.opacity = 0.0;
         }
@@ -677,9 +618,7 @@
       applyNodeFilters();
     });
 
-    /* ==========================================================================
-       7. INTERACTION: RAYCAST, TOOLTIP & DETAIL PANEL
-       ========================================================================== */
+    // Interaction
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
     let hoveredSprite = null;
@@ -705,12 +644,12 @@
         if (hoveredSprite !== sprite) {
           clearHover();
           hoveredSprite = sprite;
-          const s = sprite.userData.baseSize * 1.6;
+          const s = sprite.userData.baseSize * 1.5;
           sprite.scale.set(s, s, 1);
 
           const n = sprite.userData.nodeData;
           tooltipEl.classList.remove('hidden');
-          hoverTitleEl.innerText = n.name;
+          hoverTitleEl.innerText = n.displayName;
           hoverSubEl.innerText = `${n.dept || 'CORE'} · ${n.year || ''}`;
         }
       } else {
@@ -748,18 +687,16 @@
       if (sprite) {
         const base = sprite.userData.baseSize;
         new TWEEN.Tween(sprite.scale)
-          .to({ x: base * 2.2, y: base * 2.2, z: 1 }, 250)
-          .yoyo(true)
-          .repeat(3)
-          .easing(TWEEN.Easing.Quadratic.InOut)
-          .onComplete(() => sprite.scale.set(base, base, 1))
-          .start();
+          .to({ x: base * 2.0, y: base * 2.0, z: 1 }, 250)
+          .yoyo(true).repeat(3).easing(TWEEN.Easing.Quadratic.InOut)
+          .onComplete(() => sprite.scale.set(base, base, 1)).start();
       }
     }
 
     function renderDetailPanel(node, detail) {
       const isKo = currentLang === 'ko';
-      document.getElementById('detail-title').innerText = isKo ? (detail.title_ko || node.name) : (detail.title_en || node.name);
+      const finalTitle = isKo ? (detail.title_ko || node.displayName) : (detail.title_en || node.displayName);
+      document.getElementById('detail-title').innerText = finalTitle;
       document.getElementById('detail-author').innerText = detail.author || node.author || "-";
       document.getElementById('detail-advisor').innerText = detail.advisor || node.advisor || "-";
       document.getElementById('detail-dept').innerText = detail.dept || node.dept || "-";
@@ -777,17 +714,14 @@
         kwContainer.appendChild(badge);
       });
 
-      const queryTitle = isKo ? (detail.title_ko || node.name) : (detail.title_en || node.name);
-      document.getElementById('btn-riss-link').href = `https://www.riss.kr/search/Search.do?queryText=${encodeURIComponent(queryTitle)}`;
+      document.getElementById('btn-riss-link').href = `https://www.riss.kr/search/Search.do?queryText=${encodeURIComponent(finalTitle)}`;
     }
 
     document.getElementById('btn-close-detail').addEventListener('click', () => {
       document.getElementById('detail-panel').classList.add('translate-x-full');
     });
 
-    /* ==========================================================================
-       8. BOTTOM SEARCH CONSOLE
-       ========================================================================== */
+    // Search Console
     const searchInput = document.getElementById('search-input');
     const searchType = document.getElementById('search-type');
     const searchBtn = document.getElementById('search-submit-btn');
@@ -806,11 +740,14 @@
       }
 
       const matches = ALL_NODES.filter(n => {
-        if (!n.name) return false;
-        if (type === 'name') return n.name.toLowerCase().includes(q);
-        if (type === 'dept') return (n.dept || '').toLowerCase().includes(q);
-        if (type === 'advisor') return (n.advisor || '').toLowerCase().includes(q);
-        return n.name.toLowerCase().includes(q) || (n.dept || '').toLowerCase().includes(q) || (n.advisor || '').toLowerCase().includes(q);
+        const nameVal = (n.displayName || '').toLowerCase();
+        const deptVal = (n.dept || '').toLowerCase();
+        const advVal = (n.advisor || '').toLowerCase();
+
+        if (type === 'name') return nameVal.includes(q);
+        if (type === 'dept') return deptVal.includes(q);
+        if (type === 'advisor') return advVal.includes(q);
+        return nameVal.includes(q) || deptVal.includes(q) || advVal.includes(q);
       });
 
       const matchSet = new Set(matches.map(m => m.id));
@@ -831,7 +768,7 @@
     function resetSearchBeacon() {
       NODE_SPRITES.forEach(s => {
         s.userData.isHighlight = false;
-        if (s.visible) s.material.opacity = (s.userData.nodeData.type === 'thesis_planet') ? 0.82 : 0.98;
+        if (s.visible) s.material.opacity = (s.userData.nodeData.type === 'thesis_planet') ? 0.82 : 0.85;
       });
     }
 
@@ -841,7 +778,7 @@
       searchResultsList.innerHTML = '';
 
       if (results.length === 0) {
-        searchResultsList.innerHTML = `<div class="text-slate-500 py-3 text-center text-xs font-scifi">NO MATCHED RESEARCH NODES</div>`;
+        searchResultsList.innerHTML = `<div class="text-slate-500 py-3 text-center text-xs font-scifi">NO MATCHED NODES</div>`;
         return;
       }
 
@@ -850,7 +787,7 @@
         row.className = 'p-2 rounded bg-white/5 hover:bg-white/10 transition border border-white/5 flex justify-between items-center cursor-pointer';
         row.innerHTML = `
           <div class="flex-1 pr-3 truncate">
-            <div class="font-semibold text-slate-200 line-clamp-1">${n.name}</div>
+            <div class="font-semibold text-slate-200 line-clamp-1">${n.displayName}</div>
             <div class="text-[10px] text-slate-400 mt-0.5 font-scifi">
               <span>${n.dept || 'CORE'}</span> · <span class="text-cyan-400">${n.year || ''}</span>
             </div>
@@ -859,12 +796,10 @@
             ${I18N[currentLang].viewDetail}
           </button>
         `;
-
         row.addEventListener('click', () => {
           const sprite = NODE_SPRITES.find(s => s.userData.nodeData.id === n.id);
           inspectCosmicNode(n, sprite);
         });
-
         searchResultsList.appendChild(row);
       });
     }
@@ -876,19 +811,17 @@
       resetSearchBeacon();
     });
 
-    // Camera presets
+    // Camera
     document.getElementById('btn-view-galaxy').addEventListener('click', () => {
-      new TWEEN.Tween(camera.position).to({ x: 0, y: 280, z: 520 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
+      new TWEEN.Tween(camera.position).to({ x: 0, y: 260, z: 480 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
       new TWEEN.Tween(controls.target).to({ x: 0, y: 0, z: 0 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
     });
     document.getElementById('btn-view-top').addEventListener('click', () => {
-      new TWEEN.Tween(camera.position).to({ x: 0, y: 580, z: 10 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
+      new TWEEN.Tween(camera.position).to({ x: 0, y: 550, z: 10 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
       new TWEEN.Tween(controls.target).to({ x: 0, y: 0, z: 0 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
     });
 
-    /* ==========================================================================
-       9. MULTILINGUAL SWITCH
-       ========================================================================== */
+    // Lang
     const langKoBtn = document.getElementById('lang-ko-btn');
     const langEnBtn = document.getElementById('lang-en-btn');
 
@@ -935,9 +868,7 @@
     langKoBtn.addEventListener('click', () => switchLanguage('ko'));
     langEnBtn.addEventListener('click', () => switchLanguage('en'));
 
-    /* ==========================================================================
-       10. ANIMATION LOOP (LUMINESCENT PULSE & ROTATION)
-       ========================================================================== */
+    // Render loop
     const clock = new THREE.Clock();
     function animate() {
       requestAnimationFrame(animate);
@@ -946,22 +877,21 @@
       TWEEN.update();
       controls.update();
 
-      // Thiên hà quay siêu chậm
-      cosmosGroup.rotation.y += 0.00035;
+      // GIẢM 1/2 TỐC ĐỘ QUAY (từ 0.00035 xuống 0.00017)
+      cosmosGroup.rotation.y += 0.00017;
 
-      // Nhịp thở phát sáng
+      // Pulse
       NODE_SPRITES.forEach(s => {
         if (s.visible) {
           const isSun = s.userData.nodeData.type === 'dept_sun' || s.userData.nodeData.type === 'advisor_sun';
           if (!s.userData.isHighlight) {
-            const freq = isSun ? 2.5 : 1.8;
-            const amp = isSun ? 0.18 : 0.12;
+            const freq = isSun ? 2.0 : 1.5;
+            const amp = isSun ? 0.08 : 0.06;
             const pulse = Math.sin(elapsed * freq + s.userData.pulseOffset) * amp;
             const base = s.userData.baseSize;
             s.scale.set(base * (1 + pulse), base * (1 + pulse), 1);
           } else {
-            // Strobing beacon khi search
-            const strobe = 1.0 + Math.abs(Math.sin(elapsed * 8.0)) * 0.9;
+            const strobe = 1.0 + Math.abs(Math.sin(elapsed * 8.0)) * 0.8;
             const base = s.userData.baseSize;
             s.scale.set(base * strobe, base * strobe, 1);
           }
@@ -978,7 +908,6 @@
       renderer.setSize(window.innerWidth, window.innerHeight);
     });
 
-    // Boot
     loadCosmosData();
     animate();
   </script>
