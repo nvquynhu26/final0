@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SEOULTECH RESEARCH COSMOS | 서울과학기술대학교 연구 은하</title>
+  
+  <!-- Font Google Outfit & Noto Sans KR -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css" />
+  
+  <!-- Three.js & Controls via CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
+</head>
+<body>
+  <!-- 3D Canvas Container -->
+  <div id="webgl-container"></div>
+  <div class="aurora-glow"></div>
+
+  <!-- Header & Branding -->
+  <header class="main-header glass-panel">
+    <div class="branding">
+      <h1 class="logo-title">SEOULTECH RESEARCH COSMOS</h1>
+      <h2 class="logo-sub">서울과학기술대학교 연구 은하</h2>
+      <p class="subtitle" data-i18n="subtitle">Visualizing 8,000 Academic Theses & Knowledge Networks (2010–2026)</p>
+    </div>
+    <div class="header-right">
+      <div class="project-tag">Data Visualization Design Project - By Youme</div>
+      <button id="lang-toggle-btn" class="lang-pill" aria-label="Toggle language">
+        <span class="active">KO</span> | <span>EN</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Left Floating Controls (Timeline & Filter) -->
+  <aside class="timeline-panel glass-panel">
+    <div class="panel-section">
+      <label class="section-label" data-i18n="timeline_label">TIMELINE (2010 – 2026)</label>
+      <div class="slider-display">
+        <span id="current-year-val">2026</span>
+      </div>
+      <input type="range" id="year-slider" min="2010" max="2026" value="2026" step="1" />
+      <div class="slider-ticks">
+        <span>2010</span>
+        <span>2018</span>
+        <span>2026</span>
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <div class="toggle-mode-wrapper">
+        <span class="toggle-label" id="mode-text" data-i18n="mode_cumul">Cumulative</span>
+        <label class="switch">
+          <input type="checkbox" id="mode-toggle" />
+          <span class="slider round"></span>
+        </label>
+        <span class="toggle-sublabel" data-i18n="mode_single">Single Year</span>
+      </div>
+    </div>
+
+    <!-- Cluster Toggles -->
+    <div class="panel-section">
+      <label class="section-label" data-i18n="clusters_label">CLUSTERS</label>
+      <div class="cluster-toggles-grid" id="cluster-toggles">
+        <!-- Dynamically injected via JS -->
+      </div>
+    </div>
+
+    <!-- Camera Presets -->
+    <div class="panel-section">
+      <label class="section-label" data-i18n="camera_label">CAMERA VIEWS</label>
+      <div class="camera-presets-grid">
+        <button class="cam-btn" data-cam="overview" data-i18n="cam_all">Toàn cảnh</button>
+        <button class="cam-btn" data-cam="c1" data-i18n="cam_c1">Art & Design</button>
+        <button class="cam-btn" data-cam="c2" data-i18n="cam_c2">IT & Eng</button>
+        <button class="cam-btn" data-cam="c3" data-i18n="cam_c3">AI & Future</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Search Bar (Bottom Edge Floating) -->
+  <section class="search-bar-container">
+    <div class="search-box glass-panel">
+      <svg class="search-icon" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none" stroke-width="2">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <input type="text" id="search-input" placeholder="논문 제목, 저자, 지도교수, 키워드 검색..." data-i18n-ph="search_placeholder" />
+      <button id="clear-search-btn" class="clear-btn">&times;</button>
+    </div>
+  </section>
+
+  <!-- Dynamic Right Sliding Panel (Results List / Thesis Details) -->
+  <aside id="right-panel" class="right-panel glass-panel closed">
+    <button id="close-panel-btn" class="close-btn" aria-label="Close panel">&times;</button>
+    
+    <!-- State A: Search Results List -->
+    <div id="results-view" class="view-state">
+      <div class="panel-header-sub">
+        <h3 data-i18n="results_title">검색 결과</h3>
+        <span class="count-badge" id="results-count">0</span>
+      </div>
+      <div class="scroll-area results-list" id="results-list"></div>
+    </div>
+
+    <!-- State B: Thesis Detail -->
+    <div id="detail-view" class="view-state hidden">
+      <button id="back-to-results" class="back-link">&larr; <span data-i18n="back_list">Quay lại danh sách</span></button>
+      <div class="detail-badge-group">
+        <span id="detail-dept-badge" class="pill-badge">Department</span>
+        <span id="detail-degree-badge" class="pill-badge secondary">Master</span>
+        <span id="detail-year-badge" class="pill-badge dark">2024</span>
+      </div>
+      
+      <h2 id="detail-title" class="detail-title">논문 제목이 들어갑니다.</h2>
+      
+      <div class="meta-field-group">
+        <div class="meta-row">
+          <span class="meta-label" data-i18n="meta_author">저자</span>
+          <span id="detail-author" class="meta-value">-</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-label" data-i18n="meta_advisor">지도교수</span>
+          <span id="detail-advisor" class="meta-value">-</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-label" data-i18n="meta_metrics">지표</span>
+          <span id="detail-centrality" class="meta-value">-</span>
+        </div>
+      </div>
+
+      <div class="keywords-block">
+        <label class="block-label" data-i18n="meta_keywords">주제어 / Keywords</label>
+        <div class="tag-cloud" id="detail-keywords"></div>
+      </div>
+
+      <div class="abstract-block">
+        <label class="block-label" data-i18n="meta_abstract">초록 / Abstract</label>
+        <div class="abstract-content scroll-area" id="detail-abstract"></div>
+      </div>
+
+      <div class="action-footer">
+        <a id="detail-riss-link" href="#" target="_blank" rel="noopener noreferrer" class="primary-btn">
+          <span data-i18n="btn_riss">RISS에서 검색 / View on RISS</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <line x1="10" y1="14" x2="21" y2="3"></line>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- 3D Tooltip Hover (Near Cursor) -->
+  <div id="node-tooltip" class="glass-tooltip hidden">
+    <div class="tip-cluster" id="tip-cluster">CLUSTER</div>
+    <div class="tip-title" id="tip-title">Thesis Title</div>
+    <div class="tip-sub" id="tip-sub">Author | Advisor (Year)</div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
