@@ -26,11 +26,11 @@
     .font-scifi { font-family: 'Space Grotesk', monospace; }
     
     .scifi-panel {
-      background: radial-gradient(135% 100% at 0% 0%, rgba(13, 17, 34, 0.88) 0%, rgba(5, 7, 18, 0.96) 100%);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(129, 140, 248, 0.25);
-      box-shadow: 0 0 35px rgba(0, 0, 0, 0.85);
+      background: radial-gradient(135% 100% at 0% 0%, rgba(13, 17, 34, 0.94) 0%, rgba(5, 7, 18, 0.98) 100%);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(129, 140, 248, 0.28);
+      box-shadow: -10px 0 40px rgba(0, 0, 0, 0.9);
     }
     .scifi-btn {
       background: rgba(255, 255, 255, 0.05);
@@ -47,10 +47,12 @@
       border-color: #EC4899;
       color: #FFFFFF;
     }
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.3); }
-    ::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.4); border-radius: 2px; }
-    ::-webkit-scrollbar-thumb:hover { background: rgba(236, 72, 153, 0.7); }
+
+    /* Thanh cuộn nổi bật dễ kéo */
+    .custom-scroll::-webkit-scrollbar { width: 6px; }
+    .custom-scroll::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.5); border-radius: 4px; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #818CF8; border-radius: 4px; }
+    .custom-scroll::-webkit-scrollbar-thumb:hover { background: #F43F5E; }
     
     input[type=range] { -webkit-appearance: none; background: transparent; }
     input[type=range]:focus { outline: none; }
@@ -160,12 +162,12 @@
     </div>
   </aside>
 
-  <!-- BOTTOM SEARCH BAR (ĐÃ BỎ HOÀN TOÀN CÁI DRAWER XỔ LÊN TRÊN THANH SEARCH) -->
+  <!-- BOTTOM SEARCH BAR -->
   <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 w-11/12 max-w-2xl pointer-events-auto flex flex-col items-center">
     <div class="w-full scifi-panel rounded-full px-4 py-2 flex items-center space-x-3 border border-indigo-500/40 shadow-[0_0_30px_rgba(79,70,229,0.3)]">
       <select id="search-type" class="bg-black/60 text-slate-300 text-xs rounded-full px-3 py-1.5 border border-indigo-500/30 focus:outline-none focus:border-cyan-400 cursor-pointer font-medium">
-        <option value="all">통합검색</option>
         <option value="advisor">지도교수</option>
+        <option value="all">통합검색</option>
         <option value="keyword">주제어</option>
         <option value="name">논문제목</option>
         <option value="author">저자</option>
@@ -181,50 +183,50 @@
     </div>
   </div>
 
-  <!-- RIGHT MULTI-FUNCTION PANEL (KHI TÌM KIẾM SẼ HIỆN DANH SÁCH LUẬN VĂN TẠI ĐÂY) -->
-  <aside id="right-panel" class="absolute top-0 right-0 bottom-0 w-[420px] max-w-[90vw] scifi-panel z-40 transform translate-x-full transition-transform duration-300 ease-out flex flex-col border-l border-indigo-500/30 pointer-events-auto">
+  <!-- RIGHT PANEL: CHỨA CẢ DANH SÁCH & CHI TIẾT (FIX TRIỆT ĐỂ THANH CUỘN) -->
+  <aside id="right-panel" class="absolute top-0 right-0 bottom-0 w-[440px] max-w-[92vw] scifi-panel z-40 transform translate-x-full transition-transform duration-300 ease-out flex flex-col pointer-events-auto overflow-hidden">
     
-    <!-- 1. VIEW CHẾ ĐỘ: DANH SÁCH KẾT QUẢ TÌM KIẾM (Cho cả 30 - 100 luận văn) -->
+    <!-- 1. VIEW DANH SÁCH: CÓ THỂ CUỘN TỰ DO CHO 10, 30 HAY 100 BÀI -->
     <div id="panel-list-view" class="hidden flex-col h-full p-6">
-      <div class="flex justify-between items-center pb-4 border-b border-indigo-500/20">
+      <div class="flex justify-between items-center pb-3 border-b border-indigo-500/20 shrink-0">
         <div>
           <span id="list-view-query-badge" class="px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 font-scifi">SEARCH RESULTS</span>
-          <h3 id="list-view-title" class="text-sm font-bold text-white mt-1">검색된 논문 목록</h3>
+          <h3 id="list-view-title" class="text-base font-bold text-white mt-1">검색된 논문 목록</h3>
         </div>
-        <button id="btn-close-list-panel" class="text-slate-400 hover:text-white p-1 text-base">✕</button>
+        <button id="btn-close-list-panel" class="text-slate-400 hover:text-white p-1 text-lg leading-none">✕</button>
       </div>
 
-      <div class="text-[11px] text-slate-400 my-2 flex justify-between items-center">
-        <span id="list-view-count">총 0건의 연구</span>
-        <span class="text-[10px] text-indigo-400">클릭 시 해당 행성으로 이동</span>
+      <div class="text-[11px] text-slate-400 my-2.5 flex justify-between items-center shrink-0">
+        <span id="list-view-count" class="font-bold text-indigo-300">총 0건의 연구</span>
+        <span class="text-[10px] text-slate-500">아래로 스크롤하여 전체 탐색</span>
       </div>
 
-      <!-- Danh sách có thanh cuộn riêng -->
-      <div id="search-theses-list" class="flex-1 overflow-y-auto space-y-2 pr-1 text-xs">
-        <!-- Render cards -->
+      <!-- Danh sách cuộn trơn tru flex-1 min-h-0 -->
+      <div id="search-theses-list" class="flex-1 min-h-0 overflow-y-auto space-y-2 pr-2 custom-scroll">
+        <!-- Cards injected dynamically -->
       </div>
     </div>
 
-    <!-- 2. VIEW CHẾ ĐỘ: CHI TIẾT 1 LUẬN VĂN CỤ THỂ -->
+    <!-- 2. VIEW CHI TIẾT 1 LUẬN VĂN -->
     <div id="panel-detail-view" class="flex flex-col h-full p-6">
-      <div class="flex justify-between items-start pb-4 border-b border-indigo-500/20">
+      <div class="flex justify-between items-start pb-3 border-b border-indigo-500/20 shrink-0">
         <div class="flex items-center space-x-2">
-          <button id="btn-back-to-list" class="hidden px-2 py-0.5 rounded text-[10px] font-bold bg-white/10 hover:bg-white/20 text-indigo-300 border border-indigo-400/30">
+          <button id="btn-back-to-list" class="hidden px-2.5 py-1 rounded text-[11px] font-bold bg-indigo-600/40 hover:bg-indigo-600 text-white border border-indigo-400/40 transition">
             ← 목록으로
           </button>
           <span id="detail-type-badge" class="px-2 py-0.5 rounded text-[10px] font-bold bg-pink-500/20 text-pink-300 border border-pink-400/30 font-scifi">THESIS PLANET</span>
           <span id="detail-year" class="font-scifi font-bold text-cyan-400 text-xs"></span>
         </div>
-        <button id="btn-close-detail-panel" class="text-slate-400 hover:text-white p-1 text-base">✕</button>
+        <button id="btn-close-detail-panel" class="text-slate-400 hover:text-white p-1 text-lg leading-none">✕</button>
       </div>
 
-      <div class="flex-1 overflow-y-auto py-4 space-y-4 pr-1 text-xs">
+      <div class="flex-1 min-h-0 overflow-y-auto py-4 space-y-4 pr-2 custom-scroll text-xs">
         <div>
           <span id="detail-label-title" class="text-[9px] uppercase font-bold text-indigo-400 font-scifi tracking-widest">논문 제목</span>
           <h2 id="detail-title" class="text-base font-bold text-white mt-1 leading-snug"></h2>
         </div>
 
-        <div class="grid grid-cols-2 gap-2 p-3 rounded-lg bg-black/40 border border-white/5">
+        <div class="grid grid-cols-2 gap-2 p-3 rounded-lg bg-black/50 border border-white/5">
           <div>
             <span id="detail-label-author" class="text-[10px] text-slate-400 block font-scifi">저자</span>
             <span id="detail-author" class="font-semibold text-slate-200">-</span>
@@ -254,7 +256,7 @@
         </div>
       </div>
 
-      <div class="pt-4 border-t border-indigo-500/20">
+      <div class="pt-3 border-t border-indigo-500/20 shrink-0">
         <a id="btn-riss-link" href="#" target="_blank" rel="noopener noreferrer" 
           class="w-full py-2.5 px-4 rounded-lg flex items-center justify-center space-x-2 font-bold text-xs text-white bg-gradient-to-r from-cyan-600 via-indigo-600 to-pink-600 hover:brightness-110 shadow-[0_0_20px_rgba(99,102,241,0.4)] transition">
           <span id="detail-riss-text">RISS 학술연구정보서비스 검색</span>
@@ -334,7 +336,7 @@
     };
 
     /* ==========================================================================
-       2. PROCEDURAL TEXTURES (HÀO QUANG MẶT TRỜI GIẢM 1/2)
+       2. PROCEDURAL TEXTURES (NGÔI SAO TỰ PHÁT SÁNG, KHÔNG CÓ LÕI TRUNG TÂM)
        ========================================================================== */
     function createStarlightTexture() {
       const c = document.createElement('canvas');
@@ -342,7 +344,7 @@
       const ctx = c.getContext('2d');
       const grad = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
       grad.addColorStop(0.0, 'rgba(255, 255, 255, 1.0)');
-      grad.addColorStop(0.2, 'rgba(255, 255, 255, 0.8)');
+      grad.addColorStop(0.2, 'rgba(255, 255, 255, 0.85)');
       grad.addColorStop(0.5, 'rgba(255, 255, 255, 0.25)');
       grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
       ctx.fillStyle = grad;
@@ -357,7 +359,7 @@
       const grad = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
       grad.addColorStop(0.0, 'rgba(255, 255, 255, 1.0)');
       grad.addColorStop(0.25, 'rgba(254, 240, 138, 0.85)');
-      grad.addColorStop(0.5, 'rgba(234, 179, 8, 0.3)');
+      grad.addColorStop(0.55, 'rgba(234, 179, 8, 0.35)');
       grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, 128, 128);
@@ -403,18 +405,7 @@
     const cosmosGroup = new THREE.Group();
     scene.add(cosmosGroup);
 
-    // Lõi thiên hà tinh gọn
-    const coreMat = new THREE.SpriteMaterial({
-      map: moderateSunTexture,
-      color: 0xFFFFFF,
-      transparent: true,
-      opacity: 0.9,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false
-    });
-    const coreSprite = new THREE.Sprite(coreMat);
-    coreSprite.scale.set(16, 16, 1);
-    cosmosGroup.add(coreSprite);
+    // [YÊU CẦU 4]: ĐÃ XÓA BỎ HOÀN TOÀN CORE MESH / LÕI SÁNG VÔ DUYÊN Ở TRUNG TÂM!
 
     /* --- BỤI NGÂN HÀ GRADIENT HỒNG - TÍM - XANH --- */
     const dustCount = 4000;
@@ -429,7 +420,7 @@
 
     for (let i = 0; i < dustCount; i++) {
       const angle = (i % 6) * (Math.PI / 3) + (Math.random() * 4.0);
-      const rad = 25 + Math.pow(Math.random(), 0.7) * 440;
+      const rad = 30 + Math.pow(Math.random(), 0.7) * 440;
       const spread = (Math.random() - 0.5) * 40;
       
       dustPositions[i * 3] = Math.cos(angle) * rad + spread;
@@ -457,19 +448,18 @@
     cosmosGroup.add(new THREE.Points(dustGeo, dustMat));
 
     /* ==========================================================================
-       4. THỰC THI NẠP DATA: TỰ ĐỘNG NHẬN DIỆN CẢ 2 BỘ FILE
+       4. DATA SYSTEM (NẠP METADATA CHI TIẾT & CƠ CHẾ DỰ PHÒNG)
        ========================================================================== */
     let ALL_NODES = [];
     let NODE_SPRITES = [];
     let DEPT_MAP = new Map();
     const DETAILS_STORE = new Map();
     let hasSearchHistory = false;
-    let lastSearchResults = [];
 
     async function initializeCosmos() {
       const loaderText = document.getElementById('loader-text');
       
-      // 1. Thử load galaxy_nodes.json hoặc galaxy_nodes_2.json
+      // 1. Nạp galaxy_nodes.json hoặc galaxy_nodes_2.json
       const nodeFiles = ['galaxy_nodes.json', 'galaxy_nodes_2.json'];
       for (const fname of nodeFiles) {
         try {
@@ -490,11 +480,11 @@
         ALL_NODES = generateRealisticNodes();
       }
 
-      // 2. Preload ngầm song song các file details (hỗ trợ cả details_X.json và details_X_2.json)
-      loaderText.innerText = "NẠP METADATA CHI TIẾT TỪ DETAILS_0..16.JSON...";
+      // 2. Preload ngầm song song các file details_0..16.json
+      loaderText.innerText = "NẠP METADATA DETAILS_0..16.JSON...";
       preloadAllDetails();
 
-      // 3. Xây dựng dải thiên hà
+      // 3. Xây dựng không gian ngân hà
       buildCosmicScene();
       setupDepartmentFilterUI();
 
@@ -504,7 +494,6 @@
     }
 
     async function preloadAllDetails() {
-      // Quét cả hai định dạng file details
       const loadPromises = [];
       for (let i = 0; i <= 16; i++) {
         loadPromises.push(
@@ -521,7 +510,6 @@
         );
       }
       await Promise.all(loadPromises);
-      console.log(`Đã lưu cache ${DETAILS_STORE.size} chi tiết luận văn.`);
     }
 
     function populateDetailsMap(dataObj) {
@@ -529,7 +517,6 @@
         const idNum = parseInt(idStr, 10);
         DETAILS_STORE.set(idNum, val);
 
-        // Gắn luôn metadata vào object node trong ALL_NODES để tìm kiếm siêu tốc
         const matchedNode = ALL_NODES.find(n => n.id === idNum);
         if (matchedNode) {
           matchedNode.cachedDetail = val;
@@ -541,7 +528,6 @@
       });
     }
 
-    // Lấy thông tin chi tiết một cách an toàn tuyệt đối
     function getSafeDetail(node) {
       const d = DETAILS_STORE.get(node.id) || node.cachedDetail;
       if (d) {
@@ -572,14 +558,14 @@
       };
     }
 
-    // Xây dựng hình phễu 3D
+    // [YÊU CẦU 3]: TOÀN BỘ KÍCH THƯỚC TO GẤP ĐÔI!
     function buildCosmicScene() {
       NODE_SPRITES = [];
 
       ALL_NODES.forEach((node) => {
         const year = node.year || 2020;
         const yearOffset = Math.max(0, year - 2001);
-        const funnelFactor = Math.pow(1.05, yearOffset); // Mỗi năm nở 5%
+        const funnelFactor = Math.pow(1.05, yearOffset); // Mỗi năm to 5%
 
         const origR = Math.sqrt(node.x * node.x + node.z * node.z) || 1;
         const newR = origR * (0.65 + funnelFactor * 0.45);
@@ -601,33 +587,34 @@
         let scaleSize = 1.0;
 
         if (isDept || isAdvisor) {
-          scaleSize = isDept ? 6.5 : 4.2; // Giảm 1/2 hào quang
+          // GẤP ĐÔI KÍCH THƯỚC:
+          scaleSize = isDept ? 14.0 : 9.5; 
           spriteMat = new THREE.SpriteMaterial({
             map: moderateSunTexture,
             color: new THREE.Color("#FDE047"),
             transparent: true,
-            opacity: 0.85,
+            opacity: 0.9,
             blending: THREE.AdditiveBlending,
             depthWrite: false
           });
         } else if (isCore) {
-          scaleSize = 5.0;
+          scaleSize = 8.0;
           spriteMat = new THREE.SpriteMaterial({
             map: moderateSunTexture,
             color: new THREE.Color("#FFFFFF"),
             transparent: true,
-            opacity: 0.75,
+            opacity: 0.7,
             blending: THREE.AdditiveBlending,
             depthWrite: false
           });
         } else {
-          // Luận văn: Sáng theo mã màu riêng của nó
-          scaleSize = 3.2 + Math.min(2.0, (node.size || 1.5) * 0.5);
+          // LUẬN VĂN: GẤP ĐÔI KÍCH THƯỚC (7.0 - 9.0)
+          scaleSize = 7.0 + Math.min(3.0, (node.size || 1.5) * 0.8);
           spriteMat = new THREE.SpriteMaterial({
             map: starTexture,
             color: new THREE.Color(node.color || "#06B6D4"),
             transparent: true,
-            opacity: 0.85,
+            opacity: 0.88,
             blending: THREE.AdditiveBlending,
             depthWrite: false
           });
@@ -670,13 +657,14 @@
           const az = dz + (Math.random() - 0.5) * 30;
           nodes.push({ id: id++, name: `교수 ${advName}`, type: 'advisor_sun', dept: d, year: 2026, x: ax, y: 0, z: az, color: '#EAB308' });
 
-          for (let t = 1; t <= 25; t++) {
+          // Mỗi giáo sư tạo 14 luận văn để test cuộn danh sách
+          for (let t = 1; t <= 14; t++) {
             const yr = 2005 + Math.floor(Math.random() * 22);
             const tr = 15 + Math.random() * 35;
             const ta = Math.random() * Math.PI * 2;
             nodes.push({
               id: id++,
-              name: `딥러닝 기반 ${d} 최적화 및 메커니즘 분석 #${id}`,
+              name: `딥러닝 기반 ${d} 최적화 및 메커니즘 분석 #${t}`,
               type: 'thesis_planet',
               dept: d,
               advisor: advName,
@@ -757,7 +745,7 @@
         s.visible = visible;
 
         if (visible && !s.userData.isHighlight) {
-          s.material.opacity = (n.type === 'thesis_planet') ? 0.85 : 0.95;
+          s.material.opacity = (n.type === 'thesis_planet') ? 0.88 : 0.95;
         } else if (!visible) {
           s.material.opacity = 0.0;
         }
@@ -787,11 +775,14 @@
     });
 
     /* ==========================================================================
-       6. INTERACTION: RAYCAST & OPEN DETAIL PANEL 100% HOẠT ĐỘNG
+       6. INTERACTION & CLICK: FIX TRIỆT ĐỂ BẤM VÀO LUẬN VĂN LẬP TỨC MỞ PANEL
        ========================================================================== */
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
     let hoveredSprite = null;
+
+    // Tọa độ kiểm tra kéo chuột hay click thực tế
+    let downX = 0, downY = 0;
 
     const tooltipEl = document.getElementById('hover-tooltip');
     const hoverBadgeEl = document.getElementById('hover-badge');
@@ -815,7 +806,7 @@
         if (hoveredSprite !== sprite) {
           clearHover();
           hoveredSprite = sprite;
-          const s = sprite.userData.baseSize * 1.5;
+          const s = sprite.userData.baseSize * 1.35;
           sprite.scale.set(s, s, 1);
 
           const n = sprite.userData.nodeData;
@@ -854,9 +845,19 @@
       tooltipEl.classList.add('hidden');
     }
 
-    // Bấm chuột vào Sprite 3D -> Mở ngay Panel Chi Tiết
+    // Ghi nhận tọa độ bắt đầu nhấn
+    window.addEventListener('pointerdown', (e) => {
+      downX = e.clientX;
+      downY = e.clientY;
+    });
+
+    // Bắt sự kiện Click chính xác (không bị xung đột kéo OrbitControls)
     window.addEventListener('pointerup', (e) => {
       if (e.target.closest('aside') || e.target.closest('header') || e.target.closest('.pointer-events-auto')) return;
+
+      const diffX = Math.abs(e.clientX - downX);
+      const diffY = Math.abs(e.clientY - downY);
+      if (diffX > 6 || diffY > 6) return; // Nếu kéo màn hình thì bỏ qua
 
       raycaster.setFromCamera(mouse, camera);
       const visibleSprites = NODE_SPRITES.filter(s => s.visible);
@@ -868,19 +869,20 @@
       }
     });
 
-    // Mở Panel Chi Tiết cho 1 Node
+    // Mở Panel Chi Tiết Chắc Chắn 100%
     function openSingleDetailView(node, sprite = null, fromList = false) {
-      // Di chuyển Camera
-      const camPos = new THREE.Vector3(node.fx + 26, node.fy + 14, node.fz + 34);
+      // 1. Bay camera tới node
+      const camPos = new THREE.Vector3(node.fx + 30, node.fy + 16, node.fz + 38);
       const targetPos = new THREE.Vector3(node.fx, node.fy, node.fz);
 
-      new TWEEN.Tween(camera.position).to(camPos, 1000).easing(TWEEN.Easing.Cubic.Out).start();
-      new TWEEN.Tween(controls.target).to(targetPos, 1000).easing(TWEEN.Easing.Cubic.Out).start();
+      new TWEEN.Tween(camera.position).to(camPos, 900).easing(TWEEN.Easing.Cubic.Out).start();
+      new TWEEN.Tween(controls.target).to(targetPos, 900).easing(TWEEN.Easing.Cubic.Out).start();
 
+      // 2. Nạp dữ liệu
       const detail = getSafeDetail(node);
       renderDetailContent(node, detail);
 
-      // Chuyển chế độ hiển thị của Panel bên phải sang Detail View
+      // 3. Hiển thị Panel
       document.getElementById('panel-list-view').classList.add('hidden');
       document.getElementById('panel-detail-view').classList.remove('hidden');
       
@@ -893,10 +895,11 @@
 
       document.getElementById('right-panel').classList.remove('translate-x-full');
 
+      // 4. Chớp sáng hành tinh
       if (sprite) {
         const b = sprite.userData.baseSize;
         new TWEEN.Tween(sprite.scale)
-          .to({ x: b * 2.2, y: b * 2.2, z: 1 }, 200)
+          .to({ x: b * 1.8, y: b * 1.8, z: 1 }, 220)
           .yoyo(true).repeat(3)
           .easing(TWEEN.Easing.Quadratic.InOut)
           .onComplete(() => sprite.scale.set(b, b, 1))
@@ -941,7 +944,7 @@
     }
 
     /* ==========================================================================
-       7. TÌM KIẾM GIÁO SƯ & LUẬN VĂN: HIỂN THỊ DANH SÁCH Ở PANEL BÊN PHẢI!
+       7. TÌM KIẾM GIÁO SƯ & LUẬN VĂN: CUỘN ĐẦY ĐỦ 10, 30 HAY 100 BÀI
        ========================================================================== */
     const searchInput = document.getElementById('search-input');
     const searchType = document.getElementById('search-type');
@@ -958,12 +961,11 @@
         return;
       }
 
-      // Chuẩn hóa nếu user gõ "교수 박승배" hoặc "박승배 교수"
       const cleanProfName = q.replace(/교수/g, '').trim();
 
-      // CHỈ LỌC CÁC LUẬN VĂN THỰC SỰ (thesis_planet)
+      // LỌC CHÍNH XÁC CÁC LUẬN VĂN (THESIS_PLANET)
       const matchedTheses = ALL_NODES.filter(n => {
-        if (n.type !== 'thesis_planet') return false; // Không lấy node mặt trời
+        if (n.type !== 'thesis_planet') return false;
 
         const detail = getSafeDetail(n);
         const titleMatch = (detail.title_ko && detail.title_ko.toLowerCase().includes(q)) || (n.name && n.name.toLowerCase().includes(q));
@@ -986,10 +988,9 @@
         return advisorMatch || titleMatch || authorMatch || deptMatch || kwMatch;
       });
 
-      lastSearchResults = matchedTheses;
       hasSearchHistory = true;
 
-      // 1. Nhấp nháy Beacon các hành tinh khớp kết quả trên bầu trời sao
+      // Nhấp nháy Beacon các hành tinh khớp kết quả
       const matchSet = new Set(matchedTheses.map(m => m.id));
       NODE_SPRITES.forEach(s => {
         const id = s.userData.nodeData.id;
@@ -1002,7 +1003,7 @@
         }
       });
 
-      // 2. MỞ PANEL BÊN PHẢI HIỂN THỊ DANH SÁCH LUẬN VĂN
+      // MỞ DANH SÁCH LUẬN VĂN TRÊN PANEL BÊN PHẢI
       renderThesesListPanel(matchedTheses, q);
     }
 
@@ -1015,33 +1016,33 @@
       detailView.classList.add('hidden');
       document.getElementById('right-panel').classList.remove('translate-x-full');
 
-      document.getElementById('list-view-title').innerText = `"${queryText}" 검색 결과`;
-      document.getElementById('list-view-count').innerText = `총 ${theses.length}건의 논문`;
+      document.getElementById('list-view-title').innerText = `"${queryText}" 지도/연구 논문`;
+      document.getElementById('list-view-count').innerText = `총 ${theses.length}건의 학위논문`;
       container.innerHTML = '';
 
       if (theses.length === 0) {
-        container.innerHTML = `<div class="text-slate-500 py-8 text-center text-xs">일치하는 학위논문을 찾을 수 없습니다.</div>`;
+        container.innerHTML = `<div class="text-slate-500 py-12 text-center text-xs">해당 조건에 해당하는 학위논문이 없습니다.</div>`;
         return;
       }
 
+      // Render từng thẻ luận văn
       theses.forEach((n, idx) => {
         const detail = getSafeDetail(n);
         const card = document.createElement('div');
-        card.className = "p-3 rounded-lg bg-black/40 hover:bg-indigo-900/30 border border-white/5 hover:border-cyan-400/40 transition cursor-pointer flex flex-col space-y-1.5";
+        card.className = "p-3 rounded-xl bg-black/60 hover:bg-indigo-950/60 border border-white/10 hover:border-cyan-400/50 transition cursor-pointer flex flex-col space-y-1.5 shadow-md";
         
         card.innerHTML = `
           <div class="flex items-center justify-between">
-            <span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-pink-500/20 text-pink-300 font-scifi">#${idx + 1}</span>
-            <span class="text-cyan-400 font-scifi text-[10px]">${detail.year}년</span>
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-pink-500/20 text-pink-300 font-scifi">#${idx + 1}</span>
+            <span class="text-cyan-400 font-scifi text-xs font-semibold">${detail.year}년</span>
           </div>
           <h4 class="font-bold text-white text-xs leading-snug line-clamp-2">${detail.title_ko}</h4>
-          <div class="text-[10px] text-slate-400 flex items-center justify-between pt-1 border-t border-white/5">
-            <span>저자: ${detail.author}</span>
+          <div class="text-[10px] text-slate-400 flex items-center justify-between pt-1.5 border-t border-white/5">
+            <span>저자: <strong class="text-slate-200">${detail.author}</strong></span>
             <span class="text-indigo-300 font-medium">지도: ${detail.advisor}</span>
           </div>
         `;
 
-        // Khi click vào 1 luận văn trong danh sách:
         card.addEventListener('click', () => {
           const sprite = NODE_SPRITES.find(s => s.userData.nodeData.id === n.id);
           openSingleDetailView(n, sprite, true);
@@ -1054,17 +1055,17 @@
     function resetSearchHighlight() {
       NODE_SPRITES.forEach(s => {
         s.userData.isHighlight = false;
-        if (s.visible) s.material.opacity = (s.userData.nodeData.type === 'thesis_planet') ? 0.85 : 0.95;
+        if (s.visible) s.material.opacity = (s.userData.nodeData.type === 'thesis_planet') ? 0.88 : 0.95;
       });
     }
 
-    // Quay lại danh sách kết quả tìm kiếm
+    // Nút quay lại danh sách
     document.getElementById('btn-back-to-list').addEventListener('click', () => {
       document.getElementById('panel-detail-view').classList.add('hidden');
       document.getElementById('panel-list-view').classList.remove('hidden');
     });
 
-    // Đóng panel
+    // Nút đóng panel
     document.getElementById('btn-close-list-panel').addEventListener('click', () => {
       document.getElementById('right-panel').classList.add('translate-x-full');
       resetSearchHighlight();
@@ -1117,8 +1118,8 @@
       document.getElementById('search-input').placeholder = dict.searchPlaceholder;
 
       const opts = document.getElementById('search-type').options;
-      opts[0].text = dict.searchAll;
-      opts[1].text = dict.searchAdvisor;
+      opts[0].text = dict.searchAdvisor;
+      opts[1].text = dict.searchAll;
       opts[2].text = dict.searchKeyword;
       opts[3].text = dict.searchName;
       opts[4].text = dict.searchAuthor;
@@ -1138,7 +1139,7 @@
     langEnBtn.addEventListener('click', () => switchLanguage('en'));
 
     /* ==========================================================================
-       9. ANIMATION LOOP (TỐC ĐỘ QUAY GIẢM 1/2)
+       9. ANIMATION LOOP
        ========================================================================== */
     const clock = new THREE.Clock();
 
@@ -1149,20 +1150,19 @@
       TWEEN.update();
       controls.update();
 
-      // Giảm 1/2 tốc độ xoay thiên hà: 0.00018 rad/frame
+      // Tốc độ quay ngân hà êm dịu
       cosmosGroup.rotation.y += 0.00018;
 
       NODE_SPRITES.forEach(s => {
         if (s.visible) {
           if (!s.userData.isHighlight) {
             const freq = s.userData.isSun ? 2.0 : 1.6;
-            const amp = s.userData.isSun ? 0.10 : 0.07;
+            const amp = s.userData.isSun ? 0.08 : 0.05;
             const breath = Math.sin(elapsed * freq + s.userData.pulseOffset) * amp;
             const b = s.userData.baseSize;
             s.scale.set(b * (1 + breath), b * (1 + breath), 1);
           } else {
-            // Strobing beacon khi tìm kiếm
-            const strobe = 1.0 + Math.abs(Math.sin(elapsed * 7.0)) * 0.9;
+            const strobe = 1.0 + Math.abs(Math.sin(elapsed * 7.0)) * 0.8;
             const b = s.userData.baseSize;
             s.scale.set(b * strobe, b * strobe, 1);
           }
@@ -1179,7 +1179,7 @@
       renderer.setSize(window.innerWidth, window.innerHeight);
     });
 
-    // Khởi động
+    // Boot
     initializeCosmos();
     animate();
   </script>
