@@ -148,7 +148,7 @@
     <div id="loader-sub" class="text-[10px] text-slate-500 font-scifi mt-1">SEOULTECH GALAXY SIMULATION</div>
   </div>
 
-  <!-- HEADER (Hạ thấp hơn trên mobile để tránh camera iPhone tai thỏ / dynamic island) -->
+  <!-- HEADER -->
   <header class="absolute top-0 left-0 right-0 z-20 flex justify-between items-start px-4 md:px-6 header-safe pointer-events-none">
     <div class="pointer-events-auto max-w-[70%] md:max-w-none">
       <div class="flex items-center space-x-2 mb-0.5">
@@ -161,7 +161,6 @@
         학위논문 및 지식 네트워크 시각화
       </p>
 
-      <!-- Nút dấu cộng mở Department panel trên mobile đặt ngay dưới tiêu đề -->
       <button id="btn-mobile-dept-open" class="md:hidden mt-2 flex items-center space-x-1.5 px-3 py-1 scifi-panel rounded-full text-cyan-300 border border-cyan-400/40 text-xs active:scale-95 transition-all shadow-[0_0_12px_rgba(6,182,212,0.3)]">
         <span class="text-base font-bold leading-none">+</span>
         <span class="text-[10px] font-scifi uppercase tracking-wider" id="mobile-dept-btn-text">학과 필터</span>
@@ -176,14 +175,13 @@
     </div>
   </header>
 
-  <!-- DEPARTMENT PANEL: Trên Desktop ở góc trái, trên Mobile ẩn đi & khi mở sẽ bung ra giữa màn hình -->
+  <!-- DEPARTMENT PANEL -->
   <div id="dept-panel-container" class="hidden md:flex fixed md:absolute left-1/2 -translate-x-1/2 top-28 md:left-6 md:top-24 md:translate-x-0 z-30 pointer-events-none transition-all duration-300">
     <div class="w-[90vw] max-w-[340px] md:w-80 scifi-panel p-4 rounded-xl pointer-events-auto border border-white/10 flex flex-col space-y-3 shadow-2xl">
       <div class="flex items-center justify-between border-b border-indigo-500/20 pb-2">
         <span id="label-college-filters" class="text-xs font-bold text-indigo-300 tracking-widest uppercase font-scifi">학과 필터</span>
         <div class="flex items-center space-x-2">
           <button id="btn-reset-filters" class="text-[10px] text-cyan-400 hover:underline font-scifi">초기화</button>
-          <!-- Nút thu nhỏ lại trên điện thoại để trở về dấu cộng -->
           <button id="btn-mobile-dept-close" class="md:hidden text-slate-400 hover:text-white px-2 py-0.5 rounded bg-white/5 border border-white/10 text-xs font-bold font-scifi">✕</button>
         </div>
       </div>
@@ -213,7 +211,7 @@
     </div>
   </div>
 
-  <!-- TIMELINE PANEL: Giữ nguyên vị trí ở bên trái, kích thước nguyên vẹn, nằm dưới Department & trên Search -->
+  <!-- TIMELINE PANEL -->
   <div class="absolute left-4 md:left-6 bottom-32 md:bottom-24 z-20 pointer-events-none">
     <div class="w-20 scifi-panel py-3 px-2 rounded-xl pointer-events-auto border border-white/10 flex flex-col items-center shadow-lg">
       <div class="w-full flex flex-col items-center border-b border-indigo-500/20 pb-1 mb-1">
@@ -221,7 +219,7 @@
         <span id="timeline-year-badge" class="font-scifi text-xs font-bold text-cyan-400">2026</span>
       </div>
 
-      <!-- Vertical Slider (Giữ kích thước nguyên vẹn) -->
+      <!-- Vertical Slider -->
       <div class="h-32 w-full flex items-center justify-center relative my-1">
         <input id="timeline-slider" type="range" min="2001" max="2026" value="2026" step="1" class="slider-vertical">
       </div>
@@ -237,7 +235,7 @@
     </div>
   </div>
 
-  <!-- BOTTOM SEARCH BAR: Nâng vị trí lên cao trên điện thoại tránh thanh điều hướng/cử chỉ vuốt -->
+  <!-- BOTTOM SEARCH BAR -->
   <div class="absolute search-bottom-safe left-1/2 -translate-x-1/2 z-20 w-11/12 max-w-2xl pointer-events-auto flex flex-col items-center transition-all">
     <div class="w-full scifi-panel rounded-full px-3 md:px-4 py-1.5 md:py-2 flex items-center space-x-2 md:space-x-3 border border-indigo-500/40 shadow-[0_0_30px_rgba(79,70,229,0.3)]">
       <select id="search-type" class="bg-black/60 text-slate-300 text-xs rounded-full px-2.5 md:px-3 py-1.5 border border-indigo-500/30 focus:outline-none focus:border-cyan-400 cursor-pointer font-medium">
@@ -258,14 +256,12 @@
     </div>
   </div>
 
-  <!-- MULTI-FUNCTION RESEARCH RESULT & DETAIL PANEL
-       Desktop: trượt vào từ mép phải
-       Mobile: hiển thị căn chính giữa màn hình (centered modal) -->
+  <!-- MULTI-FUNCTION RESEARCH RESULT & DETAIL PANEL -->
   <aside id="right-panel" class="fixed md:absolute md:top-0 md:right-0 md:bottom-0 
     top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 md:translate-y-0 md:translate-x-full md:left-auto
     w-[92vw] max-w-[420px] h-[78vh] md:h-full scifi-panel z-40 transition-transform duration-300 ease-out flex flex-col border border-indigo-500/30 rounded-2xl md:rounded-none md:border-l md:border-t-0 md:border-r-0 md:border-b-0 pointer-events-auto hidden">
     
-    <!-- 1. VIEW: LIST RESULTS (SEARCH RESULT) -->
+    <!-- 1. VIEW: LIST RESULTS -->
     <div id="panel-list-view" class="hidden flex flex-col h-full p-4 md:p-6 min-h-0">
       <div class="flex justify-between items-center pb-3 md:pb-4 border-b border-indigo-500/20 shrink-0">
         <div>
@@ -280,12 +276,10 @@
         <span id="list-view-subhint" class="text-[10px] text-indigo-400">클릭 시 해당 논문 상세 확인</span>
       </div>
 
-      <div id="search-theses-list" class="flex-1 overflow-y-auto space-y-2 pr-1.5 text-xs min-h-0">
-        <!-- Injected thesis cards -->
-      </div>
+      <div id="search-theses-list" class="flex-1 overflow-y-auto space-y-2 pr-1.5 text-xs min-h-0"></div>
     </div>
 
-    <!-- 2. VIEW: DETAIL PANEL (Chỉ mở trên Desktop, tắt trên điện thoại) -->
+    <!-- 2. VIEW: DETAIL PANEL -->
     <div id="panel-detail-view" class="flex flex-col h-full p-4 md:p-6 min-h-0">
       <div class="flex justify-between items-start pb-3 md:pb-4 border-b border-indigo-500/20 shrink-0">
         <div class="flex items-center space-x-2">
@@ -323,10 +317,20 @@
           </div>
         </div>
 
-        <!-- Mã định danh UCI -->
-        <div class="p-2.5 rounded-lg bg-black/50 border border-indigo-500/20">
-          <span id="detail-label-uci" class="text-[9px] uppercase font-bold text-indigo-400 font-scifi tracking-widest block mb-0.5">UCI 등록번호 (UCI Identifier)</span>
-          <span id="detail-uci" class="font-scifi text-xs text-cyan-300 font-semibold select-all break-all tracking-wide">N/A</span>
+        <!-- MÃ ĐỊNH DANH UCI VÀ NÚT ĐI TỚI RISS (ĐÃ SỬA) -->
+        <div class="p-3 rounded-lg bg-black/50 border border-indigo-500/20 flex flex-col space-y-2">
+          <div class="flex items-center justify-between">
+            <span id="detail-label-uci" class="text-[9px] uppercase font-bold text-indigo-400 font-scifi tracking-widest">UCI 등록번호 (UCI Identifier)</span>
+            <span id="detail-uci-status-badge" class="px-1.5 py-0.2 rounded text-[9px] font-scifi font-bold bg-cyan-500/20 text-cyan-300">UCI</span>
+          </div>
+          <div class="flex items-center justify-between gap-2">
+            <span id="detail-uci" class="font-scifi text-xs text-cyan-300 font-semibold select-all break-all tracking-wide flex-1">N/A</span>
+            <a id="btn-goto-riss" href="https://www.riss.kr/" target="_blank" rel="noopener noreferrer" 
+               class="shrink-0 px-2.5 py-1 rounded-md text-[10px] font-bold font-scifi flex items-center space-x-1.5 bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white shadow-[0_0_12px_rgba(6,182,212,0.4)] transition-all">
+              <span id="btn-goto-riss-text">RISS 바로가기</span>
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+            </a>
+          </div>
         </div>
 
         <div>
@@ -380,6 +384,9 @@
         detailDeptLabel: "학과 / 전공",
         detailDegreeLabel: "학위 구분",
         detailUciLabel: "UCI 등록번호 (UCI Identifier)",
+        gotoRissBtn: "RISS 바로가기",
+        gotoRissHomeBtn: "RISS 홈 바로가기",
+        uciNone: "없음 (해당 논문 UCI 미등록)",
         detailKeywordsLabel: "주제어 키워드",
         detailAbstractLabel: "논문 초록 (Abstract)",
         yearSuffix: "년",
@@ -411,6 +418,9 @@
         detailDeptLabel: "DEPARTMENT",
         detailDegreeLabel: "DEGREE",
         detailUciLabel: "UCI IDENTIFIER",
+        gotoRissBtn: "Go to RISS",
+        gotoRissHomeBtn: "RISS Home",
+        uciNone: "None (UCI Not Registered)",
         detailKeywordsLabel: "KEYWORDS",
         detailAbstractLabel: "ABSTRACT",
         yearSuffix: "",
@@ -514,7 +524,7 @@
     const softDustTexture = createSoftDustTexture();
 
     /* ==========================================================================
-       3. THREE.JS SCENE SETUP & MẶC ĐỊNH LÀ "탑 뷰" (TOP VIEW)
+       3. THREE.JS SCENE SETUP
        ========================================================================== */
     const canvas = document.getElementById('cosmos-canvas');
     const scene = new THREE.Scene();
@@ -537,7 +547,7 @@
     scene.add(cosmosGroup);
 
     /* ==========================================================================
-       4. QUẦNG SÁNG GALAXY THỂ TÍCH
+       4. VOLUMETRIC OBJECTS
        ========================================================================== */
     let funnelHazeMesh;
     const volumetricNebulaMat = new THREE.ShaderMaterial({
@@ -687,13 +697,11 @@
       let resolvedDegree = (d && (d.degree || d.degree_name)) || node.degree || (node.type === 'thesis_planet' ? (currentLang === 'ko' ? "석·박사 학위논문" : "Ph.D. / Master") : (currentLang === 'ko' ? "교수/학부" : "Faculty"));
       let resolvedYear = (d && d.year) || node.year || 2024;
       
-      let resolvedUci = (d && (d.uci || d.uci_code || d.d_uci || d.identifier)) || node.uci;
-      if (!resolvedUci || resolvedUci === "N/A" || resolvedUci.trim() === "") {
-        if (node.type === 'thesis_planet') {
-          resolvedUci = `I410-ECN-0102-${resolvedYear}-${String(node.id).padStart(5, '0')}`;
-        } else {
-          resolvedUci = "N/A";
-        }
+      // SỬA: Lấy UCI chính xác, không tự sinh mã giả lập nếu không có
+      let rawUci = (d && (d.uci || d.uci_code || d.d_uci || d.identifier)) || node.uci;
+      let resolvedUci = null;
+      if (rawUci && typeof rawUci === 'string' && rawUci.trim() !== "" && rawUci !== "N/A" && rawUci !== "nan") {
+        resolvedUci = rawUci.trim();
       }
       
       let resolvedAbstractKo = (d && (d.abstract_ko || d.abstract || d.abstract_en)) || node.abstract_ko;
@@ -979,7 +987,7 @@
               advisor: advName,
               author: `연구자_${id}`,
               year: yr,
-              uci: `I410-ECN-0102-${yr}-${String(id).padStart(5, '0')}`,
+              uci: null,
               abstract_ko: `본 연구는 서울과학기술대학교 ${d}에서 수행된 연구로, 최신 학술 동향과 실증적 방법론을 분석하여 학문적 가치를 입증한 학위논문입니다.`,
               x: ax + Math.cos(ta) * tr,
               y: ((yr - 2001) / 25.0) * 450,
@@ -1061,7 +1069,6 @@
         applyFilters();
       });
 
-      // Mobile Department Panel Expand / Collapse
       const mobileDeptBtn = document.getElementById('btn-mobile-dept-open');
       const mobileDeptCloseBtn = document.getElementById('btn-mobile-dept-close');
       const deptPanelContainer = document.getElementById('dept-panel-container');
@@ -1102,7 +1109,6 @@
       });
     }
 
-    // Vertical Timeline Slider
     const timelineSlider = document.getElementById('timeline-slider');
     const timelineBadge = document.getElementById('timeline-year-badge');
     timelineSlider.addEventListener('input', (e) => {
@@ -1111,7 +1117,6 @@
       applyFilters();
     });
 
-    // COMPACT SLIDER SWITCH (누적 ↔ 단일)
     const switchContainer = document.getElementById('mode-toggle-switch');
     const switchHandle = document.getElementById('switch-handle');
 
@@ -1152,7 +1157,6 @@
     });
 
     function checkRaycast() {
-      // Trên điện thoại, không cần tính toán hover tooltip để tiết kiệm hiệu năng
       if (isMobileView()) return;
 
       raycaster.setFromCamera(mouse, camera);
@@ -1224,17 +1228,13 @@
           const profName = node.name.replace('교수', '').trim();
           showThesesOfAdvisor(profName);
         } else {
-          // YÊU CẦU: Ở CHẾ ĐỘ ĐIỆN THOẠI, TẮT HOÀN TOÀN CHỨC NĂNG HIỆN PANEL GIỚI THIỆU LUẬN VĂN
-          if (isMobileView()) {
-            return;
-          }
+          if (isMobileView()) return;
           openSingleDetailView(node, targetSprite, false);
         }
       }
     });
 
     function openSingleDetailView(node, sprite = null, fromList = false) {
-      // Chặn bật panel chi tiết luận văn khi đang ở trên điện thoại
       if (isMobileView()) return;
 
       const detail = getCleanDetail(node);
@@ -1270,6 +1270,7 @@
       }
     }
 
+    /* SỬA: RENDER CHI TIẾT VÀ XỬ LÝ LIÊN KẾT ĐẾN RISS QUA UCI */
     function renderDetailContent(node, detail) {
       const isKo = currentLang === 'ko';
       const badge = document.getElementById('detail-type-badge');
@@ -1291,7 +1292,31 @@
       document.getElementById('detail-dept').innerText = isKo ? detail.dept : detail.dept_en;
       document.getElementById('detail-degree').innerText = detail.degree;
       document.getElementById('detail-year').innerText = `${detail.year}${I18N[currentLang].yearSuffix}`;
-      document.getElementById('detail-uci').innerText = detail.uci || "N/A";
+      
+      // XỬ LÝ NÚT RISS VÀ GHI CHÚ UCI
+      const uciTextEl = document.getElementById('detail-uci');
+      const rissBtn = document.getElementById('btn-goto-riss');
+      const rissBtnText = document.getElementById('btn-goto-riss-text');
+      const uciStatusBadge = document.getElementById('detail-uci-status-badge');
+
+      if (detail.uci) {
+        uciTextEl.innerText = detail.uci;
+        uciTextEl.className = "font-scifi text-xs text-cyan-300 font-semibold select-all break-all tracking-wide flex-1";
+        // Nếu có UCI: dùng liên kết phân giải trực tiếp tới luận văn trên RISS
+        rissBtn.href = `https://www.riss.kr/link?id=U${encodeURIComponent(detail.uci)}`;
+        rissBtnText.innerText = I18N[currentLang].gotoRissBtn;
+        uciStatusBadge.innerText = "UCI LINK";
+        uciStatusBadge.className = "px-1.5 py-0.2 rounded text-[9px] font-scifi font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-400/30";
+      } else {
+        // Nếu không có UCI: ghi chú không có và dẫn về trang chủ RISS
+        uciTextEl.innerText = I18N[currentLang].uciNone;
+        uciTextEl.className = "font-scifi text-xs text-slate-400 italic font-normal tracking-wide flex-1";
+        rissBtn.href = "https://www.riss.kr/";
+        rissBtnText.innerText = I18N[currentLang].gotoRissHomeBtn;
+        uciStatusBadge.innerText = "NO UCI";
+        uciStatusBadge.className = "px-1.5 py-0.2 rounded text-[9px] font-scifi font-bold bg-slate-500/20 text-slate-400 border border-slate-500/30";
+      }
+
       document.getElementById('detail-abstract').innerText = isKo ? detail.abstract_ko : detail.abstract_en;
 
       const kwBox = document.getElementById('detail-keywords-container');
@@ -1305,8 +1330,8 @@
     }
 
     /* ==========================================================================
-       9. SEARCH & ADVISOR LIST DRAWER (PANEL RESULTS HIỆN Ở GIỮA TRÊN MOBILE)
-       ========================================================================== */
+       9. SEARCH & ADVISOR LIST DRAWER
+       ========================================================================= */
     const searchInput = document.getElementById('search-input');
     const searchType = document.getElementById('search-type');
     const searchBtn = document.getElementById('search-submit-btn');
@@ -1384,7 +1409,6 @@
       listView.classList.remove('hidden');
       detailView.classList.add('hidden');
       
-      // Mở panel: Trên mobile hiện giữa màn hình (centered popup)
       rightPanel.classList.remove('hidden');
       rightPanel.classList.remove('md:translate-x-full');
 
@@ -1418,12 +1442,11 @@
           </div>
           <div class="text-[9px] text-slate-500 flex justify-between items-center truncate">
             <span>${dept}</span>
-            <span class="font-scifi text-[9px] text-cyan-400/80">${detail.uci}</span>
+            <span class="font-scifi text-[9px] text-cyan-400/80">${detail.uci ? detail.uci : I18N[currentLang].uciNone}</span>
           </div>
         `;
 
         card.addEventListener('click', () => {
-          // Nếu ở điện thoại, tắt mở panel chi tiết luận văn, thay vào đó căn camera lại vị trí sao đó
           if (isMobileView()) {
             const camPos = new THREE.Vector3(n.fx + 26, n.fy + 14, n.fz + 34);
             const targetPos = new THREE.Vector3(n.fx, n.fy, n.fz);
@@ -1593,13 +1616,11 @@
       renderer.render(scene, camera);
     }
 
-    // Tự động canh giãn khi xoay màn hình hoặc đổi kích thước trên di động
     window.addEventListener('resize', () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
 
-      // Nếu chuyển sang desktop, khôi phục panel department
       if (!isMobileView()) {
         const deptPanelContainer = document.getElementById('dept-panel-container');
         deptPanelContainer.classList.remove('hidden');
