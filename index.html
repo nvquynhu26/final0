@@ -26,7 +26,7 @@
     .font-scifi { font-family: 'Space Grotesk', monospace; }
     
     .scifi-panel {
-      background: radial-gradient(135% 100% at 0% 0%, rgba(13, 17, 34, 0.94) 0%, rgba(5, 7, 18, 0.98) 100%);
+      background: radial-gradient(135% 100% at 0% 0%, rgba(13, 17, 34, 0.95) 0%, rgba(5, 7, 18, 0.98) 100%);
       backdrop-filter: blur(25px);
       -webkit-backdrop-filter: blur(25px);
       border: 1px solid rgba(129, 140, 248, 0.25);
@@ -166,7 +166,8 @@
       </button>
     </div>
 
-    <div class="flex items-center space-x-2 pointer-events-auto">
+    <!-- Nút ngôn ngữ góc trên bên phải -->
+    <div class="flex items-center space-x-2 pointer-events-auto z-50">
       <div class="scifi-panel p-1 rounded-full flex items-center border border-indigo-500/30">
         <button id="lang-ko-btn" class="px-2.5 md:px-3 py-1 rounded-full text-xs font-bold bg-indigo-600 text-white">KO</button>
         <button id="lang-en-btn" class="px-2.5 md:px-3 py-1 rounded-full text-xs font-semibold text-slate-400 hover:text-white">EN</button>
@@ -255,10 +256,10 @@
     </div>
   </div>
 
-  <!-- MULTI-FUNCTION RESEARCH RESULT & DETAIL PANEL -->
-  <aside id="right-panel" class="fixed md:absolute md:top-0 md:right-0 md:bottom-0 
-    top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 md:translate-y-0 md:translate-x-full md:left-auto
-    w-[92vw] max-w-[420px] h-[78vh] md:h-full scifi-panel z-40 transition-transform duration-300 ease-out flex flex-col border border-indigo-500/30 rounded-2xl md:rounded-none md:border-l md:border-t-0 md:border-r-0 md:border-b-0 pointer-events-auto hidden">
+  <!-- SỬA: PANEL THÔNG TIN NẰM SÁT VIỀN PHẢI MÀN HÌNH (DƯỚI NÚT NGÔN NGỮ), KHÔNG CHẮN GIỮA MÀN HÌNH -->
+  <aside id="right-panel" class="fixed z-40 transition-all duration-300 ease-out flex flex-col border border-indigo-500/30 scifi-panel pointer-events-auto hidden
+    top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[92vw] max-w-[420px] h-[78vh] rounded-2xl
+    md:top-16 md:right-0 md:bottom-0 md:left-auto md:translate-x-full md:translate-y-0 md:w-[410px] md:h-[calc(100vh-4rem)] md:rounded-l-2xl md:rounded-r-none md:border-r-0 md:shadow-[-15px_0_35px_rgba(0,0,0,0.85)]">
     
     <!-- 1. VIEW: LIST RESULTS -->
     <div id="panel-list-view" class="hidden flex flex-col h-full p-4 md:p-6 min-h-0">
@@ -481,9 +482,9 @@
       const ctx = c.getContext('2d');
       const grad = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
       grad.addColorStop(0.0, 'rgba(255, 255, 255, 1.0)');
-      grad.addColorStop(0.12, 'rgba(255, 255, 255, 0.95)');
-      grad.addColorStop(0.28, 'rgba(255, 255, 255, 0.6)');
-      grad.addColorStop(0.55, 'rgba(255, 255, 255, 0.15)');
+      grad.addColorStop(0.15, 'rgba(255, 255, 255, 0.95)');
+      grad.addColorStop(0.35, 'rgba(255, 255, 255, 0.6)');
+      grad.addColorStop(0.65, 'rgba(255, 255, 255, 0.15)');
       grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, 128, 128);
@@ -496,8 +497,8 @@
       const ctx = c.getContext('2d');
       const grad = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
       grad.addColorStop(0.0, 'rgba(255, 255, 255, 1.0)');
-      grad.addColorStop(0.22, 'rgba(254, 240, 138, 0.85)');
-      grad.addColorStop(0.48, 'rgba(234, 179, 8, 0.25)');
+      grad.addColorStop(0.22, 'rgba(254, 240, 138, 0.9)');
+      grad.addColorStop(0.50, 'rgba(234, 179, 8, 0.3)');
       grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, 128, 128);
@@ -506,14 +507,15 @@
 
     function createSoftDustTexture() {
       const c = document.createElement('canvas');
-      c.width = 64; c.height = 64;
+      c.width = 128; c.height = 128;
       const ctx = c.getContext('2d');
-      const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
-      grad.addColorStop(0.0, 'rgba(255, 255, 255, 0.9)');
-      grad.addColorStop(0.35, 'rgba(255, 255, 255, 0.3)');
+      const grad = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+      grad.addColorStop(0.0, 'rgba(255, 255, 255, 0.95)');
+      grad.addColorStop(0.3, 'rgba(255, 255, 255, 0.5)');
+      grad.addColorStop(0.7, 'rgba(255, 255, 255, 0.15)');
       grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
       ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, 64, 64);
+      ctx.fillRect(0, 0, 128, 128);
       return new THREE.CanvasTexture(c);
     }
 
@@ -544,12 +546,12 @@
     const cosmosGroup = new THREE.Group();
     scene.add(cosmosGroup);
 
-    // Group chứa các dây liên kết hình vòng cung
+    // Group chứa dây liên kết vòng cung phát sáng
     const arcLinksGroup = new THREE.Group();
     cosmosGroup.add(arcLinksGroup);
 
     /* ==========================================================================
-       4. VOLUMETRIC OBJECTS & SHADER
+       4. VOLUMETRIC OBJECTS & SHADER DẢI ÁNH SÁNG XOẮN ỐC
        ========================================================================== */
     let funnelHazeMesh;
     const volumetricNebulaMat = new THREE.ShaderMaterial({
@@ -559,7 +561,7 @@
       side: THREE.DoubleSide,
       uniforms: {
         uTime: { value: 0 },
-        uIntensity: { value: 0.52 }
+        uIntensity: { value: 0.65 }
       },
       vertexShader: `
         varying vec2 vUv;
@@ -577,27 +579,67 @@
         uniform float uIntensity;
         void main() {
           float angle = atan(vPos.z, vPos.x);
-          float radNorm = length(vPos.xz) / 500.0;
-          float coreBoost = 1.0 + (1.0 - smoothstep(0.0, 0.35, radNorm)) * 0.20;
+          float radNorm = length(vPos.xz) / 520.0;
+          float coreBoost = 1.0 + (1.0 - smoothstep(0.0, 0.4, radNorm)) * 0.35;
           
-          float swirl = sin(angle * 4.0 + vPos.y * 0.015 - uTime * 0.35) * 0.25;
-          float fade = smoothstep(0.0, 0.08, vUv.y) * smoothstep(1.0, 0.92, vUv.y);
+          float swirl = sin(angle * 3.0 + vPos.y * 0.012 - uTime * 0.4) * 0.35;
+          float fade = smoothstep(0.0, 0.1, vUv.y) * smoothstep(1.0, 0.9, vUv.y);
           
-          vec3 pink = vec3(0.98, 0.22, 0.38);
-          vec3 violet = vec3(0.58, 0.34, 0.98);
-          vec3 cyan = vec3(0.01, 0.76, 0.90);
+          vec3 pink = vec3(0.96, 0.28, 0.62);
+          vec3 violet = vec3(0.60, 0.35, 0.95);
+          vec3 cyan = vec3(0.05, 0.82, 0.95);
           
-          vec3 col = mix(cyan, violet, clamp(vUv.y, 0.0, 1.0));
-          col = mix(col, pink, clamp(sin(angle * 3.0 + uTime * 0.25) * 0.5 + 0.5, 0.0, 1.0));
+          vec3 col = mix(cyan, violet, clamp(vUv.y + swirl * 0.3, 0.0, 1.0));
+          col = mix(col, pink, clamp(sin(angle * 2.5 + uTime * 0.3) * 0.5 + 0.5, 0.0, 1.0));
           
-          float alpha = fade * (0.35 + swirl * 0.1) * uIntensity * coreBoost;
-          gl_FragColor = vec4(col * alpha * 1.6, alpha);
+          float alpha = fade * (0.4 + swirl * 0.15) * uIntensity * coreBoost;
+          gl_FragColor = vec4(col * alpha * 1.8, alpha);
+        }
+      `
+    });
+
+    // Shader tạo ống dây ánh sáng phát sáng to và lượn sóng
+    const arcTubeShaderMat = new THREE.ShaderMaterial({
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+      side: THREE.DoubleSide,
+      uniforms: {
+        uTime: { value: 0 },
+        uOpacity: { value: 0.95 }
+      },
+      vertexShader: `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        varying vec2 vUv;
+        uniform float uTime;
+        uniform float uOpacity;
+        void main() {
+          // Gradient Hồng sang Xanh Dương dọc theo ống
+          vec3 pink = vec3(0.98, 0.25, 0.65);
+          vec3 cyan = vec3(0.08, 0.85, 0.98);
+          vec3 col = mix(pink, cyan, vUv.x);
+
+          // Xung nhịp ánh sáng chạy dọc dây
+          float pulse = sin(vUv.x * 20.0 - uTime * 6.0) * 0.5 + 0.5;
+          col += pulse * 0.35;
+
+          // Làm mềm 2 bên viền ống
+          float edgeFade = sin(vUv.y * 3.14159);
+          float alpha = edgeFade * uOpacity;
+
+          gl_FragColor = vec4(col * 1.8, alpha);
         }
       `
     });
 
     /* ==========================================================================
-       5. DATA LOADING & ROBUST METADATA BINDING
+       5. DATA LOADING & METADATA BINDING
        ========================================================================== */
     let ALL_NODES = [];
     let NODE_SPRITES = [];
@@ -608,7 +650,7 @@
     let selectedActiveNode = null;
     let cosmicBeamMesh, cosmicBeamGlowMesh;
     let stardustMistPoints;
-    let spiralArmPoints; // Dải xoắn ốc uốn lượn hồng - xanh
+    let spiralArmRibbonPoints; // Dải xoắn ốc uốn lượn hồng - xanh
 
     async function initializeCosmos() {
       const loaderText = document.getElementById('loader-text');
@@ -744,7 +786,7 @@
     }
 
     /* ==========================================================================
-       6. KHỞI TẠO BỐ CỤC: GALAXY NODES, XOẮN ỐC HỒNG-XANH & VOLUMETRIC OBJECTS
+       6. KHỞI TẠO BỐ CỤC: DẢI NGÂN HÀ XOẮN ỐC HỒNG-XANH & TỶ LỆ KÍCH THƯỚC KẾT NỐI
        ========================================================================== */
     function buildCosmicScene() {
       NODE_SPRITES = [];
@@ -758,6 +800,18 @@
         const tiltAngleZ = Math.cos(y * 2.3) * (5.0 * Math.PI / 180.0);
         yearTiltMap.set(y, { tiltX: tiltAngleX, tiltZ: tiltAngleZ });
       }
+
+      // Bước 1: Tính toán sơ bộ số lượng kết nối từ khóa (Degree Centrality)
+      const keywordFreq = new Map();
+      ALL_NODES.forEach(n => {
+        if (n.type === 'thesis_planet') {
+          const det = getCleanDetail(n);
+          det.keywords.forEach(kw => {
+            const k = kw.trim().toLowerCase();
+            keywordFreq.set(k, (keywordFreq.get(k) || 0) + 1);
+          });
+        }
+      });
 
       ALL_NODES.forEach((node) => {
         if (node.type === 'galactic_core') return;
@@ -800,22 +854,33 @@
         let scaleSize = 1.0;
 
         if (isDept || isAdvisor) {
-          scaleSize = isDept ? 6.5 : 4.2;
+          scaleSize = isDept ? 7.2 : 4.8;
           spriteMat = new THREE.SpriteMaterial({
             map: moderateSunTexture,
             color: new THREE.Color("#FDE047"),
             transparent: true,
-            opacity: 0.9,
+            opacity: 0.95,
             blending: THREE.AdditiveBlending,
             depthWrite: false
           });
         } else {
-          scaleSize = 3.2 + Math.min(2.0, (node.size || 1.5) * 0.5);
+          // Tính kích thước tỷ lệ thuận với số kết nối từ khóa nhưng giới hạn trần tránh che lấp
+          let connectionWeight = 0;
+          const det = getCleanDetail(node);
+          det.keywords.forEach(kw => {
+            const k = kw.trim().toLowerCase();
+            connectionWeight += (keywordFreq.get(k) || 1) - 1;
+          });
+          
+          // Chuẩn hóa kích thước trong khoảng an toàn [3.2, 5.8]
+          const sizeBonus = Math.min(2.4, Math.log10(connectionWeight + 1) * 1.5);
+          scaleSize = 3.2 + sizeBonus;
+
           spriteMat = new THREE.SpriteMaterial({
             map: starTexture,
             color: new THREE.Color(node.color || "#06B6D4"),
             transparent: true,
-            opacity: 0.88,
+            opacity: 0.9,
             blending: THREE.AdditiveBlending,
             depthWrite: false
           });
@@ -842,9 +907,9 @@
 
       const galaxyCenterY = (minY + maxY) / 2;
       const galaxyHeight = Math.max(100, maxY - minY);
-
       controls.target.set(0, galaxyCenterY, 0);
 
+      // Trục ánh sáng trung tâm
       const beamHeight = galaxyHeight * 1.06;
       const beamGeo = new THREE.CylinderGeometry(1.6, 1.6, beamHeight, 32, 1, true);
       const beamMat = new THREE.ShaderMaterial({
@@ -868,16 +933,12 @@
           uniform float uTime;
           void main() {
             float fade = smoothstep(0.0, 0.05, vUv.y) * smoothstep(1.0, 0.95, vUv.y);
-            vec3 cyan = vec3(0.023, 0.713, 0.831);
-            vec3 violet = vec3(0.545, 0.360, 0.964);
-            vec3 pink = vec3(0.956, 0.247, 0.368);
-            
+            vec3 cyan = vec3(0.02, 0.75, 0.90);
+            vec3 pink = vec3(0.98, 0.25, 0.65);
             float wave = sin(vPos.y * 0.03 - uTime * 2.0) * 0.5 + 0.5;
-            vec3 col = mix(cyan, violet, clamp(vUv.y, 0.0, 1.0));
-            col = mix(col, pink, wave * 0.65);
-            
-            float alpha = fade * (0.8 + sin(uTime * 3.0 + vPos.y * 0.04) * 0.15);
-            gl_FragColor = vec4(col * alpha * 1.8, alpha);
+            vec3 col = mix(cyan, pink, wave);
+            float alpha = fade * (0.85 + sin(uTime * 3.0 + vPos.y * 0.04) * 0.15);
+            gl_FragColor = vec4(col * alpha * 2.0, alpha);
           }
         `
       });
@@ -885,7 +946,7 @@
       cosmicBeamMesh.position.y = galaxyCenterY;
       cosmosGroup.add(cosmicBeamMesh);
 
-      const beamGlowGeo = new THREE.CylinderGeometry(12, 12, beamHeight, 32, 1, true);
+      const beamGlowGeo = new THREE.CylinderGeometry(14, 14, beamHeight, 32, 1, true);
       const beamGlowMat = new THREE.ShaderMaterial({
         transparent: true,
         depthWrite: false,
@@ -907,11 +968,11 @@
           uniform float uTime;
           void main() {
             float fade = smoothstep(0.0, 0.05, vUv.y) * smoothstep(1.0, 0.95, vUv.y);
-            vec3 violet = vec3(0.545, 0.360, 0.964);
-            vec3 pink = vec3(0.956, 0.247, 0.368);
+            vec3 violet = vec3(0.55, 0.36, 0.96);
+            vec3 pink = vec3(0.95, 0.25, 0.55);
             vec3 col = mix(violet, pink, sin(vUv.y * 6.0 + uTime) * 0.5 + 0.5);
-            float alpha = fade * 0.22;
-            gl_FragColor = vec4(col * alpha * 1.2, alpha);
+            float alpha = fade * 0.28;
+            gl_FragColor = vec4(col * alpha * 1.4, alpha);
           }
         `
       });
@@ -919,105 +980,106 @@
       cosmicBeamGlowMesh.position.y = galaxyCenterY;
       cosmosGroup.add(cosmicBeamGlowMesh);
 
+      // Quầng sương phễu thể tích
       const funnelHazeGeo = new THREE.CylinderGeometry(480, 35, galaxyHeight * 1.02, 48, 24, true);
       funnelHazeMesh = new THREE.Mesh(funnelHazeGeo, volumetricNebulaMat);
       funnelHazeMesh.position.y = galaxyCenterY;
       cosmosGroup.add(funnelHazeMesh);
 
-      // 1. DẢI ÁNH SÁNG XOẮN ỐC HỒNG - XANH DƯƠNG UỐN LƯỢN (SPIRAL RIBBON ARMS)
-      const spiralArmCount = 5500;
-      const armGeo = new THREE.BufferGeometry();
-      const armPositions = new Float32Array(spiralArmCount * 3);
-      const armColors = new Float32Array(spiralArmCount * 3);
+      // DẢI ÁNH SÁNG XOẮN ỐC HỒNG - XANH DƯƠNG UỐN LƯỢN RÕ NÉT THEO HÌNH ẢNH MẪU
+      const spiralRibbonCount = 9000;
+      const ribbonGeo = new THREE.BufferGeometry();
+      const ribbonPositions = new Float32Array(spiralRibbonCount * 3);
+      const ribbonColors = new Float32Array(spiralRibbonCount * 3);
 
-      const pinkSoft = new THREE.Color("#F472B6");   // Hồng pastel dịu nhẹ
-      const blueCyan = new THREE.Color("#38BDF8");   // Xanh dương / Cyan
-      const purpleGlow = new THREE.Color("#A855F7"); // Ánh tím cầu nối
+      const colorPinkNeon = new THREE.Color("#F43F5E");
+      const colorPinkSoft = new THREE.Color("#F472B6");
+      const colorPurple = new THREE.Color("#A855F7");
+      const colorCyanNeon = new THREE.Color("#06B6D4");
+      const colorBlueSoft = new THREE.Color("#38BDF8");
 
-      for (let i = 0; i < spiralArmCount; i++) {
-        const armIndex = i % 3; // 3 cánh xoắn ốc chính
-        const armOffset = (armIndex * Math.PI * 2) / 3;
-        const progress = Math.pow(Math.random(), 0.85); // Phân bổ tự nhiên
+      for (let i = 0; i < spiralRibbonCount; i++) {
+        // Tạo 2 cánh xoắn ốc đối xứng uốn lượn mạnh mẽ
+        const arm = i % 2; 
+        const armAngleOffset = arm * Math.PI;
         
-        const r = 20 + progress * 390;
-        // Góc xoắn logarit uốn lượn
-        const spiralAngle = armOffset + progress * 7.5 + (Math.random() - 0.5) * 0.38;
+        // Tiến trình dọc theo bán kính dải ngân hà
+        const progress = Math.pow(Math.random(), 0.75);
+        const radius = 15 + progress * 420;
         
-        // Độ cao y trải đều dọc theo trục ngân hà
-        const y = minY + progress * galaxyHeight + (Math.sin(spiralAngle * 2.0) * 12.0) + (Math.random() - 0.5) * 14.0;
+        // Góc xoay logarithm tạo đường cong xoắn ốc
+        const theta = armAngleOffset + progress * 6.8 + (Math.random() - 0.5) * 0.35;
         
-        const spread = (Math.random() - 0.5) * (18.0 + progress * 32.0);
-        const x = Math.cos(spiralAngle) * (r + spread);
-        const z = Math.sin(spiralAngle) * (r + spread);
+        // Độ cao Y uốn lượn hình sin nhịp nhàng theo dải
+        const y = minY + progress * galaxyHeight + Math.sin(theta * 2.0) * 16.0 + (Math.random() - 0.5) * 12.0;
+        
+        // Bề dày dải sáng
+        const spread = (Math.random() - 0.5) * (14.0 + progress * 38.0);
+        const x = Math.cos(theta) * (radius + spread);
+        const z = Math.sin(theta) * (radius + spread);
 
-        armPositions[i * 3] = x;
-        armPositions[i * 3 + 1] = y;
-        armPositions[i * 3 + 2] = z;
+        ribbonPositions[i * 3] = x;
+        ribbonPositions[i * 3 + 1] = y;
+        ribbonPositions[i * 3 + 2] = z;
 
-        // Hòa sắc dải xoắn: Hồng sang Xanh dương lượn sóng
-        const wave = Math.sin(spiralAngle * 3.0 + progress * 8.0) * 0.5 + 0.5;
+        // Phối màu: Cánh 1 chuyển từ Hồng sang Tím, Cánh 2 chuyển từ Xanh dương sang Tím, hòa quyện
+        const wave = Math.sin(theta * 2.0 + progress * 5.0) * 0.5 + 0.5;
         let c = new THREE.Color();
-        if (wave < 0.5) {
-          c.lerpColors(pinkSoft, purpleGlow, wave * 2.0);
+        if (arm === 0) {
+          c.lerpColors(colorPinkNeon, colorPinkSoft, wave);
         } else {
-          c.lerpColors(purpleGlow, blueCyan, (wave - 0.5) * 2.0);
+          c.lerpColors(colorCyanNeon, colorBlueSoft, wave);
         }
+        c.lerp(colorPurple, Math.random() * 0.35);
 
-        armColors[i * 3] = c.r;
-        armColors[i * 3 + 1] = c.g;
-        armColors[i * 3 + 2] = c.b;
+        ribbonColors[i * 3] = c.r;
+        ribbonColors[i * 3 + 1] = c.g;
+        ribbonColors[i * 3 + 2] = c.b;
       }
 
-      armGeo.setAttribute('position', new THREE.BufferAttribute(armPositions, 3));
-      armGeo.setAttribute('color', new THREE.BufferAttribute(armColors, 3));
+      ribbonGeo.setAttribute('position', new THREE.BufferAttribute(ribbonPositions, 3));
+      ribbonGeo.setAttribute('color', new THREE.BufferAttribute(ribbonColors, 3));
 
-      const armMat = new THREE.PointsMaterial({
-        size: 5.5,
+      const ribbonMat = new THREE.PointsMaterial({
+        size: 7.5,
         map: softDustTexture,
         vertexColors: true,
         transparent: true,
-        opacity: 0.52,
+        opacity: 0.68,
         blending: THREE.AdditiveBlending,
         depthWrite: false
       });
-      spiralArmPoints = new THREE.Points(armGeo, armMat);
-      cosmosGroup.add(spiralArmPoints);
+      spiralArmRibbonPoints = new THREE.Points(ribbonGeo, ribbonMat);
+      cosmosGroup.add(spiralArmRibbonPoints);
 
-      // Bụi sương mù vũ trụ cơ sở
-      const mistCount = 4500;
+      // Bụi sương mờ vũ trụ nền
+      const mistCount = 4000;
       const mistGeo = new THREE.BufferGeometry();
       const mistPositions = new Float32Array(mistCount * 3);
       const mistColors = new Float32Array(mistCount * 3);
 
-      const mistPalette = [
-        new THREE.Color("#F43F5E"), new THREE.Color("#EC4899"),
-        new THREE.Color("#8B5CF6"), new THREE.Color("#6366F1"),
-        new THREE.Color("#06B6D4"), new THREE.Color("#38BDF8")
-      ];
-
       for (let i = 0; i < mistCount; i++) {
         const tNorm = Math.random();
         const y = minY + tNorm * galaxyHeight;
-        
-        const funnelRadMax = 25 + tNorm * 380;
-        const rad = 8 + Math.pow(Math.random(), 0.65) * funnelRadMax;
-        const angle = (i % 6) * (Math.PI / 3) + (Math.random() * 4.5);
+        const funnelRadMax = 30 + tNorm * 380;
+        const rad = 10 + Math.pow(Math.random(), 0.65) * funnelRadMax;
+        const angle = Math.random() * Math.PI * 2;
         
         mistPositions[i * 3] = Math.cos(angle) * rad;
         mistPositions[i * 3 + 1] = y + (Math.random() - 0.5) * 15;
         mistPositions[i * 3 + 2] = Math.sin(angle) * rad;
 
-        const col = mistPalette[Math.floor(Math.random() * mistPalette.length)];
+        const isPink = Math.random() > 0.5;
+        const col = isPink ? colorPinkSoft : colorCyanNeon;
         mistColors[i * 3] = col.r;
         mistColors[i * 3 + 1] = col.g;
         mistColors[i * 3 + 2] = col.b;
       }
-
       mistGeo.setAttribute('position', new THREE.BufferAttribute(mistPositions, 3));
       mistGeo.setAttribute('color', new THREE.BufferAttribute(mistColors, 3));
 
       const mistMat = new THREE.PointsMaterial({
-        size: 6.8,
+        size: 6.0,
         map: softDustTexture,
         vertexColors: true,
         transparent: true,
@@ -1082,7 +1144,7 @@
     }
 
     /* ==========================================================================
-       7. UI FILTERS SETUP & MOBILE TOGGLES
+       7. UI FILTERS SETUP
        ========================================================================== */
     let selectedCluster = 'all';
     let selectedDept = 'ALL';
@@ -1185,7 +1247,7 @@
         if (!visible) {
           s.material.opacity = 0.0;
         } else if (!isSearchActive && !selectedActiveNode) {
-          s.material.opacity = (n.type === 'thesis_planet') ? 0.88 : 0.95;
+          s.material.opacity = (n.type === 'thesis_planet') ? 0.9 : 0.95;
         }
       });
     }
@@ -1212,60 +1274,41 @@
     });
 
     /* ==========================================================================
-       8. LOGIC DÂY LIÊN KẾT ÁNH SÁNG VÒNG CUNG HỒNG - XANH DƯƠNG
+       8. DÂY ÁNH SÁNG VÒNG CUNG TO BẢN & PHÁT QUANG RỰC RỠ (TUBE GEOMETRY)
        ========================================================================== */
     function clearArcLinks() {
       while (arcLinksGroup.children.length > 0) {
         const obj = arcLinksGroup.children[0];
         if (obj.geometry) obj.geometry.dispose();
-        if (obj.material) obj.material.dispose();
         arcLinksGroup.remove(obj);
       }
     }
 
-    // Tạo dây ánh sáng vòng cung uốn lượn nối nodeA và nodeB
-    function createCurvedArc(p1, p2, isDimmed = false) {
+    // Tạo dây phát sáng dạng ống (Tube 3D) to bản, có độ cong vồng cung mềm mại
+    function createGlowingArcTube(p1, p2, isDimmed = false) {
       const distance = p1.distanceTo(p2);
       if (distance < 2) return null;
 
       const mid = new THREE.Vector3().addVectors(p1, p2).multiplyScalar(0.5);
       
-      // Độ võng vồng cung hướng lên trên và hơi lệch ngang tự nhiên
-      const arcHeight = Math.min(120, Math.max(15, distance * 0.35));
+      // Độ võng vồng cung hướng lên trên theo trục Y và hơi chếch ra ngoài
+      const arcHeight = Math.min(130, Math.max(20, distance * 0.38));
       const upVec = new THREE.Vector3(0, 1, 0);
       mid.add(upVec.clone().multiplyScalar(arcHeight));
 
       const curve = new THREE.QuadraticBezierCurve3(p1, mid, p2);
-      const points = curve.getPoints(36);
+      
+      // Dùng TubeGeometry để dây có bề dày thực thể to và phát sáng rõ nét
+      const tubeRadius = isDimmed ? 0.8 : 1.5;
+      const geometry = new THREE.TubeGeometry(curve, 28, tubeRadius, 8, false);
 
-      const geometry = new THREE.BufferGeometry().setFromPoints(points);
-      const colors = new Float32Array(points.length * 3);
+      const mat = arcTubeShaderMat.clone();
+      mat.uniforms.uOpacity.value = isDimmed ? 0.45 : 0.95;
 
-      const colPink = new THREE.Color("#F472B6");
-      const colCyan = new THREE.Color("#22D3EE");
-
-      for (let i = 0; i < points.length; i++) {
-        const t = i / (points.length - 1);
-        const c = new THREE.Color().lerpColors(colPink, colCyan, t);
-        colors[i * 3] = c.r;
-        colors[i * 3 + 1] = c.g;
-        colors[i * 3 + 2] = c.b;
-      }
-      geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-
-      const material = new THREE.LineBasicMaterial({
-        vertexColors: true,
-        transparent: true,
-        opacity: isDimmed ? 0.35 : 0.85,
-        blending: THREE.AdditiveBlending,
-        depthWrite: false,
-        linewidth: 1.5
-      });
-
-      return new THREE.Line(geometry, material);
+      const mesh = new THREE.Mesh(geometry, mat);
+      return mesh;
     }
 
-    // Cập nhật kết nối và độ sáng khi click 1 luận văn hoặc khi tìm kiếm
     function updateKeywordConnections(focalNodes, isSingleInspect = false) {
       clearArcLinks();
 
@@ -1274,7 +1317,6 @@
         return;
       }
 
-      // Thu thập tất cả từ khóa liên quan từ focalNodes
       const targetKeywords = new Set();
       focalNodes.forEach(fn => {
         const det = getCleanDetail(fn);
@@ -1312,25 +1354,25 @@
         }
       });
 
-      // Tạo các vòng cung liên kết
+      // Tạo các ống ánh sáng vòng cung
       if (isSingleInspect && focalSprites.length > 0) {
         const rootPos = focalSprites[0].position;
         relatedTheses.forEach(relSprite => {
-          const arc = createCurvedArc(rootPos, relSprite.position, true);
-          if (arc) arcLinksGroup.add(arc);
+          const tube = createGlowingArcTube(rootPos, relSprite.position, true);
+          if (tube) arcLinksGroup.add(tube);
         });
       } else {
         // Chế độ tìm kiếm: nối giữa các kết quả với nhau và tới các luận văn liên quan
         for (let i = 0; i < focalSprites.length; i++) {
           for (let j = i + 1; j < Math.min(focalSprites.length, i + 5); j++) {
-            const arc = createCurvedArc(focalSprites[i].position, focalSprites[j].position, false);
-            if (arc) arcLinksGroup.add(arc);
+            const tube = createGlowingArcTube(focalSprites[i].position, focalSprites[j].position, false);
+            if (tube) arcLinksGroup.add(tube);
           }
         }
         focalSprites.slice(0, 5).forEach(fSprite => {
-          relatedTheses.slice(0, 15).forEach(relSprite => {
-            const arc = createCurvedArc(fSprite.position, relSprite.position, true);
-            if (arc) arcLinksGroup.add(arc);
+          relatedTheses.slice(0, 16).forEach(relSprite => {
+            const tube = createGlowingArcTube(fSprite.position, relSprite.position, true);
+            if (tube) arcLinksGroup.add(tube);
           });
         });
       }
@@ -1374,7 +1416,7 @@
         if (hoveredSprite !== sprite) {
           clearHover();
           hoveredSprite = sprite;
-          const s = sprite.userData.baseSize * 1.5;
+          const s = sprite.userData.baseSize * 1.4;
           sprite.scale.set(s, s, 1);
 
           const n = sprite.userData.nodeData;
@@ -1471,7 +1513,7 @@
       if (sprite) {
         const b = sprite.userData.baseSize;
         new TWEEN.Tween(sprite.scale)
-          .to({ x: b * 2.2, y: b * 2.2, z: 1 }, 200)
+          .to({ x: b * 2.0, y: b * 2.0, z: 1 }, 200)
           .yoyo(true).repeat(3)
           .easing(TWEEN.Easing.Quadratic.InOut)
           .onComplete(() => sprite.scale.set(b, b, 1))
@@ -1577,9 +1619,7 @@
       isSearchActive = true;
       selectedActiveNode = null;
 
-      // Vẽ vòng cung kết nối từ khóa và làm nổi bật
       updateKeywordConnections(matchedTheses, false);
-
       renderThesesListPanel(matchedTheses, q);
     }
 
@@ -1679,7 +1719,8 @@
         s.userData.isHighlight = false;
         s.userData.isRelated = false;
         if (s.visible) {
-          s.material.opacity = (s.userData.nodeData.type === 'thesis_planet') ? 0.88 : 0.95;
+          s.material.opacity = (s.userData.nodeData.type === 'thesis_planet') ? 0.9 : 0.95;
+          s.scale.set(s.userData.baseSize, s.userData.baseSize, 1);
         }
       });
     }
@@ -1783,12 +1824,13 @@
       cosmosGroup.rotation.y += 0.00018;
 
       volumetricNebulaMat.uniforms.uTime.value = elapsed;
+      arcTubeShaderMat.uniforms.uTime.value = elapsed;
       if (cosmicBeamMesh) cosmicBeamMesh.material.uniforms.uTime.value = elapsed;
       if (cosmicBeamGlowMesh) cosmicBeamGlowMesh.material.uniforms.uTime.value = elapsed;
 
       // Xoay nhẹ nhàng dải cánh xoắn ốc hồng - xanh
-      if (spiralArmPoints) spiralArmPoints.rotation.y += 0.00022;
-      if (stardustMistPoints) stardustMistPoints.rotation.y += 0.0001;
+      if (spiralArmRibbonPoints) spiralArmRibbonPoints.rotation.y += 0.00025;
+      if (stardustMistPoints) stardustMistPoints.rotation.y += 0.00012;
 
       const camDist = camera.position.distanceTo(controls.target);
       const distFactor = Math.min(2.5, Math.max(1.0, camDist / 500));
@@ -1805,16 +1847,16 @@
               s.scale.set(b * strobe, b * strobe, 1);
               s.material.opacity = 1.0;
             } else if (s.userData.isRelated) {
-              // Node có cùng từ khóa liên kết: Sáng vừa phải (opacity ~0.8) nhưng nổi bật hơn node không liên kết
+              // Node có cùng từ khóa liên kết: Sáng rõ (opacity ~0.8) và to hơn bình thường
               const b = (s.userData.baseSize * distFactor) * 1.15;
-              const shimmer = Math.sin(elapsed * 3.0 + s.userData.pulseOffset) * 0.15;
+              const shimmer = Math.sin(elapsed * 3.5 + s.userData.pulseOffset) * 0.15;
               s.scale.set(b * (1.0 + shimmer), b * (1.0 + shimmer), 1);
               s.material.opacity = 0.82;
             } else {
-              // Các node còn lại không liên kết: Giảm mờ xuống (opacity ~0.15)
-              const b = (s.userData.baseSize * distFactor) * 0.55;
+              // SỬA: CÁC LUẬN VĂN KHÔNG LIÊN QUAN CHO MỜ HẲN ĐI (Opacity 0.06), không còn sáng trưng
+              const b = (s.userData.baseSize * distFactor) * 0.45;
               s.scale.set(b, b, 1);
-              s.material.opacity = 0.15;
+              s.material.opacity = 0.06;
             }
           } else {
             const tSpeed = s.userData.twinkleSpeed;
@@ -1822,7 +1864,7 @@
             
             const b = s.userData.baseSize * distFactor;
             s.scale.set(b * (1.0 + shimmer), b * (1.0 + shimmer), 1);
-            s.material.opacity = Math.min(1.0, 0.78 + Math.abs(shimmer) * 0.4);
+            s.material.opacity = Math.min(1.0, 0.82 + Math.abs(shimmer) * 0.35);
           }
         }
       });
