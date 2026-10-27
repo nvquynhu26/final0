@@ -112,7 +112,6 @@
       pointer-events: none;
     }
 
-    /* Tương thích an toàn viền màn hình và tai thỏ iPhone */
     .header-safe {
       padding-top: calc(env(safe-area-inset-top, 0px) + 1.25rem);
     }
@@ -317,7 +316,6 @@
           </div>
         </div>
 
-        <!-- MÃ ĐỊNH DANH UCI VÀ NÚT ĐI TỚI RISS (ĐÃ SỬA) -->
         <div class="p-3 rounded-lg bg-black/50 border border-indigo-500/20 flex flex-col space-y-2">
           <div class="flex items-center justify-between">
             <span id="detail-label-uci" class="text-[9px] uppercase font-bold text-indigo-400 font-scifi tracking-widest">UCI 등록번호 (UCI Identifier)</span>
@@ -546,8 +544,12 @@
     const cosmosGroup = new THREE.Group();
     scene.add(cosmosGroup);
 
+    // Group chứa các dây liên kết hình vòng cung
+    const arcLinksGroup = new THREE.Group();
+    cosmosGroup.add(arcLinksGroup);
+
     /* ==========================================================================
-       4. VOLUMETRIC OBJECTS
+       4. VOLUMETRIC OBJECTS & SHADER
        ========================================================================== */
     let funnelHazeMesh;
     const volumetricNebulaMat = new THREE.ShaderMaterial({
@@ -603,8 +605,10 @@
     const DETAILS_STORE = new Map();
     let hasSearchHistory = false;
     let isSearchActive = false;
+    let selectedActiveNode = null;
     let cosmicBeamMesh, cosmicBeamGlowMesh;
     let stardustMistPoints;
+    let spiralArmPoints; // Dải xoắn ốc uốn lượn hồng - xanh
 
     async function initializeCosmos() {
       const loaderText = document.getElementById('loader-text');
@@ -675,6 +679,7 @@
             node.uci = val.uci || val.uci_code || val.d_uci || val.identifier;
           }
           if (val.degree || val.degree_name) node.degree = val.degree || val.degree_name;
+          if (val.keywords) node.keywords = val.keywords;
           if (val.abstract_ko || val.abstract || val.abstract_en) {
             node.abstract_ko = val.abstract_ko || val.abstract || val.abstract_en;
           }
@@ -697,7 +702,6 @@
       let resolvedDegree = (d && (d.degree || d.degree_name)) || node.degree || (node.type === 'thesis_planet' ? (currentLang === 'ko' ? "석·박사 학위논문" : "Ph.D. / Master") : (currentLang === 'ko' ? "교수/학부" : "Faculty"));
       let resolvedYear = (d && d.year) || node.year || 2024;
       
-      // SỬA: Lấy UCI chính xác, không tự sinh mã giả lập nếu không có
       let rawUci = (d && (d.uci || d.uci_code || d.d_uci || d.identifier)) || node.uci;
       let resolvedUci = null;
       if (rawUci && typeof rawUci === 'string' && rawUci.trim() !== "" && rawUci !== "N/A" && rawUci !== "nan") {
@@ -710,7 +714,18 @@
       }
 
       let resolvedAbstractEn = (d && (d.abstract_en || d.abstract || d.abstract_ko)) || node.abstract_en || `This research was conducted at the ${translateDept(resolvedDept)}, Seoul National University of Science and Technology.`;
-      let resolvedKeywords = (d && d.keywords && d.keywords.length > 0) ? d.keywords : [resolvedDept, currentLang === 'ko' ? "학술연구" : "Research", "SEOULTECH"];
+      
+      let resolvedKeywords = [];
+      if (d && d.keywords && Array.isArray(d.keywords) && d.keywords.length > 0) {
+        resolvedKeywords = d.keywords;
+      } else if (node.keywords && Array.isArray(node.keywords) && node.keywords.length > 0) {
+        resolvedKeywords = node.keywords;
+      } else {
+        const fallbacks = ["AI", "최적화", "디자인", "네트워크", "시스템", "지능화", "데이터", "설계", "신호처리", "알고리즘"];
+        const k1 = fallbacks[Math.abs(node.id) % fallbacks.length];
+        const k2 = fallbacks[Math.abs(node.id * 3 + 1) % fallbacks.length];
+        resolvedKeywords = [resolvedDept, k1, k2];
+      }
 
       return {
         title_ko: resolvedTitleKo,
@@ -729,7 +744,7 @@
     }
 
     /* ==========================================================================
-       6. KHỞI TẠO BỐ CỤC: GALAXY NODES & VOLUMETRIC OBJECTS
+       6. KHỞI TẠO BỐ CỤC: GALAXY NODES, XOẮN ỐC HỒNG-XANH & VOLUMETRIC OBJECTS
        ========================================================================== */
     function buildCosmicScene() {
       NODE_SPRITES = [];
@@ -817,7 +832,8 @@
           pulseOffset: Math.random() * Math.PI * 2,
           twinkleSpeed: 2.0 + Math.random() * 4.0,
           shimmerAmp: 0.15 + Math.random() * 0.2,
-          isHighlight: false
+          isHighlight: false,
+          isRelated: false
         };
 
         cosmosGroup.add(sprite);
@@ -908,7 +924,67 @@
       funnelHazeMesh.position.y = galaxyCenterY;
       cosmosGroup.add(funnelHazeMesh);
 
-      const mistCount = 7000;
+      // 1. DẢI ÁNH SÁNG XOẮN ỐC HỒNG - XANH DƯƠNG UỐN LƯỢN (SPIRAL RIBBON ARMS)
+      const spiralArmCount = 5500;
+      const armGeo = new THREE.BufferGeometry();
+      const armPositions = new Float32Array(spiralArmCount * 3);
+      const armColors = new Float32Array(spiralArmCount * 3);
+
+      const pinkSoft = new THREE.Color("#F472B6");   // Hồng pastel dịu nhẹ
+      const blueCyan = new THREE.Color("#38BDF8");   // Xanh dương / Cyan
+      const purpleGlow = new THREE.Color("#A855F7"); // Ánh tím cầu nối
+
+      for (let i = 0; i < spiralArmCount; i++) {
+        const armIndex = i % 3; // 3 cánh xoắn ốc chính
+        const armOffset = (armIndex * Math.PI * 2) / 3;
+        const progress = Math.pow(Math.random(), 0.85); // Phân bổ tự nhiên
+        
+        const r = 20 + progress * 390;
+        // Góc xoắn logarit uốn lượn
+        const spiralAngle = armOffset + progress * 7.5 + (Math.random() - 0.5) * 0.38;
+        
+        // Độ cao y trải đều dọc theo trục ngân hà
+        const y = minY + progress * galaxyHeight + (Math.sin(spiralAngle * 2.0) * 12.0) + (Math.random() - 0.5) * 14.0;
+        
+        const spread = (Math.random() - 0.5) * (18.0 + progress * 32.0);
+        const x = Math.cos(spiralAngle) * (r + spread);
+        const z = Math.sin(spiralAngle) * (r + spread);
+
+        armPositions[i * 3] = x;
+        armPositions[i * 3 + 1] = y;
+        armPositions[i * 3 + 2] = z;
+
+        // Hòa sắc dải xoắn: Hồng sang Xanh dương lượn sóng
+        const wave = Math.sin(spiralAngle * 3.0 + progress * 8.0) * 0.5 + 0.5;
+        let c = new THREE.Color();
+        if (wave < 0.5) {
+          c.lerpColors(pinkSoft, purpleGlow, wave * 2.0);
+        } else {
+          c.lerpColors(purpleGlow, blueCyan, (wave - 0.5) * 2.0);
+        }
+
+        armColors[i * 3] = c.r;
+        armColors[i * 3 + 1] = c.g;
+        armColors[i * 3 + 2] = c.b;
+      }
+
+      armGeo.setAttribute('position', new THREE.BufferAttribute(armPositions, 3));
+      armGeo.setAttribute('color', new THREE.BufferAttribute(armColors, 3));
+
+      const armMat = new THREE.PointsMaterial({
+        size: 5.5,
+        map: softDustTexture,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.52,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+      });
+      spiralArmPoints = new THREE.Points(armGeo, armMat);
+      cosmosGroup.add(spiralArmPoints);
+
+      // Bụi sương mù vũ trụ cơ sở
+      const mistCount = 4500;
       const mistGeo = new THREE.BufferGeometry();
       const mistPositions = new Float32Array(mistCount * 3);
       const mistColors = new Float32Array(mistCount * 3);
@@ -945,7 +1021,7 @@
         map: softDustTexture,
         vertexColors: true,
         transparent: true,
-        opacity: 0.38,
+        opacity: 0.35,
         blending: THREE.AdditiveBlending,
         depthWrite: false
       });
@@ -957,6 +1033,7 @@
       const nodes = [];
       const depts = ["컴퓨터공학과", "기계시스템디자인공학과", "시각디자인전공", "인공지능응용학과", "신소재공학과", "경영학과", "행정학과", "TESOL학과", "영어영문학과"];
       const colors = ["#F43F5E", "#06B6D4", "#8B5CF6", "#F59E0B", "#10B981"];
+      const commonKeywords = ["AI", "딥러닝", "인공지능", "최적화", "네트워크", "빅데이터", "시스템", "디자인", "알고리즘", "로봇", "경영전략", "신호처리"];
       let id = 1;
 
       depts.forEach((d, idx) => {
@@ -977,18 +1054,22 @@
             const yr = 2005 + Math.floor(Math.random() * 22);
             const tr = 15 + Math.random() * 35;
             const ta = Math.random() * Math.PI * 2;
+            const kw1 = commonKeywords[(id + t) % commonKeywords.length];
+            const kw2 = commonKeywords[(id * 2 + t) % commonKeywords.length];
+
             nodes.push({
               id: id++,
-              name: `[연구] ${d} 최적화 및 응용 분석 Vol.${t}`,
-              title_ko: `[연구] ${d} 최적화 및 응용 분석 Vol.${t}`,
-              title_en: `Optimization Study in ${translateDept(d)} Vol.${t}`,
+              name: `[연구] ${d} ${kw1} 기반 응용 분석 Vol.${t}`,
+              title_ko: `[연구] ${d} ${kw1} 기반 응용 분석 Vol.${t}`,
+              title_en: `Optimization Study in ${translateDept(d)} with ${kw1} Vol.${t}`,
               type: 'thesis_planet',
               dept: d,
               advisor: advName,
               author: `연구자_${id}`,
               year: yr,
               uci: null,
-              abstract_ko: `본 연구는 서울과학기술대학교 ${d}에서 수행된 연구로, 최신 학술 동향과 실증적 방법론을 분석하여 학문적 가치를 입증한 학위논문입니다.`,
+              keywords: [d, kw1, kw2],
+              abstract_ko: `본 연구는 서울과학기술대학교 ${d}에서 수행된 연구로, ${kw1} 및 ${kw2} 분야의 심층적인 분석을 제공합니다.`,
               x: ax + Math.cos(ta) * tr,
               y: ((yr - 2001) / 25.0) * 450,
               z: az + Math.sin(ta) * tr,
@@ -1101,10 +1182,10 @@
         const visible = passYear && passDept;
         s.visible = visible;
 
-        if (visible && !s.userData.isHighlight) {
-          s.material.opacity = (n.type === 'thesis_planet') ? 0.88 : 0.95;
-        } else if (!visible) {
+        if (!visible) {
           s.material.opacity = 0.0;
+        } else if (!isSearchActive && !selectedActiveNode) {
+          s.material.opacity = (n.type === 'thesis_planet') ? 0.88 : 0.95;
         }
       });
     }
@@ -1131,7 +1212,132 @@
     });
 
     /* ==========================================================================
-       8. INTERACTION: RAYCAST & CLICK PANEL OPEN
+       8. LOGIC DÂY LIÊN KẾT ÁNH SÁNG VÒNG CUNG HỒNG - XANH DƯƠNG
+       ========================================================================== */
+    function clearArcLinks() {
+      while (arcLinksGroup.children.length > 0) {
+        const obj = arcLinksGroup.children[0];
+        if (obj.geometry) obj.geometry.dispose();
+        if (obj.material) obj.material.dispose();
+        arcLinksGroup.remove(obj);
+      }
+    }
+
+    // Tạo dây ánh sáng vòng cung uốn lượn nối nodeA và nodeB
+    function createCurvedArc(p1, p2, isDimmed = false) {
+      const distance = p1.distanceTo(p2);
+      if (distance < 2) return null;
+
+      const mid = new THREE.Vector3().addVectors(p1, p2).multiplyScalar(0.5);
+      
+      // Độ võng vồng cung hướng lên trên và hơi lệch ngang tự nhiên
+      const arcHeight = Math.min(120, Math.max(15, distance * 0.35));
+      const upVec = new THREE.Vector3(0, 1, 0);
+      mid.add(upVec.clone().multiplyScalar(arcHeight));
+
+      const curve = new THREE.QuadraticBezierCurve3(p1, mid, p2);
+      const points = curve.getPoints(36);
+
+      const geometry = new THREE.BufferGeometry().setFromPoints(points);
+      const colors = new Float32Array(points.length * 3);
+
+      const colPink = new THREE.Color("#F472B6");
+      const colCyan = new THREE.Color("#22D3EE");
+
+      for (let i = 0; i < points.length; i++) {
+        const t = i / (points.length - 1);
+        const c = new THREE.Color().lerpColors(colPink, colCyan, t);
+        colors[i * 3] = c.r;
+        colors[i * 3 + 1] = c.g;
+        colors[i * 3 + 2] = c.b;
+      }
+      geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+      const material = new THREE.LineBasicMaterial({
+        vertexColors: true,
+        transparent: true,
+        opacity: isDimmed ? 0.35 : 0.85,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+        linewidth: 1.5
+      });
+
+      return new THREE.Line(geometry, material);
+    }
+
+    // Cập nhật kết nối và độ sáng khi click 1 luận văn hoặc khi tìm kiếm
+    function updateKeywordConnections(focalNodes, isSingleInspect = false) {
+      clearArcLinks();
+
+      if (!focalNodes || focalNodes.length === 0) {
+        resetSearchHighlight();
+        return;
+      }
+
+      // Thu thập tất cả từ khóa liên quan từ focalNodes
+      const targetKeywords = new Set();
+      focalNodes.forEach(fn => {
+        const det = getCleanDetail(fn);
+        if (det.keywords) {
+          det.keywords.forEach(k => targetKeywords.add(k.trim().toLowerCase()));
+        }
+      });
+
+      const focalIdSet = new Set(focalNodes.map(n => n.id));
+      const relatedTheses = [];
+      const focalSprites = [];
+
+      NODE_SPRITES.forEach(s => {
+        const n = s.userData.nodeData;
+        if (!s.visible) return;
+
+        const isFocal = focalIdSet.has(n.id);
+        s.userData.isHighlight = isFocal;
+
+        if (isFocal) {
+          focalSprites.push(s);
+          s.userData.isRelated = false;
+        } else if (n.type === 'thesis_planet') {
+          const d = getCleanDetail(n);
+          const hasSharedKw = d.keywords && d.keywords.some(k => targetKeywords.has(k.trim().toLowerCase()));
+          
+          if (hasSharedKw) {
+            s.userData.isRelated = true;
+            relatedTheses.push(s);
+          } else {
+            s.userData.isRelated = false;
+          }
+        } else {
+          s.userData.isRelated = false;
+        }
+      });
+
+      // Tạo các vòng cung liên kết
+      if (isSingleInspect && focalSprites.length > 0) {
+        const rootPos = focalSprites[0].position;
+        relatedTheses.forEach(relSprite => {
+          const arc = createCurvedArc(rootPos, relSprite.position, true);
+          if (arc) arcLinksGroup.add(arc);
+        });
+      } else {
+        // Chế độ tìm kiếm: nối giữa các kết quả với nhau và tới các luận văn liên quan
+        for (let i = 0; i < focalSprites.length; i++) {
+          for (let j = i + 1; j < Math.min(focalSprites.length, i + 5); j++) {
+            const arc = createCurvedArc(focalSprites[i].position, focalSprites[j].position, false);
+            if (arc) arcLinksGroup.add(arc);
+          }
+        }
+        focalSprites.slice(0, 5).forEach(fSprite => {
+          relatedTheses.slice(0, 15).forEach(relSprite => {
+            const arc = createCurvedArc(fSprite.position, relSprite.position, true);
+            if (arc) arcLinksGroup.add(arc);
+          });
+        });
+      }
+    }
+
+    /* ==========================================================================
+       9. INTERACTION: RAYCAST & CLICK PANEL OPEN
        ========================================================================== */
     const raycaster = new THREE.Raycaster();
     raycaster.params.Sprite = { threshold: 4.5 };
@@ -1237,6 +1443,9 @@
     function openSingleDetailView(node, sprite = null, fromList = false) {
       if (isMobileView()) return;
 
+      selectedActiveNode = node;
+      updateKeywordConnections([node], true);
+
       const detail = getCleanDetail(node);
       renderDetailContent(node, detail);
 
@@ -1270,7 +1479,6 @@
       }
     }
 
-    /* SỬA: RENDER CHI TIẾT VÀ XỬ LÝ LIÊN KẾT ĐẾN RISS QUA UCI */
     function renderDetailContent(node, detail) {
       const isKo = currentLang === 'ko';
       const badge = document.getElementById('detail-type-badge');
@@ -1293,7 +1501,6 @@
       document.getElementById('detail-degree').innerText = detail.degree;
       document.getElementById('detail-year').innerText = `${detail.year}${I18N[currentLang].yearSuffix}`;
       
-      // XỬ LÝ NÚT RISS VÀ GHI CHÚ UCI
       const uciTextEl = document.getElementById('detail-uci');
       const rissBtn = document.getElementById('btn-goto-riss');
       const rissBtnText = document.getElementById('btn-goto-riss-text');
@@ -1302,13 +1509,11 @@
       if (detail.uci) {
         uciTextEl.innerText = detail.uci;
         uciTextEl.className = "font-scifi text-xs text-cyan-300 font-semibold select-all break-all tracking-wide flex-1";
-        // Nếu có UCI: dùng liên kết phân giải trực tiếp tới luận văn trên RISS
         rissBtn.href = `https://www.riss.kr/link?id=U${encodeURIComponent(detail.uci)}`;
         rissBtnText.innerText = I18N[currentLang].gotoRissBtn;
         uciStatusBadge.innerText = "UCI LINK";
         uciStatusBadge.className = "px-1.5 py-0.2 rounded text-[9px] font-scifi font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-400/30";
       } else {
-        // Nếu không có UCI: ghi chú không có và dẫn về trang chủ RISS
         uciTextEl.innerText = I18N[currentLang].uciNone;
         uciTextEl.className = "font-scifi text-xs text-slate-400 italic font-normal tracking-wide flex-1";
         rissBtn.href = "https://www.riss.kr/";
@@ -1330,8 +1535,8 @@
     }
 
     /* ==========================================================================
-       9. SEARCH & ADVISOR LIST DRAWER
-       ========================================================================= */
+       10. SEARCH & ADVISOR LIST DRAWER
+       ========================================================================== */
     const searchInput = document.getElementById('search-input');
     const searchType = document.getElementById('search-type');
     const searchBtn = document.getElementById('search-submit-btn');
@@ -1370,12 +1575,10 @@
 
       hasSearchHistory = true;
       isSearchActive = true;
+      selectedActiveNode = null;
 
-      const matchSet = new Set(matchedTheses.map(m => m.id));
-      NODE_SPRITES.forEach(s => {
-        const id = s.userData.nodeData.id;
-        s.userData.isHighlight = matchSet.has(id);
-      });
+      // Vẽ vòng cung kết nối từ khóa và làm nổi bật
+      updateKeywordConnections(matchedTheses, false);
 
       renderThesesListPanel(matchedTheses, q);
     }
@@ -1390,13 +1593,9 @@
 
       hasSearchHistory = true;
       isSearchActive = true;
+      selectedActiveNode = null;
 
-      const matchSet = new Set(theses.map(m => m.id));
-      NODE_SPRITES.forEach(s => {
-        const id = s.userData.nodeData.id;
-        s.userData.isHighlight = matchSet.has(id);
-      });
-
+      updateKeywordConnections(theses, false);
       renderThesesListPanel(theses, currentLang === 'ko' ? `${advisorName} 교수` : `Prof. ${advisorName}`);
     }
 
@@ -1473,8 +1672,12 @@
 
     function resetSearchHighlight() {
       isSearchActive = false;
+      selectedActiveNode = null;
+      clearArcLinks();
+
       NODE_SPRITES.forEach(s => {
         s.userData.isHighlight = false;
+        s.userData.isRelated = false;
         if (s.visible) {
           s.material.opacity = (s.userData.nodeData.type === 'thesis_planet') ? 0.88 : 0.95;
         }
@@ -1509,7 +1712,7 @@
     });
 
     /* ==========================================================================
-       10. MULTILINGUAL SWITCH
+       11. MULTILINGUAL SWITCH
        ========================================================================== */
     const langKoBtn = document.getElementById('lang-ko-btn');
     const langEnBtn = document.getElementById('lang-en-btn');
@@ -1566,7 +1769,7 @@
     langEnBtn.addEventListener('click', () => switchLanguage('en'));
 
     /* ==========================================================================
-       11. REAL-TIME ANIMATION & RESIZE
+       12. REAL-TIME ANIMATION & RESIZE
        ========================================================================== */
     const clock = new THREE.Clock();
 
@@ -1583,23 +1786,35 @@
       if (cosmicBeamMesh) cosmicBeamMesh.material.uniforms.uTime.value = elapsed;
       if (cosmicBeamGlowMesh) cosmicBeamGlowMesh.material.uniforms.uTime.value = elapsed;
 
+      // Xoay nhẹ nhàng dải cánh xoắn ốc hồng - xanh
+      if (spiralArmPoints) spiralArmPoints.rotation.y += 0.00022;
       if (stardustMistPoints) stardustMistPoints.rotation.y += 0.0001;
 
       const camDist = camera.position.distanceTo(controls.target);
       const distFactor = Math.min(2.5, Math.max(1.0, camDist / 500));
 
+      const hasActiveFocus = isSearchActive || selectedActiveNode !== null;
+
       NODE_SPRITES.forEach(s => {
         if (s.visible) {
-          if (isSearchActive) {
+          if (hasActiveFocus) {
             if (s.userData.isHighlight) {
-              const strobe = 1.0 + Math.abs(Math.sin(elapsed * 7.5)) * 0.9;
+              // Node đang được chọn / tìm thấy trực tiếp: Sáng rực rỡ nhất
+              const strobe = 1.0 + Math.abs(Math.sin(elapsed * 7.5)) * 0.85;
               const b = s.userData.baseSize * 1.8;
               s.scale.set(b * strobe, b * strobe, 1);
               s.material.opacity = 1.0;
+            } else if (s.userData.isRelated) {
+              // Node có cùng từ khóa liên kết: Sáng vừa phải (opacity ~0.8) nhưng nổi bật hơn node không liên kết
+              const b = (s.userData.baseSize * distFactor) * 1.15;
+              const shimmer = Math.sin(elapsed * 3.0 + s.userData.pulseOffset) * 0.15;
+              s.scale.set(b * (1.0 + shimmer), b * (1.0 + shimmer), 1);
+              s.material.opacity = 0.82;
             } else {
-              const b = (s.userData.baseSize * distFactor) * 0.6;
+              // Các node còn lại không liên kết: Giảm mờ xuống (opacity ~0.15)
+              const b = (s.userData.baseSize * distFactor) * 0.55;
               s.scale.set(b, b, 1);
-              s.material.opacity = 0.22;
+              s.material.opacity = 0.15;
             }
           } else {
             const tSpeed = s.userData.twinkleSpeed;
