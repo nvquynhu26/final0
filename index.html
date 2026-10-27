@@ -256,7 +256,7 @@
     </div>
   </div>
 
-  <!-- PANEL CHI TIẾT ĐÃ CĂN CHỈNH BÁM SÁT VIỀN PHẢI MÀN HÌNH (DƯỚI CỤM NGÔN NGỮ) -->
+  <!-- PANEL THÔNG TIN BÁM SÁT VIỀN PHẢI MÀN HÌNH (DƯỚI CỤM NGÔN NGỮ) -->
   <aside id="right-panel" 
     style="right: 0 !important; top: 4.5rem !important; bottom: 0 !important; transform: none !important; left: auto !important;"
     class="fixed z-40 w-[95vw] sm:w-[420px] max-w-[440px] scifi-panel pointer-events-auto hidden flex flex-col border-l border-t border-b-0 border-r-0 border-indigo-500/30 shadow-[-18px_0_40px_rgba(0,0,0,0.92)] rounded-tl-2xl">
@@ -546,11 +546,12 @@
     const cosmosGroup = new THREE.Group();
     scene.add(cosmosGroup);
 
+    // Group chứa sợi dây liên kết
     const arcLinksGroup = new THREE.Group();
     cosmosGroup.add(arcLinksGroup);
 
     /* ==========================================================================
-       4. VOLUMETRIC OBJECTS & SHADERS
+       4. SHADERS: DẢI NGÂN HÀ & SỢI DÂY GRADIENT HỒNG - TÍM - XANH DƯƠNG
        ========================================================================== */
     let funnelHazeMesh;
     const volumetricNebulaMat = new THREE.ShaderMaterial({
@@ -597,14 +598,15 @@
       `
     });
 
-    const arcTubeShaderMat = new THREE.ShaderMaterial({
+    // SHADER SỢI DÂY LIÊN KẾT: GRADIENT HỒNG - TÍM - XANH DƯƠNG CHUYỂN ĐỘNG DỌC DÂY
+    const arcRibbonShaderMat = new THREE.ShaderMaterial({
       transparent: true,
       depthWrite: false,
       blending: THREE.AdditiveBlending,
       side: THREE.DoubleSide,
       uniforms: {
         uTime: { value: 0 },
-        uOpacity: { value: 0.95 }
+        uOpacity: { value: 0.85 }
       },
       vertexShader: `
         varying vec2 vUv;
@@ -618,17 +620,30 @@
         uniform float uTime;
         uniform float uOpacity;
         void main() {
-          vec3 pink = vec3(0.98, 0.25, 0.65);
-          vec3 cyan = vec3(0.08, 0.85, 0.98);
-          vec3 col = mix(pink, cyan, vUv.x);
+          // Gradient 3 màu chuyển động: Hồng (#F43F5E) -> Tím (#A855F7) -> Xanh lơ (#06B6D4)
+          vec3 pink = vec3(0.96, 0.25, 0.55);
+          vec3 purple = vec3(0.66, 0.33, 0.97);
+          vec3 cyan = vec3(0.03, 0.72, 0.88);
 
-          float pulse = sin(vUv.x * 20.0 - uTime * 6.0) * 0.5 + 0.5;
-          col += pulse * 0.35;
+          // Vị trí gradient trượt dọc sợi dây theo thời gian
+          float flow = fract(vUv.x * 2.0 - uTime * 0.6);
+          
+          vec3 col;
+          if (flow < 0.5) {
+            col = mix(pink, purple, flow * 2.0);
+          } else {
+            col = mix(purple, cyan, (flow - 0.5) * 2.0);
+          }
 
-          float edgeFade = sin(vUv.y * 3.14159);
-          float alpha = edgeFade * uOpacity;
+          // Xung nhịp ánh sáng chạy mềm mại
+          float pulse = sin(vUv.x * 15.0 - uTime * 4.0) * 0.35 + 0.65;
+          col *= pulse * 1.4;
 
-          gl_FragColor = vec4(col * 1.8, alpha);
+          // Làm mềm 2 bên biên của sợi chỉ
+          float edge = sin(vUv.y * 3.14159);
+          float alpha = edge * uOpacity;
+
+          gl_FragColor = vec4(col, alpha);
         }
       `
     });
@@ -901,7 +916,7 @@
       const galaxyHeight = Math.max(100, maxY - minY);
       controls.target.set(0, galaxyCenterY, 0);
 
-      // Cột sáng trung tâm
+      // Cột ánh sáng trung tâm
       const beamHeight = galaxyHeight * 1.06;
       const beamGeo = new THREE.CylinderGeometry(1.6, 1.6, beamHeight, 32, 1, true);
       const beamMat = new THREE.ShaderMaterial({
@@ -977,7 +992,7 @@
       funnelHazeMesh.position.y = galaxyCenterY;
       cosmosGroup.add(funnelHazeMesh);
 
-      // Dải xoắn ốc hồng - xanh dương
+      // Cánh xoắn ốc hồng - tím - xanh
       const spiralRibbonCount = 9000;
       const ribbonGeo = new THREE.BufferGeometry();
       const ribbonPositions = new Float32Array(spiralRibbonCount * 3);
@@ -1256,7 +1271,7 @@
     });
 
     /* ==========================================================================
-       8. DÂY ÁNH SÁNG VÒNG CUNG - THU NHỎ LẠI 1/2 THEO YÊU CẦU
+       8. SỢI DÂY LIÊN KẾT NHỎ MẢNH (RIBBON TUBE) CHỈ XUẤT HIỆN KHI CLICK CHỌN BÀI
        ========================================================================== */
     function clearArcLinks() {
       while (arcLinksGroup.children.length > 0) {
@@ -1266,92 +1281,76 @@
       }
     }
 
-    // ĐÃ GIẢM KÍCH THƯỚC ĐƯỜNG KÍNH DÂY XUỐNG 1/2:
-    // Dây mờ giảm từ 0.8 xuống 0.38, dây chính giảm từ 1.5 xuống 0.68
-    function createGlowingArcTube(p1, p2, isDimmed = false) {
+    // TẠO SỢI DÂY MẢNH (BÁN KÍNH 0.18 - 0.22, NHỎ BẰNG 1/2), GRADIENT HỒNG TÍM XANH
+    function createGlowingArcRibbon(p1, p2) {
       const distance = p1.distanceTo(p2);
       if (distance < 2) return null;
 
       const mid = new THREE.Vector3().addVectors(p1, p2).multiplyScalar(0.5);
-      const arcHeight = Math.min(130, Math.max(20, distance * 0.38));
+      const arcHeight = Math.min(110, Math.max(16, distance * 0.32));
       const upVec = new THREE.Vector3(0, 1, 0);
       mid.add(upVec.clone().multiplyScalar(arcHeight));
 
       const curve = new THREE.QuadraticBezierCurve3(p1, mid, p2);
       
-      const tubeRadius = isDimmed ? 0.38 : 0.68;
-      const geometry = new THREE.TubeGeometry(curve, 28, tubeRadius, 8, false);
+      // Sợi dây mảnh tinh tế, không còn khối ống to thô trắng
+      const tubeRadius = 0.22;
+      const geometry = new THREE.TubeGeometry(curve, 32, tubeRadius, 6, false);
 
-      const mat = arcTubeShaderMat.clone();
-      mat.uniforms.uOpacity.value = isDimmed ? 0.45 : 0.95;
+      const mat = arcRibbonShaderMat.clone();
+      mat.uniforms.uOpacity.value = 0.88;
 
       const mesh = new THREE.Mesh(geometry, mat);
       return mesh;
     }
 
-    function updateKeywordConnections(focalNodes, isSingleInspect = false) {
+    // CHỈ VẼ DÂY VÀ LIÊN KẾT KHI CLICK VÀO 1 LUẬN VĂN
+    function highlightSelectedThesisConnections(rootNode) {
       clearArcLinks();
 
-      if (!focalNodes || focalNodes.length === 0) {
-        resetSearchHighlight();
-        return;
+      if (!rootNode) return;
+
+      const det = getCleanDetail(rootNode);
+      const targetKeywords = new Set();
+      if (det.keywords) {
+        det.keywords.forEach(k => targetKeywords.add(k.trim().toLowerCase()));
       }
 
-      const targetKeywords = new Set();
-      focalNodes.forEach(fn => {
-        const det = getCleanDetail(fn);
-        if (det.keywords) {
-          det.keywords.forEach(k => targetKeywords.add(k.trim().toLowerCase()));
-        }
-      });
-
-      const focalIdSet = new Set(focalNodes.map(n => n.id));
-      const relatedTheses = [];
-      const focalSprites = [];
+      let rootSprite = null;
+      const relatedSprites = [];
 
       NODE_SPRITES.forEach(s => {
         const n = s.userData.nodeData;
         if (!s.visible) return;
 
-        const isFocal = focalIdSet.has(n.id);
-        s.userData.isHighlight = isFocal;
-
-        if (isFocal) {
-          focalSprites.push(s);
+        if (n.id === rootNode.id) {
+          rootSprite = s;
+          s.userData.isHighlight = true;
           s.userData.isRelated = false;
         } else if (n.type === 'thesis_planet') {
           const d = getCleanDetail(n);
           const hasSharedKw = d.keywords && d.keywords.some(k => targetKeywords.has(k.trim().toLowerCase()));
           
           if (hasSharedKw) {
+            s.userData.isHighlight = false;
             s.userData.isRelated = true;
-            relatedTheses.push(s);
+            relatedSprites.push(s);
           } else {
+            s.userData.isHighlight = false;
             s.userData.isRelated = false;
           }
         } else {
+          s.userData.isHighlight = false;
           s.userData.isRelated = false;
         }
       });
 
-      if (isSingleInspect && focalSprites.length > 0) {
-        const rootPos = focalSprites[0].position;
-        relatedTheses.forEach(relSprite => {
-          const tube = createGlowingArcTube(rootPos, relSprite.position, true);
-          if (tube) arcLinksGroup.add(tube);
-        });
-      } else {
-        for (let i = 0; i < focalSprites.length; i++) {
-          for (let j = i + 1; j < Math.min(focalSprites.length, i + 5); j++) {
-            const tube = createGlowingArcTube(focalSprites[i].position, focalSprites[j].position, false);
-            if (tube) arcLinksGroup.add(tube);
-          }
-        }
-        focalSprites.slice(0, 5).forEach(fSprite => {
-          relatedTheses.slice(0, 16).forEach(relSprite => {
-            const tube = createGlowingArcTube(fSprite.position, relSprite.position, true);
-            if (tube) arcLinksGroup.add(tube);
-          });
+      // Tạo các sợi dây mảnh hồng tím xanh nối từ bài đang chọn tới các bài có cùng từ khóa
+      if (rootSprite) {
+        const pRoot = rootSprite.position;
+        relatedSprites.forEach(relSprite => {
+          const ribbon = createGlowingArcRibbon(pRoot, relSprite.position);
+          if (ribbon) arcLinksGroup.add(ribbon);
         });
       }
     }
@@ -1460,11 +1459,15 @@
       }
     });
 
+    // KHI CLICK VÀO 1 LUẬN VĂN CỐ ĐỊNH: HIỆN DÂY NỐI, BÀI ĐƯỢC CHỌN SÁNG NHẤT, BÀI LIÊN QUAN SÁNG LÊN, BÀI KHÁC TỐI ĐI
     function openSingleDetailView(node, sprite = null, fromList = false) {
       if (isMobileView()) return;
 
       selectedActiveNode = node;
-      updateKeywordConnections([node], true);
+      isSearchActive = false; // Tắt cờ search để ưu tiên cờ chọn bài
+
+      // Kích hoạt vẽ dây kết nối và làm sáng các bài có cùng từ khóa
+      highlightSelectedThesisConnections(node);
 
       const detail = getCleanDetail(node);
       renderDetailContent(node, detail);
@@ -1479,7 +1482,6 @@
         backBtn.classList.add('hidden');
       }
 
-      // HIỂN THỊ PANEL CỐ ĐỊNH Ở MÉP PHẢI
       const rightPanel = document.getElementById('right-panel');
       rightPanel.classList.remove('hidden');
 
@@ -1555,7 +1557,7 @@
     }
 
     /* ==========================================================================
-       10. SEARCH & ADVISOR LIST DRAWER
+       10. SEARCH: CHỚP SÁNG BÀI TÌM ĐƯỢC, BÀI KHÁC TỐI ĐI, TUYỆT ĐỐI KHÔNG CÓ DÂY NỐI
        ========================================================================== */
     const searchInput = document.getElementById('search-input');
     const searchType = document.getElementById('search-type');
@@ -1597,7 +1599,16 @@
       isSearchActive = true;
       selectedActiveNode = null;
 
-      updateKeywordConnections(matchedTheses, false);
+      // XÓA SẠCH DÂY NỐI TRONG CHẾ ĐỘ TÌM KIẾM
+      clearArcLinks();
+
+      const matchIdSet = new Set(matchedTheses.map(m => m.id));
+      NODE_SPRITES.forEach(s => {
+        const id = s.userData.nodeData.id;
+        s.userData.isHighlight = matchIdSet.has(id);
+        s.userData.isRelated = false; // Không bật cờ liên quan từ khóa khi search
+      });
+
       renderThesesListPanel(matchedTheses, q);
     }
 
@@ -1613,7 +1624,16 @@
       isSearchActive = true;
       selectedActiveNode = null;
 
-      updateKeywordConnections(theses, false);
+      // XÓA SẠCH DÂY NỐI KHI TÌM THEO GIÁO SƯ
+      clearArcLinks();
+
+      const matchIdSet = new Set(theses.map(m => m.id));
+      NODE_SPRITES.forEach(s => {
+        const id = s.userData.nodeData.id;
+        s.userData.isHighlight = matchIdSet.has(id);
+        s.userData.isRelated = false;
+      });
+
       renderThesesListPanel(theses, currentLang === 'ko' ? `${advisorName} 교수` : `Prof. ${advisorName}`);
     }
 
@@ -1703,6 +1723,10 @@
     document.getElementById('btn-back-to-list').addEventListener('click', () => {
       document.getElementById('panel-detail-view').classList.add('hidden');
       document.getElementById('panel-list-view').classList.remove('hidden');
+      // Khi quay lại danh sách tìm kiếm: xóa dây kết nối cá nhân
+      clearArcLinks();
+      selectedActiveNode = null;
+      isSearchActive = true;
     });
 
     document.getElementById('btn-close-list-panel').addEventListener('click', closeRightPanel);
@@ -1799,7 +1823,7 @@
       cosmosGroup.rotation.y += 0.00018;
 
       volumetricNebulaMat.uniforms.uTime.value = elapsed;
-      arcTubeShaderMat.uniforms.uTime.value = elapsed;
+      arcRibbonShaderMat.uniforms.uTime.value = elapsed;
       if (cosmicBeamMesh) cosmicBeamMesh.material.uniforms.uTime.value = elapsed;
       if (cosmicBeamGlowMesh) cosmicBeamGlowMesh.material.uniforms.uTime.value = elapsed;
 
@@ -1815,21 +1839,27 @@
         if (s.visible) {
           if (hasActiveFocus) {
             if (s.userData.isHighlight) {
+              // 1. Luận văn được click chọn / Luận văn khớp kết quả tìm kiếm:
+              // Chớp sáng liên tục rực rỡ
               const strobe = 1.0 + Math.abs(Math.sin(elapsed * 7.5)) * 0.85;
               const b = s.userData.baseSize * 1.8;
               s.scale.set(b * strobe, b * strobe, 1);
               s.material.opacity = 1.0;
             } else if (s.userData.isRelated) {
+              // 2. Luận văn có cùng từ khóa (chỉ xuất hiện khi click vào 1 luận văn cụ thể):
+              // Sáng nổi bật và kích thước lớn
               const b = (s.userData.baseSize * distFactor) * 1.15;
               const shimmer = Math.sin(elapsed * 3.5 + s.userData.pulseOffset) * 0.15;
               s.scale.set(b * (1.0 + shimmer), b * (1.0 + shimmer), 1);
-              s.material.opacity = 0.82;
+              s.material.opacity = 0.85;
             } else {
+              // 3. Toàn bộ các luận văn không liên quan: Tối hẳn đi (opacity = 0.05)
               const b = (s.userData.baseSize * distFactor) * 0.45;
               s.scale.set(b, b, 1);
-              s.material.opacity = 0.06;
+              s.material.opacity = 0.05;
             }
           } else {
+            // Trạng thái bình thường
             const tSpeed = s.userData.twinkleSpeed;
             const shimmer = Math.sin(elapsed * tSpeed + s.userData.pulseOffset) * Math.cos(elapsed * (tSpeed * 0.5)) * s.userData.shimmerAmp;
             
