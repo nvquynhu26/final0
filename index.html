@@ -199,7 +199,7 @@
         <button class="cluster-btn scifi-btn py-1.5 px-1 rounded text-center" data-cluster="인문">인문</button>
       </div>
 
-      <!-- Department Dropdown -->
+      <!-- Department Dropdown (100% Normalized Korean Department Names) -->
       <div class="relative pt-0.5">
         <select id="dept-dropdown" class="w-full bg-black/60 text-slate-200 text-xs rounded-lg p-2 border border-indigo-500/30 focus:outline-none focus:border-cyan-400 cursor-pointer">
           <option value="ALL">-- 전체 학과 --</option>
@@ -452,46 +452,197 @@
       }
     };
 
-    const DEPT_TRANSLATIONS = {
-      "컴퓨터공학과": "Computer Science & Engineering",
-      "기계시스템디자인공학과": "Mechanical System Design Engineering",
-      "기계공학과": "Mechanical Engineering",
-      "기계설계·로봇공학과": "Mechanical Design & Robot Engineering",
-      "전기정보공학과": "Electrical & Information Engineering",
-      "전자공학과": "Electronic Engineering",
-      "스마트ICT융합공학과": "Smart ICT Convergence Engineering",
-      "신소재공학과": "Materials Science & Engineering",
-      "화학공학과": "Chemical Engineering",
-      "화공생명공학과": "Chemical & Biological Engineering",
-      "환경공학과": "Environmental Engineering",
-      "건설시스템공학과": "Civil System Engineering",
-      "건축학부": "School of Architecture",
-      "산업경영공학과": "Industrial & Information Systems Engineering",
-      "MSDE학과": "MSDE (Manufacturing Systems & Design Eng)",
-      "IT·디자인융합프로그램": "IT & Design Convergence Program",
-      "시각디자인전공": "Visual Communication Design",
-      "디자인학과": "Department of Design",
-      "산업디자인전공": "Industrial Design",
-      "도예학과": "Ceramic Arts & Glass",
-      "금속공예디자인학과": "Metal Art & Jewelry Design",
-      "조형예술학과": "Fine Arts",
-      "인공지능응용학과": "Applied Artificial Intelligence",
-      "지능형반도체공학과": "Intelligent Semiconductor Engineering",
-      "미래에너지융합학과": "Future Energy Convergence",
-      "경영학과": "Business Administration",
-      "기술경영학과": "Technology Management",
-      "글로벌경영학과": "Global Business Administration",
-      "행정학과": "Public Administration",
-      "영어영문학과": "English Language & Literature",
-      "영어과": "English Department",
-      "TESOL학과": "TESOL Education",
-      "문예창작학과": "Creative Writing",
-      "융합공학부": "School of Convergence Engineering"
-    };
+    /* ==========================================================================
+       2. DEPARTMENT NORMALIZATION ENGINE (100% KOREAN, DEDUPLICATED & MERGED)
+       ========================================================================== */
+    // Bảng quy chuẩn các khoa/chuyên ngành tiếng Hàn (gom các biến thể viết hoa/thường, tiếng Anh, chuyên ngành trùng lặp)
+    const EXACT_DEPT_CANONICAL_RULES = [
+      // Các trường hợp bị dính câu tiếng Anh dài hoặc chuyên ngành phụ phía sau tên khoa mẹ
+      { pattern: /^스마트생산융합시스템학과/i, canonical: "스마트생산융합시스템공학과" },
+      { pattern: /^의공학바이오소재융합협동과정/i, canonical: "의공학바이오소재융합협동과정" },
+      { pattern: /^인공지능응용학과/i, canonical: "인공지능응용학과" },
+      { pattern: /^지능형반도체공학과/i, canonical: "지능형반도체공학과" },
+      { pattern: /^it미디어공학과/i, canonical: "IT미디어공학과" },
+      { pattern: /^it융합공학과/i, canonical: "IT융합공학과" },
+      { pattern: /^데이터사이언스학과/i, canonical: "데이터사이언스학과" },
+      { pattern: /^국방방호공학과/i, canonical: "국방방호공학과" },
+      { pattern: /^건축과\s*urban\s*planning/i, canonical: "건축과 도시계획전공" },
+      { pattern: /^건축과\s*architectural\s*engineering/i, canonical: "건축공학과" },
+      { pattern: /^건축과\s*architectural\s*design/i, canonical: "건축과 건축설계전공" },
+      { pattern: /^건축과\s*construction\s*it/i, canonical: "건축과 건설IT전공" },
 
-    function translateDept(deptName) {
-      if (currentLang === 'ko') return deptName;
-      return DEPT_TRANSLATIONS[deptName] || deptName;
+      // Quy chuẩn tên khoa tiếng Anh thuần hoặc lẫn tiếng Hàn -> Tiếng Hàn chuẩn
+      { pattern: /^(dept\.?\s*of\s*)?(applied\s+artificial\s+intelligence|artificial\s+intelligence)$/i, canonical: "인공지능응용학과" },
+      { pattern: /^(dept\.?\s*of\s*)?data\s*science$/i, canonical: "데이터사이언스학과" },
+      { pattern: /^(dept\.?\s*of\s*)?semiconductor\s*engineering$/i, canonical: "지능형반도체공학과" },
+      { pattern: /^(dept\.?\s*of\s*)?biomedical\s*engineering/i, canonical: "의공학바이오소재융합협동과정" },
+      { pattern: /^(dept\.?\s*of\s*)?urban\s*planning(\s*(&|and)\s*design)?$/i, canonical: "도시계획전공" },
+      { pattern: /^(dept\.?\s*of\s*)?architectural\s*engineering$/i, canonical: "건축공학과" },
+      { pattern: /^(dept\.?\s*of\s*)?architectural\s*design$/i, canonical: "건축설계전공" },
+      { pattern: /^(dept\.?\s*of\s*)?architecture$/i, canonical: "건축학과" },
+      { pattern: /^(dept\.?\s*of\s*)?computer\s*(science|engineering)/i, canonical: "컴퓨터공학과" },
+      { pattern: /^(dept\.?\s*of\s*)?mechanical\s*system\s*design/i, canonical: "기계시스템디자인공학과" },
+      { pattern: /^(dept\.?\s*of\s*)?mechanical\s*design\s*(&|and)\s*robot/i, canonical: "기계설계·로봇공학과" },
+      { pattern: /^(dept\.?\s*of\s*)?mechanical\s*engineering$/i, canonical: "기계공학과" },
+      { pattern: /^(dept\.?\s*of\s*)?electrical\s*(&|and)\s*information/i, canonical: "전기정보공학과" },
+      { pattern: /^(dept\.?\s*of\s*)?electronic\s*engineering$/i, canonical: "전자공학과" },
+      { pattern: /^(dept\.?\s*of\s*)?chemical\s*(&|and)\s*biological/i, canonical: "화공생명공학과" },
+      { pattern: /^(dept\.?\s*of\s*)?chemical\s*engineering$/i, canonical: "화학공학과" },
+      { pattern: /^(dept\.?\s*of\s*)?materials\s*science/i, canonical: "신소재공학과" },
+      { pattern: /^(dept\.?\s*of\s*)?environmental\s*engineering$/i, canonical: "환경공학과" },
+      { pattern: /^(dept\.?\s*of\s*)?civil\s*(system\s*)?engineering$/i, canonical: "건설시스템공학과" },
+      { pattern: /^(dept\.?\s*of\s*)?industrial\s*(&|and)\s*information\s*systems/i, canonical: "산업정보시스템전공" },
+      { pattern: /^(dept\.?\s*of\s*)?industrial\s*engineering$/i, canonical: "산업공학과" },
+      { pattern: /^(dept\.?\s*of\s*)?visual\s*(communication\s*)?design$/i, canonical: "시각디자인전공" },
+      { pattern: /^(dept\.?\s*of\s*)?industrial\s*design$/i, canonical: "산업디자인전공" },
+      { pattern: /^(dept\.?\s*of\s*)?ceramic\s*arts/i, canonical: "도예학과" },
+      { pattern: /^(dept\.?\s*of\s*)?metal\s*art/i, canonical: "금속공예디자인학과" },
+      { pattern: /^(dept\.?\s*of\s*)?fine\s*arts$/i, canonical: "조형예술학과" },
+      { pattern: /^(dept\.?\s*of\s*)?design$/i, canonical: "디자인학과" },
+      { pattern: /^(dept\.?\s*of\s*)?business\s*administration$/i, canonical: "경영학과" },
+      { pattern: /^(dept\.?\s*of\s*)?technology\s*management$/i, canonical: "기술경영학과" },
+      { pattern: /^(dept\.?\s*of\s*)?global\s*business/i, canonical: "글로벌경영학과" },
+      { pattern: /^(dept\.?\s*of\s*)?public\s*administration$/i, canonical: "행정학과" },
+      { pattern: /^(dept\.?\s*of\s*)?english/i, canonical: "영어영문학과" },
+      { pattern: /^tesol/i, canonical: "TESOL학과" },
+      { pattern: /^(dept\.?\s*of\s*)?creative\s*writing$/i, canonical: "문예창작학과" },
+      { pattern: /^(dept\.?\s*of\s*)?food\s*science/i, canonical: "식품생명공학과" },
+      { pattern: /^(dept\.?\s*of\s*)?optometry/i, canonical: "안경광학과" },
+      { pattern: /^(dept\.?\s*of\s*)?sports\s*science/i, canonical: "스포츠과학과" },
+      { pattern: /^(dept\.?\s*of\s*)?safety\s*engineering/i, canonical: "안전공학과" }
+    ];
+
+    const ENGLISH_PHRASE_TO_KOREAN = [
+      [/urban\s*planning\s*(&|and)\s*design/gi, "도시계획전공"],
+      [/urban\s*planning/gi, "도시계획전공"],
+      [/architectural\s*engineering/gi, "건축공학과"],
+      [/architectural\s*design/gi, "건축설계전공"],
+      [/construction\s*it/gi, "건설IT전공"],
+      [/applied\s*artificial\s*intelligence/gi, "인공지능응용학과"],
+      [/artificial\s*intelligence/gi, "인공지능학과"],
+      [/semiconductor\s*engineering/gi, "반도체공학과"],
+      [/biomedical\s*engineering\s*and\s*biomaterials/gi, "의공학바이오소재융합협동과정"],
+      [/data\s*science/gi, "데이터사이언스학과"],
+      [/deep\s*learning/gi, "딥러닝전공"],
+      [/human\s*computer\s*interaction/gi, "HCI전공"],
+      [/tissue\s*engineering/gi, "조직공학전공"],
+      [/wireless\s*power\s*transfer/gi, "무선전력전송전공"],
+      [/energy\s*engineering/gi, "에너지공학과"],
+      [/safety/gi, "안전"],
+      [/simulation/gi, "시뮬레이션"]
+    ];
+
+    const DEPT_NORM_CACHE = new Map();
+
+    function normalizeDepartmentName(rawDept) {
+      if (!rawDept || typeof rawDept !== 'string') return "공학·디자인융합부";
+      const cacheKey = rawDept.trim();
+      if (DEPT_NORM_CACHE.has(cacheKey)) return DEPT_NORM_CACHE.get(cacheKey);
+
+      let s = cacheKey
+        .replace(/\(.*?\)/g, ' ')
+        .replace(/\[.*?\]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+      // Loại bỏ các từ rác không phải tên khoa
+      if (!s || s === 'nan' || s === 'N/A' || s.includes('일반학과') || s.includes('일반대학원') || s.includes('학위논문')) {
+        DEPT_NORM_CACHE.set(cacheKey, "인문융합학부");
+        return "인문융합학부";
+      }
+
+      // 1. Kiểm tra luật gom nhóm trực tiếp
+      for (let i = 0; i < EXACT_DEPT_CANONICAL_RULES.length; i++) {
+        if (EXACT_DEPT_CANONICAL_RULES[i].pattern.test(s)) {
+          const res = EXACT_DEPT_CANONICAL_RULES[i].canonical;
+          DEPT_NORM_CACHE.set(cacheKey, res);
+          return res;
+        }
+      }
+
+      // 2. Nếu tên bị dính câu tiếng Anh dài (> 25 ký tự Latin liên tiếp, như tóm tắt luận văn bị lọt vào)
+      if (/[a-zA-Z]{3,}(?:\s+[a-zA-Z]{2,}){4,}/.test(s)) {
+        const koPrefixMatch = s.match(/^([가-힣·\s]+?(?:학과|전공|학부|과정|과))/);
+        if (koPrefixMatch && koPrefixMatch[1].trim().length >= 2) {
+          const res = koPrefixMatch[1].trim().replace(/\s+/g, '');
+          DEPT_NORM_CACHE.set(cacheKey, res);
+          return res;
+        }
+      }
+
+      // 3. Xử lý dạng "KhoaHàn + TênTiếngAnh + 학과" hoặc "KhoaHàn + KhoaHàn" (lặp tên)
+      // Ví dụ: "IT융합공학과 IT융합공학과" -> "IT융합공학과"
+      const dupMatch = s.match(/^(.+?)\s+\1$/i);
+      if (dupMatch) {
+        s = dupMatch[1].trim();
+      }
+
+      // Xử lý dạng "[TênKhoaHàn] [TênTiếngAnh/Phụ]학과"
+      const hybridMatch = s.match(/^([가-힣A-Za-z0-9·]+(?:학과|전공|학부|과정|과))\s+(.+)$/);
+      if (hybridMatch) {
+        const mainKoDept = hybridMatch[1].trim();
+        let subPart = hybridMatch[2].trim();
+        // Bỏ chữ '학과' bị gắn thừa ở cuối cụm tiếng Anh
+        subPart = subPart.replace(/학과$/, '').trim();
+
+        // Nếu phần sau chỉ là bản dịch tiếng Anh của chính khoa mẹ (viết hoa hay thường đều gom về khoa mẹ)
+        const subLower = subPart.toLowerCase();
+        if (
+          subLower.includes("department of") ||
+          subLower === mainKoDept.toLowerCase() ||
+          (mainKoDept === "인공지능응용학과" && subLower.includes("artificial intelligence")) ||
+          (mainKoDept === "데이터사이언스학과" && subLower.includes("data science")) ||
+          (mainKoDept === "지능형반도체공학과" && subLower.includes("semiconductor")) ||
+          (mainKoDept === "의공학바이오소재융합협동과정" && subLower.includes("biomedical")) ||
+          (mainKoDept === "스마트생산융합시스템공학과" && subLower.includes("스마트생산융합시스템"))
+        ) {
+          DEPT_NORM_CACHE.set(cacheKey, mainKoDept);
+          return mainKoDept;
+        }
+
+        // Nếu có chuyên ngành tiếng Anh phổ biến ở phần sau -> dịch sang tiếng Hàn chuẩn
+        for (const [rx, koReplacement] of ENGLISH_PHRASE_TO_KOREAN) {
+          if (rx.test(subPart)) {
+            if (koReplacement === mainKoDept || mainKoDept.includes(koReplacement.replace(/학과|전공/, ''))) {
+              DEPT_NORM_CACHE.set(cacheKey, mainKoDept);
+              return mainKoDept;
+            }
+            const merged = `${mainKoDept} (${koReplacement})`;
+            DEPT_NORM_CACHE.set(cacheKey, merged);
+            return merged;
+          }
+        }
+
+        // Nếu phần sau chứa nhiều từ tiếng Anh dài không phải tên khoa -> chỉ giữ tên khoa mẹ tiếng Hàn
+        if (/[a-zA-Z]{2,}\s+[a-zA-Z]{2,}/.test(subPart)) {
+          DEPT_NORM_CACHE.set(cacheKey, mainKoDept);
+          return mainKoDept;
+        }
+      }
+
+      // 4. Dịch các cụm tiếng Anh còn sót lại sang tiếng Hàn
+      for (const [rx, koReplacement] of ENGLISH_PHRASE_TO_KOREAN) {
+        if (rx.test(s)) {
+          s = s.replace(rx, koReplacement);
+        }
+      }
+
+      // Làm sạch hậu tố thừa như "학과학과" -> "학과"
+      s = s.replace(/학과학과$/g, '학과')
+           .replace(/전공학과$/g, '전공')
+           .replace(/과학과$/g, '과학과')
+           .replace(/\s+/g, ' ')
+           .trim();
+
+      // Thống nhất viết hoa chữ cái đầu cho các từ viết tắt hợp lệ (IT, MSDE, TESOL, AI, HCI)
+      s = s.replace(/\bit\b/gi, 'IT')
+           .replace(/\bmsde\b/gi, 'MSDE')
+           .replace(/\btesol\b/gi, 'TESOL')
+           .replace(/\bai\b/gi, 'AI')
+           .replace(/\bhci\b/gi, 'HCI');
+
+      DEPT_NORM_CACHE.set(cacheKey, s);
+      return s;
     }
 
     function isMobileView() {
@@ -499,7 +650,7 @@
     }
 
     /* ==========================================================================
-       2. PROCEDURAL OPTICAL TEXTURES (SHARP SOLID CORE FOR DOCTORAL THESES)
+       3. PROCEDURAL OPTICAL TEXTURES (SHARP SOLID CORE FOR DOCTORAL THESES)
        ========================================================================== */
     function createStarlightTexture() {
       const c = document.createElement('canvas');
@@ -516,7 +667,6 @@
       return new THREE.CanvasTexture(c);
     }
 
-    // Texture riêng cho Luận văn Tiến sĩ: lõi đặc đậm, phần viền blur ngắn gọn để sắc nét và nổi bật
     function createDoctoralStarTexture() {
       const c = document.createElement('canvas');
       c.width = 64; c.height = 64;
@@ -566,7 +716,7 @@
     const softDustTexture = createSoftDustTexture();
 
     /* ==========================================================================
-       3. THREE.JS SCENE SETUP
+       4. THREE.JS SCENE SETUP
        ========================================================================== */
     const canvas = document.getElementById('cosmos-canvas');
     const scene = new THREE.Scene();
@@ -592,7 +742,7 @@
     cosmosGroup.add(arcLinksGroup);
 
     /* ==========================================================================
-       4. SHADERS: DẢI NGÂN HÀ & SỢI CHỈ XOẮN ỐC LƯỢN SÓNG MỀM MẠI
+       5. SHADERS: DẢI NGÂN HÀ & SỢI CHỈ XOẮN ỐC LƯỢN SÓNG MỀM MẠI
        ========================================================================== */
     let funnelHazeMesh;
     const volumetricNebulaMat = new THREE.ShaderMaterial({
@@ -701,7 +851,7 @@
     });
 
     /* ==========================================================================
-       5. FAST DATA LOADING, ENGLISH STEMMER, SYNONYM MAP & 60% SIMILARITY ENGINE
+       6. FAST DATA LOADING, ENGLISH STEMMER, SYNONYM MAP & 60% SIMILARITY ENGINE
        ========================================================================== */
     let ALL_NODES = [];
     let NODE_BY_ID = new Map();
@@ -921,7 +1071,10 @@
         ALL_NODES = generateRealisticNodes();
       }
 
-      ALL_NODES.forEach(n => NODE_BY_ID.set(n.id, n));
+      ALL_NODES.forEach(n => {
+        if (n.dept) n.dept = normalizeDepartmentName(n.dept);
+        NODE_BY_ID.set(n.id, n);
+      });
 
       loaderText.innerText = "LOADING RESEARCH METADATA...";
       await preloadAllDetailsFast();
@@ -969,7 +1122,7 @@
           node.cachedDetail = val;
           if (val.title_ko || val.title) node.title_ko = val.title_ko || val.title;
           if (val.title_en) node.title_en = val.title_en;
-          if (val.dept || val.department) node.dept = val.dept || val.department;
+          if (val.dept || val.department) node.dept = normalizeDepartmentName(val.dept || val.department);
           if (val.advisor || val.advisor_name) node.advisor = val.advisor || val.advisor_name;
           if (val.author) node.author = val.author;
           if (val.uci || val.uci_code || val.d_uci || val.identifier) {
@@ -990,10 +1143,9 @@
 
       const d = DETAILS_STORE.get(node.id) || node.cachedDetail;
       
-      let resolvedDept = node.dept || (d && (d.dept || d.department)) || "공학·디자인융합부";
-      if (resolvedDept.includes("일반학과") || resolvedDept.includes("일반대학원")) {
-        resolvedDept = node.dept || "인문융합학부";
-      }
+      const rawDept = node.dept || (d && (d.dept || d.department)) || "공학·디자인융합부";
+      const resolvedDept = normalizeDepartmentName(rawDept);
+      node.dept = resolvedDept;
 
       let resolvedTitleKo = (d && (d.title_ko || d.title)) || node.title_ko || node.name || "학위논문 연구";
       let resolvedTitleEn = (d && d.title_en) || node.title_en || resolvedTitleKo;
@@ -1022,7 +1174,7 @@
         resolvedAbstractKo = `본 연구는 서울과학기술대학교 ${resolvedDept}에서 수행된 학위논문으로, 주제와 관련된 심층적인 학술 분석과 연구 방법론을 종합적으로 기술하고 있습니다.`;
       }
 
-      let resolvedAbstractEn = (d && (d.abstract_en || d.abstract || d.abstract_ko)) || node.abstract_en || `This research was conducted at the ${translateDept(resolvedDept)}, Seoul National University of Science and Technology.`;
+      let resolvedAbstractEn = (d && (d.abstract_en || d.abstract || d.abstract_ko)) || node.abstract_en || `This research was conducted at ${resolvedDept}, Seoul National University of Science and Technology.`;
       
       const rawKw = (d && d.keywords) ? d.keywords : node.keywords;
       const resolvedKeywords = sanitizeKeywords(rawKw);
@@ -1041,7 +1193,7 @@
         author: resolvedAuthor,
         advisor: resolvedAdvisor,
         dept: resolvedDept,
-        dept_en: translateDept(resolvedDept),
+        dept_en: resolvedDept,
         degree: resolvedDegree,
         isPhd: isPhd,
         thesisLang: thesisLang,
@@ -1058,11 +1210,12 @@
     }
 
     /* ==========================================================================
-       6. KHỞI TẠO BỐ CỤC: LUẬN VĂN TIẾN SĨ ĐẬM NÉT, BLUR NGẮN, CÙNG TÔNG MÀU NGÀNH
+       7. KHỞI TẠO BỐ CỤC: LUẬN VĂN TIẾN SĨ ĐẬM NÉT, BLUR NGẮN, CÙNG TÔNG MÀU NGÀNH
        ========================================================================== */
     function buildCosmicScene() {
       NODE_SPRITES = [];
       SPRITE_BY_ID.clear();
+      DEPT_MAP.clear();
 
       let minY = Infinity;
       let maxY = -Infinity;
@@ -1143,8 +1296,13 @@
         if (node.fy < minY) minY = node.fy;
         if (node.fy > maxY) maxY = node.fy;
 
-        if (node.dept) {
-          DEPT_MAP.set(node.dept, (DEPT_MAP.get(node.dept) || 0) + 1);
+        const normalizedDept = normalizeDepartmentName(node.dept || node.name);
+        node.dept = normalizedDept;
+        if (node.type === 'dept_sun') {
+          node.name = normalizedDept;
+        }
+        if (normalizedDept) {
+          DEPT_MAP.set(normalizedDept, (DEPT_MAP.get(normalizedDept) || 0) + 1);
         }
 
         const isDept = node.type === 'dept_sun';
@@ -1170,16 +1328,13 @@
           const masterBase = 2.4 + Math.min(1.4, connCount * 0.22);
           scaleSize = det.isPhd ? (masterBase * 3.0) : masterBase;
 
-          // Giữ đúng màu gốc của chuyên ngành, điều chỉnh độ bão hòa để Tiến sĩ đậm nét hơn Thạc sĩ mà không chói lóa
           const baseColor = new THREE.Color(node.color || "#06B6D4");
           const hsl = {};
           baseColor.getHSL(hsl);
 
           if (det.isPhd) {
-            // Tiến sĩ: cùng Hue & độ sáng hài hòa với Thạc sĩ nhưng tăng độ đậm (saturation) và dùng lõi đặc ít blur
             baseColor.setHSL(hsl.h, Math.min(1.0, Math.max(0.88, hsl.s * 1.12)), Math.min(0.64, Math.max(0.54, hsl.l)));
           } else {
-            // Thạc sĩ: giữ tông màu thanh thoát nhẹ hơn một chút
             baseColor.setHSL(hsl.h, Math.max(0.72, hsl.s * 0.85), Math.min(0.70, Math.max(0.56, hsl.l * 1.06)));
           }
 
@@ -1391,7 +1546,7 @@
 
     function generateRealisticNodes() {
       const nodes = [];
-      const depts = ["컴퓨터공학과", "기계시스템디자인공학과", "시각디자인전공", "인공지능응용학과", "신소재공학과", "경영학과", "행정학과", "TESOL학과", "영어영문학과"];
+      const depts = ["컴퓨터공학과", "기계시스템디자인공학과", "시각디자인전공", "산업디자인전공", "인공지능응용학과", "신소재공학과", "경영학과", "행정학과", "TESOL학과", "영어영문학과"];
       const colors = ["#F43F5E", "#06B6D4", "#8B5CF6", "#F59E0B", "#10B981"];
       const keywordPairs = [
         ["AI", "Optimization", "Deep Learning"],
@@ -1428,12 +1583,12 @@
             nodes.push({
               id: id++,
               name: isEngThesis
-                ? `Optimization Study in ${translateDept(d)} with ${kws[0]} Vol.${t}`
+                ? `Optimization Study in ${d} with ${kws[0]} Vol.${t}`
                 : `[연구] ${d} ${kws[0]} 기반 응용 분석 Vol.${t}`,
               title_ko: isEngThesis
-                ? `Optimization Study in ${translateDept(d)} with ${kws[0]} Vol.${t}`
+                ? `Optimization Study in ${d} with ${kws[0]} Vol.${t}`
                 : `[연구] ${d} ${kws[0]} 기반 응용 분석 Vol.${t}`,
-              title_en: `Optimization Study in ${translateDept(d)} with ${kws[0]} Vol.${t}`,
+              title_en: `Optimization Study in ${d} with ${kws[0]} Vol.${t}`,
               type: 'thesis_planet',
               dept: d,
               degree: isPhd ? "학위논문(박사)" : "학위논문(석사)",
@@ -1455,7 +1610,7 @@
     }
 
     /* ==========================================================================
-       7. UI FILTERS SETUP
+       8. UI FILTERS SETUP (100% KOREAN DEPARTMENT LIST, COLLATED IN KOREAN ORDER)
        ========================================================================== */
     let selectedCluster = 'all';
     let selectedDept = 'ALL';
@@ -1469,16 +1624,16 @@
       const d = deptName.toLowerCase();
       if (cluster === 'all') return true;
       if (cluster === '공학') {
-        return d.includes('공학') || d.includes('기계') || d.includes('전자') || d.includes('전기') || d.includes('컴퓨터') || d.includes('건설') || d.includes('화학') || d.includes('신소재') || d.includes('ict');
+        return d.includes('공학') || d.includes('기계') || d.includes('전자') || d.includes('전기') || d.includes('컴퓨터') || d.includes('건설') || d.includes('화학') || d.includes('신소재') || d.includes('ict') || d.includes('건축') || d.includes('도시계획') || d.includes('국방') || d.includes('스마트생산');
       }
       if (cluster === '디자인') {
         return d.includes('디자인') || d.includes('예술') || d.includes('도예') || d.includes('금속') || d.includes('조형');
       }
       if (cluster === '융합') {
-        return d.includes('융합') || d.includes('인공지능') || d.includes('반도체') || d.includes('미래') || d.includes('에너지');
+        return d.includes('융합') || d.includes('인공지능') || d.includes('반도체') || d.includes('미래') || d.includes('에너지') || d.includes('데이터사이언스') || d.includes('의공학');
       }
       if (cluster === '경영') {
-        return d.includes('경영') || d.includes('기술경영') || d.includes('글로벌') || d.includes('msde');
+        return d.includes('경영') || d.includes('기술경영') || d.includes('글로벌') || d.includes('msde') || d.includes('산업정보');
       }
       if (cluster === '인문') {
         return d.includes('인문') || d.includes('tesol') || d.includes('영어') || d.includes('어학') || d.includes('문학') || d.includes('창작') || d.includes('행정');
@@ -1488,14 +1643,22 @@
 
     function setupDepartmentFilterUI() {
       const dropdown = document.getElementById('dept-dropdown');
+      const prevSelected = selectedDept;
       dropdown.innerHTML = `<option value="ALL">${I18N[currentLang].allDeptsOpt}</option>`;
 
-      Array.from(DEPT_MAP.keys()).sort().forEach(dept => {
-        const opt = document.createElement('option');
-        opt.value = dept;
-        opt.innerText = `${translateDept(dept)} (${DEPT_MAP.get(dept)})`;
-        dropdown.appendChild(opt);
-      });
+      // Sắp xếp danh sách khoa chuẩn tiếng Hàn theo thứ tự 가나다
+      Array.from(DEPT_MAP.keys())
+        .sort((a, b) => a.localeCompare(b, 'ko-KR'))
+        .forEach(dept => {
+          const opt = document.createElement('option');
+          opt.value = dept;
+          opt.innerText = `${dept} (${DEPT_MAP.get(dept)})`;
+          dropdown.appendChild(opt);
+        });
+
+      if (prevSelected && DEPT_MAP.has(prevSelected)) {
+        dropdown.value = prevSelected;
+      }
 
       document.querySelectorAll('.cluster-btn').forEach(btn => {
         btn.onclick = () => {
@@ -1647,7 +1810,7 @@
     });
 
     /* ==========================================================================
-       8. SỢI CHỈ LIÊN KẾT XOẮN ỐC HÌNH PHỄU (TƯƠNG ĐỒNG TỪ KHÓA / GỐC TỪ >= 60%)
+       9. SỢI CHỈ LIÊN KẾT XOẮN ỐC HÌNH PHỄU (TƯƠNG ĐỒNG TỪ KHÓA / GỐC TỪ >= 60%)
        ========================================================================== */
     function clearArcLinks() {
       while (arcLinksGroup.children.length > 0) {
@@ -1764,7 +1927,7 @@
     }
 
     /* ==========================================================================
-       9. INTERACTION: RAYCAST, CAMERA LOCK TRACKING & PANEL OPEN / CLOSE
+       10. INTERACTION: RAYCAST, CAMERA LOCK TRACKING & PANEL OPEN / CLOSE
        ========================================================================== */
     const raycaster = new THREE.Raycaster();
     raycaster.params.Sprite = { threshold: 4.5 };
@@ -1816,20 +1979,20 @@
           if (n.type === 'dept_sun') {
             hoverBadgeEl.innerText = "DEPARTMENT SUN";
             hoverBadgeEl.className = "inline-block px-1.5 py-0.5 rounded text-[9px] font-scifi font-bold mb-1 bg-amber-500/20 text-amber-300";
-            hoverTitleEl.innerText = currentLang === 'ko' ? n.name : translateDept(n.name);
+            hoverTitleEl.innerText = detail.dept;
             hoverSubEl.innerText = currentLang === 'ko' ? "학과 중심 태양" : "Department Hub";
           } else if (n.type === 'advisor_sun') {
             hoverBadgeEl.innerText = "ADVISOR SUN";
             hoverBadgeEl.className = "inline-block px-1.5 py-0.5 rounded text-[9px] font-scifi font-bold mb-1 bg-yellow-500/20 text-yellow-300";
             hoverTitleEl.innerText = n.name;
-            hoverSubEl.innerText = `${currentLang === 'ko' ? detail.dept : detail.dept_en} · ${currentLang === 'ko' ? '지도교수' : 'Advisor'}`;
+            hoverSubEl.innerText = `${detail.dept} · ${currentLang === 'ko' ? '지도교수' : 'Advisor'}`;
           } else {
             hoverBadgeEl.innerText = detail.isPhd ? "DOCTORAL THESIS (박사)" : "MASTER'S THESIS (석사)";
             hoverBadgeEl.className = detail.isPhd
               ? "inline-block px-1.5 py-0.5 rounded text-[9px] font-scifi font-bold mb-1 bg-purple-500/30 text-purple-300"
               : "inline-block px-1.5 py-0.5 rounded text-[9px] font-scifi font-bold mb-1 bg-pink-500/20 text-pink-300";
             hoverTitleEl.innerText = currentLang === 'ko' ? detail.title_ko : detail.title_en;
-            hoverSubEl.innerText = `${currentLang === 'ko' ? detail.dept : detail.dept_en} · ${detail.advisor} · ${detail.year}${I18N[currentLang].yearSuffix}`;
+            hoverSubEl.innerText = `${detail.dept} · ${detail.advisor} · ${detail.year}${I18N[currentLang].yearSuffix}`;
           }
         }
       } else {
@@ -1961,7 +2124,7 @@
       document.getElementById('detail-title').innerText = isKo ? detail.title_ko : detail.title_en;
       document.getElementById('detail-author').innerText = detail.author;
       document.getElementById('detail-advisor').innerText = detail.advisor;
-      document.getElementById('detail-dept').innerText = isKo ? detail.dept : detail.dept_en;
+      document.getElementById('detail-dept').innerText = detail.dept;
       document.getElementById('detail-degree').innerText = detail.degree;
       document.getElementById('detail-year').innerText = `${detail.year}${I18N[currentLang].yearSuffix}`;
       
@@ -2000,7 +2163,7 @@
     }
 
     /* ==========================================================================
-       10. SEARCH & LIST VIEW
+       11. SEARCH & LIST VIEW
        ========================================================================== */
     const searchInput = document.getElementById('search-input');
     const searchType = document.getElementById('search-type');
@@ -2026,7 +2189,7 @@
         const titleMatch = detail.title_ko.toLowerCase().includes(q) || detail.title_en.toLowerCase().includes(q);
         const authorMatch = detail.author.toLowerCase().includes(q);
         const advisorMatch = detail.advisor.toLowerCase().includes(q) || detail.advisor.toLowerCase().includes(cleanProfName);
-        const deptMatch = detail.dept.toLowerCase().includes(q) || detail.dept_en.toLowerCase().includes(q);
+        const deptMatch = detail.dept.toLowerCase().includes(q);
         const kwMatch = detail.keywords.some(k => k.toLowerCase().includes(q));
 
         if (type === 'advisor') return advisorMatch;
@@ -2106,7 +2269,6 @@
         card.className = "p-3 rounded-lg bg-black/50 hover:bg-indigo-900/40 border border-white/10 hover:border-cyan-400/50 transition cursor-pointer flex flex-col space-y-1.5 shrink-0";
         
         const title = currentLang === 'ko' ? detail.title_ko : detail.title_en;
-        const dept = currentLang === 'ko' ? detail.dept : detail.dept_en;
 
         card.innerHTML = `
           <div class="flex items-center justify-between">
@@ -2119,7 +2281,7 @@
             <span class="text-indigo-300 font-medium">${currentLang === 'ko' ? '지도' : 'Advisor'}: ${detail.advisor}</span>
           </div>
           <div class="text-[9px] text-slate-500 flex justify-between items-center truncate">
-            <span>${dept}</span>
+            <span>${detail.dept}</span>
             <span class="font-scifi text-[9px] text-cyan-400/80">${detail.uci ? detail.uci : I18N[currentLang].uciNone}</span>
           </div>
         `;
@@ -2206,7 +2368,7 @@
     });
 
     /* ==========================================================================
-       11. MULTILINGUAL SWITCH
+       12. MULTILINGUAL SWITCH (DEPARTMENT NAMES REMAIN 100% KOREAN)
        ========================================================================== */
     const langKoBtn = document.getElementById('lang-ko-btn');
     const langEnBtn = document.getElementById('lang-en-btn');
@@ -2279,7 +2441,7 @@
     langEnBtn.addEventListener('click', () => switchLanguage('en'));
 
     /* ==========================================================================
-       12. REAL-TIME ANIMATION & CONTINUOUS CAMERA TRACKING ON SELECTED THESIS
+       13. REAL-TIME ANIMATION & CONTINUOUS CAMERA TRACKING ON SELECTED THESIS
        ========================================================================== */
     const clock = new THREE.Clock();
     const _prevTrackedWorldPos = new THREE.Vector3();
