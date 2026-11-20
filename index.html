@@ -712,11 +712,99 @@
     renderer.setSize(window.innerWidth, window.innerHeight);
 
     const controls = new THREE.OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
-    controls.maxDistance = 4000;
-    controls.minDistance = 15;
-    controls.target.set(0, 200, 0);
+controls.enableDamping = true;
+controls.dampingFactor = 0.06;
+controls.screenSpacePanning = true; // Cho phép kéo trượt dọc theo chiều cao Y của ngân hà mượt mà
+controls.panSpeed = 1.1;
+controls.rotateSpeed = 0.85;
+controls.zoomSpeed = 1.2;
+controls.maxDistance = 4000;
+controls.minDistance = 8; // Cho phép zoom sát vào tận lõi chân ngân hà
+controls.target.set(0, 225, 0);
+
+// Mặt phẳng ảo hỗ trợ xác định điểm 3D dưới con trỏ chuột khi zoom vào vùng trống gần chân ngân hà
+const _zoomRaycaster = new THREE.Raycaster();
+_zoomRaycaster.params.Sprite = { threshold: 12.0 };
+const _zoomMouse = new THREE.Vector2();
+const _zoomPlane = new THREE.Plane();
+const _zoomHitPoint = new THREE.Vector3();
+const _camDir = new THREE.Vector3();
+
+// 1. ZOOM-TO-CURSOR: Lăn chuột ở đâu, camera phóng thẳng vào khu vực đó
+canvas.addEventListener('wheel', (e) => {
+  // Nếu đang khóa camera theo 1 luận văn cụ thể thì giữ nguyên tâm khóa
+  if (selectedActiveSprite && !isCameraFlying) return;
+
+  e.preventDefault();
+
+  const rect = canvas.getBoundingClientRect();
+  _zoomMouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+  _zoomMouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+  _zoomRaycaster.setFromCamera(_zoomMouse, camera);
+
+  // Ưu tiên bắt điểm nếu con trỏ đang chỉ trúng một ngôi sao/luận văn ở chân ngân hà
+  const visibleSprites = NODE_SPRITES.filter(s => s.visible);
+  const hits = _zoomRaycaster.intersectObjects(visibleSprites);
+
+  let focusPoint = null;
+  if (hits.length > 0) {
+    focusPoint = hits[0].point.clone();
+  } else {
+    // Nếu chỉ vào vùng sương mù/khoảng không ở chân ngân hà, chiếu tia lên mặt phẳng đi qua tâm ngân hà
+    camera.getWorldDirection(_camDir);
+    _zoomPlane.setFromNormalAndCoplanarPoint(_camDir, controls.target);
+    if (_zoomRaycaster.ray.intersectPlane(_zoomPlane, _zoomHitPoint)) {
+      focusPoint = _zoomHitPoint.clone();
+    }
+  }
+
+  // Chỉ kéo tâm target về phía con trỏ khi đang Zoom In (deltaY < 0)
+  if (focusPoint && e.deltaY < 0) {
+    const pullFactor = 0.22; // Mức độ hút tiêu điểm về phía con trỏ chuột mỗi nấc lăn
+    controls.target.lerp(focusPoint, pullFactor);
+  }
+}, { passive: false });
+
+// 2. DOUBLE-CLICK: Nhấp đúp chuột vào chân ngân hà hoặc cụm sao bất kỳ để bay thẳng tới và đặt làm tâm xoay
+canvas.addEventListener('dblclick', (e) => {
+  const rect = canvas.getBoundingClientRect();
+  _zoomMouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+  _zoomMouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+  _zoomRaycaster.setFromCamera(_zoomMouse, camera);
+  const visibleSprites = NODE_SPRITES.filter(s => s.visible);
+  const hits = _zoomRaycaster.intersectObjects(visibleSprites);
+
+  let destPoint = null;
+  if (hits.length > 0) {
+    destPoint = hits[0].point.clone();
+  } else {
+    camera.getWorldDirection(_camDir);
+    _zoomPlane.setFromNormalAndCoplanarPoint(_camDir, controls.target);
+    if (_zoomRaycaster.ray.intersectPlane(_zoomPlane, _zoomHitPoint)) {
+      destPoint = _zoomHitPoint.clone();
+    }
+  }
+
+  if (destPoint) {
+    if (activeCameraFlyTween) activeCameraFlyTween.stop();
+    const offset = camera.position.clone().sub(controls.target).multiplyScalar(0.55);
+    // Đảm bảo khoảng cách không quá xa để nhìn rõ chân ngân hà
+    if (offset.length() > 180) offset.setLength(180);
+    const newCamPos = destPoint.clone().add(offset);
+
+    new TWEEN.Tween(controls.target)
+      .to({ x: destPoint.x, y: destPoint.y, z: destPoint.z }, 700)
+      .easing(TWEEN.Easing.Cubic.Out)
+      .start();
+
+    new TWEEN.Tween(camera.position)
+      .to({ x: newCamPos.x, y: newCamPos.y, z: newCamPos.z }, 700)
+      .easing(TWEEN.Easing.Cubic.Out)
+      .start();
+  }
+});
 
     const cosmosGroup = new THREE.Group();
     scene.add(cosmosGroup);
