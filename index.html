@@ -1,4 +1,4 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
@@ -212,7 +212,7 @@
         <button id="btn-view-top" class="scifi-btn px-2.5 py-1.5 rounded text-slate-300 font-medium active">탑 뷰</button>
       </div>
 
-      <!-- MỤC PHÂN LOẠI LUẬN VĂN (THẠC SĨ / TIẾN SĨ) -->
+      <!-- DEGREE FILTER (MASTER / PHD) -->
       <div class="pt-2 border-t border-indigo-500/20 flex flex-col space-y-1.5">
         <span id="label-degree-filter" class="text-[10px] font-bold text-indigo-300 tracking-wider uppercase font-scifi">학위 구분 필터</span>
         <div class="grid grid-cols-3 gap-1.5 text-[11px]" id="degree-btn-group">
@@ -222,7 +222,7 @@
         </div>
       </div>
 
-      <!-- MỤC PHÂN LOẠI NGÔN NGỮ LUẬN VĂN (TIẾNG HÀN / TIẾNG ANH) -->
+      <!-- THESIS LANGUAGE FILTER (KO / EN) -->
       <div class="pt-2 border-t border-indigo-500/20 flex flex-col space-y-1.5">
         <span id="label-thesis-lang-filter" class="text-[10px] font-bold text-indigo-300 tracking-wider uppercase font-scifi">논문 언어 필터</span>
         <div class="grid grid-cols-3 gap-1.5 text-[11px]" id="thesis-lang-btn-group">
@@ -499,7 +499,7 @@
     }
 
     /* ==========================================================================
-       2. PROCEDURAL OPTICAL TEXTURES (ĐẶC & SẮC NÉT HƠN CHO LUẬN VĂN TIẾN SĨ)
+       2. PROCEDURAL OPTICAL TEXTURES (SHARP SOLID CORE FOR DOCTORAL THESES)
        ========================================================================== */
     function createStarlightTexture() {
       const c = document.createElement('canvas');
@@ -507,29 +507,28 @@
       const ctx = c.getContext('2d');
       const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
       grad.addColorStop(0.0, 'rgba(255, 255, 255, 1.0)');
-      grad.addColorStop(0.18, 'rgba(255, 255, 255, 0.92)');
-      grad.addColorStop(0.42, 'rgba(255, 255, 255, 0.50)');
-      grad.addColorStop(0.74, 'rgba(255, 255, 255, 0.14)');
+      grad.addColorStop(0.18, 'rgba(255, 255, 255, 0.95)');
+      grad.addColorStop(0.42, 'rgba(255, 255, 255, 0.6)');
+      grad.addColorStop(0.74, 'rgba(255, 255, 255, 0.16)');
       grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, 64, 64);
       return new THREE.CanvasTexture(c);
     }
 
-    // Texture riêng cho Luận văn Tiến sĩ: lõi sáng đặc, đậm đà, viền gọn gàng không bị loang mờ
+    // Texture riêng cho Luận văn Tiến sĩ: lõi đặc đậm, phần viền blur ngắn gọn để sắc nét và nổi bật
     function createDoctoralStarTexture() {
       const c = document.createElement('canvas');
-      c.width = 128; c.height = 128;
+      c.width = 64; c.height = 64;
       const ctx = c.getContext('2d');
-      const grad = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+      const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
       grad.addColorStop(0.0, 'rgba(255, 255, 255, 1.0)');
-      grad.addColorStop(0.32, 'rgba(255, 255, 255, 1.0)');
-      grad.addColorStop(0.55, 'rgba(255, 255, 255, 0.88)');
-      grad.addColorStop(0.75, 'rgba(255, 255, 255, 0.42)');
-      grad.addColorStop(0.90, 'rgba(255, 255, 255, 0.12)');
+      grad.addColorStop(0.36, 'rgba(255, 255, 255, 0.98)');
+      grad.addColorStop(0.54, 'rgba(255, 255, 255, 0.68)');
+      grad.addColorStop(0.74, 'rgba(255, 255, 255, 0.0)');
       grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
       ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, 128, 128);
+      ctx.fillRect(0, 0, 64, 64);
       return new THREE.CanvasTexture(c);
     }
 
@@ -1059,7 +1058,7 @@
     }
 
     /* ==========================================================================
-       6. KHỞI TẠO BỐ CỤC: LUẬN VĂN TIẾN SĨ LÕI SÁNG ĐẶC & ĐẬM MÀU NỔI BẬT
+       6. KHỞI TẠO BỐ CỤC: LUẬN VĂN TIẾN SĨ ĐẬM NÉT, BLUR NGẮN, CÙNG TÔNG MÀU NGÀNH
        ========================================================================== */
     function buildCosmicScene() {
       NODE_SPRITES = [];
@@ -1153,16 +1152,14 @@
 
         let spriteMat;
         let scaleSize = 1.0;
-        let defaultOpacity = 0.85;
 
         if (isDept || isAdvisor) {
           scaleSize = 2.8;
-          defaultOpacity = 0.92;
           spriteMat = new THREE.SpriteMaterial({
             map: moderateSunTexture,
             color: new THREE.Color("#FDE047"),
             transparent: true,
-            opacity: defaultOpacity,
+            opacity: 0.92,
             blending: THREE.AdditiveBlending,
             depthWrite: false
           });
@@ -1173,26 +1170,24 @@
           const masterBase = 2.4 + Math.min(1.4, connCount * 0.22);
           scaleSize = det.isPhd ? (masterBase * 3.0) : masterBase;
 
+          // Giữ đúng màu gốc của chuyên ngành, điều chỉnh độ bão hòa để Tiến sĩ đậm nét hơn Thạc sĩ mà không chói lóa
           const baseColor = new THREE.Color(node.color || "#06B6D4");
           const hsl = {};
           baseColor.getHSL(hsl);
 
           if (det.isPhd) {
-            // Tiến sĩ: dùng texture lõi đặc sắc nét (doctoralStarTexture) + màu bão hòa tối đa (1.0) & nhân cường độ sáng 1.45 để nổi bật hẳn lên
-            baseColor.setHSL(hsl.h, 1.0, Math.min(0.68, Math.max(0.58, hsl.l * 1.15)));
-            baseColor.multiplyScalar(1.45);
-            defaultOpacity = 1.0;
+            // Tiến sĩ: cùng Hue & độ sáng hài hòa với Thạc sĩ nhưng tăng độ đậm (saturation) và dùng lõi đặc ít blur
+            baseColor.setHSL(hsl.h, Math.min(1.0, Math.max(0.88, hsl.s * 1.12)), Math.min(0.64, Math.max(0.54, hsl.l)));
           } else {
-            // Thạc sĩ: thanh thoát hơn để nhường độ nổi bật cho sao Tiến sĩ
-            baseColor.setHSL(hsl.h, Math.max(0.75, hsl.s * 0.85), Math.min(0.78, Math.max(0.66, hsl.l * 1.18)));
-            defaultOpacity = 0.84;
+            // Thạc sĩ: giữ tông màu thanh thoát nhẹ hơn một chút
+            baseColor.setHSL(hsl.h, Math.max(0.72, hsl.s * 0.85), Math.min(0.70, Math.max(0.56, hsl.l * 1.06)));
           }
 
           spriteMat = new THREE.SpriteMaterial({
             map: det.isPhd ? doctoralStarTexture : starTexture,
             color: baseColor,
             transparent: true,
-            opacity: defaultOpacity,
+            opacity: det.isPhd ? 1.0 : 0.86,
             blending: THREE.AdditiveBlending,
             depthWrite: false
           });
@@ -1205,8 +1200,6 @@
         sprite.userData = {
           nodeData: node,
           baseSize: scaleSize,
-          defaultOpacity: defaultOpacity,
-          isPhd: node.type === 'thesis_planet' ? getCleanDetail(node).isPhd : false,
           isSun: isDept || isAdvisor,
           pulseOffset: Math.random() * Math.PI * 2,
           twinkleSpeed: 2.0 + Math.random() * 4.0,
@@ -1615,7 +1608,8 @@
         if (!visible) {
           s.material.opacity = 0.0;
         } else if (!isSearchActive && !selectedActiveNode) {
-          s.material.opacity = s.userData.defaultOpacity;
+          const det = n.type === 'thesis_planet' ? getCleanDetail(n) : null;
+          s.material.opacity = (det && det.isPhd) ? 1.0 : 0.88;
           s.scale.set(s.userData.baseSize, s.userData.baseSize, 1);
         }
       });
@@ -1945,7 +1939,7 @@
     }
 
     /* ==========================================================================
-       RENDER DETAIL CONTENT (ONLY DISPLAY UCI IDENTIFIER IF AVAILABLE)
+       RENDER DETAIL CONTENT
        ========================================================================== */
     function renderDetailContent(node, detail) {
       const isKo = currentLang === 'ko';
@@ -2170,7 +2164,8 @@
         s.userData.isHighlight = false;
         s.userData.isRelated = false;
         if (s.visible) {
-          s.material.opacity = s.userData.defaultOpacity;
+          const det = s.userData.nodeData.type === 'thesis_planet' ? getCleanDetail(s.userData.nodeData) : null;
+          s.material.opacity = det && det.isPhd ? 1.0 : 0.88;
           s.scale.set(s.userData.baseSize, s.userData.baseSize, 1);
         }
       });
@@ -2348,7 +2343,7 @@
               const b = s.userData.baseSize * 3.0;
               const shimmer = Math.sin(elapsed * 3.2 + s.userData.pulseOffset) * 0.08;
               s.scale.set(b * (1.0 + shimmer), b * (1.0 + shimmer), 1);
-              s.material.opacity = 0.96;
+              s.material.opacity = 0.94;
             } else {
               const b = s.userData.baseSize * distFactor * 0.42;
               s.scale.set(b, b, 1);
@@ -2358,11 +2353,10 @@
             const tSpeed = s.userData.twinkleSpeed;
             const shimmer = Math.sin(elapsed * tSpeed + s.userData.pulseOffset) * Math.cos(elapsed * (tSpeed * 0.5)) * s.userData.shimmerAmp;
             
+            const det = s.userData.nodeData.type === 'thesis_planet' ? getCleanDetail(s.userData.nodeData) : null;
             const b = s.userData.baseSize * distFactor;
             s.scale.set(b * (1.0 + shimmer), b * (1.0 + shimmer), 1);
-            s.material.opacity = s.userData.isPhd
-              ? 1.0
-              : Math.min(0.90, 0.78 + Math.abs(shimmer) * 0.30);
+            s.material.opacity = (det && det.isPhd) ? 1.0 : Math.min(0.92, 0.80 + Math.abs(shimmer) * 0.25);
           }
         }
       }
