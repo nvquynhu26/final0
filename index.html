@@ -8,7 +8,7 @@
   <!-- Tailwind CSS & Fonts -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   
   <!-- Three.js & TWEEN -->
@@ -48,13 +48,11 @@
       color: #FFFFFF;
     }
     
-    /* Scrollbar */
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.4); border-radius: 3px; }
     ::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.6); border-radius: 3px; }
     ::-webkit-scrollbar-thumb:hover { background: rgba(236, 72, 153, 0.8); }
     
-    /* Vertical Range Slider */
     .slider-vertical {
       -webkit-appearance: none;
       transform: rotate(-90deg);
@@ -76,7 +74,6 @@
       cursor: pointer;
     }
 
-    /* Compact Mode Switch Slider */
     .switch-container {
       position: relative;
       width: 52px;
@@ -141,8 +138,8 @@
   </div>
 
   <!-- Loading Screen -->
-  <div id="loader-overlay" class="absolute inset-0 z-50 bg-[#020306] flex flex-col items-center justify-center transition-opacity duration-500 pointer-events-none">
-    <div class="w-14 h-14 rounded-full border-2 border-indigo-500/20 border-t-cyan-400 animate-spin mb-4"></div>
+  <div id="loader-overlay" class="absolute inset-0 z-50 bg-[#020306] flex flex-col items-center justify-center transition-opacity duration-300 pointer-events-none">
+    <div class="w-12 h-12 rounded-full border-2 border-indigo-500/20 border-t-cyan-400 animate-spin mb-3"></div>
     <div id="loader-text" class="text-xs font-scifi tracking-widest text-cyan-300 uppercase">COSMOS INITIALIZING...</div>
     <div id="loader-sub" class="text-[10px] text-slate-500 font-scifi mt-1">SEOULTECH GALAXY SIMULATION</div>
   </div>
@@ -166,7 +163,6 @@
       </button>
     </div>
 
-    <!-- Cụm chọn ngôn ngữ ở góc trên bên phải -->
     <div class="flex items-center space-x-2 pointer-events-auto z-50">
       <div class="scifi-panel p-1 rounded-full flex items-center border border-indigo-500/30">
         <button id="lang-ko-btn" class="px-2.5 md:px-3 py-1 rounded-full text-xs font-bold bg-indigo-600 text-white">KO</button>
@@ -317,14 +313,14 @@
           </div>
         </div>
 
-        <!-- CHỈ THỂ HIỆN MÃ UCI NẾU CÓ (ĐÃ XÓA LIÊN KẾT RISS) -->
+        <!-- MÃ ĐỊNH DANH UCI (ĐÃ XÓA HOÀN TOÀN LIÊN KẾT RISS, CHỈ HIỂN THỊ MÃ UCI NẾU CÓ) -->
         <div class="p-3 rounded-lg bg-black/50 border border-indigo-500/20 flex flex-col space-y-1.5">
           <div class="flex items-center justify-between">
             <span id="detail-label-uci" class="text-[9px] uppercase font-bold text-indigo-400 font-scifi tracking-widest">UCI 등록번호 (UCI Identifier)</span>
             <span id="detail-uci-status-badge" class="px-1.5 py-0.2 rounded text-[9px] font-scifi font-bold bg-cyan-500/20 text-cyan-300">UCI</span>
           </div>
-          <div class="flex items-center">
-            <span id="detail-uci" class="font-scifi text-xs text-cyan-300 font-semibold select-all break-all tracking-wide">N/A</span>
+          <div>
+            <span id="detail-uci" class="font-scifi text-xs text-cyan-300 font-semibold select-all break-all tracking-wide block">N/A</span>
           </div>
         </div>
 
@@ -381,7 +377,7 @@
         detailUciLabel: "UCI 등록번호 (UCI Identifier)",
         uciNone: "없음 (해당 논문 UCI 미등록)",
         detailKeywordsLabel: "주제어 키워드",
-        keywordsNone: "등록된 키워드 없음",
+        keywordsNone: "등록된 주제어 없음",
         detailAbstractLabel: "논문 초록 (Abstract)",
         yearSuffix: "년",
         clusterButtons: { all: "전체", "공학": "공학", "디자인": "디자인", "융합": "융합", "경영": "경영", "인문": "인문" }
@@ -414,7 +410,7 @@
         detailUciLabel: "UCI IDENTIFIER",
         uciNone: "None (UCI Not Registered)",
         detailKeywordsLabel: "KEYWORDS",
-        keywordsNone: "No keywords registered",
+        keywordsNone: "No Keywords Available",
         detailAbstractLabel: "ABSTRACT",
         yearSuffix: "",
         clusterButtons: { all: "All", "공학": "Eng", "디자인": "Design", "융합": "Converg", "경영": "Business", "인문": "Humanities" }
@@ -472,44 +468,44 @@
        ========================================================================== */
     function createStarlightTexture() {
       const c = document.createElement('canvas');
-      c.width = 128; c.height = 128;
+      c.width = 64; c.height = 64;
       const ctx = c.getContext('2d');
-      const grad = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+      const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
       grad.addColorStop(0.0, 'rgba(255, 255, 255, 1.0)');
-      grad.addColorStop(0.15, 'rgba(255, 255, 255, 0.95)');
-      grad.addColorStop(0.35, 'rgba(255, 255, 255, 0.6)');
-      grad.addColorStop(0.65, 'rgba(255, 255, 255, 0.15)');
+      grad.addColorStop(0.18, 'rgba(255, 255, 255, 0.92)');
+      grad.addColorStop(0.4, 'rgba(255, 255, 255, 0.5)');
+      grad.addColorStop(0.7, 'rgba(255, 255, 255, 0.12)');
       grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
       ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, 128, 128);
+      ctx.fillRect(0, 0, 64, 64);
       return new THREE.CanvasTexture(c);
     }
 
     function createModerateSunTexture() {
       const c = document.createElement('canvas');
-      c.width = 128; c.height = 128;
+      c.width = 64; c.height = 64;
       const ctx = c.getContext('2d');
-      const grad = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+      const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
       grad.addColorStop(0.0, 'rgba(255, 255, 255, 1.0)');
-      grad.addColorStop(0.22, 'rgba(254, 240, 138, 0.9)');
-      grad.addColorStop(0.50, 'rgba(234, 179, 8, 0.3)');
+      grad.addColorStop(0.25, 'rgba(254, 240, 138, 0.9)');
+      grad.addColorStop(0.55, 'rgba(234, 179, 8, 0.28)');
       grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
       ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, 128, 128);
+      ctx.fillRect(0, 0, 64, 64);
       return new THREE.CanvasTexture(c);
     }
 
     function createSoftDustTexture() {
       const c = document.createElement('canvas');
-      c.width = 128; c.height = 128;
+      c.width = 64; c.height = 64;
       const ctx = c.getContext('2d');
-      const grad = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
-      grad.addColorStop(0.0, 'rgba(255, 255, 255, 0.95)');
-      grad.addColorStop(0.3, 'rgba(255, 255, 255, 0.5)');
-      grad.addColorStop(0.7, 'rgba(255, 255, 255, 0.15)');
+      const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+      grad.addColorStop(0.0, 'rgba(255, 255, 255, 0.9)');
+      grad.addColorStop(0.35, 'rgba(255, 255, 255, 0.45)');
+      grad.addColorStop(0.75, 'rgba(255, 255, 255, 0.12)');
       grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
       ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, 128, 128);
+      ctx.fillRect(0, 0, 64, 64);
       return new THREE.CanvasTexture(c);
     }
 
@@ -526,8 +522,8 @@
     const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 9000);
     camera.position.set(0, 950, 0.001);
 
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: "high-performance" });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false, powerPreference: "high-performance" });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
     renderer.setSize(window.innerWidth, window.innerHeight);
 
     const controls = new THREE.OrbitControls(camera, renderer.domElement);
@@ -544,7 +540,7 @@
     cosmosGroup.add(arcLinksGroup);
 
     /* ==========================================================================
-       4. SHADERS: DẢI NGÂN HÀ & SỢI CHỈ XOẮN ỐC LƯỢN SÓNG MỀM MẠI
+       4. SHADERS: DẢI NGÂN HÀ & SỢI CHỈ XOẮN ỐC MỜ DẦN VÀO TRONG LUẬN VĂN
        ========================================================================== */
     let funnelHazeMesh;
     const volumetricNebulaMat = new THREE.ShaderMaterial({
@@ -554,7 +550,7 @@
       side: THREE.DoubleSide,
       uniforms: {
         uTime: { value: 0 },
-        uIntensity: { value: 0.65 }
+        uIntensity: { value: 0.62 }
       },
       vertexShader: `
         varying vec2 vUv;
@@ -591,9 +587,10 @@
       `
     });
 
-    // SHADER SỢI CHỈ LIÊN KẾT:
-    // - Dao động siêu nhẹ trong vertexShader
-    // - Fade-out mượt mà opacity về 0 ở 2 đầu khi chui vào tâm luận văn (vUv.x -> 0 và vUv.x -> 1)
+    // SHADER SỢI CHỈ XOẮN ỐC:
+    // - Dao động siêu nhẹ theo thời gian
+    // - Gradient Hồng -> Tím -> Xanh di chuyển dọc sợi
+    // - Opacity về 0 ở 2 đầu (smoothstep 0->0.12 và 1.0->0.88) để chìm vào trong luận văn
     const arcRibbonShaderMat = new THREE.ShaderMaterial({
       transparent: true,
       depthWrite: false,
@@ -601,20 +598,19 @@
       side: THREE.DoubleSide,
       uniforms: {
         uTime: { value: 0 },
-        uOpacity: { value: 0.88 }
+        uOpacity: { value: 0.85 }
       },
       vertexShader: `
         varying vec2 vUv;
         uniform float uTime;
         void main() {
           vUv = uv;
+          // Dao động siêu nhẹ dọc theo thân dây (khóa 2 đầu mút vUv.x = 0 và 1 để gắn chặt vào tâm ngôi sao)
+          float pin = sin(vUv.x * 3.14159265);
           vec3 pos = position;
-          // Hiệu ứng dao động siêu nhẹ lượn sóng theo thời gian, bằng 0 ở 2 đầu mút để bám chính xác tâm luận văn
-          float endAnchor = sin(uv.x * 3.14159265);
-          float microWave = sin(uv.x * 16.0 - uTime * 2.2) * 0.55 * endAnchor;
-          pos.y += microWave;
-          pos.x += cos(uv.x * 14.0 + uTime * 1.8) * 0.35 * endAnchor;
-          pos.z += sin(uv.x * 14.0 + uTime * 1.8) * 0.35 * endAnchor;
+          pos.x += sin(uTime * 1.8 + vUv.x * 10.0) * 0.7 * pin;
+          pos.y += cos(uTime * 1.5 + vUv.x * 8.0) * 0.7 * pin;
+          pos.z += sin(uTime * 1.6 + vUv.x * 9.0) * 0.7 * pin;
           gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
         }
       `,
@@ -627,8 +623,7 @@
           vec3 purple = vec3(0.66, 0.33, 0.97);
           vec3 cyan = vec3(0.03, 0.72, 0.88);
 
-          float flow = fract(vUv.x * 2.0 - uTime * 0.55);
-          
+          float flow = fract(vUv.x * 1.8 - uTime * 0.45);
           vec3 col;
           if (flow < 0.5) {
             col = mix(pink, purple, flow * 2.0);
@@ -636,10 +631,10 @@
             col = mix(purple, cyan, (flow - 0.5) * 2.0);
           }
 
-          float pulse = sin(vUv.x * 18.0 - uTime * 3.8) * 0.3 + 0.7;
+          float pulse = sin(vUv.x * 14.0 - uTime * 3.5) * 0.3 + 0.7;
           col *= pulse * 1.35;
 
-          // Opacity về 0 ở 2 đầu khi sợi dây đi vào trong tâm luận văn
+          // Fade về 0 khi đi vào tâm 2 luận văn ở 2 đầu mút
           float endFade = smoothstep(0.0, 0.14, vUv.x) * smoothstep(1.0, 0.86, vUv.x);
           float crossEdge = sin(vUv.y * 3.14159265);
           float alpha = endFade * crossEdge * uOpacity;
@@ -650,18 +645,43 @@
     });
 
     /* ==========================================================================
-       5. DATA LOADING & METADATA BINDING
+       5. DATA LOADING & METADATA SANITIZATION
        ========================================================================== */
     let ALL_NODES = [];
+    let NODE_MAP = new Map();
     let NODE_SPRITES = [];
+    let SPRITE_MAP = new Map();
     let DEPT_MAP = new Map();
     const DETAILS_STORE = new Map();
+    const CLEAN_DETAIL_CACHE = new Map();
+    const SIMILAR_THESES_GRAPH = new Map(); // Pre-computed 85%+ similarity adjacency list
+
     let hasSearchHistory = false;
     let isSearchActive = false;
     let selectedActiveNode = null;
     let cosmicBeamMesh, cosmicBeamGlowMesh;
     let stardustMistPoints;
     let spiralArmRibbonPoints;
+
+    // Lọc từ khóa hợp lệ, loại bỏ hoàn toàn #nan, null, rỗng
+    function sanitizeKeywords(rawList) {
+      if (!rawList) return [];
+      const arr = Array.isArray(rawList) ? rawList : String(rawList).split(/[,;|/]+/);
+      const invalidTokens = new Set(['nan', 'none', 'null', 'undefined', 'n/a', '-', '']);
+      const cleaned = [];
+      const seen = new Set();
+
+      for (let item of arr) {
+        if (item === null || item === undefined) continue;
+        const str = String(item).replace(/^#+/, '').trim();
+        const lower = str.toLowerCase();
+        if (!invalidTokens.has(lower) && !lower.includes('nan') && str.length > 0 && !seen.has(lower)) {
+          seen.add(lower);
+          cleaned.push(str);
+        }
+      }
+      return cleaned;
+    }
 
     async function initializeCosmos() {
       const loaderText = document.getElementById('loader-text');
@@ -685,15 +705,20 @@
         ALL_NODES = generateRealisticNodes();
       }
 
-      loaderText.innerText = "PRELOADING DETAILS_0..16.JSON...";
+      ALL_NODES.forEach(n => NODE_MAP.set(n.id, n));
+
+      loaderText.innerText = "PRELOADING DETAILS...";
       await preloadAllDetails();
+
+      loaderText.innerText = "INDEXING KNOWLEDGE GRAPH...";
+      precomputeSimilarityGraph();
 
       buildCosmicScene();
       setupDepartmentFilterUI();
 
       const loader = document.getElementById('loader-overlay');
       loader.classList.add('opacity-0');
-      setTimeout(() => loader.remove(), 500);
+      setTimeout(() => loader.remove(), 300);
     }
 
     async function preloadAllDetails() {
@@ -720,7 +745,7 @@
         const idNum = parseInt(idStr, 10);
         DETAILS_STORE.set(idNum, val);
 
-        const node = ALL_NODES.find(n => n.id === idNum);
+        const node = NODE_MAP.get(idNum);
         if (node) {
           node.cachedDetail = val;
           if (val.title_ko || val.title) node.title_ko = val.title_ko || val.title;
@@ -740,24 +765,11 @@
       });
     }
 
-    // LỌC TỪ KHÓA HỢP LỆ: LOẠI BỎ HOÀN TOÀN #nan, null, empty
-    function sanitizeKeywords(rawKw) {
-      if (!rawKw) return [];
-      let arr = [];
-      if (Array.isArray(rawKw)) {
-        arr = rawKw;
-      } else if (typeof rawKw === 'string') {
-        arr = rawKw.split(/[,;|]+/);
-      }
-      return arr
-        .map(k => String(k || '').replace(/^#+/, '').trim())
-        .filter(k => {
-          const low = k.toLowerCase();
-          return k.length > 0 && low !== 'nan' && low !== 'null' && low !== 'undefined' && low !== 'none' && low !== 'n/a';
-        });
-    }
-
     function getCleanDetail(node) {
+      if (CLEAN_DETAIL_CACHE.has(node.id)) {
+        return CLEAN_DETAIL_CACHE.get(node.id);
+      }
+
       const d = DETAILS_STORE.get(node.id) || node.cachedDetail;
       
       let resolvedDept = node.dept || (d && (d.dept || d.department)) || "공학·디자인융합부";
@@ -769,7 +781,7 @@
       let resolvedTitleEn = (d && d.title_en) || node.title_en || resolvedTitleKo;
       let resolvedAuthor = (d && d.author) || node.author || `연구자_${node.id}`;
       let resolvedAdvisor = (d && (d.advisor || d.advisor_name)) || node.advisor || (node.type === 'advisor_sun' ? node.name.replace('교수', '').trim() : "지도교수");
-      let resolvedDegree = (d && (d.degree || d.degree_name)) || node.degree || (node.type === 'thesis_planet' ? (currentLang === 'ko' ? "석·박사 학위논문" : "Ph.D. / Master") : (currentLang === 'ko' ? "교수/학부" : "Faculty"));
+      let resolvedDegree = (d && (d.degree || d.degree_name)) || node.degree || (node.type === 'thesis_planet' ? "석·박사 학위논문" : "교수/학부");
       let resolvedYear = (d && d.year) || node.year || 2024;
       
       let rawUci = (d && (d.uci || d.uci_code || d.d_uci || d.identifier)) || node.uci;
@@ -779,17 +791,17 @@
       }
       
       let resolvedAbstractKo = (d && (d.abstract_ko || d.abstract || d.abstract_en)) || node.abstract_ko;
-      if (!resolvedAbstractKo || resolvedAbstractKo.trim() === "") {
+      if (!resolvedAbstractKo || resolvedAbstractKo.trim() === "" || resolvedAbstractKo.toLowerCase() === "nan") {
         resolvedAbstractKo = `본 연구는 서울과학기술대학교 ${resolvedDept}에서 수행된 학위논문으로, 주제와 관련된 심층적인 학술 분석과 연구 방법론을 종합적으로 기술하고 있습니다.`;
       }
 
       let resolvedAbstractEn = (d && (d.abstract_en || d.abstract || d.abstract_ko)) || node.abstract_en || `This research was conducted at the ${translateDept(resolvedDept)}, Seoul National University of Science and Technology.`;
       
-      // KHÔNG tự sinh từ khóa giả; nếu bài không có từ khóa thì trả về mảng rỗng []
-      const rawKeywords = (d && d.keywords !== undefined) ? d.keywords : node.keywords;
-      const resolvedKeywords = sanitizeKeywords(rawKeywords);
+      // CHỈ GIỮ TỪ KHÓA THẬT, KHÔNG TỰ SINH TỪ KHÓA GIẢ VÀ LOẠI BỎ #nan
+      const rawKws = (d && d.keywords !== undefined) ? d.keywords : node.keywords;
+      const resolvedKeywords = sanitizeKeywords(rawKws);
 
-      return {
+      const res = {
         title_ko: resolvedTitleKo,
         title_en: resolvedTitleEn,
         author: resolvedAuthor,
@@ -800,84 +812,84 @@
         year: resolvedYear,
         uci: resolvedUci,
         keywords: resolvedKeywords,
+        keywordsLowerSet: new Set(resolvedKeywords.map(k => k.toLowerCase())),
         abstract_ko: resolvedAbstractKo,
         abstract_en: resolvedAbstractEn
       };
+
+      CLEAN_DETAIL_CACHE.set(node.id, res);
+      return res;
+    }
+
+    // TÍNH TOÁN TRƯỚC MẠNG LƯỚI KẾT NỐI TƯƠNG ĐỒNG >= 85% TỪ KHÓA (SIÊU NHANH QUA INVERTED INDEX)
+    function precomputeSimilarityGraph() {
+      SIMILAR_THESES_GRAPH.clear();
+      const theses = ALL_NODES.filter(n => n.type === 'thesis_planet');
+      const kwToTheses = new Map();
+
+      // Bước 1: Lập chỉ mục ngược từ khóa -> danh sách luận văn
+      theses.forEach(t => {
+        const det = getCleanDetail(t);
+        if (det.keywordsLowerSet.size === 0) return; // Không có từ khóa -> không bao giờ kết nối
+
+        det.keywordsLowerSet.forEach(kw => {
+          if (!kwToTheses.has(kw)) kwToTheses.set(kw, []);
+          kwToTheses.get(kw).push(t);
+        });
+      });
+
+      // Bước 2: Đánh giá độ tương đồng từ khóa >= 85%
+      theses.forEach(tA => {
+        const detA = getCleanDetail(tA);
+        const setA = detA.keywordsLowerSet;
+        if (setA.size === 0) return;
+
+        const candidates = new Set();
+        setA.forEach(kw => {
+          const list = kwToTheses.get(kw);
+          if (list) {
+            for (let i = 0; i < list.length; i++) {
+              if (list[i].id !== tA.id) candidates.add(list[i]);
+            }
+          }
+        });
+
+        const matchedNeighbors = [];
+        candidates.forEach(tB => {
+          const detB = getCleanDetail(tB);
+          const setB = detB.keywordsLowerSet;
+          if (setB.size === 0) return;
+
+          let intersection = 0;
+          setA.forEach(k => {
+            if (setB.has(k)) intersection++;
+          });
+
+          // Tỷ lệ giống nhau giữa 2 bộ từ khóa (Overlap / Max size >= 0.85)
+          const similarityRatio = intersection / Math.max(setA.size, setB.size);
+          if (similarityRatio >= 0.85) {
+            matchedNeighbors.push(tB.id);
+          }
+        });
+
+        if (matchedNeighbors.length > 0) {
+          SIMILAR_THESES_GRAPH.set(tA.id, matchedNeighbors);
+        }
+      });
     }
 
     /* ==========================================================================
-       6. TÍNH ĐỘ TƯƠNG ĐỒNG TỪ KHÓA >= 85%
-       ========================================================================== */
-    function stringSimilarity(s1, s2) {
-      const a = s1.toLowerCase().replace(/\s+/g, '');
-      const b = s2.toLowerCase().replace(/\s+/g, '');
-      if (a === b) return 1.0;
-      if (a.length === 0 || b.length === 0) return 0.0;
-
-      const matrix = Array.from({ length: a.length + 1 }, () => new Array(b.length + 1).fill(0));
-      for (let i = 0; i <= a.length; i++) matrix[i][0] = i;
-      for (let j = 0; j <= b.length; j++) matrix[0][j] = j;
-
-      for (let i = 1; i <= a.length; i++) {
-        for (let j = 1; j <= b.length; j++) {
-          const cost = a[i - 1] === b[j - 1] ? 0 : 1;
-          matrix[i][j] = Math.min(
-            matrix[i - 1][j] + 1,
-            matrix[i][j - 1] + 1,
-            matrix[i - 1][j - 1] + cost
-          );
-        }
-      }
-      const maxLen = Math.max(a.length, b.length);
-      return (maxLen - matrix[a.length][b.length]) / maxLen;
-    }
-
-    // Kiểm tra 2 mảng từ khóa có đạt độ tương đồng >= 85% hay không
-    function areKeywordsRelated85(kwListA, kwListB) {
-      if (!kwListA || !kwListB || kwListA.length === 0 || kwListB.length === 0) {
-        return false;
-      }
-
-      // Tính số từ khóa trong tập A khớp >= 85% với ít nhất 1 từ khóa trong tập B
-      let matchedA = 0;
-      for (const ka of kwListA) {
-        for (const kb of kwListB) {
-          if (stringSimilarity(ka, kb) >= 0.85) {
-            matchedA++;
-            break;
-          }
-        }
-      }
-
-      // Tính số từ khóa trong tập B khớp >= 85% với ít nhất 1 từ khóa trong tập A
-      let matchedB = 0;
-      for (const kb of kwListB) {
-        for (const ka of kwListA) {
-          if (stringSimilarity(kb, ka) >= 0.85) {
-            matchedB++;
-            break;
-          }
-        }
-      }
-
-      const ratioA = matchedA / kwListA.length;
-      const ratioB = matchedB / kwListB.length;
-      const jaccardApprox = (matchedA + matchedB) / (kwListA.length + kwListB.length);
-
-      return Math.max(ratioA, ratioB, jaccardApprox) >= 0.85;
-    }
-
-    /* ==========================================================================
-       7. KHỞI TẠO BỐ CỤC: GALAXY, MÀU THẠC SĨ/TIẾN SĨ & KÍCH THƯỚC
+       6. KHỞI TẠO BỐ CỤC: GALAXY, PHÂN CẤP KÍCH THƯỚC & MÀU THẠC SĨ / TIẾN SĨ
        ========================================================================== */
     function isDoctorateDegree(degreeStr) {
       if (!degreeStr) return false;
-      const low = String(degreeStr).toLowerCase();
-      return low.includes('박사') || low.includes('ph.d') || low.includes('phd') || low.includes('doctor');
+      const s = String(degreeStr).toLowerCase();
+      return s.includes('박사') || s.includes('ph.d') || s.includes('phd') || s.includes('doctor');
     }
 
     function buildCosmicScene() {
       NODE_SPRITES = [];
+      SPRITE_MAP.clear();
 
       let minY = Infinity;
       let maxY = -Infinity;
@@ -889,33 +901,8 @@
         yearTiltMap.set(y, { tiltX: tiltAngleX, tiltZ: tiltAngleZ });
       }
 
-      // Tính số kết nối (>= 85% similarity) cho từng luận văn để định kích thước tỷ lệ thuận
-      const thesisNodes = ALL_NODES.filter(n => n.type === 'thesis_planet');
-      const thesisKeywordsMap = new Map();
-      thesisNodes.forEach(n => {
-        thesisKeywordsMap.set(n.id, getCleanDetail(n).keywords);
-      });
-
-      const connectionCountMap = new Map();
-      thesisNodes.forEach(n => connectionCountMap.set(n.id, 0));
-
-      for (let i = 0; i < thesisNodes.length; i++) {
-        const kwA = thesisKeywordsMap.get(thesisNodes[i].id);
-        if (!kwA || kwA.length === 0) continue;
-
-        for (let j = i + 1; j < thesisNodes.length; j++) {
-          const kwB = thesisKeywordsMap.get(thesisNodes[j].id);
-          if (!kwB || kwB.length === 0) continue;
-
-          if (areKeywordsRelated85(kwA, kwB)) {
-            connectionCountMap.set(thesisNodes[i].id, connectionCountMap.get(thesisNodes[i].id) + 1);
-            connectionCountMap.set(thesisNodes[j].id, connectionCountMap.get(thesisNodes[j].id) + 1);
-          }
-        }
-      }
-
-      // Kích thước chuẩn của luận văn thạc sĩ thông thường
-      const MASTER_STANDARD_SIZE = 3.5;
+      // Kích thước chuẩn của 1 luận văn thạc sĩ cơ sở
+      const BASE_MASTER_SIZE = 3.2;
 
       ALL_NODES.forEach((node) => {
         if (node.type === 'galactic_core') return;
@@ -943,6 +930,8 @@
         node.fx = tiltedX;
         node.fz = tiltedZ;
         node.fy = tiltedY + organicJitterY;
+        node.polarR = newR;
+        node.polarTheta = theta;
 
         if (node.fy < minY) minY = node.fy;
         if (node.fy > maxY) maxY = node.fy;
@@ -955,42 +944,43 @@
         const isAdvisor = node.type === 'advisor_sun';
 
         let spriteMat;
-        let scaleSize = MASTER_STANDARD_SIZE;
+        let scaleSize = BASE_MASTER_SIZE;
 
         if (isDept || isAdvisor) {
-          // Mặt trời giáo sư và khoa có kích thước tương đương 1 luận văn thạc sĩ
-          scaleSize = MASTER_STANDARD_SIZE;
+          // Mặt trời giáo sư và khoa chỉ có kích thước tương đương 1 luận văn thạc sĩ
+          scaleSize = isDept ? 3.5 : 3.3;
           spriteMat = new THREE.SpriteMaterial({
             map: moderateSunTexture,
             color: new THREE.Color("#FDE047"),
             transparent: true,
-            opacity: 0.95,
+            opacity: 0.92,
             blending: THREE.AdditiveBlending,
             depthWrite: false
           });
         } else {
-          // Kích thước tỷ lệ thuận với số kết nối, giới hạn trần chặt chẽ [3.3, 5.2] tránh che lấp node khác
-          const connCount = connectionCountMap.get(node.id) || 0;
-          const sizeBonus = Math.min(1.7, Math.log10(connCount + 1) * 1.15);
-          scaleSize = MASTER_STANDARD_SIZE + sizeBonus;
+          // Kích thước luận văn tỷ lệ thuận với số lượng kết nối (85%+), có giới hạn trần để không che lấp bài khác
+          const connections = SIMILAR_THESES_GRAPH.get(node.id);
+          const connCount = connections ? connections.length : 0;
+          const sizeBonus = Math.min(2.1, Math.log10(connCount + 1) * 1.45);
+          scaleSize = BASE_MASTER_SIZE + sizeBonus;
 
-          // Phân biệt sắc độ theo học vị: Tiến sĩ sẫm màu hơn, Thạc sĩ sáng hơn
-          const detail = getCleanDetail(node);
-          const baseColor = new THREE.Color(node.color || "#06B6D4");
-          const hsl = {};
-          baseColor.getHSL(hsl);
+          // Phân biệt màu sắc trong cùng chuyên ngành:
+          // Tiến sĩ sẫm màu hơn, Thạc sĩ sáng màu hơn nhưng vẫn nổi bật
+          const det = getCleanDetail(node);
+          const isPhD = isDoctorateDegree(det.degree);
+          const nodeColor = new THREE.Color(node.color || "#06B6D4");
 
-          if (isDoctorateDegree(detail.degree)) {
-            // Tiến sĩ: Tone màu sẫm và đậm chiều sâu hơn nhưng vẫn nổi bật
-            baseColor.setHSL(hsl.h, Math.min(1.0, hsl.s * 1.15), Math.max(0.28, hsl.l * 0.58));
+          if (isPhD) {
+            // Tone sẫm đậm đà hơn cho Tiến sĩ
+            nodeColor.offsetHSL(0, 0.12, -0.18);
           } else {
-            // Thạc sĩ: Tone màu sáng rực
-            baseColor.setHSL(hsl.h, Math.min(1.0, hsl.s * 1.05), Math.min(0.76, hsl.l * 1.18));
+            // Tone sáng rực cho Thạc sĩ
+            nodeColor.offsetHSL(0, 0.05, 0.08);
           }
 
           spriteMat = new THREE.SpriteMaterial({
             map: starTexture,
-            color: baseColor,
+            color: nodeColor,
             transparent: true,
             opacity: 0.9,
             blending: THREE.AdditiveBlending,
@@ -1015,6 +1005,7 @@
 
         cosmosGroup.add(sprite);
         NODE_SPRITES.push(sprite);
+        SPRITE_MAP.set(node.id, sprite);
       });
 
       const galaxyCenterY = (minY + maxY) / 2;
@@ -1023,7 +1014,7 @@
 
       // Cột ánh sáng trung tâm
       const beamHeight = galaxyHeight * 1.06;
-      const beamGeo = new THREE.CylinderGeometry(1.6, 1.6, beamHeight, 32, 1, true);
+      const beamGeo = new THREE.CylinderGeometry(1.6, 1.6, beamHeight, 24, 1, true);
       const beamMat = new THREE.ShaderMaterial({
         transparent: true,
         depthWrite: false,
@@ -1058,7 +1049,7 @@
       cosmicBeamMesh.position.y = galaxyCenterY;
       cosmosGroup.add(cosmicBeamMesh);
 
-      const beamGlowGeo = new THREE.CylinderGeometry(14, 14, beamHeight, 32, 1, true);
+      const beamGlowGeo = new THREE.CylinderGeometry(14, 14, beamHeight, 24, 1, true);
       const beamGlowMat = new THREE.ShaderMaterial({
         transparent: true,
         depthWrite: false,
@@ -1092,13 +1083,13 @@
       cosmicBeamGlowMesh.position.y = galaxyCenterY;
       cosmosGroup.add(cosmicBeamGlowMesh);
 
-      const funnelHazeGeo = new THREE.CylinderGeometry(480, 35, galaxyHeight * 1.02, 48, 24, true);
+      const funnelHazeGeo = new THREE.CylinderGeometry(480, 35, galaxyHeight * 1.02, 36, 16, true);
       funnelHazeMesh = new THREE.Mesh(funnelHazeGeo, volumetricNebulaMat);
       funnelHazeMesh.position.y = galaxyCenterY;
       cosmosGroup.add(funnelHazeMesh);
 
       // Cánh xoắn ốc hồng - tím - xanh
-      const spiralRibbonCount = 9000;
+      const spiralRibbonCount = 7500;
       const ribbonGeo = new THREE.BufferGeometry();
       const ribbonPositions = new Float32Array(spiralRibbonCount * 3);
       const ribbonColors = new Float32Array(spiralRibbonCount * 3);
@@ -1147,7 +1138,7 @@
         map: softDustTexture,
         vertexColors: true,
         transparent: true,
-        opacity: 0.68,
+        opacity: 0.65,
         blending: THREE.AdditiveBlending,
         depthWrite: false
       });
@@ -1155,7 +1146,7 @@
       cosmosGroup.add(spiralArmRibbonPoints);
 
       // Bụi vũ trụ
-      const mistCount = 4000;
+      const mistCount = 3200;
       const mistGeo = new THREE.BufferGeometry();
       const mistPositions = new Float32Array(mistCount * 3);
       const mistColors = new Float32Array(mistCount * 3);
@@ -1185,7 +1176,7 @@
         map: softDustTexture,
         vertexColors: true,
         transparent: true,
-        opacity: 0.35,
+        opacity: 0.32,
         blending: THREE.AdditiveBlending,
         depthWrite: false
       });
@@ -1197,12 +1188,11 @@
       const nodes = [];
       const depts = ["컴퓨터공학과", "기계시스템디자인공학과", "시각디자인전공", "인공지능응용학과", "신소재공학과", "경영학과", "행정학과", "TESOL학과", "영어영문학과"];
       const colors = ["#F43F5E", "#06B6D4", "#8B5CF6", "#F59E0B", "#10B981"];
-      const keywordSets = [
-        ["딥러닝", "인공지능", "최적화"],
-        ["딥러닝", "인공지능", "최적화"],
+      const keywordPairs = [
+        ["인공지능", "딥러닝", "최적화"],
         ["네트워크", "빅데이터", "시스템"],
-        ["시각디자인", "브랜딩", "사용자경험"],
-        [] // Một số bài không có từ khóa để kiểm thử
+        ["디자인", "사용자경험", "인터페이스"],
+        ["로봇", "알고리즘", "제어"]
       ];
       let id = 1;
 
@@ -1224,23 +1214,23 @@
             const yr = 2005 + Math.floor(Math.random() * 22);
             const tr = 15 + Math.random() * 35;
             const ta = Math.random() * Math.PI * 2;
-            const kws = keywordSets[(id + t) % keywordSets.length];
-            const isPhd = t % 3 === 0;
+            const kwSet = keywordPairs[(id + t) % keywordPairs.length];
+            const deg = (t % 3 === 0) ? "박사 (Ph.D.)" : "석사 (Master)";
 
             nodes.push({
               id: id++,
-              name: `[연구] ${d} 심층 연구 분석 Vol.${t}`,
-              title_ko: `[연구] ${d} 심층 연구 분석 Vol.${t}`,
-              title_en: `Research Study in ${translateDept(d)} Vol.${t}`,
+              name: `[연구] ${d} ${kwSet[0]} 기반 응용 분석 Vol.${t}`,
+              title_ko: `[연구] ${d} ${kwSet[0]} 기반 응용 분석 Vol.${t}`,
+              title_en: `Optimization Study in ${translateDept(d)} with ${kwSet[0]} Vol.${t}`,
               type: 'thesis_planet',
               dept: d,
-              degree: isPhd ? "박사 (Ph.D.)" : "석사 (Master)",
               advisor: advName,
               author: `연구자_${id}`,
+              degree: deg,
               year: yr,
               uci: null,
-              keywords: kws,
-              abstract_ko: `본 연구는 서울과학기술대학교 ${d}에서 수행된 학위논문입니다.`,
+              keywords: kwSet,
+              abstract_ko: `본 연구는 서울과학기술대학교 ${d}에서 수행된 학위논문으로, ${kwSet.join(', ')} 분야의 심층적인 분석을 제공합니다.`,
               x: ax + Math.cos(ta) * tr,
               y: ((yr - 2001) / 25.0) * 450,
               z: az + Math.sin(ta) * tr,
@@ -1253,7 +1243,7 @@
     }
 
     /* ==========================================================================
-       8. UI FILTERS SETUP
+       7. UI FILTERS SETUP
        ========================================================================== */
     let selectedCluster = 'all';
     let selectedDept = 'ALL';
@@ -1356,7 +1346,7 @@
         if (!visible) {
           s.material.opacity = 0.0;
         } else if (!isSearchActive && !selectedActiveNode) {
-          s.material.opacity = (n.type === 'thesis_planet') ? 0.9 : 0.95;
+          s.material.opacity = (n.type === 'thesis_planet') ? 0.9 : 0.92;
         }
       });
     }
@@ -1383,7 +1373,7 @@
     });
 
     /* ==========================================================================
-       9. SỢI CHỈ XOẮN ỐC HÌNH PHỄU UỐN LƯỢN NHẸ NHÀNG THEO TRỤC NĂM
+       8. SỢI CHỈ XOẮN ỐC HÌNH PHỄU UỐN LƯỢN (SPIRAL FUNNEL THREADS)
        ========================================================================== */
     function clearArcLinks() {
       while (arcLinksGroup.children.length > 0) {
@@ -1393,97 +1383,60 @@
       }
     }
 
-    // Tạo đường nối uốn lượn theo hình phễu xoắn ốc:
-    // - Thoai thoải đi xuống nếu target ở năm cũ hơn (p2.y < p1.y)
-    // - Thoai thoải đi lên nếu target ở năm mới hơn (p2.y > p1.y)
-    // - Có độ lượn sóng mềm mại như sợi chỉ
-    function createSpiralFunnelThread(p1, p2) {
-      const distance = p1.distanceTo(p2);
-      if (distance < 1.5) return null;
+    // Tạo đường nối uốn lượn xoắn ốc hình phễu đi xuống (năm cũ hơn) hoặc đi lên (năm mới hơn)
+    function createSpiralFunnelThread(nodeA, nodeB) {
+      const p1 = new THREE.Vector3(nodeA.fx, nodeA.fy, nodeA.fz);
+      const p2 = new THREE.Vector3(nodeB.fx, nodeB.fy, nodeB.fz);
+      if (p1.distanceTo(p2) < 2) return null;
 
-      const r1 = Math.hypot(p1.x, p1.z);
-      const r2 = Math.hypot(p2.x, p2.z);
+      const r1 = Math.sqrt(p1.x * p1.x + p1.z * p1.z);
+      const r2 = Math.sqrt(p2.x * p2.x + p2.z * p2.z);
       const a1 = Math.atan2(p1.z, p1.x);
       const a2 = Math.atan2(p2.z, p2.x);
 
-      // Tính góc xoay ngắn nhất + thêm độ xoắn theo chiều dải ngân hà
-      let deltaAngle = a2 - a1;
-      while (deltaAngle > Math.PI) deltaAngle -= Math.PI * 2;
-      while (deltaAngle < -Math.PI) deltaAngle += Math.PI * 2;
+      // Tính góc quay ngắn nhất và cộng thêm độ xoắn theo chiều xoắn ốc của phễu ngân hà
+      let dAngle = a2 - a1;
+      while (dAngle > Math.PI) dAngle -= Math.PI * 2;
+      while (dAngle < -Math.PI) dAngle += Math.PI * 2;
 
-      const dy = p2.y - p1.y;
-      // Hướng xoắn thuận chiều phễu: đi lên xoắn thuận, đi xuống xoắn nghịch nhẹ
-      const spiralTwist = (dy >= 0 ? 1 : -1) * Math.min(1.15, 0.35 + Math.abs(dy) * 0.0025);
-      const totalAngle = deltaAngle + spiralTwist;
+      const yearDiff = (nodeB.year || 2020) - (nodeA.year || 2020);
+      const spiralTwist = (yearDiff !== 0 ? Math.sign(yearDiff) * 0.65 : 0.45) + dAngle * 0.25;
 
-      const numSamples = 20;
-      const points = [];
-      const phaseSeed = (p1.x + p2.z) * 0.05;
+      const segments = 36;
+      const pts = [];
 
-      for (let i = 0; i <= numSamples; i++) {
-        const t = i / numSamples;
-        if (i === 0) {
-          points.push(p1.clone());
-          continue;
-        }
-        if (i === numSamples) {
-          points.push(p2.clone());
-          continue;
-        }
+      for (let i = 0; i <= segments; i++) {
+        const t = i / segments;
+        // Ease-in-out mượt mà ở hai đầu để sợi dây đi vào tâm luận văn tự nhiên
+        const smoothT = t * t * (3.0 - 2.0 * t);
+        const envelope = Math.sin(t * Math.PI); // Bằng 0 ở 2 đầu mút
 
-        // Nội suy mượt (smoothstep) theo chiều phễu
-        const easeT = t * t * (3 - 2 * t);
-        const envelope = Math.sin(t * Math.PI); // Bằng 0 ở 2 đầu mút để cắm chuẩn vào tâm node
+        // Bán kính phễu nội suy + độ phình nhẹ ôm theo bề mặt phễu ngân hà
+        const r = r1 + (r2 - r1) * smoothT + envelope * 14.0;
 
-        // Bán kính ôm theo phễu và phình nhẹ ra ngoài tránh đâm xuyên qua lõi hoặc node khác
-        const baseR = r1 + (r2 - r1) * easeT;
-        const rWave = Math.sin(t * Math.PI * 3.0 + phaseSeed) * 6.0 * envelope;
-        const currR = baseR + (12.0 * envelope) + rWave;
+        // Góc xoắn ốc thoai thoải + gợn sóng lượn mềm mại như sợi chỉ
+        const waveRipple = Math.sin(t * Math.PI * 3.0) * 0.14 * envelope;
+        const angle = a1 + dAngle * smoothT + spiralTwist * envelope + waveRipple;
 
-        // Góc xoay xoắn ốc
-        const currAngle = a1 + totalAngle * easeT + Math.sin(t * Math.PI * 2.0) * 0.08 * envelope;
+        // Độ cao Y đi lên hoặc đi xuống thoai thoải theo năm của luận văn đích + sóng lượn
+        const yWave = Math.sin(t * Math.PI * 2.0) * 6.0 * envelope;
+        const y = p1.y + (p2.y - p1.y) * smoothT + yWave;
 
-        // Độ cao Y đi lên/xuống thoai thoải theo năm kèm gợn sóng nhẹ
-        const yWave = Math.sin(t * Math.PI * 3.0 - phaseSeed) * 5.5 * envelope;
-        const currY = p1.y + dy * easeT + yWave;
-
-        points.push(new THREE.Vector3(
-          Math.cos(currAngle) * currR,
-          currY,
-          Math.sin(currAngle) * currR
-        ));
+        pts.push(new THREE.Vector3(Math.cos(angle) * r, y, Math.sin(angle) * r));
       }
 
-      const curve = new THREE.CatmullRomCurve3(points);
-      // Sợi chỉ mảnh hơn trước (0.14 so với 0.22)
-      const tubeRadius = 0.14;
-      const geometry = new THREE.TubeGeometry(curve, 48, tubeRadius, 6, false);
-
-      const mat = arcRibbonShaderMat.clone();
-      mat.uniforms.uOpacity.value = 0.88;
-
-      return new THREE.Mesh(geometry, mat);
+      const curve = new THREE.CatmullRomCurve3(pts);
+      // Kích thước sợi mảnh hơn (0.14)
+      const geometry = new THREE.TubeGeometry(curve, 40, 0.14, 5, false);
+      return new THREE.Mesh(geometry, arcRibbonShaderMat);
     }
 
     function highlightSelectedThesisConnections(rootNode) {
       clearArcLinks();
-
       if (!rootNode) return;
 
-      const rootDetail = getCleanDetail(rootNode);
-      const rootKeywords = rootDetail.keywords;
-
-      // Nếu luận văn không có từ khóa hợp lệ thì không kết nối với bất kỳ bài nào
-      if (!rootKeywords || rootKeywords.length === 0) {
-        NODE_SPRITES.forEach(s => {
-          const n = s.userData.nodeData;
-          s.userData.isHighlight = (n.id === rootNode.id);
-          s.userData.isRelated = false;
-        });
-        return;
-      }
-
-      let rootSprite = null;
+      const relatedIds = SIMILAR_THESES_GRAPH.get(rootNode.id) || [];
+      const relatedSet = new Set(relatedIds);
       const relatedSprites = [];
 
       NODE_SPRITES.forEach(s => {
@@ -1491,37 +1444,27 @@
         if (!s.visible) return;
 
         if (n.id === rootNode.id) {
-          rootSprite = s;
           s.userData.isHighlight = true;
           s.userData.isRelated = false;
-        } else if (n.type === 'thesis_planet') {
-          const d = getCleanDetail(n);
-          // Chỉ kết nối khi có từ khóa giống nhau >= 85%
-          if (d.keywords && d.keywords.length > 0 && areKeywordsRelated85(rootKeywords, d.keywords)) {
-            s.userData.isHighlight = false;
-            s.userData.isRelated = true;
-            relatedSprites.push(s);
-          } else {
-            s.userData.isHighlight = false;
-            s.userData.isRelated = false;
-          }
+        } else if (n.type === 'thesis_planet' && relatedSet.has(n.id)) {
+          s.userData.isHighlight = false;
+          s.userData.isRelated = true;
+          relatedSprites.push(s);
         } else {
           s.userData.isHighlight = false;
           s.userData.isRelated = false;
         }
       });
 
-      if (rootSprite) {
-        const pRoot = rootSprite.position;
-        relatedSprites.forEach(relSprite => {
-          const thread = createSpiralFunnelThread(pRoot, relSprite.position);
-          if (thread) arcLinksGroup.add(thread);
-        });
-      }
+      // Vẽ sợi chỉ xoắn ốc nối từ luận văn đang chọn tới các luận văn có độ trùng từ khóa >= 85%
+      relatedSprites.forEach(relSprite => {
+        const thread = createSpiralFunnelThread(rootNode, relSprite.userData.nodeData);
+        if (thread) arcLinksGroup.add(thread);
+      });
     }
 
     /* ==========================================================================
-       10. INTERACTION: RAYCAST & CLICK PANEL OPEN
+       9. INTERACTION: RAYCAST & CLICK PANEL OPEN
        ========================================================================== */
     const raycaster = new THREE.Raycaster();
     raycaster.params.Sprite = { threshold: 4.5 };
@@ -1558,7 +1501,7 @@
         if (hoveredSprite !== sprite) {
           clearHover();
           hoveredSprite = sprite;
-          const s = sprite.userData.baseSize * 1.35;
+          const s = sprite.userData.baseSize * 1.4;
           sprite.scale.set(s, s, 1);
 
           const n = sprite.userData.nodeData;
@@ -1656,7 +1599,7 @@
       if (sprite) {
         const b = sprite.userData.baseSize;
         new TWEEN.Tween(sprite.scale)
-          .to({ x: b * 1.9, y: b * 1.9, z: 1 }, 200)
+          .to({ x: b * 2.0, y: b * 2.0, z: 1 }, 200)
           .yoyo(true).repeat(3)
           .easing(TWEEN.Easing.Quadratic.InOut)
           .onComplete(() => sprite.scale.set(b, b, 1))
@@ -1664,9 +1607,6 @@
       }
     }
 
-    /* ==========================================================================
-       RENDER DETAIL CONTENT (CHỈ HIỂN THỊ UCI NẾU CÓ, ĐÃ XÓA LINK RISS)
-       ========================================================================== */
     function renderDetailContent(node, detail) {
       const isKo = currentLang === 'ko';
       const badge = document.getElementById('detail-type-badge');
@@ -1689,17 +1629,18 @@
       document.getElementById('detail-degree').innerText = detail.degree;
       document.getElementById('detail-year').innerText = `${detail.year}${I18N[currentLang].yearSuffix}`;
       
+      // CHỈ HIỂN THỊ MÃ UCI NẾU CÓ, KHÔNG CÒN LIÊN KẾT RISS
       const uciTextEl = document.getElementById('detail-uci');
       const uciStatusBadge = document.getElementById('detail-uci-status-badge');
 
-      if (detail.uci && detail.uci.toLowerCase() !== "n/a" && detail.uci.toLowerCase() !== "nan" && detail.uci.trim() !== "") {
-        uciTextEl.innerText = detail.uci.trim();
-        uciTextEl.className = "font-scifi text-xs text-cyan-300 font-semibold select-all break-all tracking-wide";
+      if (detail.uci) {
+        uciTextEl.innerText = detail.uci;
+        uciTextEl.className = "font-scifi text-xs text-cyan-300 font-semibold select-all break-all tracking-wide block";
         uciStatusBadge.innerText = "UCI VERIFIED";
         uciStatusBadge.className = "px-1.5 py-0.2 rounded text-[9px] font-scifi font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-400/30";
       } else {
         uciTextEl.innerText = I18N[currentLang].uciNone;
-        uciTextEl.className = "font-scifi text-xs text-slate-400 italic font-normal tracking-wide";
+        uciTextEl.className = "font-scifi text-xs text-slate-400 italic font-normal tracking-wide block";
         uciStatusBadge.innerText = "NO UCI";
         uciStatusBadge.className = "px-1.5 py-0.2 rounded text-[9px] font-scifi font-bold bg-slate-500/20 text-slate-400 border border-slate-500/30";
       }
@@ -1716,15 +1657,12 @@
           kwBox.appendChild(tag);
         });
       } else {
-        const emptyTag = document.createElement('span');
-        emptyTag.className = 'text-[10px] text-slate-500 italic';
-        emptyTag.innerText = I18N[currentLang].keywordsNone;
-        kwBox.appendChild(emptyTag);
+        kwBox.innerHTML = `<span class="text-[11px] text-slate-500 italic">${I18N[currentLang].keywordsNone}</span>`;
       }
     }
 
     /* ==========================================================================
-       11. SEARCH: CHỚP SÁNG BÀI TÌM ĐƯỢC, BÀI KHÁC TỐI ĐI, KHÔNG CÓ DÂY NỐI
+       10. SEARCH & ADVISOR LIST DRAWER (CHỚP SÁNG KHÔNG DÂY NỐI)
        ========================================================================== */
     const searchInput = document.getElementById('search-input');
     const searchType = document.getElementById('search-type');
@@ -1822,6 +1760,7 @@
         return;
       }
 
+      const fragment = document.createDocumentFragment();
       theses.forEach((n, idx) => {
         const detail = getCleanDetail(n);
         const card = document.createElement('div');
@@ -1856,12 +1795,13 @@
             return;
           }
 
-          const sprite = NODE_SPRITES.find(s => s.userData.nodeData.id === n.id);
+          const sprite = SPRITE_MAP.get(n.id);
           openSingleDetailView(n, sprite, true);
         });
 
-        container.appendChild(card);
+        fragment.appendChild(card);
       });
+      container.appendChild(fragment);
     }
 
     function closeRightPanel() {
@@ -1879,7 +1819,7 @@
         s.userData.isHighlight = false;
         s.userData.isRelated = false;
         if (s.visible) {
-          s.material.opacity = (s.userData.nodeData.type === 'thesis_planet') ? 0.9 : 0.95;
+          s.material.opacity = (s.userData.nodeData.type === 'thesis_planet') ? 0.9 : 0.92;
           s.scale.set(s.userData.baseSize, s.userData.baseSize, 1);
         }
       });
@@ -1916,7 +1856,7 @@
     });
 
     /* ==========================================================================
-       12. MULTILINGUAL SWITCH
+       11. MULTILINGUAL SWITCH
        ========================================================================== */
     const langKoBtn = document.getElementById('lang-ko-btn');
     const langEnBtn = document.getElementById('lang-en-btn');
@@ -1961,7 +1901,7 @@
       document.getElementById('detail-label-author').innerText = dict.detailAuthorLabel;
       document.getElementById('detail-label-advisor').innerText = dict.detailAdvisorLabel;
       document.getElementById('detail-label-dept').innerText = dict.detailDeptLabel;
-      document.getElementById('detail-degree').innerText = dict.detailDegreeLabel;
+      document.getElementById('detail-label-degree').innerText = dict.detailDegreeLabel;
       document.getElementById('detail-label-uci').innerText = dict.detailUciLabel;
       document.getElementById('detail-label-keywords').innerText = dict.detailKeywordsLabel;
       document.getElementById('detail-label-abstract').innerText = dict.detailAbstractLabel;
@@ -1973,13 +1913,15 @@
     langEnBtn.addEventListener('click', () => switchLanguage('en'));
 
     /* ==========================================================================
-       13. REAL-TIME ANIMATION & RESIZE
+       12. REAL-TIME ANIMATION & RESIZE
        ========================================================================== */
     const clock = new THREE.Clock();
+    let frameCounter = 0;
 
     function animate() {
       requestAnimationFrame(animate);
       const elapsed = clock.getElapsedTime();
+      frameCounter++;
 
       TWEEN.update();
       controls.update();
@@ -1999,39 +1941,39 @@
 
       const hasActiveFocus = isSearchActive || selectedActiveNode !== null;
 
-      NODE_SPRITES.forEach(s => {
-        if (s.visible) {
-          if (hasActiveFocus) {
-            if (s.userData.isHighlight) {
-              // 1. Luận văn được chọn: Sáng bừng nhấp nháy rực rỡ nhất
-              const strobe = 1.0 + Math.abs(Math.sin(elapsed * 7.5)) * 0.85;
-              const b = s.userData.baseSize * 1.75;
-              s.scale.set(b * strobe, b * strobe, 1);
-              s.material.opacity = 1.0;
-            } else if (s.userData.isRelated) {
-              // 2. Luận văn liên quan (>= 85% từ khóa): Sáng nổi bật nhưng thấp hơn bài đang chọn
-              const b = (s.userData.baseSize * distFactor) * 1.1;
-              const shimmer = Math.sin(elapsed * 3.5 + s.userData.pulseOffset) * 0.12;
-              s.scale.set(b * (1.0 + shimmer), b * (1.0 + shimmer), 1);
-              s.material.opacity = 0.78;
-            } else {
-              // 3. Luận văn không liên quan: Làm mờ hẳn đi
-              const b = (s.userData.baseSize * distFactor) * 0.45;
-              s.scale.set(b, b, 1);
-              s.material.opacity = 0.05;
-            }
-          } else {
-            const tSpeed = s.userData.twinkleSpeed;
-            const shimmer = Math.sin(elapsed * tSpeed + s.userData.pulseOffset) * Math.cos(elapsed * (tSpeed * 0.5)) * s.userData.shimmerAmp;
-            
-            const b = s.userData.baseSize * distFactor;
-            s.scale.set(b * (1.0 + shimmer), b * (1.0 + shimmer), 1);
-            s.material.opacity = Math.min(1.0, 0.82 + Math.abs(shimmer) * 0.35);
-          }
-        }
-      });
+      for (let i = 0; i < NODE_SPRITES.length; i++) {
+        const s = NODE_SPRITES[i];
+        if (!s.visible) continue;
 
-      checkRaycast();
+        if (hasActiveFocus) {
+          if (s.userData.isHighlight) {
+            // Luận văn được chọn / khớp tìm kiếm: sáng bừng lên nhấp nháy
+            const strobe = 1.0 + Math.abs(Math.sin(elapsed * 7.5)) * 0.85;
+            const b = s.userData.baseSize * 1.75;
+            s.scale.set(b * strobe, b * strobe, 1);
+            s.material.opacity = 1.0;
+          } else if (s.userData.isRelated) {
+            // Luận văn khác có liên quan (tương đồng từ khóa >= 85%): sáng nổi bật nhưng dịu hơn luận văn đang chọn
+            const b = (s.userData.baseSize * distFactor) * 1.15;
+            const shimmer = Math.sin(elapsed * 3.2 + s.userData.pulseOffset) * 0.1;
+            s.scale.set(b * (1.0 + shimmer), b * (1.0 + shimmer), 1);
+            s.material.opacity = 0.72;
+          } else {
+            // Các luận văn không liên quan: làm mờ đi
+            const b = (s.userData.baseSize * distFactor) * 0.45;
+            s.scale.set(b, b, 1);
+            s.material.opacity = 0.05;
+          }
+        } else {
+          const tSpeed = s.userData.twinkleSpeed;
+          const shimmer = Math.sin(elapsed * tSpeed + s.userData.pulseOffset) * Math.cos(elapsed * (tSpeed * 0.5)) * s.userData.shimmerAmp;
+          const b = s.userData.baseSize * distFactor;
+          s.scale.set(b * (1.0 + shimmer), b * (1.0 + shimmer), 1);
+          s.material.opacity = Math.min(1.0, 0.82 + Math.abs(shimmer) * 0.35);
+        }
+      }
+
+      if (frameCounter % 2 === 0) checkRaycast();
       renderer.render(scene, camera);
     }
 
