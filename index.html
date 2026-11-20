@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
@@ -499,7 +499,7 @@
     }
 
     /* ==========================================================================
-       2. PROCEDURAL OPTICAL TEXTURES
+       2. PROCEDURAL OPTICAL TEXTURES (ĐẶC & SẮC NÉT HƠN CHO LUẬN VĂN TIẾN SĨ)
        ========================================================================== */
     function createStarlightTexture() {
       const c = document.createElement('canvas');
@@ -507,12 +507,29 @@
       const ctx = c.getContext('2d');
       const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
       grad.addColorStop(0.0, 'rgba(255, 255, 255, 1.0)');
-      grad.addColorStop(0.18, 'rgba(255, 255, 255, 0.95)');
-      grad.addColorStop(0.42, 'rgba(255, 255, 255, 0.6)');
-      grad.addColorStop(0.74, 'rgba(255, 255, 255, 0.16)');
+      grad.addColorStop(0.18, 'rgba(255, 255, 255, 0.92)');
+      grad.addColorStop(0.42, 'rgba(255, 255, 255, 0.50)');
+      grad.addColorStop(0.74, 'rgba(255, 255, 255, 0.14)');
       grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, 64, 64);
+      return new THREE.CanvasTexture(c);
+    }
+
+    // Texture riêng cho Luận văn Tiến sĩ: lõi sáng đặc, đậm đà, viền gọn gàng không bị loang mờ
+    function createDoctoralStarTexture() {
+      const c = document.createElement('canvas');
+      c.width = 128; c.height = 128;
+      const ctx = c.getContext('2d');
+      const grad = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+      grad.addColorStop(0.0, 'rgba(255, 255, 255, 1.0)');
+      grad.addColorStop(0.32, 'rgba(255, 255, 255, 1.0)');
+      grad.addColorStop(0.55, 'rgba(255, 255, 255, 0.88)');
+      grad.addColorStop(0.75, 'rgba(255, 255, 255, 0.42)');
+      grad.addColorStop(0.90, 'rgba(255, 255, 255, 0.12)');
+      grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 128, 128);
       return new THREE.CanvasTexture(c);
     }
 
@@ -545,6 +562,7 @@
     }
 
     const starTexture = createStarlightTexture();
+    const doctoralStarTexture = createDoctoralStarTexture();
     const moderateSunTexture = createModerateSunTexture();
     const softDustTexture = createSoftDustTexture();
 
@@ -702,7 +720,6 @@
 
     const INVALID_KW_SET = new Set(["", "nan", "#nan", "null", "none", "undefined", "n/a", "-", "없음"]);
 
-    // Từ điển đồng nghĩa & quy chuẩn gốc từ học thuật Anh - Hàn
     const CONCEPT_CANONICAL_MAP = new Map([
       ["ai", "artificial_intelligence"], ["artificial intelligence", "artificial_intelligence"], ["인공지능", "artificial_intelligence"],
       ["dl", "deep_learning"], ["deep learning", "deep_learning"], ["딥러닝", "deep_learning"], ["심층학습", "deep_learning"],
@@ -736,7 +753,6 @@
       ["blockchain", "blockchain"], ["블록체인", "blockchain"]
     ]);
 
-    // Rút gọn gốc từ tiếng Anh (English Stemming)
     function stemEnglishWord(word) {
       let w = word.toLowerCase().trim();
       if (w.length <= 3) return w;
@@ -775,7 +791,6 @@
       return w;
     }
 
-    // Chuẩn hóa từ khóa về tập khái niệm gốc để so sánh tương đồng ngữ nghĩa / gốc từ
     function normalizeKeywordToConcepts(kw) {
       const clean = kw.toLowerCase().replace(/[^\w가-힣\s\-]/g, ' ').replace(/\s+/g, ' ').trim();
       if (!clean) return [];
@@ -821,7 +836,6 @@
       return cleaned;
     }
 
-    // Tính độ tương đồng dựa trên gốc từ & từ đồng nghĩa (yêu cầu >= 60%)
     function calculateConceptSimilarity(conceptListA, conceptListB) {
       if (!conceptListA || !conceptListB || conceptListA.length === 0 || conceptListB.length === 0) return 0;
       const setA = new Set(conceptListA);
@@ -831,7 +845,6 @@
         if (setB.has(c)) {
           intersection++;
         } else {
-          // Kiểm tra khớp gốc từ con trong cụm từ ghép
           const partsA = c.split('_');
           for (const b of setB) {
             const partsB = b.split('_');
@@ -845,13 +858,11 @@
       if (intersection <= 0) return 0;
       const minSize = Math.min(setA.size, setB.size);
       const unionSize = setA.size + setB.size - Math.min(intersection, minSize);
-      // Tỷ lệ tương đồng kết hợp giữa mức độ bao phủ tập từ khóa nhỏ hơn và Jaccard
       const overlapCoeff = intersection / minSize;
       const jaccardCoeff = intersection / Math.max(1, unionSize);
       return Math.max(overlapCoeff * 0.85 + jaccardCoeff * 0.15, jaccardCoeff);
     }
 
-    // Nhận diện chuẩn xác luận văn Tiến sĩ
     function detectDoctoralDegree(node, detailObj) {
       const candidates = [
         detailObj && detailObj.degree,
@@ -1017,7 +1028,6 @@
       const rawKw = (d && d.keywords) ? d.keywords : node.keywords;
       const resolvedKeywords = sanitizeKeywords(rawKw);
 
-      // Tạo danh sách khái niệm gốc từ (Stemmed / Synonym Concepts) để kết nối >= 60%
       const conceptSet = new Set();
       resolvedKeywords.forEach(kw => {
         normalizeKeywordToConcepts(kw).forEach(c => conceptSet.add(c));
@@ -1049,7 +1059,7 @@
     }
 
     /* ==========================================================================
-       6. KHỞI TẠO BỐ CỤC: MÀU TIẾN SĨ ĐẬM & RỰC HƠN THẠC SĨ, KÍCH THƯỚC 3X
+       6. KHỞI TẠO BỐ CỤC: LUẬN VĂN TIẾN SĨ LÕI SÁNG ĐẶC & ĐẬM MÀU NỔI BẬT
        ========================================================================== */
     function buildCosmicScene() {
       NODE_SPRITES = [];
@@ -1143,14 +1153,16 @@
 
         let spriteMat;
         let scaleSize = 1.0;
+        let defaultOpacity = 0.85;
 
         if (isDept || isAdvisor) {
           scaleSize = 2.8;
+          defaultOpacity = 0.92;
           spriteMat = new THREE.SpriteMaterial({
             map: moderateSunTexture,
             color: new THREE.Color("#FDE047"),
             transparent: true,
-            opacity: 0.92,
+            opacity: defaultOpacity,
             blending: THREE.AdditiveBlending,
             depthWrite: false
           });
@@ -1161,24 +1173,26 @@
           const masterBase = 2.4 + Math.min(1.4, connCount * 0.22);
           scaleSize = det.isPhd ? (masterBase * 3.0) : masterBase;
 
-          // MÀU LUẬN VĂN TIẾN SĨ ĐẬM SẮC & RỰC RỠ HƠN THẠC SĨ (KHÔNG BỊ TỐI XỈN)
           const baseColor = new THREE.Color(node.color || "#06B6D4");
           const hsl = {};
           baseColor.getHSL(hsl);
 
           if (det.isPhd) {
-            // Tiến sĩ: độ bão hòa màu cực đậm (1.0) và độ sáng rực rỡ (0.60 - 0.65) để nổi bật sắc nét trên nền đen
-            baseColor.setHSL(hsl.h, 1.0, Math.min(0.66, Math.max(0.56, hsl.l * 1.05)));
+            // Tiến sĩ: dùng texture lõi đặc sắc nét (doctoralStarTexture) + màu bão hòa tối đa (1.0) & nhân cường độ sáng 1.45 để nổi bật hẳn lên
+            baseColor.setHSL(hsl.h, 1.0, Math.min(0.68, Math.max(0.58, hsl.l * 1.15)));
+            baseColor.multiplyScalar(1.45);
+            defaultOpacity = 1.0;
           } else {
-            // Thạc sĩ: tông màu sáng nhẹ hơn, thanh thoát (saturation ~0.82, lightness ~0.74)
-            baseColor.setHSL(hsl.h, Math.max(0.75, hsl.s * 0.85), Math.min(0.80, Math.max(0.68, hsl.l * 1.22)));
+            // Thạc sĩ: thanh thoát hơn để nhường độ nổi bật cho sao Tiến sĩ
+            baseColor.setHSL(hsl.h, Math.max(0.75, hsl.s * 0.85), Math.min(0.78, Math.max(0.66, hsl.l * 1.18)));
+            defaultOpacity = 0.84;
           }
 
           spriteMat = new THREE.SpriteMaterial({
-            map: starTexture,
+            map: det.isPhd ? doctoralStarTexture : starTexture,
             color: baseColor,
             transparent: true,
-            opacity: det.isPhd ? 1.0 : 0.88,
+            opacity: defaultOpacity,
             blending: THREE.AdditiveBlending,
             depthWrite: false
           });
@@ -1191,6 +1205,8 @@
         sprite.userData = {
           nodeData: node,
           baseSize: scaleSize,
+          defaultOpacity: defaultOpacity,
+          isPhd: node.type === 'thesis_planet' ? getCleanDetail(node).isPhd : false,
           isSun: isDept || isAdvisor,
           pulseOffset: Math.random() * Math.PI * 2,
           twinkleSpeed: 2.0 + Math.random() * 4.0,
@@ -1599,7 +1615,7 @@
         if (!visible) {
           s.material.opacity = 0.0;
         } else if (!isSearchActive && !selectedActiveNode) {
-          s.material.opacity = 0.92;
+          s.material.opacity = s.userData.defaultOpacity;
           s.scale.set(s.userData.baseSize, s.userData.baseSize, 1);
         }
       });
@@ -1730,7 +1746,6 @@
           s.userData.isRelated = false;
         } else if (n.type === 'thesis_planet' && hasValidRootConcepts) {
           const d = getCleanDetail(n);
-          // Chỉ cần từ khóa/gốc từ/từ đồng nghĩa giống nhau >= 60% là kết nối
           const sim = calculateConceptSimilarity(rootConcepts, d.concepts);
           if (sim >= 0.60) {
             s.userData.isHighlight = false;
@@ -1864,12 +1879,10 @@
           openSingleDetailView(node, targetSprite, false);
         }
       } else if (selectedActiveNode || isSearchActive) {
-        // Click ra ngoài khoảng trống: thoát bám sát camera, đưa kích thước & độ sáng các luận văn trở về ban đầu
         closeRightPanel();
       }
     });
 
-    // Tính tọa độ thế giới thực tế (World Position) hiện tại của luận văn đang xoay trong cosmosGroup
     const _worldPosHelper = new THREE.Vector3();
     function getSpriteCurrentWorldPos(sprite) {
       cosmosGroup.updateMatrixWorld();
@@ -1910,7 +1923,6 @@
         const startTarget = controls.target.clone();
         const flyState = { progress: 0 };
 
-        // Camera bay mượt mà tới vị trí đang trôi thực tế của luận văn để đặt luận văn vào chính giữa màn hình
         activeCameraFlyTween = new TWEEN.Tween(flyState)
           .to({ progress: 1 }, 850)
           .easing(TWEEN.Easing.Cubic.Out)
@@ -2143,7 +2155,6 @@
       resetSearchHighlight();
     }
 
-    // Thoát chọn: camera ngừng bám theo luận văn, toàn bộ luận văn trở về kích thước và độ sáng cũ
     function resetSearchHighlight() {
       if (activeCameraFlyTween) {
         activeCameraFlyTween.stop();
@@ -2159,8 +2170,7 @@
         s.userData.isHighlight = false;
         s.userData.isRelated = false;
         if (s.visible) {
-          const det = s.userData.nodeData.type === 'thesis_planet' ? getCleanDetail(s.userData.nodeData) : null;
-          s.material.opacity = det && det.isPhd ? 1.0 : 0.90;
+          s.material.opacity = s.userData.defaultOpacity;
           s.scale.set(s.userData.baseSize, s.userData.baseSize, 1);
         }
       });
@@ -2285,18 +2295,14 @@
       requestAnimationFrame(animate);
       const elapsed = clock.getElapsedTime();
 
-      // Lưu tọa độ thế giới trước khi thiên hà xoay thêm 1 nhịp
       const hasLockedThesis = selectedActiveSprite && selectedActiveSprite.visible && !isCameraFlying;
       if (hasLockedThesis) {
         cosmosGroup.updateMatrixWorld();
         selectedActiveSprite.getWorldPosition(_prevTrackedWorldPos);
       }
 
-      // Thiên hà vẫn tiếp tục trôi xoay tự nhiên trong vũ trụ
       cosmosGroup.rotation.y += 0.00018;
 
-      // Bám sát camera theo đúng quỹ đạo trôi của luận văn đang được chọn để luận văn luôn nằm chính giữa khung hình
-      // Đồng thời vẫn cho phép người dùng tự do xoay góc nhìn hoặc zoom gần/xa bằng chuột
       if (hasLockedThesis) {
         cosmosGroup.updateMatrixWorld();
         selectedActiveSprite.getWorldPosition(_currTrackedWorldPos);
@@ -2334,31 +2340,29 @@
         if (s.visible) {
           if (hasActiveFocus) {
             if (s.userData.isHighlight) {
-              // Luận văn được chọn: to lên gấp 5 lần và sáng rực rỡ
               const strobe = 1.0 + Math.abs(Math.sin(elapsed * 7.5)) * 0.16;
               const b = s.userData.baseSize * 5.0;
               s.scale.set(b * strobe, b * strobe, 1);
               s.material.opacity = 1.0;
             } else if (s.userData.isRelated) {
-              // Luận văn liên quan: to lên gấp 3 lần và sáng nổi bật
               const b = s.userData.baseSize * 3.0;
               const shimmer = Math.sin(elapsed * 3.2 + s.userData.pulseOffset) * 0.08;
               s.scale.set(b * (1.0 + shimmer), b * (1.0 + shimmer), 1);
-              s.material.opacity = 0.92;
+              s.material.opacity = 0.96;
             } else {
-              // Các luận văn không liên quan mờ đi
               const b = s.userData.baseSize * distFactor * 0.42;
               s.scale.set(b, b, 1);
               s.material.opacity = 0.04;
             }
           } else {
-            // Trạng thái bình thường: kích thước và độ sáng trở về nguyên bản
             const tSpeed = s.userData.twinkleSpeed;
             const shimmer = Math.sin(elapsed * tSpeed + s.userData.pulseOffset) * Math.cos(elapsed * (tSpeed * 0.5)) * s.userData.shimmerAmp;
             
             const b = s.userData.baseSize * distFactor;
             s.scale.set(b * (1.0 + shimmer), b * (1.0 + shimmer), 1);
-            s.material.opacity = Math.min(1.0, 0.85 + Math.abs(shimmer) * 0.35);
+            s.material.opacity = s.userData.isPhd
+              ? 1.0
+              : Math.min(0.90, 0.78 + Math.abs(shimmer) * 0.30);
           }
         }
       }
