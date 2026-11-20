@@ -199,7 +199,7 @@
         <button class="cluster-btn scifi-btn py-1.5 px-1 rounded text-center" data-cluster="인문">인문</button>
       </div>
 
-      <!-- Department Dropdown (100% Normalized Korean Department Names) -->
+      <!-- Department Dropdown -->
       <div class="relative pt-0.5">
         <select id="dept-dropdown" class="w-full bg-black/60 text-slate-200 text-xs rounded-lg p-2 border border-indigo-500/30 focus:outline-none focus:border-cyan-400 cursor-pointer">
           <option value="ALL">-- 전체 학과 --</option>
@@ -340,7 +340,7 @@
           </div>
         </div>
 
-        <!-- UCI IDENTIFIER ONLY (NO RISS LINKS) -->
+        <!-- UCI IDENTIFIER ONLY -->
         <div class="p-3 rounded-lg bg-black/50 border border-indigo-500/20 flex flex-col space-y-1.5">
           <div class="flex items-center justify-between">
             <span id="detail-label-uci" class="text-[9px] uppercase font-bold text-indigo-400 font-scifi tracking-widest">UCI 등록번호 (UCI Identifier)</span>
@@ -699,7 +699,7 @@
     const softDustTexture = createSoftDustTexture();
 
     /* ==========================================================================
-       4. THREE.JS SCENE SETUP
+       4. THREE.JS SCENE SETUP & CURSOR-ANCHORED ZOOM SYSTEM
        ========================================================================== */
     const canvas = document.getElementById('cosmos-canvas');
     const scene = new THREE.Scene();
@@ -712,99 +712,13 @@
     renderer.setSize(window.innerWidth, window.innerHeight);
 
     const controls = new THREE.OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
-controls.dampingFactor = 0.06;
-controls.screenSpacePanning = true; // Cho phép kéo trượt dọc theo chiều cao Y của ngân hà mượt mà
-controls.panSpeed = 1.1;
-controls.rotateSpeed = 0.85;
-controls.zoomSpeed = 1.2;
-controls.maxDistance = 4000;
-controls.minDistance = 8; // Cho phép zoom sát vào tận lõi chân ngân hà
-controls.target.set(0, 225, 0);
-
-// Mặt phẳng ảo hỗ trợ xác định điểm 3D dưới con trỏ chuột khi zoom vào vùng trống gần chân ngân hà
-const _zoomRaycaster = new THREE.Raycaster();
-_zoomRaycaster.params.Sprite = { threshold: 12.0 };
-const _zoomMouse = new THREE.Vector2();
-const _zoomPlane = new THREE.Plane();
-const _zoomHitPoint = new THREE.Vector3();
-const _camDir = new THREE.Vector3();
-
-// 1. ZOOM-TO-CURSOR: Lăn chuột ở đâu, camera phóng thẳng vào khu vực đó
-canvas.addEventListener('wheel', (e) => {
-  // Nếu đang khóa camera theo 1 luận văn cụ thể thì giữ nguyên tâm khóa
-  if (selectedActiveSprite && !isCameraFlying) return;
-
-  e.preventDefault();
-
-  const rect = canvas.getBoundingClientRect();
-  _zoomMouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-  _zoomMouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
-
-  _zoomRaycaster.setFromCamera(_zoomMouse, camera);
-
-  // Ưu tiên bắt điểm nếu con trỏ đang chỉ trúng một ngôi sao/luận văn ở chân ngân hà
-  const visibleSprites = NODE_SPRITES.filter(s => s.visible);
-  const hits = _zoomRaycaster.intersectObjects(visibleSprites);
-
-  let focusPoint = null;
-  if (hits.length > 0) {
-    focusPoint = hits[0].point.clone();
-  } else {
-    // Nếu chỉ vào vùng sương mù/khoảng không ở chân ngân hà, chiếu tia lên mặt phẳng đi qua tâm ngân hà
-    camera.getWorldDirection(_camDir);
-    _zoomPlane.setFromNormalAndCoplanarPoint(_camDir, controls.target);
-    if (_zoomRaycaster.ray.intersectPlane(_zoomPlane, _zoomHitPoint)) {
-      focusPoint = _zoomHitPoint.clone();
-    }
-  }
-
-  // Chỉ kéo tâm target về phía con trỏ khi đang Zoom In (deltaY < 0)
-  if (focusPoint && e.deltaY < 0) {
-    const pullFactor = 0.22; // Mức độ hút tiêu điểm về phía con trỏ chuột mỗi nấc lăn
-    controls.target.lerp(focusPoint, pullFactor);
-  }
-}, { passive: false });
-
-// 2. DOUBLE-CLICK: Nhấp đúp chuột vào chân ngân hà hoặc cụm sao bất kỳ để bay thẳng tới và đặt làm tâm xoay
-canvas.addEventListener('dblclick', (e) => {
-  const rect = canvas.getBoundingClientRect();
-  _zoomMouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-  _zoomMouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
-
-  _zoomRaycaster.setFromCamera(_zoomMouse, camera);
-  const visibleSprites = NODE_SPRITES.filter(s => s.visible);
-  const hits = _zoomRaycaster.intersectObjects(visibleSprites);
-
-  let destPoint = null;
-  if (hits.length > 0) {
-    destPoint = hits[0].point.clone();
-  } else {
-    camera.getWorldDirection(_camDir);
-    _zoomPlane.setFromNormalAndCoplanarPoint(_camDir, controls.target);
-    if (_zoomRaycaster.ray.intersectPlane(_zoomPlane, _zoomHitPoint)) {
-      destPoint = _zoomHitPoint.clone();
-    }
-  }
-
-  if (destPoint) {
-    if (activeCameraFlyTween) activeCameraFlyTween.stop();
-    const offset = camera.position.clone().sub(controls.target).multiplyScalar(0.55);
-    // Đảm bảo khoảng cách không quá xa để nhìn rõ chân ngân hà
-    if (offset.length() > 180) offset.setLength(180);
-    const newCamPos = destPoint.clone().add(offset);
-
-    new TWEEN.Tween(controls.target)
-      .to({ x: destPoint.x, y: destPoint.y, z: destPoint.z }, 700)
-      .easing(TWEEN.Easing.Cubic.Out)
-      .start();
-
-    new TWEEN.Tween(camera.position)
-      .to({ x: newCamPos.x, y: newCamPos.y, z: newCamPos.z }, 700)
-      .easing(TWEEN.Easing.Cubic.Out)
-      .start();
-  }
-});
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.maxDistance = 4000;
+    controls.minDistance = 12;
+    controls.target.set(0, 200, 0);
+    // Tắt zoom mặc định tới tâm cố định của OrbitControls để thay bằng Cursor-Anchored Zoom chính xác
+    controls.enableZoom = false;
 
     const cosmosGroup = new THREE.Group();
     scene.add(cosmosGroup);
@@ -937,6 +851,7 @@ canvas.addEventListener('dblclick', (e) => {
     let cosmicBeamMesh, cosmicBeamGlowMesh;
     let stardustMistPoints;
     let spiralArmRibbonPoints;
+    let galaxyCenterYGlobal = 225;
 
     const INVALID_KW_SET = new Set(["", "nan", "#nan", "null", "none", "undefined", "n/a", "-", "없음"]);
 
@@ -1290,18 +1205,16 @@ canvas.addEventListener('dblclick', (e) => {
 
       const minYear = 2001;
       const maxYear = 2026;
-      const totalSpanYears = maxYear - minYear; // 25 năm
+      const totalSpanYears = maxYear - minYear;
 
-      // Đồng bộ biên độ trục Y và hình nón ánh sáng phễu từ đáy (2001) lên đỉnh (2026)
       const baseBottomY = 0;
-      const baseTopY = totalSpanYears * 18.0; // 450
+      const baseTopY = totalSpanYears * 18.0;
       const baseGalaxyHeight = baseTopY - baseBottomY;
       const funnelBottomRadius = 42.0;
       const funnelTopRadius = 465.0;
 
       const yearTiltMap = new Map();
       for (let y = minYear; y <= maxYear; y++) {
-        // Độ nghiêng giảm dần ở các năm đáy (2001-2003) để các sao đáy không bị văng ra ngoài luồng sáng
         const yearProgress = (y - minYear) / totalSpanYears;
         const tiltDamp = 0.25 + 0.75 * yearProgress;
         const tiltAngleX = Math.sin(y * 1.7) * (5.0 * Math.PI / 180.0) * tiltDamp;
@@ -1346,7 +1259,6 @@ canvas.addEventListener('dblclick', (e) => {
         nA._validConnectionCount = count;
       });
 
-      // Đếm số lượng node trong từng năm để phân bổ góc xoắn vàng (Golden Angle) chống chồng đè ở tầng đáy chụm
       const yearNodeCounters = new Map();
       const yearNodeTotals = new Map();
       ALL_NODES.forEach(node => {
@@ -1357,37 +1269,33 @@ canvas.addEventListener('dblclick', (e) => {
 
       let actualMinY = Infinity;
       let actualMaxY = -Infinity;
-      const goldenAngle = Math.PI * (3 - Math.sqrt(5)); // ~2.39996 rad
+      const goldenAngle = Math.PI * (3 - Math.sqrt(5));
 
       ALL_NODES.forEach((node) => {
         if (node.type === 'galactic_core') return;
 
         const year = Math.max(minYear, Math.min(maxYear, node.year || 2020));
         const yearOffset = year - minYear;
-        const tProgress = yearOffset / totalSpanYears; // 0.0 tại 2001 -> 1.0 tại 2026
+        const tProgress = yearOffset / totalSpanYears;
 
         const idxInYear = yearNodeCounters.get(year) || 0;
         yearNodeCounters.set(year, idxInYear + 1);
         const totalInYear = yearNodeTotals.get(year) || 1;
 
-        // Bán kính tối đa của phễu ánh sáng tại tầng năm hiện tại
         const envelopeRadiusAtYear = THREE.MathUtils.lerp(funnelBottomRadius, funnelTopRadius, Math.pow(tProgress, 1.18));
 
         const funnelFactor = Math.pow(1.05, yearOffset);
         const origR = Math.sqrt(node.x * node.x + node.z * node.z) || 1;
         let computedR = origR * (0.13 + funnelFactor * 0.45);
 
-        // Nếu ở các năm đáy (2001-2004) hoặc bán kính vượt biên luồng ánh sáng:
-        // Chụm vào bên trong luồng sáng phễu nhưng rải đều theo xoắn ốc Golden Angle để từng luận văn tách bạch rõ ràng
         const origTheta = Math.atan2(node.z, node.x);
         let theta = origTheta;
 
         if (yearOffset <= 4 || computedR > envelopeRadiusAtYear * 0.90) {
           const rankNorm = (idxInYear + 0.5) / totalInYear;
-          const minInnerR = 4.2; // Giữ khoảng cách nhẹ với trục beam trung tâm
+          const minInnerR = 4.2;
           const maxInnerR = Math.max(minInnerR + 6.0, envelopeRadiusAtYear * 0.86);
           computedR = minInnerR + Math.sqrt(rankNorm) * (maxInnerR - minInnerR);
-          // Kết hợp góc gốc với góc xoắn vàng để giữ cụm ngành mà không bao giờ trùng tọa độ
           theta = origTheta * 0.35 + (idxInYear * goldenAngle);
         }
 
@@ -1396,7 +1304,6 @@ canvas.addEventListener('dblclick', (e) => {
         let fx = Math.cos(theta) * newR;
         let fz = Math.sin(theta) * newR;
         
-        // Chiều cao tầng chuẩn theo năm (2001 bắt đầu từ baseBottomY = 0, không bị âm tụt khỏi chân phễu)
         const baseFy = baseBottomY + yearOffset * 18.0;
         
         const tilt = yearTiltMap.get(year) || { tiltX: 0, tiltZ: 0 };
@@ -1404,7 +1311,6 @@ canvas.addEventListener('dblclick', (e) => {
         const tiltedX = fx * Math.cos(tilt.tiltZ);
         const tiltedZ = fz * Math.cos(tilt.tiltX);
 
-        // Độ lệch Y vi mô để phân tách các sao trong cùng 1 tầng năm
         const layerSpreadY = ((idxInYear % 7) - 3) * (0.65 + tProgress * 0.65);
 
         node.fx = tiltedX;
@@ -1491,10 +1397,11 @@ canvas.addEventListener('dblclick', (e) => {
       const finalMinY = Math.min(baseBottomY, actualMinY);
       const finalMaxY = Math.max(baseTopY, actualMaxY);
       const galaxyCenterY = (finalMinY + finalMaxY) / 2;
+      galaxyCenterYGlobal = galaxyCenterY;
       const galaxyHeight = Math.max(100, finalMaxY - finalMinY + 16);
       controls.target.set(0, galaxyCenterY, 0);
 
-      // Cột ánh sáng trung tâm khớp chính xác từ chân 2001 lên đỉnh 2026
+      // Cột ánh sáng trung tâm
       const beamHeight = galaxyHeight;
       const beamGeo = new THREE.CylinderGeometry(1.6, 1.6, beamHeight, 24, 1, true);
       const beamMat = new THREE.ShaderMaterial({
@@ -1565,7 +1472,7 @@ canvas.addEventListener('dblclick', (e) => {
       cosmicBeamGlowMesh.position.y = galaxyCenterY;
       cosmosGroup.add(cosmicBeamGlowMesh);
 
-      // Hình nón sương mù phễu bao trọn từ đáy 2001 (bán kính 52) lên đỉnh 2026 (bán kính 490)
+      // Hình nón sương mù phễu
       const funnelHazeGeo = new THREE.CylinderGeometry(490, 52, galaxyHeight, 36, 16, true);
       funnelHazeMesh = new THREE.Mesh(funnelHazeGeo, volumetricNebulaMat);
       funnelHazeMesh.position.y = galaxyCenterY;
@@ -1733,7 +1640,7 @@ canvas.addEventListener('dblclick', (e) => {
     }
 
     /* ==========================================================================
-       8. UI FILTERS SETUP (100% KOREAN DEPARTMENT LIST, COLLATED IN KOREAN ORDER)
+       8. UI FILTERS SETUP
        ========================================================================== */
     let selectedCluster = 'all';
     let selectedDept = 'ALL';
@@ -2049,7 +1956,7 @@ canvas.addEventListener('dblclick', (e) => {
     }
 
     /* ==========================================================================
-       10. INTERACTION: RAYCAST (PC & MOBILE / NARROW WINDOW), CAMERA TRACKING
+       10. STABLE CURSOR-ANCHORED ZOOM & RAYCAST INTERACTION
        ========================================================================== */
     const raycaster = new THREE.Raycaster();
     raycaster.params.Sprite = { threshold: 5.5 };
@@ -2057,6 +1964,145 @@ canvas.addEventListener('dblclick', (e) => {
     let hoveredSprite = null;
     let activeCameraFlyTween = null;
     let isCameraFlying = false;
+
+    // Trạng thái điểm neo Zoom ổn định: chỉ cập nhật khi chuột di chuyển
+    let lockedZoomAnchorWorld = null;
+    let lockedZoomAnchorSprite = null;
+    let lastAnchorCursorPx = { x: -9999, y: -9999 };
+    const _zoomRaycaster = new THREE.Raycaster();
+    const _zoomMouseNDC = new THREE.Vector2();
+    const _anchorPlane = new THREE.Plane();
+    const _anchorPlaneNormal = new THREE.Vector3();
+    const _anchorHitPoint = new THREE.Vector3();
+    const _anchorWorldHelper = new THREE.Vector3();
+
+    // Tính điểm neo 3D ổn định tại vị trí con trỏ (ưu tiên bắt đúng ngôi sao dưới trỏ, fallback mặt phẳng độ sâu qua vùng ngân hà)
+    function computeZoomAnchorAtScreen(clientX, clientY) {
+      const rect = canvas.getBoundingClientRect();
+      _zoomMouseNDC.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+      _zoomMouseNDC.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+
+      _zoomRaycaster.params.Sprite = { threshold: 8.0 };
+      _zoomRaycaster.setFromCamera(_zoomMouseNDC, camera);
+
+      const visibleSprites = NODE_SPRITES.filter(s => s.visible);
+      const hits = _zoomRaycaster.intersectObjects(visibleSprites);
+
+      if (hits.length > 0) {
+        // Bắt trúng điểm sáng dưới con trỏ
+        let chosen = hits[0].object;
+        for (let i = 0; i < hits.length; i++) {
+          if (hits[i].object.userData.nodeData.type === 'thesis_planet') {
+            chosen = hits[i].object;
+            break;
+          }
+        }
+        cosmosGroup.updateMatrixWorld();
+        return {
+          point: chosen.getWorldPosition(_anchorWorldHelper).clone(),
+          sprite: chosen
+        };
+      }
+
+      // Nếu không trúng ngôi sao cụ thể: chiếu vào mặt phẳng đi qua trung tâm dải ngân hà (0, galaxyCenterYGlobal, 0)
+      // vuông góc với hướng nhìn của camera (giữ điểm neo cực kỳ ổn định và không nhảy lung tung)
+      camera.getWorldDirection(_anchorPlaneNormal);
+      const galaxyMidPoint = new THREE.Vector3(0, galaxyCenterYGlobal, 0);
+      _anchorPlane.setFromNormalAndCoplanarPoint(_anchorPlaneNormal, galaxyMidPoint);
+
+      if (_zoomRaycaster.ray.intersectPlane(_anchorPlane, _anchorHitPoint)) {
+        // Kẹp điểm neo trong vùng không gian hợp lý của thiên hà để tránh trôi quá xa ra ngoài vũ trụ rỗng
+        _anchorHitPoint.x = THREE.MathUtils.clamp(_anchorHitPoint.x, -560, 560);
+        _anchorHitPoint.y = THREE.MathUtils.clamp(_anchorHitPoint.y, -40, 520);
+        _anchorHitPoint.z = THREE.MathUtils.clamp(_anchorHitPoint.z, -560, 560);
+        return {
+          point: _anchorHitPoint.clone(),
+          sprite: null
+        };
+      }
+
+      return {
+        point: controls.target.clone(),
+        sprite: null
+      };
+    }
+
+    // Thực hiện zoom in/out neo chặt vào điểm đã khóa (Zoom-to-Anchor)
+    function applyAnchoredZoom(zoomScaleFactor, anchorWorldPoint) {
+      if (isCameraFlying && activeCameraFlyTween) {
+        activeCameraFlyTween.stop();
+        isCameraFlying = false;
+      }
+
+      const currentDist = camera.position.distanceTo(controls.target);
+      const nextDist = currentDist * zoomScaleFactor;
+      if (nextDist < controls.minDistance || nextDist > controls.maxDistance) {
+        return;
+      }
+
+      // Công thức đồng dạng: giữ nguyên hình chiếu của anchorWorldPoint trên màn hình khi zoom
+      // P_new = A + (P_old - A) * scale
+      // T_new = A + (T_old - A) * scale
+      camera.position.sub(anchorWorldPoint).multiplyScalar(zoomScaleFactor).add(anchorWorldPoint);
+      controls.target.sub(anchorWorldPoint).multiplyScalar(zoomScaleFactor).add(anchorWorldPoint);
+      controls.update();
+    }
+
+    // Lắng nghe con lăn chuột để zoom vào đúng điểm neo dưới con trỏ
+    canvas.addEventListener('wheel', (e) => {
+      e.preventDefault();
+
+      // Nếu chưa có điểm neo khóa (do chuột mới di chuyển) -> tính & khóa điểm neo mới ngay tại vị trí chuột hiện tại
+      if (!lockedZoomAnchorWorld) {
+        const anchorData = computeZoomAnchorAtScreen(e.clientX, e.clientY);
+        lockedZoomAnchorWorld = anchorData.point;
+        lockedZoomAnchorSprite = anchorData.sprite;
+        lastAnchorCursorPx.x = e.clientX;
+        lastAnchorCursorPx.y = e.clientY;
+      } else if (lockedZoomAnchorSprite && lockedZoomAnchorSprite.visible) {
+        // Nếu neo vào 1 ngôi sao đang trôi nhẹ, cập nhật tọa độ trôi của chính ngôi sao đó
+        cosmosGroup.updateMatrixWorld();
+        lockedZoomAnchorSprite.getWorldPosition(lockedZoomAnchorWorld);
+      }
+
+      // Chuẩn hóa bước zoom cho cả chuột thường và trackpad MacBook
+      const rawDelta = THREE.MathUtils.clamp(e.deltaY, -120, 120);
+      const zoomFactor = Math.exp(rawDelta * 0.0014);
+
+      applyAnchoredZoom(zoomFactor, lockedZoomAnchorWorld);
+    }, { passive: false });
+
+    // Hỗ trợ zoom 2 ngón trên mobile/trackpad theo điểm giữa 2 ngón tay
+    let lastPinchDist = 0;
+    let pinchAnchorWorld = null;
+    canvas.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 2) {
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        lastPinchDist = Math.hypot(dx, dy);
+        const midX = (e.touches[0].clientX + e.touches[1].clientX) * 0.5;
+        const midY = (e.touches[0].clientY + e.touches[1].clientY) * 0.5;
+        pinchAnchorWorld = computeZoomAnchorAtScreen(midX, midY).point;
+      }
+    }, { passive: true });
+
+    canvas.addEventListener('touchmove', (e) => {
+      if (e.touches.length === 2 && lastPinchDist > 0 && pinchAnchorWorld) {
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        const currDist = Math.hypot(dx, dy);
+        if (currDist > 5) {
+          const factor = lastPinchDist / currDist;
+          applyAnchoredZoom(factor, pinchAnchorWorld);
+          lastPinchDist = currDist;
+        }
+      }
+    }, { passive: true });
+
+    canvas.addEventListener('touchend', () => {
+      lastPinchDist = 0;
+      pinchAnchorWorld = null;
+    }, { passive: true });
 
     let pointerDownPos = { x: 0, y: 0 };
     window.addEventListener('pointerdown', (e) => {
@@ -2074,6 +2120,13 @@ canvas.addEventListener('dblclick', (e) => {
       mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
       tooltipEl.style.left = `${e.clientX + 16}px`;
       tooltipEl.style.top = `${e.clientY + 16}px`;
+
+      // Chỉ khi chuột di chuyển vượt ngưỡng 4px mới xóa điểm neo cũ để đổi sang điểm neo mới
+      const moveDist = Math.hypot(e.clientX - lastAnchorCursorPx.x, e.clientY - lastAnchorCursorPx.y);
+      if (moveDist > 4) {
+        lockedZoomAnchorWorld = null;
+        lockedZoomAnchorSprite = null;
+      }
     });
 
     function checkRaycast() {
@@ -2135,7 +2188,6 @@ canvas.addEventListener('dblclick', (e) => {
     }
 
     window.addEventListener('pointerup', (e) => {
-      // Bỏ qua khi chạm/click vào các thành phần UI nổi (header, panel chi tiết, thanh tìm kiếm, bộ lọc đang mở)
       if (
         e.target.closest('aside') ||
         e.target.closest('header') ||
@@ -2156,7 +2208,6 @@ canvas.addEventListener('dblclick', (e) => {
       mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
       mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
 
-      // Tăng vùng bắt chạm trên mobile / cửa sổ hẹp để chọn luận văn mượt mà
       raycaster.params.Sprite.threshold = isMobileView() ? 9.5 : 6.0;
       raycaster.setFromCamera(mouse, camera);
 
@@ -2164,7 +2215,6 @@ canvas.addEventListener('dblclick', (e) => {
       const hits = raycaster.intersectObjects(visibleSprites);
 
       if (hits.length > 0) {
-        // Ưu tiên chọn node luận văn (thesis_planet) nếu chạm gần cụm sao
         let targetHit = hits[0];
         for (let i = 0; i < hits.length; i++) {
           if (hits[i].object.userData.nodeData.type === 'thesis_planet') {
@@ -2198,13 +2248,14 @@ canvas.addEventListener('dblclick', (e) => {
       selectedActiveNode = node;
       selectedActiveSprite = targetSprite || null;
       isSearchActive = false;
+      lockedZoomAnchorWorld = null;
+      lockedZoomAnchorSprite = null;
 
       highlightSelectedThesisConnections(node);
 
       const detail = getCleanDetail(node);
       renderDetailContent(node, detail);
 
-      // Nếu panel bộ lọc mobile đang mở thì thu gọn lại để nhường không gian đọc chi tiết
       if (isMobileView()) {
         const deptPanelContainer = document.getElementById('dept-panel-container');
         const mobileDeptBtn = document.getElementById('btn-mobile-dept-open');
@@ -2496,17 +2547,21 @@ canvas.addEventListener('dblclick', (e) => {
     // Camera Presets
     document.getElementById('btn-view-galaxy').addEventListener('click', () => {
       if (selectedActiveNode) closeRightPanel();
+      lockedZoomAnchorWorld = null;
+      lockedZoomAnchorSprite = null;
       document.getElementById('btn-view-galaxy').classList.add('active');
       document.getElementById('btn-view-top').classList.remove('active');
-      const targetY = controls.target.y || 200;
+      const targetY = galaxyCenterYGlobal;
       new TWEEN.Tween(camera.position).to({ x: 0, y: targetY + 180, z: 720 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
       new TWEEN.Tween(controls.target).to({ x: 0, y: targetY, z: 0 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
     });
     document.getElementById('btn-view-top').addEventListener('click', () => {
       if (selectedActiveNode) closeRightPanel();
+      lockedZoomAnchorWorld = null;
+      lockedZoomAnchorSprite = null;
       document.getElementById('btn-view-top').classList.add('active');
       document.getElementById('btn-view-galaxy').classList.remove('active');
-      const targetY = controls.target.y || 200;
+      const targetY = galaxyCenterYGlobal;
       new TWEEN.Tween(camera.position).to({ x: 0, y: 950, z: 0.001 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
       new TWEEN.Tween(controls.target).to({ x: 0, y: targetY, z: 0 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
     });
