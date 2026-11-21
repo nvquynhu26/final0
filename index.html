@@ -633,49 +633,56 @@
     }
 
     /* ==========================================================================
-       3. PROCEDURAL OPTICAL TEXTURES (SHARP SOLID CORE FOR DOCTORAL THESES)
+       3. PROCEDURAL OPTICAL TEXTURES (CLEAN SMOOTH GLOW WITHOUT PIXEL ARTIFACTS)
        ========================================================================== */
     function createStarlightTexture() {
       const c = document.createElement('canvas');
-      c.width = 64; c.height = 64;
+      c.width = 128; c.height = 128;
       const ctx = c.getContext('2d');
-      const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+      const grad = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
       grad.addColorStop(0.0, 'rgba(255, 255, 255, 1.0)');
-      grad.addColorStop(0.18, 'rgba(255, 255, 255, 0.95)');
-      grad.addColorStop(0.42, 'rgba(255, 255, 255, 0.6)');
+      grad.addColorStop(0.18, 'rgba(255, 255, 255, 0.92)');
+      grad.addColorStop(0.42, 'rgba(255, 255, 255, 0.55)');
+      grad.addColorStop(0.75, 'rgba(255, 255, 255, 0.14)');
+      grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 128, 128);
+      const tex = new THREE.CanvasTexture(c);
+      tex.minFilter = THREE.LinearFilter;
+      tex.magFilter = THREE.LinearFilter;
+      return tex;
+    }
+
+    // Texture cho Luận văn Tiến sĩ: sáng trơn mượt mà, lõi đặc rõ nét, không hạt lấm tấm
+    function createDoctoralStarTexture() {
+      const c = document.createElement('canvas');
+      c.width = 128; c.height = 128;
+      const ctx = c.getContext('2d');
+      const grad = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+      grad.addColorStop(0.0, 'rgba(255, 255, 255, 1.0)');
+      grad.addColorStop(0.32, 'rgba(255, 255, 255, 0.96)');
+      grad.addColorStop(0.52, 'rgba(255, 255, 255, 0.65)');
       grad.addColorStop(0.74, 'rgba(255, 255, 255, 0.16)');
       grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
       ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, 64, 64);
-      return new THREE.CanvasTexture(c);
-    }
-
-    function createDoctoralStarTexture() {
-      const c = document.createElement('canvas');
-      c.width = 64; c.height = 64;
-      const ctx = c.getContext('2d');
-      const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
-      grad.addColorStop(0.0, 'rgba(255, 255, 255, 1.0)');
-      grad.addColorStop(0.36, 'rgba(255, 255, 255, 0.98)');
-      grad.addColorStop(0.54, 'rgba(255, 255, 255, 0.68)');
-      grad.addColorStop(0.74, 'rgba(255, 255, 255, 0.0)');
-      grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, 64, 64);
-      return new THREE.CanvasTexture(c);
+      ctx.fillRect(0, 0, 128, 128);
+      const tex = new THREE.CanvasTexture(c);
+      tex.minFilter = THREE.LinearFilter;
+      tex.magFilter = THREE.LinearFilter;
+      return tex;
     }
 
     function createModerateSunTexture() {
       const c = document.createElement('canvas');
-      c.width = 64; c.height = 64;
+      c.width = 128; c.height = 128;
       const ctx = c.getContext('2d');
-      const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+      const grad = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
       grad.addColorStop(0.0, 'rgba(255, 255, 255, 1.0)');
       grad.addColorStop(0.24, 'rgba(254, 240, 138, 0.9)');
       grad.addColorStop(0.55, 'rgba(234, 179, 8, 0.28)');
       grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
       ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, 64, 64);
+      ctx.fillRect(0, 0, 128, 128);
       return new THREE.CanvasTexture(c);
     }
 
@@ -717,7 +724,6 @@
     controls.maxDistance = 4000;
     controls.minDistance = 12;
     controls.target.set(0, 200, 0);
-    // Tắt zoom mặc định tới tâm cố định của OrbitControls để thay bằng Cursor-Anchored Zoom chính xác
     controls.enableZoom = false;
 
     const cosmosGroup = new THREE.Group();
@@ -1196,7 +1202,7 @@
     }
 
     /* ==========================================================================
-       7. KHỞI TẠO BỐ CỤC: GIỮ CHẶT TẦNG ĐÁY 2001 NẰM TRONG PHỄU ÁNH SÁNG & TÁCH BẠCH RÕ
+       7. KHỞI TẠO BỐ CỤC: SAO TIẾN SĨ SÁNG TRƠN MỊN MÀNG, KHÔNG ĐỐM HẠT
        ========================================================================== */
     function buildCosmicScene() {
       NODE_SPRITES = [];
@@ -1364,12 +1370,13 @@
             baseColor.setHSL(hsl.h, Math.max(0.72, hsl.s * 0.85), Math.min(0.70, Math.max(0.56, hsl.l * 1.06)));
           }
 
+          // Dùng NormalBlending cho sao Tiến sĩ để màu sáng trơn thuần khiết, không bị cộng tràn pixel gây đốm màu
           spriteMat = new THREE.SpriteMaterial({
             map: det.isPhd ? doctoralStarTexture : starTexture,
             color: baseColor,
             transparent: true,
-            opacity: det.isPhd ? 1.0 : 0.86,
-            blending: THREE.AdditiveBlending,
+            opacity: det.isPhd ? 0.96 : 0.86,
+            blending: det.isPhd ? THREE.NormalBlending : THREE.AdditiveBlending,
             depthWrite: false
           });
         }
@@ -1801,7 +1808,7 @@
           s.material.opacity = 0.0;
         } else if (!isSearchActive && !selectedActiveNode) {
           const det = n.type === 'thesis_planet' ? getCleanDetail(n) : null;
-          s.material.opacity = (det && det.isPhd) ? 1.0 : 0.88;
+          s.material.opacity = (det && det.isPhd) ? 0.96 : 0.88;
           s.scale.set(s.userData.baseSize, s.userData.baseSize, 1);
         }
       });
@@ -1965,7 +1972,6 @@
     let activeCameraFlyTween = null;
     let isCameraFlying = false;
 
-    // Trạng thái điểm neo Zoom ổn định: chỉ cập nhật khi chuột di chuyển
     let lockedZoomAnchorWorld = null;
     let lockedZoomAnchorSprite = null;
     let lastAnchorCursorPx = { x: -9999, y: -9999 };
@@ -1976,7 +1982,6 @@
     const _anchorHitPoint = new THREE.Vector3();
     const _anchorWorldHelper = new THREE.Vector3();
 
-    // Tính điểm neo 3D ổn định tại vị trí con trỏ (ưu tiên bắt đúng ngôi sao dưới trỏ, fallback mặt phẳng độ sâu qua vùng ngân hà)
     function computeZoomAnchorAtScreen(clientX, clientY) {
       const rect = canvas.getBoundingClientRect();
       _zoomMouseNDC.x = ((clientX - rect.left) / rect.width) * 2 - 1;
@@ -1989,7 +1994,6 @@
       const hits = _zoomRaycaster.intersectObjects(visibleSprites);
 
       if (hits.length > 0) {
-        // Bắt trúng điểm sáng dưới con trỏ
         let chosen = hits[0].object;
         for (let i = 0; i < hits.length; i++) {
           if (hits[i].object.userData.nodeData.type === 'thesis_planet') {
@@ -2004,14 +2008,11 @@
         };
       }
 
-      // Nếu không trúng ngôi sao cụ thể: chiếu vào mặt phẳng đi qua trung tâm dải ngân hà (0, galaxyCenterYGlobal, 0)
-      // vuông góc với hướng nhìn của camera (giữ điểm neo cực kỳ ổn định và không nhảy lung tung)
       camera.getWorldDirection(_anchorPlaneNormal);
       const galaxyMidPoint = new THREE.Vector3(0, galaxyCenterYGlobal, 0);
       _anchorPlane.setFromNormalAndCoplanarPoint(_anchorPlaneNormal, galaxyMidPoint);
 
       if (_zoomRaycaster.ray.intersectPlane(_anchorPlane, _anchorHitPoint)) {
-        // Kẹp điểm neo trong vùng không gian hợp lý của thiên hà để tránh trôi quá xa ra ngoài vũ trụ rỗng
         _anchorHitPoint.x = THREE.MathUtils.clamp(_anchorHitPoint.x, -560, 560);
         _anchorHitPoint.y = THREE.MathUtils.clamp(_anchorHitPoint.y, -40, 520);
         _anchorHitPoint.z = THREE.MathUtils.clamp(_anchorHitPoint.z, -560, 560);
@@ -2027,7 +2028,6 @@
       };
     }
 
-    // Thực hiện zoom in/out neo chặt vào điểm đã khóa (Zoom-to-Anchor)
     function applyAnchoredZoom(zoomScaleFactor, anchorWorldPoint) {
       if (isCameraFlying && activeCameraFlyTween) {
         activeCameraFlyTween.stop();
@@ -2040,19 +2040,14 @@
         return;
       }
 
-      // Công thức đồng dạng: giữ nguyên hình chiếu của anchorWorldPoint trên màn hình khi zoom
-      // P_new = A + (P_old - A) * scale
-      // T_new = A + (T_old - A) * scale
       camera.position.sub(anchorWorldPoint).multiplyScalar(zoomScaleFactor).add(anchorWorldPoint);
       controls.target.sub(anchorWorldPoint).multiplyScalar(zoomScaleFactor).add(anchorWorldPoint);
       controls.update();
     }
 
-    // Lắng nghe con lăn chuột để zoom vào đúng điểm neo dưới con trỏ
     canvas.addEventListener('wheel', (e) => {
       e.preventDefault();
 
-      // Nếu chưa có điểm neo khóa (do chuột mới di chuyển) -> tính & khóa điểm neo mới ngay tại vị trí chuột hiện tại
       if (!lockedZoomAnchorWorld) {
         const anchorData = computeZoomAnchorAtScreen(e.clientX, e.clientY);
         lockedZoomAnchorWorld = anchorData.point;
@@ -2060,19 +2055,16 @@
         lastAnchorCursorPx.x = e.clientX;
         lastAnchorCursorPx.y = e.clientY;
       } else if (lockedZoomAnchorSprite && lockedZoomAnchorSprite.visible) {
-        // Nếu neo vào 1 ngôi sao đang trôi nhẹ, cập nhật tọa độ trôi của chính ngôi sao đó
         cosmosGroup.updateMatrixWorld();
         lockedZoomAnchorSprite.getWorldPosition(lockedZoomAnchorWorld);
       }
 
-      // Chuẩn hóa bước zoom cho cả chuột thường và trackpad MacBook
       const rawDelta = THREE.MathUtils.clamp(e.deltaY, -120, 120);
       const zoomFactor = Math.exp(rawDelta * 0.0014);
 
       applyAnchoredZoom(zoomFactor, lockedZoomAnchorWorld);
     }, { passive: false });
 
-    // Hỗ trợ zoom 2 ngón trên mobile/trackpad theo điểm giữa 2 ngón tay
     let lastPinchDist = 0;
     let pinchAnchorWorld = null;
     canvas.addEventListener('touchstart', (e) => {
@@ -2121,7 +2113,6 @@
       tooltipEl.style.left = `${e.clientX + 16}px`;
       tooltipEl.style.top = `${e.clientY + 16}px`;
 
-      // Chỉ khi chuột di chuyển vượt ngưỡng 4px mới xóa điểm neo cũ để đổi sang điểm neo mới
       const moveDist = Math.hypot(e.clientX - lastAnchorCursorPx.x, e.clientY - lastAnchorCursorPx.y);
       if (moveDist > 4) {
         lockedZoomAnchorWorld = null;
@@ -2522,7 +2513,7 @@
         s.userData.isRelated = false;
         if (s.visible) {
           const det = s.userData.nodeData.type === 'thesis_planet' ? getCleanDetail(s.userData.nodeData) : null;
-          s.material.opacity = det && det.isPhd ? 1.0 : 0.88;
+          s.material.opacity = det && det.isPhd ? 0.96 : 0.88;
           s.scale.set(s.userData.baseSize, s.userData.baseSize, 1);
         }
       });
@@ -2717,7 +2708,7 @@
             const det = s.userData.nodeData.type === 'thesis_planet' ? getCleanDetail(s.userData.nodeData) : null;
             const b = s.userData.baseSize * distFactor;
             s.scale.set(b * (1.0 + shimmer), b * (1.0 + shimmer), 1);
-            s.material.opacity = (det && det.isPhd) ? 1.0 : Math.min(0.92, 0.80 + Math.abs(shimmer) * 0.25);
+            s.material.opacity = (det && det.isPhd) ? 0.96 : Math.min(0.92, 0.80 + Math.abs(shimmer) * 0.25);
           }
         }
       }
