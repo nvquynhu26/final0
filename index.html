@@ -2093,12 +2093,12 @@
           tooltipEl.classList.remove('hidden');
 
           if (n.type === 'dept_sun') {
-            hoverBadgeEl.innerText = "DEPARTMENT SUN";
+            hoverBadgeEl.innerText = "DEPARTMENT";
             hoverBadgeEl.className = "inline-block px-1.5 py-0.5 rounded text-[9px] font-scifi font-bold mb-1 bg-amber-500/20 text-amber-300";
             hoverTitleEl.innerText = detail.dept;
             hoverSubEl.innerText = "학과 중심 태양";
           } else if (n.type === 'advisor_sun') {
-            hoverBadgeEl.innerText = "ADVISOR SUN";
+            hoverBadgeEl.innerText = "ADVISOR";
             hoverBadgeEl.className = "inline-block px-1.5 py-0.5 rounded text-[9px] font-scifi font-bold mb-1 bg-yellow-500/20 text-yellow-300";
             hoverTitleEl.innerText = n.name;
             hoverSubEl.innerText = `${detail.dept} · 지도교수`;
