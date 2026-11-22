@@ -2482,7 +2482,7 @@
     searchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') performSearch(); });
     searchBtn.addEventListener('click', performSearch);
 
-    // Camera Presets: 측면 뷰 (Side View), 평면 뷰 (Top View), 입체 뷰 (Full Galaxy 45-deg Isometric View)
+    // Camera Presets: 측면 뷰 (Side View), 평면 뷰 (Top View), 입체 뷰 (Full Galaxy Isometric View)
     function setActiveCameraBtn(activeId) {
       ['btn-view-galaxy', 'btn-view-top', 'btn-view-3d'].forEach(id => {
         const el = document.getElementById(id);
@@ -2516,18 +2516,17 @@
       lockedZoomAnchorWorld = null;
       lockedZoomAnchorSprite = null;
       setActiveCameraBtn('btn-view-3d');
-
-      // Góc 45 độ bên trên phía bên phải, thu trọn toàn bộ dải ngân hà từ đáy đến đỉnh vào khung hình
-      const targetY = 175;
-      const dist = 920;
-      const elevationRad = Math.PI / 4; // 45 độ
-      const camY = targetY + Math.sin(elevationRad) * dist;
+      // Góc nhìn lập thể thấy trọn vẹn toàn bộ dải ngân hà từ đáy đến đỉnh như ảnh mẫu
+      const centerTargetY = galaxyCenterYGlobal - 10;
+      const dist = 660;
+      const elevationRad = 42 * (Math.PI / 180);
+      const camY = centerTargetY + Math.sin(elevationRad) * dist;
       const horizDist = Math.cos(elevationRad) * dist;
-      const camX = horizDist * 0.72;
-      const camZ = horizDist * 0.72;
+      const camX = horizDist * 0.65;
+      const camZ = horizDist * 0.76;
 
       new TWEEN.Tween(camera.position).to({ x: camX, y: camY, z: camZ }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
-      new TWEEN.Tween(controls.target).to({ x: 0, y: targetY, z: 0 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
+      new TWEEN.Tween(controls.target).to({ x: 0, y: centerTargetY, z: 0 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
     });
 
     /* ==========================================================================
