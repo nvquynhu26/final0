@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
-  <title>SEOULTECH RESEARCH COSMOS</title>
+  <title>서울과학기술대학교 학술 유니버스</title>
   
   <!-- Preconnect & Preload for Fast Startup -->
   <link rel="preconnect" href="https://cdn.tailwindcss.com">
@@ -57,22 +57,22 @@
     ::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.6); border-radius: 3px; }
     ::-webkit-scrollbar-thumb:hover { background: rgba(236, 72, 153, 0.8); }
     
-    /* Vertical Range Slider */
-    .slider-vertical {
+    /* Horizontal Range Slider */
+    .slider-horizontal {
       -webkit-appearance: none;
-      transform: rotate(-90deg);
+      width: 100%;
       background: transparent;
       outline: none;
       cursor: pointer;
     }
-    .slider-vertical::-webkit-slider-runnable-track {
-      width: 130px; height: 3px;
+    .slider-horizontal::-webkit-slider-runnable-track {
+      width: 100%; height: 4px;
       background: linear-gradient(90deg, #06B6D4, #8B5CF6, #F43F5E);
       border-radius: 2px;
     }
-    .slider-vertical::-webkit-slider-thumb {
+    .slider-horizontal::-webkit-slider-thumb {
       -webkit-appearance: none;
-      height: 13px; width: 13px; border-radius: 50%;
+      height: 14px; width: 14px; border-radius: 50%;
       background: #FFFFFF;
       margin-top: -5px;
       box-shadow: 0 0 10px #818CF8;
@@ -92,6 +92,7 @@
       align-items: center;
       justify-content: space-between;
       padding: 0 4px;
+      shrink: 0;
     }
     .switch-handle {
       position: absolute;
@@ -152,39 +153,34 @@
 
   <!-- HEADER -->
   <header class="absolute top-0 left-0 right-0 z-20 flex justify-between items-start px-4 md:px-6 header-safe pointer-events-none">
-    <div class="pointer-events-auto max-w-[70%] md:max-w-none">
+    <div class="pointer-events-auto max-w-[85%] md:max-w-none">
       <div class="flex items-center space-x-2 mb-0.5">
         <div class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_10px_#22D3EE] shrink-0"></div>
         <h1 id="app-title" class="text-lg md:text-2xl font-black tracking-widest uppercase bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-indigo-200 to-pink-500 truncate">
-          서울과학기술대학교 연구 은하
+          서울과학기술대학교 학술 유니버스
         </h1>
       </div>
-      <p id="app-subtitle" class="text-[11px] md:text-xs text-slate-400 tracking-wider font-light line-clamp-1">
-        학위논문 및 지식 네트워크 시각화
-      </p>
 
       <button id="btn-mobile-dept-open" class="md:hidden mt-2 flex items-center space-x-1.5 px-3 py-1 scifi-panel rounded-full text-cyan-300 border border-cyan-400/40 text-xs active:scale-95 transition-all shadow-[0_0_12px_rgba(6,182,212,0.3)]">
         <span class="text-base font-bold leading-none">+</span>
         <span class="text-[10px] font-scifi uppercase tracking-wider" id="mobile-dept-btn-text">학과 필터</span>
       </button>
     </div>
-
-    <!-- Language Switcher -->
-    <div class="flex items-center space-x-2 pointer-events-auto z-50">
-      <div class="scifi-panel p-1 rounded-full flex items-center border border-indigo-500/30">
-        <button id="lang-ko-btn" class="px-2.5 md:px-3 py-1 rounded-full text-xs font-bold bg-indigo-600 text-white">KO</button>
-        <button id="lang-en-btn" class="px-2.5 md:px-3 py-1 rounded-full text-xs font-semibold text-slate-400 hover:text-white">EN</button>
-      </div>
-    </div>
   </header>
 
-  <!-- DEPARTMENT & THESIS FILTER PANEL -->
-  <div id="dept-panel-container" class="hidden md:flex fixed md:absolute left-1/2 -translate-x-1/2 top-28 md:left-6 md:top-24 md:translate-x-0 z-30 pointer-events-none transition-all duration-300">
-    <div class="w-[90vw] max-w-[340px] md:w-80 scifi-panel p-4 rounded-xl pointer-events-auto border border-white/10 flex flex-col space-y-3 shadow-2xl">
+  <!-- EXPAND BUTTON FOR LARGE PC WINDOW (VISIBLE WHEN PANEL IS MINIMIZED) -->
+  <button id="btn-pc-panel-expand" class="hidden fixed left-6 top-24 z-30 scifi-panel w-9 h-9 rounded-full items-center justify-center text-cyan-300 border border-cyan-400/40 text-lg font-bold hover:scale-105 active:scale-95 transition-all shadow-[0_0_15px_rgba(6,182,212,0.35)] pointer-events-auto" title="필터 패널 열기">
+    +
+  </button>
+
+  <!-- UNIFIED FILTER & TIMELINE PANEL -->
+  <div id="dept-panel-container" class="hidden md:flex fixed md:absolute left-1/2 -translate-x-1/2 top-24 md:left-6 md:top-20 md:translate-x-0 z-30 pointer-events-none transition-all duration-300">
+    <div class="w-[90vw] max-w-[340px] md:w-80 scifi-panel p-4 rounded-xl pointer-events-auto border border-white/10 flex flex-col space-y-2.5 shadow-2xl max-h-[82vh] overflow-y-auto">
       <div class="flex items-center justify-between border-b border-indigo-500/20 pb-2">
         <span id="label-college-filters" class="text-xs font-bold text-indigo-300 tracking-widest uppercase font-scifi">학과 필터</span>
         <div class="flex items-center space-x-2">
           <button id="btn-reset-filters" class="text-[10px] text-cyan-400 hover:underline font-scifi">초기화</button>
+          <button id="btn-pc-panel-minimize" class="hidden lg:inline-flex items-center justify-center w-5 h-5 rounded bg-white/5 hover:bg-indigo-500/30 border border-white/15 text-slate-300 hover:text-white text-xs font-bold leading-none transition" title="패널 축소">-</button>
           <button id="btn-mobile-dept-close" class="md:hidden text-slate-400 hover:text-white px-2 py-0.5 rounded bg-white/5 border border-white/10 text-xs font-bold font-scifi">✕</button>
         </div>
       </div>
@@ -206,15 +202,16 @@
         </select>
       </div>
 
-      <!-- Camera Presets -->
-      <div class="pt-2 border-t border-indigo-500/20 grid grid-cols-2 gap-2 text-xs">
-        <button id="btn-view-galaxy" class="scifi-btn px-2.5 py-1.5 rounded text-slate-300 font-medium">은하 뷰</button>
-        <button id="btn-view-top" class="scifi-btn px-2.5 py-1.5 rounded text-slate-300 font-medium active">탑 뷰</button>
+      <!-- Camera Presets (측면 뷰 / 평면 뷰 / 입체 뷰) -->
+      <div class="pt-2 border-t border-indigo-500/20 grid grid-cols-3 gap-1.5 text-xs">
+        <button id="btn-view-galaxy" class="scifi-btn px-2 py-1.5 rounded text-slate-300 font-medium text-center">측면 뷰</button>
+        <button id="btn-view-top" class="scifi-btn px-2 py-1.5 rounded text-slate-300 font-medium text-center active">평면 뷰</button>
+        <button id="btn-view-3d" class="scifi-btn px-2 py-1.5 rounded text-slate-300 font-medium text-center">입체 뷰</button>
       </div>
 
       <!-- DEGREE FILTER (MASTER / PHD) -->
       <div class="pt-2 border-t border-indigo-500/20 flex flex-col space-y-1.5">
-        <span id="label-degree-filter" class="text-[10px] font-bold text-indigo-300 tracking-wider uppercase font-scifi">학위 구분 필터</span>
+        <span id="label-degree-filter" class="text-xs font-bold text-indigo-300 tracking-widest uppercase font-scifi">학위 필터</span>
         <div class="grid grid-cols-3 gap-1.5 text-[11px]" id="degree-btn-group">
           <button class="degree-btn scifi-btn py-1 px-1 rounded text-center active" data-degree="all">전체</button>
           <button class="degree-btn scifi-btn py-1 px-1 rounded text-center" data-degree="master">석사</button>
@@ -224,35 +221,31 @@
 
       <!-- THESIS LANGUAGE FILTER (KO / EN) -->
       <div class="pt-2 border-t border-indigo-500/20 flex flex-col space-y-1.5">
-        <span id="label-thesis-lang-filter" class="text-[10px] font-bold text-indigo-300 tracking-wider uppercase font-scifi">논문 언어 필터</span>
+        <span id="label-thesis-lang-filter" class="text-xs font-bold text-indigo-300 tracking-widest uppercase font-scifi">언어 필터</span>
         <div class="grid grid-cols-3 gap-1.5 text-[11px]" id="thesis-lang-btn-group">
           <button class="thesis-lang-btn scifi-btn py-1 px-1 rounded text-center active" data-tlang="all">전체</button>
           <button class="thesis-lang-btn scifi-btn py-1 px-1 rounded text-center" data-tlang="ko">한국어</button>
           <button class="thesis-lang-btn scifi-btn py-1 px-1 rounded text-center" data-tlang="en">영어</button>
         </div>
       </div>
-    </div>
-  </div>
 
-  <!-- TIMELINE PANEL -->
-  <div class="absolute left-4 md:left-6 bottom-32 md:bottom-24 z-20 pointer-events-none">
-    <div class="w-20 scifi-panel py-3 px-2 rounded-xl pointer-events-auto border border-white/10 flex flex-col items-center shadow-lg">
-      <div class="w-full flex flex-col items-center border-b border-indigo-500/20 pb-1 mb-1">
-        <span id="label-timeline-title" class="text-[10px] font-bold text-indigo-300">연도</span>
-        <span id="timeline-year-badge" class="font-scifi text-xs font-bold text-cyan-400">2026</span>
-      </div>
+      <!-- MERGED TIMELINE SECTION (HORIZONTAL SLIDER INSIDE PANEL) -->
+      <div class="pt-2 border-t border-indigo-500/20 flex flex-col space-y-1.5">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-2">
+            <span id="label-timeline-title" class="text-xs font-bold text-indigo-300 tracking-widest uppercase font-scifi">연도</span>
+            <span id="timeline-year-badge" class="font-scifi text-xs font-bold text-cyan-400">2026</span>
+          </div>
+          <!-- Compact Mode Slider Switch -->
+          <div id="mode-toggle-switch" class="switch-container" title="누적 / 단일 연도 전환">
+            <span class="text-[8px] font-bold text-white z-10 pl-0.5 pointer-events-none">누적</span>
+            <span class="text-[8px] font-bold text-slate-300 z-10 pr-0.5 pointer-events-none">단일</span>
+            <div id="switch-handle" class="switch-handle"></div>
+          </div>
+        </div>
 
-      <!-- Vertical Slider -->
-      <div class="h-32 w-full flex items-center justify-center relative my-1">
-        <input id="timeline-slider" type="range" min="2001" max="2026" value="2026" step="1" class="slider-vertical">
-      </div>
-
-      <!-- Compact Mode Slider Switch -->
-      <div class="flex flex-col items-center mt-1">
-        <div id="mode-toggle-switch" class="switch-container" title="누적 / 단일 연도 전환">
-          <span class="text-[8px] font-bold text-white z-10 pl-0.5 pointer-events-none">누적</span>
-          <span class="text-[8px] font-bold text-slate-300 z-10 pr-0.5 pointer-events-none">단일</span>
-          <div id="switch-handle" class="switch-handle"></div>
+        <div class="w-full py-1 px-0.5 flex items-center">
+          <input id="timeline-slider" type="range" min="2001" max="2026" value="2026" step="1" class="slider-horizontal">
         </div>
       </div>
     </div>
@@ -371,85 +364,26 @@
 
   <script>
     /* ==========================================================================
-       1. I18N DICTIONARY
+       1. KOREAN TEXT CONSTANTS
        ========================================================================== */
-    let currentLang = 'ko';
-
-    const I18N = {
-      ko: {
-        appTitle: "서울과학기술대학교 연구 은하",
-        appSubtitle: "학위논문 및 지식 네트워크 시각화",
-        collegesTitle: "학과 필터",
-        resetFilters: "초기화",
-        allDeptsOpt: "-- 전체 학과 --",
-        camGalaxy: "은하 뷰",
-        camReset: "탑 뷰",
-        degreeFilterTitle: "학위 구분",
-        degreeButtons: { all: "전체", master: "석사", phd: "박사" },
-        thesisLangFilterTitle: "논문 언어",
-        thesisLangButtons: { all: "전체", ko: "한국어", en: "영어" },
-        timelineTitle: "연도",
-        searchPlaceholder: "지도교수, 논문 제목, 키워드 검색...",
-        searchAll: "통합검색",
-        searchAdvisor: "지도교수",
-        searchKeyword: "주제어",
-        searchName: "논문제목",
-        searchAuthor: "저자",
-        searchDept: "학과",
-        searchResultsCount: (c) => `총 ${c}건의 논문`,
-        listViewSubhint: "클릭 시 해당 논문 상세 확인",
-        viewDetail: "상세보기",
-        backToList: "← 목록으로",
-        detailTitleLabel: "논문 제목",
-        detailAuthorLabel: "저자",
-        detailAdvisorLabel: "지도교수",
-        detailDeptLabel: "학과 / 전공",
-        detailDegreeLabel: "학위 구분",
-        detailUciLabel: "UCI 등록번호 (UCI Identifier)",
-        uciNone: "없음 (해당 논문 UCI 미등록)",
-        detailKeywordsLabel: "주제어 키워드",
-        keywordsNone: "등록된 키워드 없음",
-        detailAbstractLabel: "논문 초록 (Abstract)",
-        yearSuffix: "년",
-        clusterButtons: { all: "전체", "공학": "공학", "디자인": "디자인", "융합": "융합", "경영": "경영", "인문": "인문" }
-      },
-      en: {
-        appTitle: "SEOULTECH RESEARCH COSMOS",
-        appSubtitle: "Visualizing Academic Theses & Knowledge Networks",
-        collegesTitle: "DEPARTMENTS",
-        resetFilters: "RESET",
-        allDeptsOpt: "-- All Departments --",
-        camGalaxy: "GALAXY",
-        camReset: "TOP VIEW",
-        degreeFilterTitle: "DEGREE LEVEL",
-        degreeButtons: { all: "All", master: "Master", phd: "Doctoral" },
-        thesisLangFilterTitle: "THESIS LANGUAGE",
-        thesisLangButtons: { all: "All", ko: "Korean", en: "English" },
-        timelineTitle: "TIMELINE",
-        searchPlaceholder: "Search advisor, title, keywords...",
-        searchAll: "All Fields",
-        searchAdvisor: "Advisor",
-        searchKeyword: "Keyword",
-        searchName: "Title",
-        searchAuthor: "Author",
-        searchDept: "Department",
-        searchResultsCount: (c) => `Total ${c} theses`,
-        listViewSubhint: "Click to inspect node details",
-        viewDetail: "Inspect",
-        backToList: "← Back to List",
-        detailTitleLabel: "THESIS TITLE",
-        detailAuthorLabel: "AUTHOR",
-        detailAdvisorLabel: "ADVISOR",
-        detailDeptLabel: "DEPARTMENT",
-        detailDegreeLabel: "DEGREE",
-        detailUciLabel: "UCI IDENTIFIER",
-        uciNone: "None (UCI Not Registered)",
-        detailKeywordsLabel: "KEYWORDS",
-        keywordsNone: "No keywords registered",
-        detailAbstractLabel: "ABSTRACT",
-        yearSuffix: "",
-        clusterButtons: { all: "All", "공학": "Eng", "디자인": "Design", "융합": "Converg", "경영": "Business", "인문": "Humanities" }
-      }
+    const TEXT_KO = {
+      appTitle: "서울과학기술대학교 학술 유니버스",
+      collegesTitle: "학과 필터",
+      resetFilters: "초기화",
+      allDeptsOpt: "-- 전체 학과 --",
+      camGalaxy: "측면 뷰",
+      camReset: "평면 뷰",
+      cam3d: "입체 뷰",
+      degreeFilterTitle: "학위 필터",
+      thesisLangFilterTitle: "언어 필터",
+      timelineTitle: "연도",
+      searchPlaceholder: "지도교수, 논문 제목, 키워드 검색...",
+      searchResultsCount: (c) => `총 ${c}건의 논문`,
+      listViewSubhint: "클릭 시 해당 논문 상세 확인",
+      backToList: "← 목록으로",
+      uciNone: "없음 (해당 논문 UCI 미등록)",
+      keywordsNone: "등록된 키워드 없음",
+      yearSuffix: "년"
     };
 
     /* ==========================================================================
@@ -632,57 +566,54 @@
       return window.innerWidth < 768;
     }
 
+    function isLargePCView() {
+      return window.innerWidth >= 1024;
+    }
+
     /* ==========================================================================
-       3. PROCEDURAL OPTICAL TEXTURES (CLEAN SMOOTH GLOW WITHOUT PIXEL ARTIFACTS)
+       3. PROCEDURAL OPTICAL TEXTURES (CLEAN SMOOTH CORE WITHOUT COLOR ARTIFACTS)
        ========================================================================== */
     function createStarlightTexture() {
       const c = document.createElement('canvas');
-      c.width = 128; c.height = 128;
+      c.width = 64; c.height = 64;
       const ctx = c.getContext('2d');
-      const grad = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+      const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
       grad.addColorStop(0.0, 'rgba(255, 255, 255, 1.0)');
-      grad.addColorStop(0.18, 'rgba(255, 255, 255, 0.92)');
-      grad.addColorStop(0.42, 'rgba(255, 255, 255, 0.55)');
-      grad.addColorStop(0.75, 'rgba(255, 255, 255, 0.14)');
+      grad.addColorStop(0.18, 'rgba(255, 255, 255, 0.95)');
+      grad.addColorStop(0.42, 'rgba(255, 255, 255, 0.6)');
+      grad.addColorStop(0.74, 'rgba(255, 255, 255, 0.16)');
       grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
       ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, 128, 128);
-      const tex = new THREE.CanvasTexture(c);
-      tex.minFilter = THREE.LinearFilter;
-      tex.magFilter = THREE.LinearFilter;
-      return tex;
+      ctx.fillRect(0, 0, 64, 64);
+      return new THREE.CanvasTexture(c);
     }
 
-    // Texture cho Luận văn Tiến sĩ: sáng trơn mượt mà, lõi đặc rõ nét, không hạt lấm tấm
     function createDoctoralStarTexture() {
       const c = document.createElement('canvas');
       c.width = 128; c.height = 128;
       const ctx = c.getContext('2d');
       const grad = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
       grad.addColorStop(0.0, 'rgba(255, 255, 255, 1.0)');
-      grad.addColorStop(0.32, 'rgba(255, 255, 255, 0.96)');
-      grad.addColorStop(0.52, 'rgba(255, 255, 255, 0.65)');
-      grad.addColorStop(0.74, 'rgba(255, 255, 255, 0.16)');
+      grad.addColorStop(0.28, 'rgba(255, 255, 255, 0.92)');
+      grad.addColorStop(0.52, 'rgba(255, 255, 255, 0.45)');
+      grad.addColorStop(0.76, 'rgba(255, 255, 255, 0.10)');
       grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, 128, 128);
-      const tex = new THREE.CanvasTexture(c);
-      tex.minFilter = THREE.LinearFilter;
-      tex.magFilter = THREE.LinearFilter;
-      return tex;
+      return new THREE.CanvasTexture(c);
     }
 
     function createModerateSunTexture() {
       const c = document.createElement('canvas');
-      c.width = 128; c.height = 128;
+      c.width = 64; c.height = 64;
       const ctx = c.getContext('2d');
-      const grad = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+      const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
       grad.addColorStop(0.0, 'rgba(255, 255, 255, 1.0)');
       grad.addColorStop(0.24, 'rgba(254, 240, 138, 0.9)');
       grad.addColorStop(0.55, 'rgba(234, 179, 8, 0.28)');
       grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
       ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, 128, 128);
+      ctx.fillRect(0, 0, 64, 64);
       return new THREE.CanvasTexture(c);
     }
 
@@ -1140,7 +1071,6 @@
       node.dept = resolvedDept;
 
       let resolvedTitleKo = (d && (d.title_ko || d.title)) || node.title_ko || node.name || "학위논문 연구";
-      let resolvedTitleEn = (d && d.title_en) || node.title_en || resolvedTitleKo;
       let resolvedAuthor = (d && d.author) || node.author || `연구자_${node.id}`;
       let resolvedAdvisor = (d && (d.advisor || d.advisor_name)) || node.advisor || (node.type === 'advisor_sun' ? node.name.replace('교수', '').trim() : "지도교수");
       
@@ -1166,8 +1096,6 @@
         resolvedAbstractKo = `본 연구는 서울과학기술대학교 ${resolvedDept}에서 수행된 학위논문으로, 주제와 관련된 심층적인 학술 분석과 연구 방법론을 종합적으로 기술하고 있습니다.`;
       }
 
-      let resolvedAbstractEn = (d && (d.abstract_en || d.abstract || d.abstract_ko)) || node.abstract_en || `This research was conducted at ${resolvedDept}, Seoul National University of Science and Technology.`;
-      
       const rawKw = (d && d.keywords) ? d.keywords : node.keywords;
       const resolvedKeywords = sanitizeKeywords(rawKw);
 
@@ -1181,11 +1109,9 @@
 
       const detailObj = {
         title_ko: resolvedTitleKo,
-        title_en: resolvedTitleEn,
         author: resolvedAuthor,
         advisor: resolvedAdvisor,
         dept: resolvedDept,
-        dept_en: resolvedDept,
         degree: resolvedDegree,
         isPhd: isPhd,
         thesisLang: thesisLang,
@@ -1193,8 +1119,7 @@
         uci: resolvedUci,
         keywords: resolvedKeywords,
         concepts: resolvedConcepts,
-        abstract_ko: resolvedAbstractKo,
-        abstract_en: resolvedAbstractEn
+        abstract_ko: resolvedAbstractKo
       };
 
       node._resolvedDetail = detailObj;
@@ -1202,7 +1127,7 @@
     }
 
     /* ==========================================================================
-       7. KHỞI TẠO BỐ CỤC: SAO TIẾN SĨ SÁNG TRƠN MỊN MÀNG, KHÔNG ĐỐM HẠT
+       7. KHỞI TẠO BỐ CỤC: GIỮ CHẶT TẦNG ĐÁY 2001 NẰM TRONG PHỄU ÁNH SÁNG & TÁCH BẠCH RÕ
        ========================================================================== */
     function buildCosmicScene() {
       NODE_SPRITES = [];
@@ -1365,18 +1290,17 @@
           baseColor.getHSL(hsl);
 
           if (det.isPhd) {
-            baseColor.setHSL(hsl.h, Math.min(1.0, Math.max(0.88, hsl.s * 1.12)), Math.min(0.64, Math.max(0.54, hsl.l)));
+            baseColor.setHSL(hsl.h, Math.min(0.90, Math.max(0.78, hsl.s)), Math.min(0.60, Math.max(0.50, hsl.l)));
           } else {
             baseColor.setHSL(hsl.h, Math.max(0.72, hsl.s * 0.85), Math.min(0.70, Math.max(0.56, hsl.l * 1.06)));
           }
 
-          // Dùng NormalBlending cho sao Tiến sĩ để màu sáng trơn thuần khiết, không bị cộng tràn pixel gây đốm màu
           spriteMat = new THREE.SpriteMaterial({
             map: det.isPhd ? doctoralStarTexture : starTexture,
             color: baseColor,
             transparent: true,
-            opacity: det.isPhd ? 0.96 : 0.86,
-            blending: det.isPhd ? THREE.NormalBlending : THREE.AdditiveBlending,
+            opacity: det.isPhd ? 0.92 : 0.86,
+            blending: THREE.AdditiveBlending,
             depthWrite: false
           });
         }
@@ -1625,7 +1549,6 @@
               title_ko: isEngThesis
                 ? `Optimization Study in ${d} with ${kws[0]} Vol.${t}`
                 : `[연구] ${d} ${kws[0]} 기반 응용 분석 Vol.${t}`,
-              title_en: `Optimization Study in ${d} with ${kws[0]} Vol.${t}`,
               type: 'thesis_planet',
               dept: d,
               degree: isPhd ? "학위논문(박사)" : "학위논문(석사)",
@@ -1647,7 +1570,7 @@
     }
 
     /* ==========================================================================
-       8. UI FILTERS SETUP
+       8. UI FILTERS & MERGED TIMELINE SETUP
        ========================================================================== */
     let selectedCluster = 'all';
     let selectedDept = 'ALL';
@@ -1681,7 +1604,7 @@
     function setupDepartmentFilterUI() {
       const dropdown = document.getElementById('dept-dropdown');
       const prevSelected = selectedDept;
-      dropdown.innerHTML = `<option value="ALL">${I18N[currentLang].allDeptsOpt}</option>`;
+      dropdown.innerHTML = `<option value="ALL">${TEXT_KO.allDeptsOpt}</option>`;
 
       Array.from(DEPT_MAP.keys())
         .sort((a, b) => a.localeCompare(b, 'ko-KR'))
@@ -1733,12 +1656,19 @@
         };
       });
 
+      // Reset all filters including timeline year & mode
       document.getElementById('btn-reset-filters').onclick = () => {
         selectedCluster = 'all';
         selectedDept = 'ALL';
         selectedDegreeFilter = 'all';
         selectedThesisLangFilter = 'all';
+        activeTimelineYear = 2026;
+        isCumulativeMode = true;
+
         dropdown.value = 'ALL';
+        timelineSlider.value = 2026;
+        timelineBadge.innerText = '2026';
+        switchHandle.classList.remove('single-active');
 
         document.querySelectorAll('.cluster-btn').forEach(b => b.classList.remove('active'));
         document.querySelector('.cluster-btn[data-cluster="all"]').classList.add('active');
@@ -1766,6 +1696,25 @@
         deptPanelContainer.classList.add('hidden');
         deptPanelContainer.classList.remove('flex');
         mobileDeptBtn.classList.remove('hidden');
+      };
+
+      // Large PC Window Minimize (-) & Expand (+) controls
+      const pcMinimizeBtn = document.getElementById('btn-pc-panel-minimize');
+      const pcExpandBtn = document.getElementById('btn-pc-panel-expand');
+
+      pcMinimizeBtn.onclick = () => {
+        if (!isLargePCView()) return;
+        deptPanelContainer.classList.add('hidden');
+        deptPanelContainer.classList.remove('md:flex');
+        pcExpandBtn.classList.remove('hidden');
+        pcExpandBtn.classList.add('flex');
+      };
+
+      pcExpandBtn.onclick = () => {
+        pcExpandBtn.classList.add('hidden');
+        pcExpandBtn.classList.remove('flex');
+        deptPanelContainer.classList.remove('hidden');
+        deptPanelContainer.classList.add('md:flex');
       };
     }
 
@@ -1808,7 +1757,7 @@
           s.material.opacity = 0.0;
         } else if (!isSearchActive && !selectedActiveNode) {
           const det = n.type === 'thesis_planet' ? getCleanDetail(n) : null;
-          s.material.opacity = (det && det.isPhd) ? 0.96 : 0.88;
+          s.material.opacity = (det && det.isPhd) ? 0.92 : 0.88;
           s.scale.set(s.userData.baseSize, s.userData.baseSize, 1);
         }
       });
@@ -2147,19 +2096,19 @@
             hoverBadgeEl.innerText = "DEPARTMENT SUN";
             hoverBadgeEl.className = "inline-block px-1.5 py-0.5 rounded text-[9px] font-scifi font-bold mb-1 bg-amber-500/20 text-amber-300";
             hoverTitleEl.innerText = detail.dept;
-            hoverSubEl.innerText = currentLang === 'ko' ? "학과 중심 태양" : "Department Hub";
+            hoverSubEl.innerText = "학과 중심 태양";
           } else if (n.type === 'advisor_sun') {
             hoverBadgeEl.innerText = "ADVISOR SUN";
             hoverBadgeEl.className = "inline-block px-1.5 py-0.5 rounded text-[9px] font-scifi font-bold mb-1 bg-yellow-500/20 text-yellow-300";
             hoverTitleEl.innerText = n.name;
-            hoverSubEl.innerText = `${detail.dept} · ${currentLang === 'ko' ? '지도교수' : 'Advisor'}`;
+            hoverSubEl.innerText = `${detail.dept} · 지도교수`;
           } else {
             hoverBadgeEl.innerText = detail.isPhd ? "DOCTORAL THESIS (박사)" : "MASTER'S THESIS (석사)";
             hoverBadgeEl.className = detail.isPhd
               ? "inline-block px-1.5 py-0.5 rounded text-[9px] font-scifi font-bold mb-1 bg-purple-500/30 text-purple-300"
               : "inline-block px-1.5 py-0.5 rounded text-[9px] font-scifi font-bold mb-1 bg-pink-500/20 text-pink-300";
-            hoverTitleEl.innerText = currentLang === 'ko' ? detail.title_ko : detail.title_en;
-            hoverSubEl.innerText = `${detail.dept} · ${detail.advisor} · ${detail.year}${I18N[currentLang].yearSuffix}`;
+            hoverTitleEl.innerText = detail.title_ko;
+            hoverSubEl.innerText = `${detail.dept} · ${detail.advisor} · ${detail.year}${TEXT_KO.yearSuffix}`;
           }
         }
       } else {
@@ -2183,6 +2132,7 @@
         e.target.closest('aside') ||
         e.target.closest('header') ||
         e.target.closest('#dept-panel-container') ||
+        e.target.closest('#btn-pc-panel-expand') ||
         e.target.closest('input') ||
         e.target.closest('select') ||
         e.target.closest('button') ||
@@ -2301,7 +2251,6 @@
        RENDER DETAIL CONTENT
        ========================================================================== */
     function renderDetailContent(node, detail) {
-      const isKo = currentLang === 'ko';
       const badge = document.getElementById('detail-type-badge');
 
       if (node.type === 'advisor_sun') {
@@ -2317,12 +2266,12 @@
           : "px-2 py-0.5 rounded text-[10px] font-bold bg-pink-500/20 text-pink-300 border border-pink-400/30";
       }
 
-      document.getElementById('detail-title').innerText = isKo ? detail.title_ko : detail.title_en;
+      document.getElementById('detail-title').innerText = detail.title_ko;
       document.getElementById('detail-author').innerText = detail.author;
       document.getElementById('detail-advisor').innerText = detail.advisor;
       document.getElementById('detail-dept').innerText = detail.dept;
       document.getElementById('detail-degree').innerText = detail.degree;
-      document.getElementById('detail-year').innerText = `${detail.year}${I18N[currentLang].yearSuffix}`;
+      document.getElementById('detail-year').innerText = `${detail.year}${TEXT_KO.yearSuffix}`;
       
       const uciTextEl = document.getElementById('detail-uci');
       const uciStatusBadge = document.getElementById('detail-uci-status-badge');
@@ -2333,13 +2282,13 @@
         uciStatusBadge.innerText = "REGISTERED";
         uciStatusBadge.className = "px-1.5 py-0.2 rounded text-[9px] font-scifi font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-400/30";
       } else {
-        uciTextEl.innerText = I18N[currentLang].uciNone;
+        uciTextEl.innerText = TEXT_KO.uciNone;
         uciTextEl.className = "font-scifi text-xs text-slate-400 italic font-normal tracking-wide flex-1";
         uciStatusBadge.innerText = "NO UCI";
         uciStatusBadge.className = "px-1.5 py-0.2 rounded text-[9px] font-scifi font-bold bg-slate-500/20 text-slate-400 border border-slate-500/30";
       }
 
-      document.getElementById('detail-abstract').innerText = isKo ? detail.abstract_ko : detail.abstract_en;
+      document.getElementById('detail-abstract').innerText = detail.abstract_ko;
 
       const kwBox = document.getElementById('detail-keywords-container');
       kwBox.innerHTML = '';
@@ -2353,7 +2302,7 @@
       } else {
         const emptyTag = document.createElement('span');
         emptyTag.className = 'text-[11px] text-slate-500 italic';
-        emptyTag.innerText = I18N[currentLang].keywordsNone;
+        emptyTag.innerText = TEXT_KO.keywordsNone;
         kwBox.appendChild(emptyTag);
       }
     }
@@ -2382,7 +2331,7 @@
         if (n.type !== 'thesis_planet') return false;
 
         const detail = getCleanDetail(n);
-        const titleMatch = detail.title_ko.toLowerCase().includes(q) || detail.title_en.toLowerCase().includes(q);
+        const titleMatch = detail.title_ko.toLowerCase().includes(q);
         const authorMatch = detail.author.toLowerCase().includes(q);
         const advisorMatch = detail.advisor.toLowerCase().includes(q) || detail.advisor.toLowerCase().includes(cleanProfName);
         const deptMatch = detail.dept.toLowerCase().includes(q);
@@ -2436,7 +2385,7 @@
         s.userData.isRelated = false;
       });
 
-      renderThesesListPanel(theses, currentLang === 'ko' ? `${advisorName} 교수` : `Prof. ${advisorName}`);
+      renderThesesListPanel(theses, `${advisorName} 교수`);
     }
 
     function renderThesesListPanel(theses, queryText) {
@@ -2449,13 +2398,13 @@
       detailView.classList.add('hidden');
       rightPanel.classList.remove('hidden');
 
-      document.getElementById('list-view-title').innerText = currentLang === 'ko' ? `"${queryText}" 연구 목록` : `Theses for "${queryText}"`;
-      document.getElementById('list-view-count').innerText = I18N[currentLang].searchResultsCount(theses.length);
-      document.getElementById('list-view-subhint').innerText = I18N[currentLang].listViewSubhint;
+      document.getElementById('list-view-title').innerText = `"${queryText}" 연구 목록`;
+      document.getElementById('list-view-count').innerText = TEXT_KO.searchResultsCount(theses.length);
+      document.getElementById('list-view-subhint').innerText = TEXT_KO.listViewSubhint;
       container.innerHTML = '';
 
       if (theses.length === 0) {
-        container.innerHTML = `<div class="text-slate-500 py-8 text-center text-xs">${currentLang === 'ko' ? '일치하는 학위논문을 찾을 수 없습니다.' : 'No matched academic theses found.'}</div>`;
+        container.innerHTML = `<div class="text-slate-500 py-8 text-center text-xs">일치하는 학위논문을 찾을 수 없습니다.</div>`;
         return;
       }
 
@@ -2464,21 +2413,19 @@
         const card = document.createElement('div');
         card.className = "p-3 rounded-lg bg-black/50 hover:bg-indigo-900/40 border border-white/10 hover:border-cyan-400/50 transition cursor-pointer flex flex-col space-y-1.5 shrink-0";
         
-        const title = currentLang === 'ko' ? detail.title_ko : detail.title_en;
-
         card.innerHTML = `
           <div class="flex items-center justify-between">
             <span class="px-1.5 py-0.5 rounded text-[9px] font-bold ${detail.isPhd ? 'bg-purple-500/25 text-purple-300' : 'bg-pink-500/20 text-pink-300'} font-scifi">#${idx + 1} · ${detail.isPhd ? '박사' : '석사'}</span>
-            <span class="text-cyan-400 font-scifi text-[10px]">${detail.year}${I18N[currentLang].yearSuffix}</span>
+            <span class="text-cyan-400 font-scifi text-[10px]">${detail.year}${TEXT_KO.yearSuffix}</span>
           </div>
-          <h4 class="font-bold text-white text-xs leading-snug line-clamp-2">${title}</h4>
+          <h4 class="font-bold text-white text-xs leading-snug line-clamp-2">${detail.title_ko}</h4>
           <div class="text-[10px] text-slate-400 flex items-center justify-between pt-1 border-t border-white/5">
-            <span>${currentLang === 'ko' ? '저자' : 'Author'}: ${detail.author}</span>
-            <span class="text-indigo-300 font-medium">${currentLang === 'ko' ? '지도' : 'Advisor'}: ${detail.advisor}</span>
+            <span>저자: ${detail.author}</span>
+            <span class="text-indigo-300 font-medium">지도: ${detail.advisor}</span>
           </div>
           <div class="text-[9px] text-slate-500 flex justify-between items-center truncate">
             <span>${detail.dept}</span>
-            <span class="font-scifi text-[9px] text-cyan-400/80">${detail.uci ? detail.uci : I18N[currentLang].uciNone}</span>
+            <span class="font-scifi text-[9px] text-cyan-400/80">${detail.uci ? detail.uci : TEXT_KO.uciNone}</span>
           </div>
         `;
 
@@ -2513,7 +2460,7 @@
         s.userData.isRelated = false;
         if (s.visible) {
           const det = s.userData.nodeData.type === 'thesis_planet' ? getCleanDetail(s.userData.nodeData) : null;
-          s.material.opacity = det && det.isPhd ? 0.96 : 0.88;
+          s.material.opacity = det && det.isPhd ? 0.92 : 0.88;
           s.scale.set(s.userData.baseSize, s.userData.baseSize, 1);
         }
       });
@@ -2535,103 +2482,55 @@
     searchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') performSearch(); });
     searchBtn.addEventListener('click', performSearch);
 
-    // Camera Presets
+    // Camera Presets: 측면 뷰 (Side View), 평면 뷰 (Top View), 입체 뷰 (45 deg Top-Right Isometric View looking down to base)
+    function setActiveCameraBtn(activeId) {
+      ['btn-view-galaxy', 'btn-view-top', 'btn-view-3d'].forEach(id => {
+        const el = document.getElementById(id);
+        if (id === activeId) el.classList.add('active');
+        else el.classList.remove('active');
+      });
+    }
+
     document.getElementById('btn-view-galaxy').addEventListener('click', () => {
       if (selectedActiveNode) closeRightPanel();
       lockedZoomAnchorWorld = null;
       lockedZoomAnchorSprite = null;
-      document.getElementById('btn-view-galaxy').classList.add('active');
-      document.getElementById('btn-view-top').classList.remove('active');
+      setActiveCameraBtn('btn-view-galaxy');
       const targetY = galaxyCenterYGlobal;
       new TWEEN.Tween(camera.position).to({ x: 0, y: targetY + 180, z: 720 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
       new TWEEN.Tween(controls.target).to({ x: 0, y: targetY, z: 0 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
     });
+
     document.getElementById('btn-view-top').addEventListener('click', () => {
       if (selectedActiveNode) closeRightPanel();
       lockedZoomAnchorWorld = null;
       lockedZoomAnchorSprite = null;
-      document.getElementById('btn-view-top').classList.add('active');
-      document.getElementById('btn-view-galaxy').classList.remove('active');
+      setActiveCameraBtn('btn-view-top');
       const targetY = galaxyCenterYGlobal;
       new TWEEN.Tween(camera.position).to({ x: 0, y: 950, z: 0.001 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
       new TWEEN.Tween(controls.target).to({ x: 0, y: targetY, z: 0 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
     });
 
-    /* ==========================================================================
-       12. MULTILINGUAL SWITCH (DEPARTMENT NAMES REMAIN 100% KOREAN)
-       ========================================================================== */
-    const langKoBtn = document.getElementById('lang-ko-btn');
-    const langEnBtn = document.getElementById('lang-en-btn');
+    document.getElementById('btn-view-3d').addEventListener('click', () => {
+      if (selectedActiveNode) closeRightPanel();
+      lockedZoomAnchorWorld = null;
+      lockedZoomAnchorSprite = null;
+      setActiveCameraBtn('btn-view-3d');
+      // Góc 45 độ bên trên phía bên phải ngân hà, hướng nhìn xuống đáy ngân hà
+      const bottomLookY = 75;
+      const dist = 620;
+      const elevationRad = Math.PI / 4; // 45 độ
+      const camY = bottomLookY + Math.sin(elevationRad) * dist;
+      const horizDist = Math.cos(elevationRad) * dist;
+      const camX = horizDist * 0.72;
+      const camZ = horizDist * 0.72;
 
-    function switchLanguage(lang) {
-      currentLang = lang;
-      const dict = I18N[lang];
-
-      if (lang === 'ko') {
-        langKoBtn.className = "px-2.5 md:px-3 py-1 rounded-full text-xs font-bold bg-indigo-600 text-white";
-        langEnBtn.className = "px-2.5 md:px-3 py-1 rounded-full text-xs font-semibold text-slate-400 hover:text-white";
-      } else {
-        langEnBtn.className = "px-2.5 md:px-3 py-1 rounded-full text-xs font-bold bg-indigo-600 text-white";
-        langKoBtn.className = "px-2.5 md:px-3 py-1 rounded-full text-xs font-semibold text-slate-400 hover:text-white";
-      }
-
-      document.getElementById('app-title').innerText = dict.appTitle;
-      document.getElementById('app-subtitle').innerText = dict.appSubtitle;
-      document.getElementById('label-college-filters').innerText = dict.collegesTitle;
-      document.getElementById('mobile-dept-btn-text').innerText = dict.collegesTitle;
-      document.getElementById('btn-reset-filters').innerText = dict.resetFilters;
-      document.getElementById('btn-view-galaxy').innerText = dict.camGalaxy;
-      document.getElementById('btn-view-top').innerText = dict.camReset;
-      document.getElementById('label-degree-filter').innerText = dict.degreeFilterTitle;
-      document.getElementById('label-thesis-lang-filter').innerText = dict.thesisLangFilterTitle;
-      document.getElementById('label-timeline-title').innerText = dict.timelineTitle;
-      document.getElementById('search-input').placeholder = dict.searchPlaceholder;
-      document.getElementById('btn-back-to-list').innerText = dict.backToList;
-
-      document.querySelectorAll('.cluster-btn').forEach(btn => {
-        const clusterKey = btn.getAttribute('data-cluster');
-        btn.innerText = dict.clusterButtons[clusterKey] || clusterKey;
-      });
-
-      document.querySelectorAll('.degree-btn').forEach(btn => {
-        const degKey = btn.getAttribute('data-degree');
-        btn.innerText = dict.degreeButtons[degKey] || degKey;
-      });
-
-      document.querySelectorAll('.thesis-lang-btn').forEach(btn => {
-        const tlKey = btn.getAttribute('data-tlang');
-        btn.innerText = dict.thesisLangButtons[tlKey] || tlKey;
-      });
-
-      const opts = document.getElementById('search-type').options;
-      opts[0].text = dict.searchAdvisor;
-      opts[1].text = dict.searchAll;
-      opts[2].text = dict.searchKeyword;
-      opts[3].text = dict.searchName;
-      opts[4].text = dict.searchAuthor;
-      opts[5].text = dict.searchDept;
-
-      document.getElementById('detail-label-title').innerText = dict.detailTitleLabel;
-      document.getElementById('detail-label-author').innerText = dict.detailAuthorLabel;
-      document.getElementById('detail-label-advisor').innerText = dict.detailAdvisorLabel;
-      document.getElementById('detail-label-dept').innerText = dict.detailDeptLabel;
-      document.getElementById('detail-label-degree').innerText = dict.detailDegreeLabel;
-      document.getElementById('detail-label-uci').innerText = dict.detailUciLabel;
-      document.getElementById('detail-label-keywords').innerText = dict.detailKeywordsLabel;
-      document.getElementById('detail-label-abstract').innerText = dict.detailAbstractLabel;
-
-      if (selectedActiveNode) {
-        renderDetailContent(selectedActiveNode, getCleanDetail(selectedActiveNode));
-      }
-
-      setupDepartmentFilterUI();
-    }
-
-    langKoBtn.addEventListener('click', () => switchLanguage('ko'));
-    langEnBtn.addEventListener('click', () => switchLanguage('en'));
+      new TWEEN.Tween(camera.position).to({ x: camX, y: camY, z: camZ }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
+      new TWEEN.Tween(controls.target).to({ x: 0, y: bottomLookY, z: 0 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
+    });
 
     /* ==========================================================================
-       13. REAL-TIME ANIMATION & CONTINUOUS CAMERA TRACKING ON SELECTED THESIS
+       12. REAL-TIME ANIMATION & CONTINUOUS CAMERA TRACKING ON SELECTED THESIS
        ========================================================================== */
     const clock = new THREE.Clock();
     const _prevTrackedWorldPos = new THREE.Vector3();
@@ -2708,7 +2607,7 @@
             const det = s.userData.nodeData.type === 'thesis_planet' ? getCleanDetail(s.userData.nodeData) : null;
             const b = s.userData.baseSize * distFactor;
             s.scale.set(b * (1.0 + shimmer), b * (1.0 + shimmer), 1);
-            s.material.opacity = (det && det.isPhd) ? 0.96 : Math.min(0.92, 0.80 + Math.abs(shimmer) * 0.25);
+            s.material.opacity = (det && det.isPhd) ? 0.92 : Math.min(0.92, 0.80 + Math.abs(shimmer) * 0.25);
           }
         }
       }
@@ -2722,11 +2621,23 @@
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
 
+      const deptPanelContainer = document.getElementById('dept-panel-container');
+      const pcExpandBtn = document.getElementById('btn-pc-panel-expand');
+
       if (!isMobileView()) {
-        const deptPanelContainer = document.getElementById('dept-panel-container');
-        deptPanelContainer.classList.remove('hidden');
-        deptPanelContainer.classList.add('md:flex');
+        if (!isLargePCView()) {
+          pcExpandBtn.classList.add('hidden');
+          pcExpandBtn.classList.remove('flex');
+          deptPanelContainer.classList.remove('hidden');
+          deptPanelContainer.classList.add('md:flex');
+        } else if (pcExpandBtn.classList.contains('hidden')) {
+          deptPanelContainer.classList.remove('hidden');
+          deptPanelContainer.classList.add('md:flex');
+        }
         document.getElementById('btn-mobile-dept-open').classList.add('md:hidden');
+      } else {
+        pcExpandBtn.classList.add('hidden');
+        pcExpandBtn.classList.remove('flex');
       }
     });
 
