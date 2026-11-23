@@ -236,7 +236,7 @@
         </button>
       </div>
 
-      <!-- Department Dropdown (Không chấm màu, đã tự động gộp 전공 vào 학과) -->
+      <!-- Department Dropdown -->
       <div class="relative pt-0.5">
         <select id="dept-dropdown" class="w-full bg-black/60 text-slate-200 text-xs rounded-lg p-2 border border-indigo-500/30 focus:outline-none focus:border-cyan-400 cursor-pointer">
           <option value="ALL">-- 전체 학과 --</option>
@@ -650,10 +650,6 @@
       return s;
     }
 
-    /**
-     * Gộp các tên kết thúc bằng "전공" vào tên giống hệt nhưng kết thúc bằng "학과"
-     * Ví dụ: "건축설계전공" -> "건축설계학과" (nếu "건축설계학과" có tồn tại trong dữ liệu)
-     */
     function consolidateJeongongIntoHakgwa() {
       const existingDeptNames = new Set();
       for (let i = 0; i < ALL_NODES.length; i++) {
@@ -912,7 +908,7 @@
     });
 
     /* ==========================================================================
-       6. BILINGUAL KEYWORD MERGING ENGINE (KOREAN + ENGLISH SAME MEANING -> KOREAN)
+       6. BILINGUAL KEYWORD MERGING ENGINE
        ========================================================================== */
     let ALL_NODES = [];
     let NODE_BY_ID = new Map();
@@ -936,7 +932,6 @@
 
     const INVALID_KW_SET = new Set(["", "nan", "#nan", "null", "none", "undefined", "n/a", "-", "없음", "연구", "분석", "개발"]);
 
-    // Từ điển gộp các từ khóa tiếng Anh & tiếng Hàn đồng nghĩa về cùng 1 nhãn tiếng Hàn chuẩn
     const BILINGUAL_SYNONYM_TO_KOREAN = new Map([
       ["ai", "인공지능"],
       ["artificial intelligence", "인공지능"],
@@ -1388,11 +1383,6 @@
         .easing(TWEEN.Easing.Cubic.Out)
         .onUpdate(() => {
           cosmicRevealProgress = revealState.brightness;
-          volumetricNebulaMat.uniforms.uIntensity.value = 0.65 * cosmicRevealProgress;
-          if (spiralArmRibbonPoints) spiralArmRibbonPoints.material.opacity = 0.68 * cosmicRevealProgress;
-          if (stardustMistPoints) stardustMistPoints.material.opacity = 0.35 * cosmicRevealProgress;
-          if (cosmicBeamMesh) cosmicBeamMesh.material.uniforms.uAlphaScale.value = cosmicRevealProgress;
-          if (cosmicBeamGlowMesh) cosmicBeamGlowMesh.material.uniforms.uAlphaScale.value = cosmicRevealProgress;
         })
         .onComplete(() => {
           cosmicRevealProgress = 1.0;
@@ -1457,7 +1447,6 @@
         }
       }
 
-      // Gộp các tên "전공" vào "학과" tương ứng
       consolidateJeongongIntoHakgwa();
 
       buildCosmicScene();
@@ -1792,7 +1781,7 @@
       const galaxyHeight = Math.max(100, finalMaxY - finalMinY + 16);
       controls.target.set(0, galaxyCenterY, 0);
 
-      // Central Beam (Cột ánh sáng trung tâm đại diện cho 서울과학기술대학교)
+      // Central Beam
       const beamHeight = galaxyHeight;
       const beamGeo = new THREE.CylinderGeometry(1.6, 1.6, beamHeight, 24, 1, true);
       const beamMat = new THREE.ShaderMaterial({
@@ -2384,7 +2373,7 @@
     }
 
     /* ==========================================================================
-       10. ZOOM & RAYCAST INTERACTION (INCLUDING CENTRAL BEAM HOVER)
+       10. ZOOM & RAYCAST INTERACTION
        ========================================================================== */
     const raycaster = new THREE.Raycaster();
     raycaster.params.Sprite = { threshold: 5.5 };
@@ -2591,7 +2580,6 @@
         return;
       }
 
-      // Kiểm tra rê chuột vào cột ánh sáng trung tâm (Central Beam)
       if (cosmicBeamGlowMesh) {
         const beamHits = raycaster.intersectObject(cosmicBeamGlowMesh, false);
         if (beamHits.length > 0) {
@@ -3601,7 +3589,7 @@
     });
 
     /* ==========================================================================
-       13. REAL-TIME ANIMATION
+       13. REAL-TIME ANIMATION (WITH ZOOM-OUT ANTI-GLARE ATTENUATION)
        ========================================================================== */
     const clock = new THREE.Clock();
     const _prevTrackedWorldPos = new THREE.Vector3();
@@ -3632,7 +3620,36 @@
       TWEEN.update();
       controls.update();
 
+      const camDist = camera.position.distanceTo(controls.target);
+
+      // Hệ số chống chói lóa CHỈ kích hoạt khi zoom ra xa (camDist > 680)
+      // Ở khoảng cách chuẩn hoặc zoom gần (<= 680), zoomOutDimFactor = 1.0 (giữ nguyên độ sáng gốc)
+      const zoomOutT = THREE.MathUtils.clamp((camDist - 680) / 1600, 0.0, 1.0);
+      const zoomOutDimFactor = 1.0 - zoomOutT * 0.68; // Giảm tối đa 68% cường độ cộng dồn ánh sáng khi zoom rất xa
+      const zoomOutSizeDamp = 1.0 - zoomOutT * 0.38;  // Thu gọn kích thước chồng lấn khi zoom xa
+
+      // Cập nhật cường độ sương mù, bụi vũ trụ và tia sáng trung tâm theo cả cosmicRevealProgress và zoomOutDimFactor
       volumetricNebulaMat.uniforms.uTime.value = elapsed;
+      volumetricNebulaMat.uniforms.uIntensity.value = 0.65 * cosmicRevealProgress * (1.0 - zoomOutT * 0.55);
+
+      if (spiralArmRibbonPoints) {
+        spiralArmRibbonPoints.rotation.y += 0.00025;
+        spiralArmRibbonPoints.material.opacity = 0.68 * cosmicRevealProgress * (1.0 - zoomOutT * 0.60);
+      }
+      if (stardustMistPoints) {
+        stardustMistPoints.rotation.y += 0.00012;
+        stardustMistPoints.material.opacity = 0.35 * cosmicRevealProgress * (1.0 - zoomOutT * 0.60);
+      }
+
+      if (cosmicBeamMesh) {
+        cosmicBeamMesh.material.uniforms.uTime.value = elapsed;
+        cosmicBeamMesh.material.uniforms.uAlphaScale.value = cosmicRevealProgress * (1.0 - zoomOutT * 0.45);
+      }
+      if (cosmicBeamGlowMesh) {
+        cosmicBeamGlowMesh.material.uniforms.uTime.value = elapsed;
+        cosmicBeamGlowMesh.material.uniforms.uAlphaScale.value = cosmicRevealProgress * (1.0 - zoomOutT * 0.55);
+      }
+
       const links = arcLinksGroup.children;
       for (let i = 0; i < links.length; i++) {
         const mesh = links[i];
@@ -3641,15 +3658,7 @@
         }
       }
 
-      if (cosmicBeamMesh) cosmicBeamMesh.material.uniforms.uTime.value = elapsed;
-      if (cosmicBeamGlowMesh) cosmicBeamGlowMesh.material.uniforms.uTime.value = elapsed;
-
-      if (spiralArmRibbonPoints) spiralArmRibbonPoints.rotation.y += 0.00025;
-      if (stardustMistPoints) stardustMistPoints.rotation.y += 0.00012;
-
-      const camDist = camera.position.distanceTo(controls.target);
-      const distFactor = Math.min(2.2, Math.max(0.95, camDist / 520));
-
+      const distFactor = Math.min(1.35, Math.max(0.95, camDist / 560)) * zoomOutSizeDamp;
       const hasActiveFocus = isSearchActive || lockedThesisNode !== null;
 
       for (let i = 0; i < NODE_SPRITES.length; i++) {
@@ -3658,18 +3667,18 @@
           if (hasActiveFocus) {
             if (s.userData.isHighlight) {
               const strobe = 1.0 + Math.abs(Math.sin(elapsed * 7.5)) * 0.16;
-              const b = s.userData.baseSize * 5.0;
+              const b = s.userData.baseSize * 5.0 * (1.0 - zoomOutT * 0.25);
               s.scale.set(b * strobe, b * strobe, 1);
               s.material.opacity = 1.0 * cosmicRevealProgress;
             } else if (s.userData.isRelated) {
-              const b = s.userData.baseSize * 3.0;
+              const b = s.userData.baseSize * 3.0 * (1.0 - zoomOutT * 0.25);
               const shimmer = Math.sin(elapsed * 3.2 + s.userData.pulseOffset) * 0.08;
               s.scale.set(b * (1.0 + shimmer), b * (1.0 + shimmer), 1);
-              s.material.opacity = 0.94 * cosmicRevealProgress;
+              s.material.opacity = 0.94 * cosmicRevealProgress * (1.0 - zoomOutT * 0.35);
             } else {
               const b = s.userData.baseSize * distFactor * 0.42;
               s.scale.set(b, b, 1);
-              s.material.opacity = 0.04 * cosmicRevealProgress;
+              s.material.opacity = 0.04 * cosmicRevealProgress * zoomOutDimFactor;
             }
           } else {
             const tSpeed = s.userData.twinkleSpeed;
@@ -3680,10 +3689,10 @@
             const b = s.userData.baseSize * distFactor * revealScale;
             s.scale.set(b * (1.0 + shimmer), b * (1.0 + shimmer), 1);
 
-            const targetOpacity = s.userData.isDeptSun
+            const baseTargetOpacity = s.userData.isDeptSun
               ? 0.96
               : ((det && det.isPhd) ? 0.92 : Math.min(0.92, 0.80 + Math.abs(shimmer) * 0.25));
-            s.material.opacity = targetOpacity * cosmicRevealProgress;
+            s.material.opacity = baseTargetOpacity * cosmicRevealProgress * zoomOutDimFactor;
           }
         }
       }
