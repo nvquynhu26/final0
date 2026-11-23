@@ -351,13 +351,13 @@
             <div id="mini-stacked-legend" class="flex flex-wrap gap-x-2.5 gap-y-1 text-[9px] text-slate-200 pt-0.5"></div>
           </div>
 
-          <!-- 2. OVERVIEW ONLY: MERGED YEARLY COMPOSITION + NEW CLUSTER EMERGENCE MARKERS (+30% HEIGHT) -->
+          <!-- 2. MERGED OVERVIEW CHART: YEARLY COMPOSITION + NEW CLUSTER EMERGENCE (Tăng chiều cao +30%: h-[126px]) -->
           <div id="mini-chart-composition-section" class="hidden pt-2 border-t border-white/10 flex flex-col space-y-1.5">
-            <div class="flex items-center justify-between text-[10px] gap-2">
-              <span class="font-bold text-slate-200 tracking-wide shrink-0">연도별 전공 구성 비율 추이</span>
-              <span id="comp-hover-readout" class="font-scifi text-[9px] text-cyan-300 font-bold truncate text-right">2001–2026 비율 및 신규 계열 출현</span>
+            <div class="flex items-center justify-between text-[10px]">
+              <span class="font-bold text-slate-200 tracking-wide">연도별 전공 구성 비율 및 확장 추이</span>
+              <span id="comp-hover-readout" class="font-scifi text-[9px] text-cyan-300 font-bold">2001–2026 비율 변화 · 신규 계열 출현</span>
             </div>
-            <div class="w-full h-32 relative flex items-center select-none">
+            <div class="w-full h-[126px] relative flex items-center select-none">
               <svg id="mini-composition-svg" class="w-full h-full overflow-visible cursor-crosshair" preserveAspectRatio="none"></svg>
             </div>
             <div class="flex justify-between text-[9px] font-scifi text-slate-300 pt-0.5">
@@ -2957,7 +2957,7 @@
         listContainer.classList.add('hidden');
 
         renderClusterStackedBar(theses);
-        renderYearlyCompositionChart(theses);
+        renderYearlyCompositionAndEmergenceChart(theses);
       } else if (isClusterMode) {
         sparklineSection.classList.remove('hidden');
         clusterSubdeptsSection.classList.remove('hidden');
@@ -3093,8 +3093,10 @@
       });
     }
 
-    /* GỘP CÁC MỐC CHÚ THÍCH XUẤT HIỆN CHUYÊN NGÀNH MỚI VÀO BIỂU ĐỒ 연도별 전공 구성 비율 추이 & TĂNG CHIỀU CAO +30% */
-    function renderYearlyCompositionChart(theses) {
+    /* ==========================================================================
+       BIỂU ĐỒ HỢP NHẤT: 연도별 전공 구성 비율 추이 + 신규 계열 출현 마커 (Tăng chiều cao +30%, không line đen)
+       ========================================================================== */
+    function renderYearlyCompositionAndEmergenceChart(theses) {
       const svg = document.getElementById('mini-composition-svg');
       const readoutEl = document.getElementById('comp-hover-readout');
       const endYearLabel = document.getElementById('comp-end-year-label');
@@ -3103,7 +3105,7 @@
       const minY = 2001;
       const maxY = Math.max(2002, activeTimelineYear);
       endYearLabel.innerText = `${maxY}년`;
-      readoutEl.innerText = `${minY}–${maxY} 비율 및 신규 계열 출현`;
+      readoutEl.innerText = `${minY}–${maxY} 비율 변화 · 신규 계열 출현`;
 
       if (!theses || theses.length === 0) return;
 
@@ -3127,25 +3129,22 @@
         rec.total++;
       }
 
-      // Xác định năm đầu tiên xuất hiện của từng nhóm ngành
+      // Tìm năm đầu tiên mỗi nhóm ngành xuất hiện nghiên cứu
       const emergenceYearMap = new Map();
-      const emergenceByYear = new Map();
       CLUSTER_VISUAL_META.forEach(meta => {
         for (let i = 0; i < years.length; i++) {
           const y = years[i];
           if ((yearCounts.get(y)[meta.key] || 0) > 0) {
             emergenceYearMap.set(meta.key, y);
-            if (!emergenceByYear.has(y)) emergenceByYear.set(y, []);
-            emergenceByYear.get(y).push(meta.label.split('·')[0]);
             break;
           }
         }
       });
 
       const width = 340;
-      const height = 124; // Tăng +35% so với 92 cũ để nhìn thoáng và rõ nét
-      const padX = 6;
-      const padTop = 16; // Chừa khoảng trống phía trên để gắn mốc năm xuất hiện chuyên ngành mới
+      const height = 124; // Tăng 30% chiều cao so với 92px trước đây
+      const padX = 4;
+      const padTop = 15; // Dành khoảng thoáng phía trên cho nhãn năm xuất hiện chuyên ngành mới
       const padBottom = 4;
       const usableW = width - padX * 2;
       const usableH = height - padTop - padBottom;
@@ -3186,7 +3185,7 @@
 
       const ns = "http://www.w3.org/2000/svg";
 
-      // Vẽ các lớp tỷ lệ phần trăm mượt mà (không có line đen)
+      // Vẽ các dải tỷ lệ phần trăm liền mạch (không có stroke line đen)
       CLUSTER_VISUAL_META.forEach(meta => {
         const topPts = yearStacks.map(ys => ({ x: ys.x, y: ys.bands[meta.key].yTop }));
         const botPts = yearStacks.map(ys => ({ x: ys.x, y: ys.bands[meta.key].yBottom })).reverse();
@@ -3207,12 +3206,12 @@
         const areaPath = document.createElementNS(ns, 'path');
         areaPath.setAttribute('d', areaD);
         areaPath.setAttribute('fill', meta.color);
-        areaPath.setAttribute('fill-opacity', '0.78');
+        areaPath.setAttribute('fill-opacity', '0.80');
         areaPath.setAttribute('stroke', 'none');
         svg.appendChild(areaPath);
       });
 
-      // Gộp các mốc chú thích xuất hiện chuyên ngành mới trực tiếp lên biểu đồ tỷ lệ
+      // Vẽ các điểm phát sáng (Debut Markers) đánh dấu năm xuất hiện các chuyên ngành mới
       const labeledPositions = [];
       CLUSTER_VISUAL_META.forEach(meta => {
         const emYear = emergenceYearMap.get(meta.key);
@@ -3223,24 +3222,21 @@
         const band = stackObj.bands[meta.key];
         const cy = Math.max(padTop + 4, Math.min(height - padBottom - 4, band.midY));
 
-        // Đường gióng dọc mảnh nối từ nhãn trên đỉnh xuống điểm xuất hiện
+        const dot = document.createElementNS(ns, 'circle');
+        dot.setAttribute('cx', stackObj.x.toFixed(1));
+        dot.setAttribute('cy', cy.toFixed(1));
+        dot.setAttribute('r', '2.8');
+        dot.setAttribute('fill', meta.color);
+        dot.setAttribute('stroke', '#FFFFFF');
+        dot.setAttribute('stroke-width', '1.0');
+        dot.style.filter = `drop-shadow(0 0 5px ${meta.color})`;
+        svg.appendChild(dot);
+
         const tooClose = labeledPositions.some(lx => Math.abs(lx - stackObj.x) < 42);
         if (!tooClose && emYear > 2001) {
           labeledPositions.push(stackObj.x);
-          const clampedX = Math.max(24, Math.min(width - 28, stackObj.x));
-
-          const stemLine = document.createElementNS(ns, 'line');
-          stemLine.setAttribute('x1', stackObj.x.toFixed(1));
-          stemLine.setAttribute('y1', '12');
-          stemLine.setAttribute('x2', stackObj.x.toFixed(1));
-          stemLine.setAttribute('y2', cy.toFixed(1));
-          stemLine.setAttribute('stroke', meta.color);
-          stemLine.setAttribute('stroke-width', '0.9');
-          stemLine.setAttribute('stroke-dasharray', '1.5,1.5');
-          stemLine.setAttribute('stroke-opacity', '0.85');
-          svg.appendChild(stemLine);
-
           const lbl = document.createElementNS(ns, 'text');
+          const clampedX = Math.max(24, Math.min(width - 28, stackObj.x));
           lbl.setAttribute('x', clampedX.toFixed(1));
           lbl.setAttribute('y', '10');
           lbl.setAttribute('text-anchor', 'middle');
@@ -3251,17 +3247,6 @@
           lbl.textContent = `'${String(emYear).slice(2)} ${meta.label.split('·')[0]}`;
           svg.appendChild(lbl);
         }
-
-        // Điểm tròn phát sáng đánh dấu năm xuất hiện đầu tiên
-        const dot = document.createElementNS(ns, 'circle');
-        dot.setAttribute('cx', stackObj.x.toFixed(1));
-        dot.setAttribute('cy', cy.toFixed(1));
-        dot.setAttribute('r', '2.8');
-        dot.setAttribute('fill', meta.color);
-        dot.setAttribute('stroke', '#FFFFFF');
-        dot.setAttribute('stroke-width', '1.0');
-        dot.style.filter = `drop-shadow(0 0 4px ${meta.color})`;
-        svg.appendChild(dot);
       });
 
       const guideLine = document.createElementNS(ns, 'line');
@@ -3296,24 +3281,23 @@
         guideLine.style.display = 'block';
 
         const top3 = CLUSTER_VISUAL_META
-          .map(m => ({ label: m.label.split('·')[0], pct: nearest.bands[m.key].pct }))
+          .map(m => ({
+            label: m.label.split('·')[0],
+            pct: nearest.bands[m.key].pct,
+            count: nearest.bands[m.key].count
+          }))
           .filter(x => x.pct > 0.5)
           .sort((a, b) => b.pct - a.pct)
           .slice(0, 3)
-          .map(x => `${x.label} ${Math.round(x.pct)}%`)
+          .map(x => `${x.label} ${Math.round(x.pct)}%(${x.count})`)
           .join(' · ');
 
-        const newArr = emergenceByYear.get(nearest.year);
-        const newTag = (newArr && newArr.length > 0 && nearest.year > 2001)
-          ? ` [신규: ${newArr.join(', ')}]`
-          : '';
-
-        readoutEl.innerText = `${nearest.year}년: ${top3 || '데이터 없음'}${newTag}`;
+        readoutEl.innerText = `${nearest.year}년 (${nearest.total}건): ${top3 || '데이터 없음'}`;
       };
 
       const onCompLeave = () => {
         guideLine.style.display = 'none';
-        readoutEl.innerText = `${minY}–${maxY} 비율 및 신규 계열 출현`;
+        readoutEl.innerText = `${minY}–${maxY} 비율 변화 · 신규 계열 출현`;
       };
 
       hitRect.addEventListener('mousemove', (e) => onCompMove(e.clientX));
