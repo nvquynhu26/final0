@@ -28,18 +28,18 @@
     }
     .font-scifi { font-family: 'Space Grotesk', monospace; }
     
-    /* Nền kính mờ đen trong suốt nhẹ (giảm opacity 8-10% để thấy dải ngân hà mờ phía sau) */
+    /* Kính mờ siêu trong suốt để nhìn rõ dải ngân hà lấp lánh phía sau */
     .scifi-panel {
-      background: linear-gradient(145deg, rgba(6, 8, 14, 0.55) 0%, rgba(2, 3, 8, 0.7) 100%);
-      backdrop-filter: blur(18px) saturate(130%);
-      -webkit-backdrop-filter: blur(22px) saturate(130%);
+      background: linear-gradient(145deg, rgba(6, 8, 16, 0.36) 0%, rgba(2, 4, 10, 0.44) 100%);
+      backdrop-filter: blur(10px) saturate(125%);
+      -webkit-backdrop-filter: blur(10px) saturate(125%);
       border: 1px solid rgba(255, 255, 255, 0.14);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.78);
+      box-shadow: 0 10px 32px rgba(0, 0, 0, 0.48);
     }
     .scifi-btn {
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.12);
-      backdrop-filter: blur(8px);
+      backdrop-filter: blur(6px);
       transition: all 0.2s ease;
     }
     .scifi-btn:hover {
@@ -47,15 +47,15 @@
       border-color: rgba(129, 140, 248, 0.6);
     }
     .scifi-btn.active {
-      background: linear-gradient(135deg, rgba(99, 102, 241, 0.5), rgba(236, 72, 153, 0.5));
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.48), rgba(236, 72, 153, 0.48));
       border-color: #EC4899;
       color: #FFFFFF;
     }
     
     /* Scrollbar */
     ::-webkit-scrollbar { width: 5px; }
-    ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.35); border-radius: 3px; }
-    ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.45); border-radius: 3px; }
+    ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.2); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.4); border-radius: 3px; }
     ::-webkit-scrollbar-thumb:hover { background: rgba(236, 72, 153, 0.75); }
     
     /* Horizontal Range Slider */
@@ -85,7 +85,7 @@
       position: relative;
       width: 52px;
       height: 20px;
-      background: rgba(0, 0, 0, 0.55);
+      background: rgba(0, 0, 0, 0.4);
       border-radius: 10px;
       border: 1px solid rgba(255, 255, 255, 0.15);
       cursor: pointer;
@@ -113,7 +113,7 @@
     }
 
     .vignette-overlay {
-      background: radial-gradient(circle at center, transparent 35%, rgba(2, 3, 6, 0.85) 100%);
+      background: radial-gradient(circle at center, transparent 40%, rgba(2, 3, 6, 0.72) 100%);
       pointer-events: none;
     }
 
@@ -200,7 +200,7 @@
 
   <!-- UNIFIED FILTER & TIMELINE PANEL -->
   <div id="dept-panel-container" class="hidden md:flex fixed md:absolute left-1/2 -translate-x-1/2 top-32 md:left-6 md:top-[3.75rem] md:translate-x-0 z-30 pointer-events-none transition-all duration-300">
-    <div class="w-[90vw] max-w-[340px] md:w-80 scifi-panel p-4 rounded-xl pointer-events-auto border border-white/15 flex flex-col space-y-2.5 shadow-2xl max-h-[76vh] md:max-h-[84vh] overflow-y-auto">
+    <div class="w-[90vw] max-w-[340px] md:w-80 scifi-panel p-4 rounded-xl pointer-events-auto border border-white/15 flex flex-col space-y-2.5 max-h-[76vh] md:max-h-[84vh] overflow-y-auto">
       
       <!-- TOP ROW: 3 NÚT VIEW + NÚT THU NHỎ (-) -->
       <div class="flex items-center space-x-1.5 pb-2 border-b border-white/10">
@@ -247,7 +247,7 @@
 
       <!-- Department Dropdown -->
       <div class="relative pt-0.5">
-        <select id="dept-dropdown" class="w-full bg-black/50 text-slate-200 text-xs rounded-lg p-2 border border-white/15 focus:outline-none focus:border-cyan-400 cursor-pointer">
+        <select id="dept-dropdown" class="w-full bg-black/35 text-slate-200 text-xs rounded-lg p-2 border border-white/15 focus:outline-none focus:border-cyan-400 cursor-pointer">
           <option value="ALL">-- 전체 학과 --</option>
         </select>
       </div>
@@ -295,8 +295,8 @@
 
   <!-- BOTTOM SEARCH BAR -->
   <div class="absolute search-bottom-safe left-1/2 -translate-x-1/2 z-20 w-11/12 max-w-2xl pointer-events-auto flex flex-col items-center transition-all">
-    <div class="w-full scifi-panel rounded-full px-3 md:px-4 py-1.5 md:py-2 flex items-center space-x-2 md:space-x-3 border border-white/15 shadow-[0_0_30px_rgba(79,70,229,0.3)]">
-      <select id="search-type" class="bg-black/55 text-slate-300 text-xs rounded-full px-2.5 md:px-3 py-1.5 border border-white/15 focus:outline-none focus:border-cyan-400 cursor-pointer font-medium">
+    <div class="w-full scifi-panel rounded-full px-3 md:px-4 py-1.5 md:py-2 flex items-center space-x-2 md:space-x-3 border border-white/15 shadow-[0_0_24px_rgba(79,70,229,0.25)]">
+      <select id="search-type" class="bg-black/35 text-slate-300 text-xs rounded-full px-2.5 md:px-3 py-1.5 border border-white/15 focus:outline-none focus:border-cyan-400 cursor-pointer font-medium">
         <option value="advisor">지도교수</option>
         <option value="all">통합검색</option>
         <option value="keyword">주제어</option>
@@ -306,7 +306,7 @@
       </select>
       
       <input id="search-input" type="text" placeholder="지도교수, 논문 제목, 키워드 검색..." 
-        class="bg-transparent flex-1 text-xs md:text-sm text-white placeholder-slate-500 focus:outline-none tracking-wide" />
+        class="bg-transparent flex-1 text-xs md:text-sm text-white placeholder-slate-400 focus:outline-none tracking-wide" />
       
       <button id="search-submit-btn" class="bg-gradient-to-r from-cyan-500 via-indigo-600 to-pink-500 text-white p-2 rounded-full hover:brightness-125 transition transform active:scale-95 shadow-[0_0_12px_rgba(6,182,212,0.5)]">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
@@ -314,9 +314,9 @@
     </div>
   </div>
 
-  <!-- RIGHT PANEL (Mở rộng bề ngang trên PC lên 480px - 500px để hiển thị thoáng hơn) -->
+  <!-- RIGHT PANEL -->
   <aside id="right-panel" 
-    class="fixed right-panel-pos z-40 w-[94vw] sm:w-[460px] lg:w-[500px] max-w-[520px] scifi-panel pointer-events-auto hidden flex flex-col border-l border-t border-b-0 border-r-0 border-white/15 shadow-[-18px_0_40px_rgba(0,0,0,0.85)] rounded-tl-2xl">
+    class="fixed right-panel-pos z-40 w-[94vw] sm:w-[460px] lg:w-[500px] max-w-[520px] scifi-panel pointer-events-auto hidden flex flex-col border-l border-t border-b-0 border-r-0 border-white/15 rounded-tl-2xl">
     
     <!-- 1. VIEW: LIST RESULTS + CONTEXTUAL MINI-ANALYTICS -->
     <div id="panel-list-view" class="hidden flex flex-col h-full p-4 md:p-5 min-h-0">
@@ -339,16 +339,16 @@
       <div class="flex-1 overflow-y-auto pr-1 space-y-2.5 mt-2.5 min-h-0">
         
         <!-- CONTEXTUAL MINI-ANALYTICS COMPACT MODULE -->
-        <div id="mini-analytics-box" class="p-3 rounded-xl bg-black/40 border border-white/10 flex flex-col space-y-2.5">
+        <div id="mini-analytics-box" class="p-3 rounded-xl bg-black/20 border border-white/10 flex flex-col space-y-2.5">
           
-          <!-- 1. 6-CLUSTER STACKED BAR (계열별 연구 비중 - Ẩn khi chọn 1 khối ngành đơn lẻ) -->
+          <!-- 1. 6-CLUSTER STACKED BAR -->
           <div id="mini-chart-stacked-section" class="flex flex-col space-y-1.5">
             <div class="flex items-center justify-between text-[10px]">
-              <span class="font-bold text-slate-300 tracking-wide">계열별 연구 비중 <span class="text-[9px] text-indigo-400 font-normal">(클릭 시 상세 추이)</span></span>
+              <span class="font-bold text-slate-200 tracking-wide">계열별 연구 비중 <span class="text-[9px] text-indigo-300 font-normal">(클릭 시 상세 추이)</span></span>
               <span id="stacked-dominant-label" class="font-scifi text-[10px] font-bold text-cyan-300">-</span>
             </div>
             <div id="mini-stacked-bar" class="w-full h-3 rounded-full bg-white/5 overflow-hidden flex gap-[2px] p-[1px] border border-white/10"></div>
-            <div id="mini-stacked-legend" class="flex flex-wrap gap-x-2.5 gap-y-1 text-[9px] text-slate-300 pt-0.5"></div>
+            <div id="mini-stacked-legend" class="flex flex-wrap gap-x-2.5 gap-y-1 text-[9px] text-slate-200 pt-0.5"></div>
           </div>
 
           <!-- 2. OVERVIEW ONLY: YEARLY COMPOSITION STREAM CHART -->
@@ -360,7 +360,7 @@
             <div class="w-full h-24 relative flex items-center select-none">
               <svg id="mini-composition-svg" class="w-full h-full overflow-visible cursor-crosshair" preserveAspectRatio="none"></svg>
             </div>
-            <div class="flex justify-between text-[9px] font-scifi text-slate-400 pt-0.5">
+            <div class="flex justify-between text-[9px] font-scifi text-slate-300 pt-0.5">
               <span>2001년</span>
               <span>2010년</span>
               <span>2018년</span>
@@ -371,7 +371,7 @@
           <!-- 3. OVERVIEW ONLY: CLOUD / STREAM EVOLUTION CHART BY YEAR -->
           <div id="mini-chart-cloud-section" class="hidden pt-2 border-t border-white/10 flex flex-col space-y-1">
             <div class="flex items-center justify-between text-[10px]">
-              <span class="font-bold text-slate-300 tracking-wide">연도별 전공 확장 클라우드</span>
+              <span class="font-bold text-slate-200 tracking-wide">연도별 전공 확장 클라우드</span>
               <span id="cloud-hover-readout" class="font-scifi text-[9px] text-cyan-300 font-bold">2001–2026 신규 계열 출현</span>
             </div>
             <div class="w-full h-16 relative flex items-center select-none">
@@ -382,10 +382,10 @@
           <!-- 4. ADVISOR / DEPARTMENT / CLUSTER CONTEXT -> YEARLY TREND SPARKLINE -->
           <div id="mini-chart-sparkline-section" class="hidden flex-col space-y-1 flex">
             <div class="flex items-center justify-between text-[10px]">
-              <span class="font-bold text-slate-300 tracking-wide">연도별 발표 추이</span>
+              <span class="font-bold text-slate-200 tracking-wide">연도별 발표 추이</span>
               <div class="flex items-center space-x-2 font-scifi text-[10px]">
                 <span id="sparkline-hover-readout" class="hidden px-1.5 py-0.2 rounded bg-cyan-500/25 text-cyan-200 border border-cyan-400/40 font-bold"></span>
-                <span id="sparkline-range-label" class="text-slate-400">2001–2026</span>
+                <span id="sparkline-range-label" class="text-slate-300">2001–2026</span>
                 <span id="sparkline-peak-label" class="font-bold text-pink-400">최다: -</span>
               </div>
             </div>
@@ -394,7 +394,7 @@
             </div>
           </div>
 
-          <!-- 5. CLUSTER ONLY: SUB-DEPARTMENTS & YEARLY THESIS COUNTS (세부 학과별 연도별 논문 수) -->
+          <!-- 5. CLUSTER ONLY: SUB-DEPARTMENTS & YEARLY THESIS COUNTS -->
           <div id="mini-cluster-subdepts-section" class="hidden pt-2 border-t border-white/10 flex flex-col space-y-1.5">
             <div class="flex items-center justify-between text-[10px]">
               <span class="font-bold text-slate-200 tracking-wide">계열 내 세부 학과별 연도 추이</span>
@@ -406,15 +406,15 @@
           <!-- 6. TOP KEYWORDS MINI TAG BARS -->
           <div id="mini-chart-keywords-section" class="pt-2 border-t border-white/10 flex flex-col space-y-1">
             <div class="flex items-center justify-between text-[10px]">
-              <span id="mini-keywords-title" class="font-bold text-slate-300 tracking-wide">핵심 주제어 TOP 5</span>
-              <span id="mini-keywords-hint" class="text-[9px] text-indigo-400">클릭 시 키워드 필터</span>
+              <span id="mini-keywords-title" class="font-bold text-slate-200 tracking-wide">핵심 주제어 TOP 5</span>
+              <span id="mini-keywords-hint" class="text-[9px] text-indigo-300">클릭 시 키워드 필터</span>
             </div>
             <div id="mini-top-keywords" class="flex flex-col space-y-1 pt-0.5"></div>
           </div>
         </div>
 
         <!-- DEPARTMENT ADVISORS DIRECTORY -->
-        <div id="dept-advisors-section" class="hidden p-2.5 rounded-xl bg-black/40 border border-amber-500/25 flex flex-col space-y-2">
+        <div id="dept-advisors-section" class="hidden p-2.5 rounded-xl bg-black/20 border border-amber-500/25 flex flex-col space-y-2">
           <div class="flex items-center justify-between text-[10px]">
             <div class="flex items-center space-x-1.5">
               <span class="w-2 h-2 rounded-full bg-yellow-400 shadow-[0_0_6px_#FACC15]"></span>
@@ -426,7 +426,7 @@
         </div>
 
         <!-- Thesis List Subhint -->
-        <div id="thesis-list-header-bar" class="text-[10px] text-indigo-400 pt-0.5 flex justify-between items-center">
+        <div id="thesis-list-header-bar" class="text-[10px] text-indigo-300 pt-0.5 flex justify-between items-center">
           <span>논문 리스트 (최신순)</span>
           <span id="list-view-subhint">클릭 시 상세 확인</span>
         </div>
@@ -451,33 +451,33 @@
 
       <div class="flex-1 overflow-y-auto py-3 md:py-4 space-y-4 pr-1 text-xs min-h-0">
         <div>
-          <span id="detail-label-title" class="text-[9px] uppercase font-bold text-indigo-400 font-scifi tracking-widest">논문 제목</span>
+          <span id="detail-label-title" class="text-[9px] uppercase font-bold text-indigo-300 font-scifi tracking-widest">논문 제목</span>
           <h2 id="detail-title" class="text-sm md:text-base font-bold text-white mt-1 leading-snug"></h2>
         </div>
 
-        <div class="grid grid-cols-2 gap-2 p-3 rounded-lg bg-black/40 border border-white/10">
+        <div class="grid grid-cols-2 gap-2 p-3 rounded-lg bg-black/20 border border-white/10">
           <div>
-            <span id="detail-label-author" class="text-[10px] text-slate-400 block font-scifi">저자</span>
-            <span id="detail-author" class="font-semibold text-slate-200">-</span>
+            <span id="detail-label-author" class="text-[10px] text-slate-300 block font-scifi">저자</span>
+            <span id="detail-author" class="font-semibold text-slate-100">-</span>
           </div>
           <div>
-            <span id="detail-label-advisor" class="text-[10px] text-slate-400 block font-scifi">지도교수 (클릭 시 이동)</span>
+            <span id="detail-label-advisor" class="text-[10px] text-slate-300 block font-scifi">지도교수 (클릭 시 이동)</span>
             <button id="detail-advisor" type="button" class="text-left font-semibold text-amber-300 hover:text-amber-200 underline decoration-amber-400/40 hover:decoration-amber-300 underline-offset-2 transition cursor-pointer">-</button>
           </div>
           <div>
-            <span id="detail-label-dept" class="text-[10px] text-slate-400 block font-scifi">학과 / 전공 (클릭 시 이동)</span>
+            <span id="detail-label-dept" class="text-[10px] text-slate-300 block font-scifi">학과 / 전공 (클릭 시 이동)</span>
             <button id="detail-dept" type="button" class="text-left font-semibold text-cyan-300 hover:text-cyan-200 underline decoration-cyan-400/40 hover:decoration-cyan-300 underline-offset-2 transition cursor-pointer">-</button>
           </div>
           <div>
-            <span id="detail-label-degree" class="text-[10px] text-slate-400 block font-scifi">학위 구분</span>
-            <span id="detail-degree" class="font-semibold text-slate-200">-</span>
+            <span id="detail-label-degree" class="text-[10px] text-slate-300 block font-scifi">학위 구분</span>
+            <span id="detail-degree" class="font-semibold text-slate-100">-</span>
           </div>
         </div>
 
         <!-- UCI IDENTIFIER ONLY -->
-        <div class="p-3 rounded-lg bg-black/40 border border-white/10 flex flex-col space-y-1.5">
+        <div class="p-3 rounded-lg bg-black/20 border border-white/10 flex flex-col space-y-1.5">
           <div class="flex items-center justify-between">
-            <span id="detail-label-uci" class="text-[9px] uppercase font-bold text-indigo-400 font-scifi tracking-widest">UCI 등록번호 (UCI Identifier)</span>
+            <span id="detail-label-uci" class="text-[9px] uppercase font-bold text-indigo-300 font-scifi tracking-widest">UCI 등록번호 (UCI Identifier)</span>
             <span id="detail-uci-status-badge" class="px-1.5 py-0.2 rounded text-[9px] font-scifi font-bold bg-cyan-500/20 text-cyan-300">UCI</span>
           </div>
           <div class="flex items-center">
@@ -486,13 +486,13 @@
         </div>
 
         <div>
-          <span id="detail-label-keywords" class="text-[9px] uppercase font-bold text-indigo-400 font-scifi tracking-widest">주제어 키워드</span>
+          <span id="detail-label-keywords" class="text-[9px] uppercase font-bold text-indigo-300 font-scifi tracking-widest">주제어 키워드</span>
           <div id="detail-keywords-container" class="flex flex-wrap gap-1.5 mt-1.5"></div>
         </div>
 
         <div>
-          <span id="detail-label-abstract" class="text-[9px] uppercase font-bold text-indigo-400 font-scifi tracking-widest">논문 초록 (Abstract)</span>
-          <p id="detail-abstract" class="mt-1 text-slate-300 leading-relaxed text-xs max-h-56 md:max-h-60 overflow-y-auto pr-1 bg-black/40 p-2.5 rounded border border-white/10 whitespace-pre-line"></p>
+          <span id="detail-label-abstract" class="text-[9px] uppercase font-bold text-indigo-300 font-scifi tracking-widest">논문 초록 (Abstract)</span>
+          <p id="detail-abstract" class="mt-1 text-slate-200 leading-relaxed text-xs max-h-56 md:max-h-60 overflow-y-auto pr-1 bg-black/20 p-2.5 rounded border border-white/10 whitespace-pre-line"></p>
         </div>
       </div>
     </div>
@@ -602,14 +602,16 @@
       '史': '사', '哲': '철', '際': '제', '貿': '무', '易': '역'
     };
 
+    const HANJA_REGEX = /[\u4E00-\u9FFF\u3400-\u4DBF\uF900-\uFAFF]/;
+    const HANJA_GLOBAL_REGEX = /[\u4E00-\u9FFF\u3400-\u4DBF\uF900-\uFAFF]/g;
+
     function convertHanjaToHangul(str) {
-      if (!str || !/[\u4E00-\u9FFF\u3400-\u4DBF\uF900-\uFAFF]/.test(str)) return str;
+      if (!str || !HANJA_REGEX.test(str)) return str;
       let res = str;
       for (let i = 0; i < HANJA_PHRASE_REPLACEMENTS.length; i++) {
         res = res.replace(HANJA_PHRASE_REPLACEMENTS[i][0], HANJA_PHRASE_REPLACEMENTS[i][1]);
       }
-      res = res.replace(/[\u4E00-\u9FFF\u3400-\u4DBF\uF900-\uFAFF]/g, ch => HANJA_CHAR_TO_HANGUL[ch] || '');
-      return res;
+      return res.replace(HANJA_GLOBAL_REGEX, ch => HANJA_CHAR_TO_HANGUL[ch] || '');
     }
 
     function cleanAbstractText(rawText) {
@@ -747,10 +749,9 @@
       const hybridMatch = s.match(/^([가-힣A-Za-z0-9·]+(?:학과|전공|학부|과정|과))\s+(.+)$/);
       if (hybridMatch) {
         const mainKoDept = hybridMatch[1].trim();
-        let subPart = hybridMatch[2].trim();
-        subPart = subPart.replace(/학과$/, '').trim();
-
+        let subPart = hybridMatch[2].trim().replace(/학과$/, '').trim();
         const subLower = subPart.toLowerCase();
+
         if (
           subLower.includes("department of") ||
           subLower === mainKoDept.toLowerCase() ||
@@ -791,9 +792,8 @@
       s = s.replace(/학과학과$/g, '학과')
            .replace(/전공학과$/g, '전공')
            .replace(/\s+/g, ' ')
-           .trim();
-
-      s = s.replace(/\bit\b/gi, 'IT')
+           .trim()
+           .replace(/\bit\b/gi, 'IT')
            .replace(/\bmsde\b/gi, 'MSDE')
            .replace(/\btesol\b/gi, 'TESOL')
            .replace(/\bai\b/gi, 'AI')
@@ -830,12 +830,8 @@
         if (n.dept && jeongongToHakgwaMap.has(n.dept)) {
           const mergedDept = jeongongToHakgwaMap.get(n.dept);
           n.dept = mergedDept;
-          if (n.type === 'dept_sun') {
-            n.name = mergedDept;
-          }
-          if (n._resolvedDetail) {
-            n._resolvedDetail.dept = mergedDept;
-          }
+          if (n.type === 'dept_sun') n.name = mergedDept;
+          if (n._resolvedDetail) n._resolvedDetail.dept = mergedDept;
         }
       }
     }
@@ -891,9 +887,7 @@
     };
 
     function hangulSyllableVariants(ch, isSurname = false) {
-      if (isSurname && SURNAME_ROMAN_OVERRIDES[ch]) {
-        return SURNAME_ROMAN_OVERRIDES[ch];
-      }
+      if (isSurname && SURNAME_ROMAN_OVERRIDES[ch]) return SURNAME_ROMAN_OVERRIDES[ch];
       const code = ch.charCodeAt(0) - 0xAC00;
       if (code < 0 || code > 11171) return [ch.toLowerCase()];
       const cho = CHO_LIST[Math.floor(code / 588)];
@@ -923,13 +917,8 @@
       const keys = new Set();
       function combine(idx, acc) {
         if (keys.size > 160) return;
-        if (idx === sylLists.length) {
-          keys.add(acc);
-          return;
-        }
-        for (let i = 0; i < sylLists[idx].length; i++) {
-          combine(idx + 1, acc + sylLists[idx][i]);
-        }
+        if (idx === sylLists.length) { keys.add(acc); return; }
+        for (let i = 0; i < sylLists[idx].length; i++) combine(idx + 1, acc + sylLists[idx][i]);
       }
       combine(0, '');
 
@@ -939,14 +928,10 @@
         function combineRev(idx, acc) {
           if (keys.size > 260) return;
           if (idx === givenPart.length) {
-            for (let s = 0; s < surPart.length; s++) {
-              keys.add(acc + surPart[s]);
-            }
+            for (let s = 0; s < surPart.length; s++) keys.add(acc + surPart[s]);
             return;
           }
-          for (let i = 0; i < givenPart[idx].length; i++) {
-            combineRev(idx + 1, acc + givenPart[idx][i]);
-          }
+          for (let i = 0; i < givenPart[idx].length; i++) combineRev(idx + 1, acc + givenPart[idx][i]);
         }
         combineRev(0, '');
       }
@@ -955,6 +940,7 @@
 
     const PERSON_ROMAN_TO_HANGUL_GLOBAL = new Map();
     const PERSON_ROMAN_BY_DEPT = new Map();
+    const PERSON_NORM_CACHE = new Map();
 
     function cleanRawPersonName(raw) {
       if (!raw) return '';
@@ -969,6 +955,7 @@
     function buildUnifiedPersonNameIndex() {
       PERSON_ROMAN_TO_HANGUL_GLOBAL.clear();
       PERSON_ROMAN_BY_DEPT.clear();
+      PERSON_NORM_CACHE.clear();
 
       const hangulPersonEntries = [];
       const seenHangul = new Set();
@@ -1005,33 +992,34 @@
 
         for (let j = 0; j < romanKeys.length; j++) {
           const rk = romanKeys[j];
-          if (deptMap && !deptMap.has(rk)) {
-            deptMap.set(rk, hangul);
-          }
-          if (!PERSON_ROMAN_TO_HANGUL_GLOBAL.has(rk)) {
-            PERSON_ROMAN_TO_HANGUL_GLOBAL.set(rk, hangul);
-          }
+          if (deptMap && !deptMap.has(rk)) deptMap.set(rk, hangul);
+          if (!PERSON_ROMAN_TO_HANGUL_GLOBAL.has(rk)) PERSON_ROMAN_TO_HANGUL_GLOBAL.set(rk, hangul);
         }
       }
     }
 
     function normalizePersonName(rawName, dept = '') {
+      if (!rawName) return '';
+      const cacheKey = `${dept}||${rawName}`;
+      if (PERSON_NORM_CACHE.has(cacheKey)) return PERSON_NORM_CACHE.get(cacheKey);
+
       const cleaned = cleanRawPersonName(rawName);
-      if (!cleaned) return '';
-      if (/^[가-힣]{2,4}$/.test(cleaned)) return cleaned;
+      if (!cleaned) { PERSON_NORM_CACHE.set(cacheKey, ''); return ''; }
+      if (/^[가-힣]{2,4}$/.test(cleaned)) { PERSON_NORM_CACHE.set(cacheKey, cleaned); return cleaned; }
 
       if (/[a-zA-Z]/.test(cleaned)) {
         const compactRoman = cleaned.toLowerCase().replace(/[^a-z]/g, '');
         if (compactRoman.length >= 4) {
           if (dept && PERSON_ROMAN_BY_DEPT.has(dept)) {
             const deptMatch = PERSON_ROMAN_BY_DEPT.get(dept).get(compactRoman);
-            if (deptMatch) return deptMatch;
+            if (deptMatch) { PERSON_NORM_CACHE.set(cacheKey, deptMatch); return deptMatch; }
           }
           const globalMatch = PERSON_ROMAN_TO_HANGUL_GLOBAL.get(compactRoman);
-          if (globalMatch) return globalMatch;
+          if (globalMatch) { PERSON_NORM_CACHE.set(cacheKey, globalMatch); return globalMatch; }
         }
       }
 
+      PERSON_NORM_CACHE.set(cacheKey, cleaned);
       return cleaned;
     }
 
@@ -1040,84 +1028,55 @@
     /* ==========================================================================
        3. PROCEDURAL OPTICAL TEXTURES
        ========================================================================== */
-    function createStarlightTexture() {
+    function createRadialTexture(size, stops) {
       const c = document.createElement('canvas');
-      c.width = 64; c.height = 64;
+      c.width = size; c.height = size;
       const ctx = c.getContext('2d');
-      const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
-      grad.addColorStop(0.0, 'rgba(255, 255, 255, 1.0)');
-      grad.addColorStop(0.18, 'rgba(255, 255, 255, 0.95)');
-      grad.addColorStop(0.42, 'rgba(255, 255, 255, 0.6)');
-      grad.addColorStop(0.74, 'rgba(255, 255, 255, 0.16)');
-      grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
+      const half = size * 0.5;
+      const grad = ctx.createRadialGradient(half, half, 0, half, half, half);
+      for (let i = 0; i < stops.length; i++) grad.addColorStop(stops[i][0], stops[i][1]);
       ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, 64, 64);
+      ctx.fillRect(0, 0, size, size);
       return new THREE.CanvasTexture(c);
     }
 
-    function createDoctoralStarTexture() {
-      const c = document.createElement('canvas');
-      c.width = 128; c.height = 128;
-      const ctx = c.getContext('2d');
-      const grad = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
-      grad.addColorStop(0.0, 'rgba(255, 255, 255, 1.0)');
-      grad.addColorStop(0.28, 'rgba(255, 255, 255, 0.92)');
-      grad.addColorStop(0.52, 'rgba(255, 255, 255, 0.45)');
-      grad.addColorStop(0.76, 'rgba(255, 255, 255, 0.10)');
-      grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, 128, 128);
-      return new THREE.CanvasTexture(c);
-    }
+    const starTexture = createRadialTexture(64, [
+      [0.0, 'rgba(255, 255, 255, 1.0)'],
+      [0.18, 'rgba(255, 255, 255, 0.95)'],
+      [0.42, 'rgba(255, 255, 255, 0.6)'],
+      [0.74, 'rgba(255, 255, 255, 0.16)'],
+      [1.0, 'rgba(0, 0, 0, 0)']
+    ]);
 
-    function createModerateSunTexture() {
-      const c = document.createElement('canvas');
-      c.width = 64; c.height = 64;
-      const ctx = c.getContext('2d');
-      const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
-      grad.addColorStop(0.0, 'rgba(255, 255, 255, 1.0)');
-      grad.addColorStop(0.24, 'rgba(254, 240, 138, 0.9)');
-      grad.addColorStop(0.55, 'rgba(234, 179, 8, 0.28)');
-      grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, 64, 64);
-      return new THREE.CanvasTexture(c);
-    }
+    const doctoralStarTexture = createRadialTexture(128, [
+      [0.0, 'rgba(255, 255, 255, 1.0)'],
+      [0.28, 'rgba(255, 255, 255, 0.92)'],
+      [0.52, 'rgba(255, 255, 255, 0.45)'],
+      [0.76, 'rgba(255, 255, 255, 0.10)'],
+      [1.0, 'rgba(0, 0, 0, 0)']
+    ]);
 
-    function createRedDeptSunTexture() {
-      const c = document.createElement('canvas');
-      c.width = 64; c.height = 64;
-      const ctx = c.getContext('2d');
-      const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
-      grad.addColorStop(0.0, 'rgba(255, 255, 255, 1.0)');
-      grad.addColorStop(0.22, 'rgba(252, 165, 165, 0.96)');
-      grad.addColorStop(0.52, 'rgba(239, 68, 68, 0.65)');
-      grad.addColorStop(0.80, 'rgba(185, 28, 28, 0.22)');
-      grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, 64, 64);
-      return new THREE.CanvasTexture(c);
-    }
+    const moderateSunTexture = createRadialTexture(64, [
+      [0.0, 'rgba(255, 255, 255, 1.0)'],
+      [0.24, 'rgba(254, 240, 138, 0.9)'],
+      [0.55, 'rgba(234, 179, 8, 0.28)'],
+      [1.0, 'rgba(0, 0, 0, 0)']
+    ]);
 
-    function createSoftDustTexture() {
-      const c = document.createElement('canvas');
-      c.width = 64; c.height = 64;
-      const ctx = c.getContext('2d');
-      const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
-      grad.addColorStop(0.0, 'rgba(255, 255, 255, 0.95)');
-      grad.addColorStop(0.32, 'rgba(255, 255, 255, 0.48)');
-      grad.addColorStop(0.72, 'rgba(255, 255, 255, 0.12)');
-      grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, 64, 64);
-      return new THREE.CanvasTexture(c);
-    }
+    const redDeptSunTexture = createRadialTexture(64, [
+      [0.0, 'rgba(255, 255, 255, 1.0)'],
+      [0.22, 'rgba(252, 165, 165, 0.96)'],
+      [0.52, 'rgba(239, 68, 68, 0.65)'],
+      [0.80, 'rgba(185, 28, 28, 0.22)'],
+      [1.0, 'rgba(0, 0, 0, 0)']
+    ]);
 
-    const starTexture = createStarlightTexture();
-    const doctoralStarTexture = createDoctoralStarTexture();
-    const moderateSunTexture = createModerateSunTexture();
-    const redDeptSunTexture = createRedDeptSunTexture();
-    const softDustTexture = createSoftDustTexture();
+    const softDustTexture = createRadialTexture(64, [
+      [0.0, 'rgba(255, 255, 255, 0.95)'],
+      [0.32, 'rgba(255, 255, 255, 0.48)'],
+      [0.72, 'rgba(255, 255, 255, 0.12)'],
+      [1.0, 'rgba(0, 0, 0, 0)']
+    ]);
 
     /* ==========================================================================
        4. THREE.JS SCENE SETUP & CURSOR-ANCHORED ZOOM SYSTEM
@@ -1236,12 +1195,9 @@
 
           float flow = fract(vUv.x * 2.0 - uTime * 0.4 + uPhase * 0.1);
           
-          vec3 col;
-          if (flow < 0.5) {
-            col = mix(pink, purple, flow * 2.0);
-          } else {
-            col = mix(purple, cyan, (flow - 0.5) * 2.0);
-          }
+          vec3 col = (flow < 0.5)
+            ? mix(pink, purple, flow * 2.0)
+            : mix(purple, cyan, (flow - 0.5) * 2.0);
 
           float pulse = sin(vUv.x * 14.0 - uTime * 3.0 + uPhase) * 0.20 + 0.85;
           col *= pulse * 1.35;
@@ -1256,11 +1212,13 @@
     });
 
     /* ==========================================================================
-       6. BILINGUAL KEYWORD MERGING ENGINE
+       6. BILINGUAL KEYWORD MERGING & PRE-INDEXED DATA ENGINE
        ========================================================================== */
     let ALL_NODES = [];
+    let THESIS_NODES_ALL = [];
     let NODE_BY_ID = new Map();
     let NODE_SPRITES = [];
+    let VISIBLE_SPRITES_CACHE = [];
     let SPRITE_BY_ID = new Map();
     let ADVISOR_SPRITE_BY_NAME = new Map();
     let DEPT_MAP = new Map();
@@ -1343,20 +1301,24 @@
       ["satisfaction", "만족도"], ["만족도", "만족도"]
     ]);
 
+    const KW_DISPLAY_CACHE = new Map();
+
     function normalizeKeywordDisplayLanguage(rawKw) {
       if (!rawKw) return '';
-      let s = convertHanjaToHangul(String(rawKw)).replace(/^#+/, '').trim();
-      if (!s) return '';
+      const rawStr = String(rawKw);
+      if (KW_DISPLAY_CACHE.has(rawStr)) return KW_DISPLAY_CACHE.get(rawStr);
+
+      let s = convertHanjaToHangul(rawStr).replace(/^#+/, '').trim();
+      if (!s) { KW_DISPLAY_CACHE.set(rawStr, ''); return ''; }
 
       const lowerFull = s.toLowerCase().replace(/\s+/g, ' ').trim();
       if (BILINGUAL_SYNONYM_TO_KOREAN.has(lowerFull)) {
-        return BILINGUAL_SYNONYM_TO_KOREAN.get(lowerFull);
+        const mapped = BILINGUAL_SYNONYM_TO_KOREAN.get(lowerFull);
+        KW_DISPLAY_CACHE.set(rawStr, mapped);
+        return mapped;
       }
 
-      const hasHangul = /[가-힣]/.test(s);
-      const hasLatin = /[a-zA-Z]/.test(s);
-
-      if (hasHangul && hasLatin) {
+      if (/[가-힣]/.test(s) && /[a-zA-Z]/.test(s)) {
         let cleaned = s
           .replace(/\(\s*[a-zA-Z0-9\s\-\/&.,]+\s*\)/g, ' ')
           .replace(/\[\s*[a-zA-Z0-9\s\-\/&.,]+\s*\]/g, ' ')
@@ -1366,11 +1328,13 @@
           .trim();
 
         if (/[가-힣]/.test(cleaned)) {
-          const cleanedLower = cleaned.toLowerCase();
-          return BILINGUAL_SYNONYM_TO_KOREAN.get(cleanedLower) || cleaned;
+          const res = BILINGUAL_SYNONYM_TO_KOREAN.get(cleaned.toLowerCase()) || cleaned;
+          KW_DISPLAY_CACHE.set(rawStr, res);
+          return res;
         }
       }
 
+      KW_DISPLAY_CACHE.set(rawStr, s);
       return s;
     }
 
@@ -1412,69 +1376,50 @@
       if (w.length <= 3) return w;
       if (w.endsWith("ization")) return w.slice(0, -7) + "ize";
       if (w.endsWith("ational")) return w.slice(0, -7) + "ate";
-      if (w.endsWith("fulness")) return w.slice(0, -4);
-      if (w.endsWith("ousness")) return w.slice(0, -4);
-      if (w.endsWith("iveness")) return w.slice(0, -4);
+      if (w.endsWith("fulness") || w.endsWith("ousness") || w.endsWith("iveness")) return w.slice(0, -4);
       if (w.endsWith("tion")) return w.slice(0, -4) + "t";
       if (w.endsWith("sion")) return w.slice(0, -4) + "s";
-      if (w.endsWith("ment")) return w.slice(0, -4);
-      if (w.endsWith("ness")) return w.slice(0, -4);
+      if (w.endsWith("ment") || w.endsWith("ness")) return w.slice(0, -4);
       if (w.endsWith("ity")) return w.slice(0, -3);
       if (w.endsWith("ing") && w.length > 5) {
         let stem = w.slice(0, -3);
-        if (stem.length > 2 && stem[stem.length - 1] === stem[stem.length - 2]) {
-          stem = stem.slice(0, -1);
-        }
+        if (stem.length > 2 && stem[stem.length - 1] === stem[stem.length - 2]) stem = stem.slice(0, -1);
         return stem;
       }
       if (w.endsWith("ied")) return w.slice(0, -3) + "y";
       if (w.endsWith("ed") && w.length > 4) {
         let stem = w.slice(0, -2);
-        if (stem.length > 2 && stem[stem.length - 1] === stem[stem.length - 2]) {
-          stem = stem.slice(0, -1);
-        }
+        if (stem.length > 2 && stem[stem.length - 1] === stem[stem.length - 2]) stem = stem.slice(0, -1);
         return stem;
       }
       if (w.endsWith("ies") && w.length > 4) return w.slice(0, -3) + "y";
       if (w.endsWith("es") && w.length > 4) return w.slice(0, -2);
       if (w.endsWith("s") && !w.endsWith("ss") && w.length > 3) return w.slice(0, -1);
-      if (w.endsWith("ly") && w.length > 4) return w.slice(0, -2);
-      if (w.endsWith("er") && w.length > 4) return w.slice(0, -2);
-      if (w.endsWith("al") && w.length > 4) return w.slice(0, -2);
-      if (w.endsWith("ic") && w.length > 4) return w.slice(0, -2);
+      if ((w.endsWith("ly") || w.endsWith("er") || w.endsWith("al") || w.endsWith("ic")) && w.length > 4) return w.slice(0, -2);
       return w;
     }
 
     function normalizeKeywordToConcepts(kw) {
       const clean = kw.toLowerCase().replace(/[^\w가-힣\s\-]/g, ' ').replace(/\s+/g, ' ').trim();
       if (!clean) return [];
-      if (CONCEPT_CANONICAL_MAP.has(clean)) {
-        return [CONCEPT_CANONICAL_MAP.get(clean)];
-      }
+      if (CONCEPT_CANONICAL_MAP.has(clean)) return [CONCEPT_CANONICAL_MAP.get(clean)];
       const tokens = clean.split(/[\s\-]+/);
       const stems = [];
       for (let i = 0; i < tokens.length; i++) {
         const tok = tokens[i];
         if (!tok || tok.length < 2) continue;
-        if (CONCEPT_CANONICAL_MAP.has(tok)) {
-          stems.push(CONCEPT_CANONICAL_MAP.get(tok));
-        } else if (/^[a-z]+$/.test(tok)) {
-          stems.push(stemEnglishWord(tok));
-        } else {
-          stems.push(tok);
-        }
+        if (CONCEPT_CANONICAL_MAP.has(tok)) stems.push(CONCEPT_CANONICAL_MAP.get(tok));
+        else if (/^[a-z]+$/.test(tok)) stems.push(stemEnglishWord(tok));
+        else stems.push(tok);
       }
       return stems.length > 0 ? [stems.join('_')] : [clean];
     }
 
     function sanitizeKeywords(rawKeywords) {
       if (!rawKeywords) return [];
-      let arr = [];
-      if (Array.isArray(rawKeywords)) {
-        arr = rawKeywords;
-      } else if (typeof rawKeywords === 'string') {
-        arr = rawKeywords.split(/[,;|/]+/);
-      }
+      let arr = Array.isArray(rawKeywords)
+        ? rawKeywords
+        : (typeof rawKeywords === 'string' ? rawKeywords.split(/[,;|/]+/) : []);
       const cleaned = [];
       const seen = new Set();
       for (let i = 0; i < arr.length; i++) {
@@ -1532,14 +1477,9 @@
         const val = candidates[i];
         if (!val) continue;
         const s = String(val).toLowerCase();
-        if (s.includes('박사') || s.includes('ph.d') || s.includes('phd') || s.includes('doctor')) {
-          return true;
-        }
+        if (s.includes('박사') || s.includes('ph.d') || s.includes('phd') || s.includes('doctor')) return true;
       }
-      if (node && typeof node.size === 'number' && node.size >= 3.0) {
-        return true;
-      }
-      return false;
+      return Boolean(node && typeof node.size === 'number' && node.size >= 3.0);
     }
 
     function detectThesisLanguage(node, detailObj) {
@@ -1550,8 +1490,7 @@
         if (l.startsWith('ko') || l.includes('국문') || l.includes('한국어') || l.includes('korean')) return 'ko';
       }
       const titleStr = (detailObj && detailObj.title_ko) || (node && (node.title_ko || node.name)) || "";
-      const hasHangul = /[가-힣]/.test(titleStr);
-      return hasHangul ? 'ko' : 'en';
+      return /[가-힣]/.test(titleStr) ? 'ko' : 'en';
     }
 
     function startCosmicIgnitionReveal() {
@@ -1562,48 +1501,38 @@
 
       const revealState = { brightness: 0.0 };
       new TWEEN.Tween(revealState)
-        .to({ brightness: 1.0 }, 2000)
+        .to({ brightness: 1.0 }, 1600)
         .easing(TWEEN.Easing.Cubic.Out)
-        .onUpdate(() => {
-          cosmicRevealProgress = revealState.brightness;
-        })
-        .onComplete(() => {
-          cosmicRevealProgress = 1.0;
-        })
+        .onUpdate(() => { cosmicRevealProgress = revealState.brightness; })
+        .onComplete(() => { cosmicRevealProgress = 1.0; })
         .start();
 
       new TWEEN.Tween(camera.position)
-        .to({ x: 0, y: 950, z: 0.001 }, 2000)
+        .to({ x: 0, y: 950, z: 0.001 }, 1600)
         .easing(TWEEN.Easing.Cubic.Out)
         .start();
     }
 
     async function initializeCosmos() {
-      const nodeFetchPromises = ['galaxy_nodes_2.json', 'galaxy_nodes.json'].map(fname =>
-        fetch(fname, { cache: 'force-cache' })
-          .then(r => r.ok ? r.json() : null)
-          .catch(() => null)
-      );
+      const fetchJsonQuiet = (url) =>
+        fetch(url, { cache: 'force-cache' })
+          .then(r => (r.ok ? r.json() : null))
+          .catch(() => null);
 
-      const detailFetchPromises = [];
+      const nodePromises = [
+        fetchJsonQuiet('galaxy_nodes_2.json'),
+        fetchJsonQuiet('galaxy_nodes.json')
+      ];
+
+      const detailUrls = [];
       for (let i = 0; i <= 16; i++) {
-        if (i <= 8) {
-          detailFetchPromises.push(
-            fetch(`details_${i}_2.json`, { cache: 'force-cache' })
-              .then(r => r.ok ? r.json() : null)
-              .catch(() => null)
-          );
-        }
-        detailFetchPromises.push(
-          fetch(`details_${i}.json`, { cache: 'force-cache' })
-            .then(r => r.ok ? r.json() : null)
-            .catch(() => null)
-        );
+        if (i <= 8) detailUrls.push(`details_${i}_2.json`);
+        detailUrls.push(`details_${i}.json`);
       }
 
       const [nodeResults, detailResults] = await Promise.all([
-        Promise.all(nodeFetchPromises),
-        Promise.all(detailFetchPromises)
+        Promise.all(nodePromises),
+        Promise.all(detailUrls.map(fetchJsonQuiet))
       ]);
 
       for (let i = 0; i < nodeResults.length; i++) {
@@ -1625,14 +1554,13 @@
       }
 
       for (let i = 0; i < detailResults.length; i++) {
-        if (detailResults[i]) {
-          mergeDetails(detailResults[i]);
-        }
+        if (detailResults[i]) mergeDetails(detailResults[i]);
       }
 
       consolidateJeongongIntoHakgwa();
       buildUnifiedPersonNameIndex();
 
+      THESIS_NODES_ALL = [];
       for (let i = 0; i < ALL_NODES.length; i++) {
         const n = ALL_NODES[i];
         if (n.type === 'advisor_sun') {
@@ -1643,10 +1571,16 @@
           if (n.advisor) n.advisor = normalizePersonName(n.advisor, n.dept);
           if (n.author) n.author = normalizePersonName(n.author, n.dept);
         }
+        n._clusterCat = getDeptClusterCategory(n.dept);
+        if (n.type === 'thesis_planet') {
+          THESIS_NODES_ALL.push(n);
+          getCleanDetail(n); // Pre-index chi tiết luận văn để lọc & tìm kiếm siêu tốc
+        }
       }
 
       buildCosmicScene();
       setupDepartmentFilterUI();
+      refreshVisibleSpritesCache();
 
       const loader = document.getElementById('loader-overlay');
       if (loader) {
@@ -1654,7 +1588,7 @@
         setTimeout(() => {
           loader.remove();
           startCosmicIgnitionReveal();
-        }, 220);
+        }, 180);
       } else {
         startCosmicIgnitionReveal();
       }
@@ -1692,27 +1626,26 @@
       if (node._resolvedDetail) return node._resolvedDetail;
 
       const d = DETAILS_STORE.get(node.id) || node.cachedDetail;
-      
       const rawDept = node.dept || (d && (d.dept || d.department)) || "공학·디자인융합부";
       const resolvedDept = normalizeDepartmentName(rawDept);
       node.dept = resolvedDept;
 
-      let resolvedTitleKo = cleanAbstractText((d && (d.title_ko || d.title)) || node.title_ko || node.name || "학위논문 연구");
-      let rawAuthor = (d && d.author) || node.author || `연구자_${node.id}`;
-      let rawAdvisor = (d && (d.advisor || d.advisor_name)) || node.advisor || (node.type === 'advisor_sun' ? node.name : "지도교수");
+      const resolvedTitleKo = cleanAbstractText((d && (d.title_ko || d.title)) || node.title_ko || node.name || "학위논문 연구");
+      const rawAuthor = (d && d.author) || node.author || `연구자_${node.id}`;
+      const rawAdvisor = (d && (d.advisor || d.advisor_name)) || node.advisor || (node.type === 'advisor_sun' ? node.name : "지도교수");
 
       const resolvedAuthor = normalizePersonName(rawAuthor, resolvedDept) || `연구자_${node.id}`;
       const resolvedAdvisor = normalizePersonName(rawAdvisor, resolvedDept) || "지도교수";
       
       const isPhd = detectDoctoralDegree(node, d);
-      let rawDegreeStr = (d && (d.degree || d.degree_name)) || node.degree;
-      let resolvedDegree = rawDegreeStr || (node.type === 'thesis_planet'
+      const rawDegreeStr = (d && (d.degree || d.degree_name)) || node.degree;
+      const resolvedDegree = rawDegreeStr || (node.type === 'thesis_planet'
         ? (isPhd ? "박사 학위논문 (Ph.D.)" : "석사 학위논문 (Master)")
         : "교수/학부");
 
-      let resolvedYear = (d && d.year) || node.year || 2024;
+      const resolvedYear = (d && d.year) || node.year || 2024;
       
-      let rawUci = (d && (d.uci || d.uci_code || d.d_uci || d.identifier)) || node.uci;
+      const rawUci = (d && (d.uci || d.uci_code || d.d_uci || d.identifier)) || node.uci;
       let resolvedUci = null;
       if (rawUci && typeof rawUci === 'string') {
         const trimmedUci = rawUci.trim();
@@ -1721,7 +1654,7 @@
         }
       }
       
-      let rawAbstract = (d && (d.abstract_ko || d.abstract || d.abstract_en)) || node.abstract_ko;
+      const rawAbstract = (d && (d.abstract_ko || d.abstract || d.abstract_en)) || node.abstract_ko;
       let resolvedAbstractKo = cleanAbstractText(rawAbstract);
       if (!resolvedAbstractKo || resolvedAbstractKo.toLowerCase() === "nan") {
         resolvedAbstractKo = `본 연구는 서울과학기술대학교 ${resolvedDept}에서 수행된 학위논문으로, 주제와 관련된 심층적인 학술 분석과 연구 방법론을 종합적으로 기술하고 있습니다.`;
@@ -1729,27 +1662,31 @@
 
       const rawKw = (d && d.keywords) ? d.keywords : node.keywords;
       const resolvedKeywords = sanitizeKeywords(rawKw);
+      const keywordsLower = resolvedKeywords.map(k => k.toLowerCase());
 
       const conceptSet = new Set();
-      resolvedKeywords.forEach(kw => {
-        normalizeKeywordToConcepts(kw).forEach(c => conceptSet.add(c));
-      });
-      const resolvedConcepts = Array.from(conceptSet);
-
-      const thesisLang = detectThesisLanguage(node, d);
+      for (let i = 0; i < resolvedKeywords.length; i++) {
+        const cList = normalizeKeywordToConcepts(resolvedKeywords[i]);
+        for (let j = 0; j < cList.length; j++) conceptSet.add(cList[j]);
+      }
 
       const detailObj = {
         title_ko: resolvedTitleKo,
+        titleLower: resolvedTitleKo.toLowerCase(),
         author: resolvedAuthor,
+        authorLower: resolvedAuthor.toLowerCase(),
         advisor: resolvedAdvisor,
+        advisorLower: resolvedAdvisor.toLowerCase(),
         dept: resolvedDept,
+        deptLower: resolvedDept.toLowerCase(),
         degree: resolvedDegree,
         isPhd: isPhd,
-        thesisLang: thesisLang,
+        thesisLang: detectThesisLanguage(node, d),
         year: resolvedYear,
         uci: resolvedUci,
         keywords: resolvedKeywords,
-        concepts: resolvedConcepts,
+        keywordsLower: keywordsLower,
+        concepts: Array.from(conceptSet),
         abstract_ko: resolvedAbstractKo
       };
 
@@ -1780,26 +1717,25 @@
       for (let y = minYear; y <= maxYear; y++) {
         const yearProgress = (y - minYear) / totalSpanYears;
         const tiltDamp = 0.25 + 0.75 * yearProgress;
-        const tiltAngleX = Math.sin(y * 1.7) * (5.0 * Math.PI / 180.0) * tiltDamp;
-        const tiltAngleZ = Math.cos(y * 2.3) * (5.0 * Math.PI / 180.0) * tiltDamp;
-        yearTiltMap.set(y, { tiltX: tiltAngleX, tiltZ: tiltAngleZ });
+        yearTiltMap.set(y, {
+          tiltX: Math.sin(y * 1.7) * (5.0 * Math.PI / 180.0) * tiltDamp,
+          tiltZ: Math.cos(y * 2.3) * (5.0 * Math.PI / 180.0) * tiltDamp
+        });
       }
 
       const thesisNodes = [];
       const conceptInvertedIndex = new Map();
 
-      for (let i = 0; i < ALL_NODES.length; i++) {
-        const n = ALL_NODES[i];
-        if (n.type === 'thesis_planet') {
-          const det = getCleanDetail(n);
-          n._validConnectionCount = 0;
-          if (det.concepts.length > 0) {
-            thesisNodes.push(n);
-            for (let j = 0; j < det.concepts.length; j++) {
-              const c = det.concepts[j];
-              if (!conceptInvertedIndex.has(c)) conceptInvertedIndex.set(c, []);
-              conceptInvertedIndex.get(c).push(n);
-            }
+      for (let i = 0; i < THESIS_NODES_ALL.length; i++) {
+        const n = THESIS_NODES_ALL[i];
+        const det = getCleanDetail(n);
+        n._validConnectionCount = 0;
+        if (det.concepts.length > 0) {
+          thesisNodes.push(n);
+          for (let j = 0; j < det.concepts.length; j++) {
+            const c = det.concepts[j];
+            if (!conceptInvertedIndex.has(c)) conceptInvertedIndex.set(c, []);
+            conceptInvertedIndex.get(c).push(n);
           }
         }
       }
@@ -1853,7 +1789,6 @@
         const totalInYear = yearNodeTotals.get(year) || 1;
 
         const envelopeRadiusAtYear = THREE.MathUtils.lerp(funnelBottomRadius, funnelTopRadius, Math.pow(tProgress, 1.18));
-
         const funnelFactor = Math.pow(1.05, yearOffset);
         const origR = Math.sqrt(node.x * node.x + node.z * node.z) || 1;
         let computedR = origR * (0.13 + funnelFactor * 0.45);
@@ -1870,17 +1805,14 @@
         }
 
         const newR = Math.min(computedR, envelopeRadiusAtYear * 0.90);
-
-        let fx = Math.cos(theta) * newR;
-        let fz = Math.sin(theta) * newR;
-        
+        const fx = Math.cos(theta) * newR;
+        const fz = Math.sin(theta) * newR;
         const baseFy = baseBottomY + yearOffset * 18.0;
         
         const tilt = yearTiltMap.get(year) || { tiltX: 0, tiltZ: 0 };
         const tiltedY = baseFy + (fz * Math.sin(tilt.tiltX)) + (fx * Math.sin(tilt.tiltZ));
         const tiltedX = fx * Math.cos(tilt.tiltZ);
         const tiltedZ = fz * Math.cos(tilt.tiltX);
-
         const layerSpreadY = ((idxInYear % 7) - 3) * (0.65 + tProgress * 0.65);
 
         node.fx = tiltedX;
@@ -1894,12 +1826,8 @@
 
         const normalizedDept = normalizeDepartmentName(node.dept || node.name);
         node.dept = normalizedDept;
-        if (node.type === 'dept_sun') {
-          node.name = normalizedDept;
-        }
-        if (normalizedDept) {
-          DEPT_MAP.set(normalizedDept, (DEPT_MAP.get(normalizedDept) || 0) + 1);
-        }
+        if (node.type === 'dept_sun') node.name = normalizedDept;
+        if (normalizedDept) DEPT_MAP.set(normalizedDept, (DEPT_MAP.get(normalizedDept) || 0) + 1);
 
         const isDept = node.type === 'dept_sun';
         const isAdvisor = node.type === 'advisor_sun';
@@ -1930,17 +1858,13 @@
         } else {
           const det = getCleanDetail(node);
           const connCount = node._validConnectionCount || 0;
-          
           const masterBase = 2.4 + Math.min(1.4, connCount * 0.22);
           scaleSize = det.isPhd ? (masterBase * 3.0) : masterBase;
 
-          const clusterCat = getDeptClusterCategory(normalizedDept);
+          const clusterCat = node._clusterCat || getDeptClusterCategory(normalizedDept);
           let rawHex = node.color || "#06B6D4";
-          if (clusterCat === '디자인') {
-            rawHex = "#F43F5E";
-          } else if (clusterCat === '융합') {
-            rawHex = "#8B5CF6";
-          }
+          if (clusterCat === '디자인') rawHex = "#F43F5E";
+          else if (clusterCat === '융합') rawHex = "#8B5CF6";
 
           reusableColor.set(rawHex);
           reusableColor.getHSL(reusableHsl);
@@ -1966,11 +1890,13 @@
         sprite.position.set(node.fx, node.fy, node.fz);
         sprite.scale.set(scaleSize, scaleSize, 1);
 
+        const detRef = (!isDept && !isAdvisor) ? getCleanDetail(node) : null;
         sprite.userData = {
           nodeData: node,
           baseSize: scaleSize,
           isSun: isDept || isAdvisor,
           isDeptSun: isDept,
+          isPhd: detRef ? detRef.isPhd : false,
           pulseOffset: Math.random() * Math.PI * 2,
           twinkleSpeed: 2.0 + Math.random() * 4.0,
           shimmerAmp: 0.14 + Math.random() * 0.18,
@@ -1986,9 +1912,7 @@
           const cleanAdvName = normalizePersonName(node.name, node.dept);
           if (cleanAdvName) {
             ADVISOR_SPRITE_BY_NAME.set(`${node.dept}||${cleanAdvName}`, sprite);
-            if (!ADVISOR_SPRITE_BY_NAME.has(cleanAdvName)) {
-              ADVISOR_SPRITE_BY_NAME.set(cleanAdvName, sprite);
-            }
+            if (!ADVISOR_SPRITE_BY_NAME.has(cleanAdvName)) ADVISOR_SPRITE_BY_NAME.set(cleanAdvName, sprite);
           }
         }
       }
@@ -2083,8 +2007,8 @@
       funnelHazeMesh.position.y = galaxyCenterY;
       cosmosGroup.add(funnelHazeMesh);
 
-      // Spiral Arms
-      const spiralRibbonCount = 6500;
+      // Spiral Arms (tối ưu số lượng hạt 4800 để khung hình mượt tối đa)
+      const spiralRibbonCount = 4800;
       const ribbonGeo = new THREE.BufferGeometry();
       const ribbonPositions = new Float32Array(spiralRibbonCount * 3);
       const ribbonColors = new Float32Array(spiralRibbonCount * 3);
@@ -2110,11 +2034,7 @@
         ribbonPositions[i * 3 + 2] = Math.sin(theta) * (radius + spread);
 
         const wave = Math.sin(theta * 2.0 + progress * 5.0) * 0.5 + 0.5;
-        if (arm === 0) {
-          tempC.lerpColors(colorPinkNeon, colorPinkSoft, wave);
-        } else {
-          tempC.lerpColors(colorCyanNeon, colorBlueSoft, wave);
-        }
+        tempC.lerpColors(arm === 0 ? colorPinkNeon : colorCyanNeon, arm === 0 ? colorPinkSoft : colorBlueSoft, wave);
         tempC.lerp(colorPurple, Math.random() * 0.35);
 
         ribbonColors[i * 3] = tempC.r;
@@ -2126,7 +2046,7 @@
       ribbonGeo.setAttribute('color', new THREE.BufferAttribute(ribbonColors, 3));
 
       const ribbonMat = new THREE.PointsMaterial({
-        size: 7.5,
+        size: 7.8,
         map: softDustTexture,
         vertexColors: true,
         transparent: true,
@@ -2138,7 +2058,7 @@
       cosmosGroup.add(spiralArmRibbonPoints);
 
       // Cosmic Dust
-      const mistCount = 2800;
+      const mistCount = 2200;
       const mistGeo = new THREE.BufferGeometry();
       const mistPositions = new Float32Array(mistCount * 3);
       const mistColors = new Float32Array(mistCount * 3);
@@ -2163,7 +2083,7 @@
       mistGeo.setAttribute('color', new THREE.BufferAttribute(mistColors, 3));
 
       const mistMat = new THREE.PointsMaterial({
-        size: 6.0,
+        size: 6.2,
         map: softDustTexture,
         vertexColors: true,
         transparent: true,
@@ -2250,6 +2170,13 @@
     let isCumulativeMode = true;
     let isFilterPanelExpanded = !isMobileView();
 
+    function refreshVisibleSpritesCache() {
+      VISIBLE_SPRITES_CACHE = [];
+      for (let i = 0; i < NODE_SPRITES.length; i++) {
+        if (NODE_SPRITES[i].visible) VISIBLE_SPRITES_CACHE.push(NODE_SPRITES[i]);
+      }
+    }
+
     function syncFilterPanelVisibility() {
       const deptPanelContainer = document.getElementById('dept-panel-container');
       const expandBtn = document.getElementById('btn-panel-expand');
@@ -2288,12 +2215,6 @@
       return '기타';
     }
 
-    function isDeptMatchingCluster(deptName, cluster) {
-      if (!deptName) return false;
-      if (cluster === 'all') return true;
-      return getDeptClusterCategory(deptName) === cluster;
-    }
-
     function passGlobalNodeFilters(n) {
       const passYear = isCumulativeMode ? (n.year <= activeTimelineYear) : (n.year === activeTimelineYear);
       if (!passYear) return false;
@@ -2301,7 +2222,7 @@
       if (selectedDept !== 'ALL') {
         if (n.dept !== selectedDept) return false;
       } else if (selectedCluster !== 'all') {
-        if (!isDeptMatchingCluster(n.dept, selectedCluster)) return false;
+        if ((n._clusterCat || getDeptClusterCategory(n.dept)) !== selectedCluster) return false;
       }
 
       if (n.type === 'thesis_planet') {
@@ -2332,12 +2253,8 @@
           dropdown.appendChild(opt);
         });
 
-      if (prevSelected && DEPT_MAP.has(prevSelected)) {
-        dropdown.value = prevSelected;
-      }
+      if (prevSelected && DEPT_MAP.has(prevSelected)) dropdown.value = prevSelected;
 
-      // Khi bấm chọn 5 nút khối ngành (전체, 공학, 디자인, 융합, 경영, 인문):
-      // Nếu bảng 연구 통계 đang mở -> tự động cập nhật nội dung bảng 연구 통계 theo nhóm ngành vừa chọn!
       document.querySelectorAll('.cluster-btn').forEach(btn => {
         btn.onclick = () => {
           document.querySelectorAll('.cluster-btn').forEach(b => b.classList.remove('active'));
@@ -2428,7 +2345,8 @@
     }
 
     function applyFilters() {
-      NODE_SPRITES.forEach(s => {
+      for (let i = 0; i < NODE_SPRITES.length; i++) {
+        const s = NODE_SPRITES[i];
         const n = s.userData.nodeData;
         const visible = passGlobalNodeFilters(n);
         s.visible = visible;
@@ -2436,12 +2354,13 @@
         if (!visible) {
           s.material.opacity = 0.0;
         } else if (!isSearchActive && !lockedTargetNode) {
-          const det = n.type === 'thesis_planet' ? getCleanDetail(n) : null;
-          const baseOp = s.userData.isDeptSun ? 0.96 : ((det && det.isPhd) ? 0.92 : 0.88);
+          const baseOp = s.userData.isDeptSun ? 0.96 : (s.userData.isPhd ? 0.92 : 0.88);
           s.material.opacity = baseOp * cosmicRevealProgress;
           s.scale.set(s.userData.baseSize, s.userData.baseSize, 1);
         }
-      });
+      }
+
+      refreshVisibleSpritesCache();
 
       const rightPanel = document.getElementById('right-panel');
       const listView = document.getElementById('panel-list-view');
@@ -2462,9 +2381,7 @@
       if (lockedTargetNode) {
         const activeSprite = SPRITE_BY_ID.get(lockedTargetNode.id);
         if (activeSprite && activeSprite.visible) {
-          if (lockedTargetNode.type === 'thesis_planet') {
-            highlightSelectedThesisConnections(lockedTargetNode);
-          }
+          if (lockedTargetNode.type === 'thesis_planet') highlightSelectedThesisConnections(lockedTargetNode);
         } else {
           resetSearchHighlight();
           document.getElementById('right-panel').classList.add('hidden');
@@ -2482,14 +2399,10 @@
 
     const switchContainer = document.getElementById('mode-toggle-switch');
     const switchHandle = document.getElementById('switch-handle');
-
     switchContainer.addEventListener('click', () => {
       isCumulativeMode = !isCumulativeMode;
-      if (isCumulativeMode) {
-        switchHandle.classList.remove('single-active');
-      } else {
-        switchHandle.classList.add('single-active');
-      }
+      if (isCumulativeMode) switchHandle.classList.remove('single-active');
+      else switchHandle.classList.add('single-active');
       applyFilters();
     });
 
@@ -2508,8 +2421,7 @@
     function createSpiralSpiderWebRibbon(sprite1, sprite2, linkIndex) {
       const p1 = sprite1.position;
       const p2 = sprite2.position;
-      const distance = p1.distanceTo(p2);
-      if (distance < 1.5) return null;
+      if (p1.distanceTo(p2) < 1.5) return null;
 
       const r1 = Math.hypot(p1.x, p1.z);
       const r2 = Math.hypot(p2.x, p2.z);
@@ -2533,14 +2445,8 @@
       const rawPoints = [];
       for (let i = 0; i <= steps; i++) {
         const t = i / steps;
-        if (i === 0) {
-          rawPoints.push(p1.clone());
-          continue;
-        }
-        if (i === steps) {
-          rawPoints.push(p2.clone());
-          continue;
-        }
+        if (i === 0) { rawPoints.push(p1.clone()); continue; }
+        if (i === steps) { rawPoints.push(p2.clone()); continue; }
 
         const envelope = Math.sin(t * Math.PI);
         const threadRippleR = Math.sin(t * Math.PI * 3.0 + linkIndex * 1.4) * 3.2 * envelope;
@@ -2555,8 +2461,7 @@
       }
 
       const fullCurve = new THREE.CatmullRomCurve3(rawPoints);
-      const tubeRadius = 0.095;
-      const geometry = new THREE.TubeGeometry(fullCurve, 44, tubeRadius, 6, false);
+      const geometry = new THREE.TubeGeometry(fullCurve, 40, 0.095, 6, false);
 
       const mat = arcRibbonShaderMat.clone();
       mat.uniforms.uOpacity.value = 0.92;
@@ -2576,9 +2481,9 @@
       let rootSprite = null;
       const relatedSprites = [];
 
-      NODE_SPRITES.forEach(s => {
+      for (let i = 0; i < VISIBLE_SPRITES_CACHE.length; i++) {
+        const s = VISIBLE_SPRITES_CACHE[i];
         const n = s.userData.nodeData;
-        if (!s.visible) return;
 
         if (n.id === rootNode.id) {
           rootSprite = s;
@@ -2586,8 +2491,7 @@
           s.userData.isRelated = false;
         } else if (n.type === 'thesis_planet' && hasValidRootConcepts) {
           const d = getCleanDetail(n);
-          const sim = calculateConceptSimilarity(rootConcepts, d.concepts);
-          if (sim >= 0.60) {
+          if (calculateConceptSimilarity(rootConcepts, d.concepts) >= 0.60) {
             s.userData.isHighlight = false;
             s.userData.isRelated = true;
             relatedSprites.push(s);
@@ -2599,7 +2503,7 @@
           s.userData.isHighlight = false;
           s.userData.isRelated = false;
         }
-      });
+      }
 
       if (rootSprite && relatedSprites.length > 0) {
         relatedSprites.forEach((relSprite, idx) => {
@@ -2646,8 +2550,7 @@
         .onComplete(() => {
           isCameraFlying = false;
           if (lockedTargetSprite) {
-            const liveWorldPos = getSpriteCurrentWorldPos(lockedTargetSprite);
-            controls.target.copy(liveWorldPos);
+            controls.target.copy(getSpriteCurrentWorldPos(lockedTargetSprite));
           }
         })
         .start();
@@ -2682,8 +2585,7 @@
       _zoomRaycaster.params.Sprite = { threshold: 8.0 };
       _zoomRaycaster.setFromCamera(_zoomMouseNDC, camera);
 
-      const visibleSprites = NODE_SPRITES.filter(s => s.visible);
-      const hits = _zoomRaycaster.intersectObjects(visibleSprites);
+      const hits = _zoomRaycaster.intersectObjects(VISIBLE_SPRITES_CACHE);
 
       if (hits.length > 0) {
         let chosen = hits[0].object;
@@ -2701,23 +2603,16 @@
       }
 
       camera.getWorldDirection(_anchorPlaneNormal);
-      const galaxyMidPoint = new THREE.Vector3(0, galaxyCenterYGlobal, 0);
-      _anchorPlane.setFromNormalAndCoplanarPoint(_anchorPlaneNormal, galaxyMidPoint);
+      _anchorPlane.setFromNormalAndCoplanarPoint(_anchorPlaneNormal, new THREE.Vector3(0, galaxyCenterYGlobal, 0));
 
       if (_zoomRaycaster.ray.intersectPlane(_anchorPlane, _anchorHitPoint)) {
         _anchorHitPoint.x = THREE.MathUtils.clamp(_anchorHitPoint.x, -420, 420);
         _anchorHitPoint.y = THREE.MathUtils.clamp(_anchorHitPoint.y, -20, 490);
         _anchorHitPoint.z = THREE.MathUtils.clamp(_anchorHitPoint.z, -420, 420);
-        return {
-          point: _anchorHitPoint.clone(),
-          sprite: null
-        };
+        return { point: _anchorHitPoint.clone(), sprite: null };
       }
 
-      return {
-        point: controls.target.clone(),
-        sprite: null
-      };
+      return { point: controls.target.clone(), sprite: null };
     }
 
     function applyAnchoredZoom(zoomScaleFactor, anchorWorldPoint) {
@@ -2728,9 +2623,7 @@
 
       const currentDist = camera.position.distanceTo(controls.target);
       const nextDist = currentDist * zoomScaleFactor;
-      if (nextDist < controls.minDistance || nextDist > controls.maxDistance) {
-        return;
-      }
+      if (nextDist < controls.minDistance || nextDist > controls.maxDistance) return;
 
       camera.position.sub(anchorWorldPoint).multiplyScalar(zoomScaleFactor).add(anchorWorldPoint);
       controls.target.sub(anchorWorldPoint).multiplyScalar(zoomScaleFactor).add(anchorWorldPoint);
@@ -2752,18 +2645,17 @@
       }
 
       const rawDelta = THREE.MathUtils.clamp(e.deltaY, -120, 120);
-      const zoomFactor = Math.exp(rawDelta * 0.0014);
-
-      applyAnchoredZoom(zoomFactor, lockedZoomAnchorWorld);
+      applyAnchoredZoom(Math.exp(rawDelta * 0.0014), lockedZoomAnchorWorld);
     }, { passive: false });
 
     let lastPinchDist = 0;
     let pinchAnchorWorld = null;
     canvas.addEventListener('touchstart', (e) => {
       if (e.touches.length === 2) {
-        const dx = e.touches[0].clientX - e.touches[1].clientX;
-        const dy = e.touches[0].clientY - e.touches[1].clientY;
-        lastPinchDist = Math.hypot(dx, dy);
+        lastPinchDist = Math.hypot(
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY
+        );
         const midX = (e.touches[0].clientX + e.touches[1].clientX) * 0.5;
         const midY = (e.touches[0].clientY + e.touches[1].clientY) * 0.5;
         pinchAnchorWorld = computeZoomAnchorAtScreen(midX, midY).point;
@@ -2772,12 +2664,12 @@
 
     canvas.addEventListener('touchmove', (e) => {
       if (e.touches.length === 2 && lastPinchDist > 0 && pinchAnchorWorld) {
-        const dx = e.touches[0].clientX - e.touches[1].clientX;
-        const dy = e.touches[0].clientY - e.touches[1].clientY;
-        const currDist = Math.hypot(dx, dy);
+        const currDist = Math.hypot(
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY
+        );
         if (currDist > 5) {
-          const factor = lastPinchDist / currDist;
-          applyAnchoredZoom(factor, pinchAnchorWorld);
+          applyAnchoredZoom(lastPinchDist / currDist, pinchAnchorWorld);
           lastPinchDist = currDist;
         }
       }
@@ -2798,27 +2690,28 @@
     const hoverBadgeEl = document.getElementById('hover-badge');
     const hoverTitleEl = document.getElementById('hover-title');
     const hoverSubEl = document.getElementById('hover-sub');
+    let pointerMovedSinceLastRay = false;
 
     window.addEventListener('mousemove', (e) => {
       mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
       mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
       tooltipEl.style.left = `${e.clientX + 16}px`;
       tooltipEl.style.top = `${e.clientY + 16}px`;
+      pointerMovedSinceLastRay = true;
 
-      const moveDist = Math.hypot(e.clientX - lastAnchorCursorPx.x, e.clientY - lastAnchorCursorPx.y);
-      if (moveDist > 4) {
+      if (Math.hypot(e.clientX - lastAnchorCursorPx.x, e.clientY - lastAnchorCursorPx.y) > 4) {
         lockedZoomAnchorWorld = null;
         lockedZoomAnchorSprite = null;
       }
     });
 
     function checkRaycast() {
-      if (isMobileView()) return;
+      if (isMobileView() || !pointerMovedSinceLastRay) return;
+      pointerMovedSinceLastRay = false;
 
       raycaster.params.Sprite.threshold = 5.5;
       raycaster.setFromCamera(mouse, camera);
-      const visibleSprites = NODE_SPRITES.filter(s => s.visible);
-      const intersects = raycaster.intersectObjects(visibleSprites);
+      const intersects = raycaster.intersectObjects(VISIBLE_SPRITES_CACHE);
 
       if (intersects.length > 0) {
         isHoveringCentralBeam = false;
@@ -2877,9 +2770,7 @@
         }
       }
 
-      if (hoveredSprite || isHoveringCentralBeam) {
-        clearHover();
-      }
+      if (hoveredSprite || isHoveringCentralBeam) clearHover();
     }
 
     function clearHover() {
@@ -2909,8 +2800,7 @@
       }
 
       const dist = Math.hypot(e.clientX - pointerDownPos.x, e.clientY - pointerDownPos.y);
-      const tapTolerance = isMobileView() ? 14 : 8;
-      if (dist > tapTolerance) return;
+      if (dist > (isMobileView() ? 14 : 8)) return;
 
       const rect = canvas.getBoundingClientRect();
       mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
@@ -2919,8 +2809,7 @@
       raycaster.params.Sprite.threshold = isMobileView() ? 9.5 : 6.0;
       raycaster.setFromCamera(mouse, camera);
 
-      const visibleSprites = NODE_SPRITES.filter(s => s.visible);
-      const hits = raycaster.intersectObjects(visibleSprites);
+      const hits = raycaster.intersectObjects(VISIBLE_SPRITES_CACHE);
 
       if (hits.length > 0) {
         let targetHit = hits[0];
@@ -2933,12 +2822,10 @@
 
         const targetSprite = targetHit.object;
         const node = targetSprite.userData.nodeData;
-
         panelNavigationStack = [];
 
         if (node.type === 'advisor_sun') {
-          const profName = normalizePersonName(node.name, node.dept);
-          showThesesOfAdvisor(profName, false, node.dept, targetSprite);
+          showThesesOfAdvisor(normalizePersonName(node.name, node.dept), false, node.dept, targetSprite);
         } else if (node.type === 'dept_sun') {
           showThesesOfDepartment(node.dept, false);
         } else {
@@ -2954,9 +2841,7 @@
       isSearchActive = false;
 
       highlightSelectedThesisConnections(node);
-
-      const detail = getCleanDetail(node);
-      renderDetailContent(node, detail);
+      renderDetailContent(node, getCleanDetail(node));
 
       if (isMobileView()) {
         isFilterPanelExpanded = false;
@@ -2967,18 +2852,12 @@
       document.getElementById('panel-detail-view').classList.remove('hidden');
 
       const backBtn = document.getElementById('btn-back-to-list');
-      if (fromList || currentListContext !== null || panelNavigationStack.length > 0) {
-        backBtn.classList.remove('hidden');
-      } else {
-        backBtn.classList.add('hidden');
-      }
+      if (fromList || currentListContext !== null || panelNavigationStack.length > 0) backBtn.classList.remove('hidden');
+      else backBtn.classList.add('hidden');
 
-      const rightPanel = document.getElementById('right-panel');
-      rightPanel.classList.remove('hidden');
+      document.getElementById('right-panel').classList.remove('hidden');
 
-      if (targetSprite) {
-        flyCameraAndAnchorToSprite(targetSprite, { x: 34, y: 18, z: 44 });
-      }
+      if (targetSprite) flyCameraAndAnchorToSprite(targetSprite, { x: 34, y: 18, z: 44 });
     }
 
     function renderDetailContent(node, detail) {
@@ -3004,11 +2883,7 @@
       advisorBtn.innerText = detail.advisor;
       advisorBtn.onclick = () => {
         if (!detail.advisor || detail.advisor === '-' || detail.advisor === '지도교수') return;
-        panelNavigationStack.push({
-          view: 'detail',
-          node: node,
-          sprite: lockedTargetSprite
-        });
+        panelNavigationStack.push({ view: 'detail', node: node, sprite: lockedTargetSprite });
         showThesesOfAdvisor(detail.advisor, true, detail.dept, null);
       };
 
@@ -3016,11 +2891,7 @@
       deptBtn.innerText = detail.dept;
       deptBtn.onclick = () => {
         if (!detail.dept || detail.dept === '-') return;
-        panelNavigationStack.push({
-          view: 'detail',
-          node: node,
-          sprite: lockedTargetSprite
-        });
+        panelNavigationStack.push({ view: 'detail', node: node, sprite: lockedTargetSprite });
         showThesesOfDepartment(detail.dept, true);
       };
 
@@ -3047,31 +2918,26 @@
       const kwBox = document.getElementById('detail-keywords-container');
       kwBox.innerHTML = '';
       if (detail.keywords && detail.keywords.length > 0) {
-        detail.keywords.forEach(k => {
-          const displayKw = normalizeKeywordDisplayLanguage(k);
+        detail.keywords.forEach(displayKw => {
           const tag = document.createElement('span');
           tag.className = 'px-2 py-0.5 rounded text-[10px] font-medium bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 cursor-pointer hover:bg-indigo-500/40 transition';
           tag.innerText = `#${displayKw}`;
           tag.onclick = () => {
-            panelNavigationStack.push({
-              view: 'detail',
-              node: node,
-              sprite: lockedTargetSprite
-            });
+            panelNavigationStack.push({ view: 'detail', node: node, sprite: lockedTargetSprite });
             filterByKeywordWithHistory(displayKw, true);
           };
           kwBox.appendChild(tag);
         });
       } else {
         const emptyTag = document.createElement('span');
-        emptyTag.className = 'text-[11px] text-slate-500 italic';
+        emptyTag.className = 'text-[11px] text-slate-400 italic';
         emptyTag.innerText = TEXT_KO.keywordsNone;
         kwBox.appendChild(emptyTag);
       }
     }
 
     /* ==========================================================================
-       11. CONTEXTUAL MINI-ANALYTICS, SUB-DEPARTMENTS & STATIC TOP 10 KEYWORDS
+       11. CONTEXTUAL MINI-ANALYTICS, SUB-DEPARTMENTS & TOP KEYWORDS
        ========================================================================== */
     function renderContextualMiniAnalytics(theses, contextMode, subMode = 'default', deptName = '', clusterKey = '') {
       const stackedSection = document.getElementById('mini-chart-stacked-section');
@@ -3108,12 +2974,6 @@
         renderYearlyCompositionChart(theses);
         renderCloudEvolutionChart(theses);
       } else if (isClusterMode) {
-        // Chế độ 1 trong 5 khối ngành lớn (공학, 디자인, 융합, 경영, 인문):
-        // Loại bỏ 계열별 연구 비중 (100%), 연도별 전공 확장 클라우드, 연도별 전공 구성 비율 추이.
-        // Thay thế bằng:
-        // 1. Đường xu hướng tổng của khối ngành
-        // 2. Danh sách các khoa nhỏ trong chuyên ngành này & số lượng luận văn của từng khoa nhỏ theo năm
-        // 3. TOP 10 từ khóa của khối ngành theo từng năm (chỉ hiển thị, không click chuyển panel)
         sparklineSection.classList.remove('hidden');
         clusterSubdeptsSection.classList.remove('hidden');
         keywordsSection.classList.remove('hidden');
@@ -3156,7 +3016,6 @@
       }
     }
 
-    // HIỂN THỊ CÁC KHOA NHỎ TRONG KHỐI NGÀNH VÀ SỐ LƯỢNG LUẬN VĂN THEO TỪNG NĂM
     function renderClusterSubDepartmentsByYear(theses, clusterKey) {
       const listEl = document.getElementById('mini-cluster-subdepts-list');
       const countBadge = document.getElementById('cluster-subdepts-count-badge');
@@ -3164,7 +3023,7 @@
 
       if (!theses || theses.length === 0) {
         countBadge.innerText = '총 0개 학과';
-        listEl.innerHTML = `<div class="text-[10px] text-slate-500 italic">해당 조건의 세부 학과 데이터가 없습니다.</div>`;
+        listEl.innerHTML = `<div class="text-[10px] text-slate-400 italic">해당 조건의 세부 학과 데이터가 없습니다.</div>`;
         return;
       }
 
@@ -3183,11 +3042,7 @@
         if (yr > maxY) maxY = yr;
 
         if (!subDeptMap.has(dName)) {
-          subDeptMap.set(dName, {
-            dept: dName,
-            total: 0,
-            yearCounts: new Map()
-          });
+          subDeptMap.set(dName, { dept: dName, total: 0, yearCounts: new Map() });
         }
         const entry = subDeptMap.get(dName);
         entry.total++;
@@ -3196,9 +3051,7 @@
 
       if (minY >= maxY) minY = Math.max(2001, maxY - 4);
 
-      const sortedDepts = Array.from(subDeptMap.values())
-        .sort((a, b) => b.total - a.total);
-
+      const sortedDepts = Array.from(subDeptMap.values()).sort((a, b) => b.total - a.total);
       countBadge.innerText = `총 ${sortedDepts.length}개 학과`;
 
       const span = Math.max(1, maxY - minY);
@@ -3211,10 +3064,7 @@
         const pts = [];
         for (let y = minY; y <= maxY; y++) {
           const val = item.yearCounts.get(y) || 0;
-          if (val >= localMax) {
-            localMax = val;
-            peakYr = y;
-          }
+          if (val >= localMax) { localMax = val; peakYr = y; }
         }
         for (let y = minY; y <= maxY; y++) {
           const val = item.yearCounts.get(y) || 0;
@@ -3224,17 +3074,17 @@
         }
 
         const row = document.createElement('div');
-        row.className = "p-2 rounded-lg bg-white/[0.04] hover:bg-white/[0.09] border border-white/10 transition cursor-pointer flex items-center justify-between space-x-2";
+        row.className = "p-2 rounded-lg bg-white/[0.04] hover:bg-white/[0.1] border border-white/10 transition cursor-pointer flex items-center justify-between space-x-2";
         row.title = `${item.dept}: 클릭 시 해당 학과 상세 분석 보기`;
 
         row.innerHTML = `
           <div class="min-w-0 flex-1 flex flex-col">
             <div class="flex items-center space-x-1.5">
-              <span class="font-scifi text-[9px] text-slate-400 shrink-0">#${idx + 1}</span>
+              <span class="font-scifi text-[9px] text-slate-300 shrink-0">#${idx + 1}</span>
               <span class="text-[11px] font-bold text-slate-100 truncate">${item.dept}</span>
             </div>
-            <div class="text-[9px] font-scifi text-slate-400 mt-0.5">
-              최다 발표: <span class="text-slate-200 font-semibold">${peakYr}년 (${localMax}건)</span>
+            <div class="text-[9px] font-scifi text-slate-300 mt-0.5">
+              최다 발표: <span class="text-white font-semibold">${peakYr}년 (${localMax}건)</span>
             </div>
           </div>
           <div class="flex items-center space-x-2 shrink-0">
@@ -3249,10 +3099,7 @@
 
         row.addEventListener('click', () => {
           if (currentListContext) {
-            panelNavigationStack.push({
-              view: 'list',
-              context: { ...currentListContext }
-            });
+            panelNavigationStack.push({ view: 'list', context: { ...currentListContext } });
           }
           showThesesOfDepartment(item.dept, true);
         });
@@ -3261,6 +3108,7 @@
       });
     }
 
+    /* 1. BIỂU ĐỒ 연도별 전공 구성 비율 추이 - ĐÃ LOẠI BỎ HOÀN TOÀN ĐƯỜNG LINE ĐEN */
     function renderYearlyCompositionChart(theses) {
       const svg = document.getElementById('mini-composition-svg');
       const readoutEl = document.getElementById('comp-hover-readout');
@@ -3287,9 +3135,9 @@
 
       for (let i = 0; i < theses.length; i++) {
         const y = theses[i].year || 2020;
-        if (!yearCounts.has(y)) continue;
-        const cat = getDeptClusterCategory(theses[i].dept);
         const rec = yearCounts.get(y);
+        if (!rec) continue;
+        const cat = theses[i]._clusterCat || getDeptClusterCategory(theses[i].dept);
         rec[cat] = (rec[cat] || 0) + 1;
         rec.total++;
       }
@@ -3310,14 +3158,10 @@
         const rec = yearCounts.get(y);
         const shares = {};
         if (rec.total > 0) {
-          clusterKeys.forEach(k => {
-            shares[k] = (rec[k] / rec.total) * 100;
-          });
+          clusterKeys.forEach(k => { shares[k] = (rec[k] / rec.total) * 100; });
           lastValidShares = { ...shares };
         } else {
-          clusterKeys.forEach(k => {
-            shares[k] = lastValidShares[k];
-          });
+          clusterKeys.forEach(k => { shares[k] = lastValidShares[k]; });
         }
 
         let accPct = 0;
@@ -3355,9 +3199,8 @@
         const areaPath = document.createElementNS(ns, 'path');
         areaPath.setAttribute('d', areaD);
         areaPath.setAttribute('fill', meta.color);
-        areaPath.setAttribute('fill-opacity', '0.72');
-        areaPath.setAttribute('stroke', '#020306');
-        areaPath.setAttribute('stroke-width', '0.6');
+        areaPath.setAttribute('fill-opacity', '0.78');
+        areaPath.setAttribute('stroke', 'none');
         svg.appendChild(areaPath);
       });
 
@@ -3386,10 +3229,7 @@
         let minDiff = Math.abs(relX - nearest.x);
         for (let i = 1; i < yearStacks.length; i++) {
           const d = Math.abs(relX - yearStacks[i].x);
-          if (d < minDiff) {
-            minDiff = d;
-            nearest = yearStacks[i];
-          }
+          if (d < minDiff) { minDiff = d; nearest = yearStacks[i]; }
         }
         guideLine.setAttribute('x1', nearest.x.toFixed(1));
         guideLine.setAttribute('x2', nearest.x.toFixed(1));
@@ -3442,9 +3282,10 @@
 
       for (let i = 0; i < theses.length; i++) {
         const y = theses[i].year || 2020;
-        if (!yearCounts.has(y)) continue;
-        const cat = getDeptClusterCategory(theses[i].dept);
-        yearCounts.get(y)[cat] = (yearCounts.get(y)[cat] || 0) + 1;
+        const rec = yearCounts.get(y);
+        if (!rec) continue;
+        const cat = theses[i]._clusterCat || getDeptClusterCategory(theses[i].dept);
+        rec[cat] = (rec[cat] || 0) + 1;
       }
 
       const emergenceYearMap = new Map();
@@ -3602,10 +3443,7 @@
         let minDiff = Math.abs(relX - nearest.x);
         for (let i = 1; i < yearStacks.length; i++) {
           const d = Math.abs(relX - yearStacks[i].x);
-          if (d < minDiff) {
-            minDiff = d;
-            nearest = yearStacks[i];
-          }
+          if (d < minDiff) { minDiff = d; nearest = yearStacks[i]; }
         }
         guideLine.setAttribute('x1', nearest.x.toFixed(1));
         guideLine.setAttribute('x2', nearest.x.toFixed(1));
@@ -3639,7 +3477,7 @@
 
       if (!theses || theses.length === 0) {
         countBadge.innerText = '총 0명';
-        listEl.innerHTML = `<div class="text-[10px] text-slate-500 italic">지도교수 데이터가 없습니다.</div>`;
+        listEl.innerHTML = `<div class="text-[10px] text-slate-400 italic">지도교수 데이터가 없습니다.</div>`;
         return;
       }
 
@@ -3647,40 +3485,32 @@
 
       for (let i = 0; i < theses.length; i++) {
         const det = getCleanDetail(theses[i]);
-        const advName = normalizePersonName(det.advisor, deptName);
+        const advName = det.advisor;
         if (!advName || advName === '지도교수' || advName === '미상' || advName === 'nan') continue;
 
         if (!advisorStatsMap.has(advName)) {
-          advisorStatsMap.set(advName, {
-            name: advName,
-            count: 0,
-            kwFreq: new Map()
-          });
+          advisorStatsMap.set(advName, { name: advName, count: 0, kwFreq: new Map() });
         }
         const entry = advisorStatsMap.get(advName);
         entry.count++;
 
         const kws = det.keywords || [];
         for (let j = 0; j < kws.length; j++) {
-          const koKw = normalizeKeywordDisplayLanguage(kws[j]);
-          if (!koKw || INVALID_KW_SET.has(koKw.toLowerCase())) continue;
+          const koKw = kws[j];
           entry.kwFreq.set(koKw, (entry.kwFreq.get(koKw) || 0) + 1);
         }
       }
 
-      const sortedAdvisors = Array.from(advisorStatsMap.values())
-        .sort((a, b) => b.count - a.count);
-
+      const sortedAdvisors = Array.from(advisorStatsMap.values()).sort((a, b) => b.count - a.count);
       countBadge.innerText = `총 ${sortedAdvisors.length}명`;
 
       if (sortedAdvisors.length === 0) {
-        listEl.innerHTML = `<div class="text-[10px] text-slate-500 italic">등록된 지도교수 정보가 없습니다.</div>`;
+        listEl.innerHTML = `<div class="text-[10px] text-slate-400 italic">등록된 지도교수 정보가 없습니다.</div>`;
         return;
       }
 
       sortedAdvisors.forEach((adv, rankIdx) => {
-        const allSortedKws = Array.from(adv.kwFreq.entries())
-          .sort((a, b) => b[1] - a[1]);
+        const allSortedKws = Array.from(adv.kwFreq.entries()).sort((a, b) => b[1] - a[1]);
         const repeatedKws = allSortedKws.filter(([, freq]) => freq >= 2);
         const topKws = (repeatedKws.length >= 3 ? repeatedKws : allSortedKws).slice(0, 5);
 
@@ -3690,7 +3520,7 @@
                 #${kw} <span class="font-scifi text-cyan-300 font-bold">${freq}</span>
               </span>
             `).join('')
-          : `<span class="text-[9px] text-slate-500 italic">키워드 없음</span>`;
+          : `<span class="text-[9px] text-slate-400 italic">키워드 없음</span>`;
 
         const row = document.createElement('div');
         row.className = "p-2 rounded-lg bg-white/[0.04] hover:bg-amber-500/15 border border-white/10 hover:border-amber-400/50 transition cursor-pointer flex flex-col space-y-1";
@@ -3699,7 +3529,7 @@
           <div class="flex items-center justify-between">
             <div class="flex items-center space-x-1.5">
               <span class="font-scifi text-[9px] font-bold text-amber-400">#${rankIdx + 1}</span>
-              <span class="text-xs font-bold text-white">${adv.name} <span class="text-[10px] font-normal text-slate-400">교수</span></span>
+              <span class="text-xs font-bold text-white">${adv.name} <span class="text-[10px] font-normal text-slate-300">교수</span></span>
             </div>
             <span class="px-1.5 py-0.2 rounded-full text-[9px] font-scifi font-bold bg-amber-500/20 text-amber-300 border border-amber-400/30">
               ${adv.count}건
@@ -3712,10 +3542,7 @@
 
         row.addEventListener('click', () => {
           if (currentListContext) {
-            panelNavigationStack.push({
-              view: 'list',
-              context: { ...currentListContext }
-            });
+            panelNavigationStack.push({ view: 'list', context: { ...currentListContext } });
           }
           const advSprite =
             ADVISOR_SPRITE_BY_NAME.get(`${deptName}||${adv.name}`) ||
@@ -3746,7 +3573,7 @@
       CLUSTER_VISUAL_META.forEach(c => counts.set(c.key, 0));
 
       for (let i = 0; i < theses.length; i++) {
-        const cat = getDeptClusterCategory(theses[i].dept);
+        const cat = theses[i]._clusterCat || getDeptClusterCategory(theses[i].dept);
         counts.set(cat, (counts.get(cat) || 0) + 1);
       }
 
@@ -3768,10 +3595,7 @@
       stats.forEach(item => {
         const openClusterDrilldown = () => {
           if (currentListContext) {
-            panelNavigationStack.push({
-              view: 'list',
-              context: { ...currentListContext }
-            });
+            panelNavigationStack.push({ view: 'list', context: { ...currentListContext } });
           }
           showThesesOfClusterGroup(item.key, item.label, true);
         };
@@ -3791,7 +3615,7 @@
         leg.title = `${item.label} 연구 추이 보기`;
         leg.innerHTML = `
           <span class="w-1.5 h-1.5 rounded-full shrink-0" style="background:${item.color}; box-shadow: 0 0 5px ${item.color};"></span>
-          <span class="text-slate-300">${item.label}</span>
+          <span class="text-slate-200">${item.label}</span>
           <span class="font-scifi font-bold text-white">${Math.round(item.pct)}%</span>
         `;
         leg.addEventListener('click', openClusterDrilldown);
@@ -3823,9 +3647,7 @@
         if (y > maxY) maxY = y;
       }
 
-      if (minY === maxY) {
-        minY = Math.max(2001, maxY - 4);
-      }
+      if (minY === maxY) minY = Math.max(2001, maxY - 4);
 
       const pointsData = [];
       let peakYear = minY;
@@ -3834,10 +3656,7 @@
       for (let y = minY; y <= maxY; y++) {
         const val = yearMap.get(y) || 0;
         pointsData.push({ year: y, val });
-        if (val >= peakVal) {
-          peakVal = val;
-          peakYear = y;
-        }
+        if (val >= peakVal) { peakVal = val; peakYear = y; }
       }
 
       rangeLabel.innerText = `${minY}–${maxY}`;
@@ -3965,10 +3784,7 @@
         let minDiff = Math.abs(relX - coords[0].x);
         for (let i = 1; i < coords.length; i++) {
           const diff = Math.abs(relX - coords[i].x);
-          if (diff < minDiff) {
-            minDiff = diff;
-            nearest = coords[i];
-          }
+          if (diff < minDiff) { minDiff = diff; nearest = coords[i]; }
         }
 
         hoverGuide.setAttribute('x1', nearest.x.toFixed(1));
@@ -4005,14 +3821,12 @@
       hitRect.addEventListener('touchend', hideSparklineHover);
     }
 
-    // TOP KEYWORDS MINI BARS
-    // Khi clickable = false (trong bảng 계열 핵심 주제어 TOP 10), chỉ hiển thị danh sách tĩnh, không chuyển panel khi bấm
     function renderTopKeywordsMiniBars(theses, limitCount = 5, showYearlySpark = false, clickable = true) {
       const container = document.getElementById('mini-top-keywords');
       container.innerHTML = '';
 
       if (!theses || theses.length === 0) {
-        container.innerHTML = `<div class="text-[10px] text-slate-500 italic">집계할 키워드 데이터가 없습니다.</div>`;
+        container.innerHTML = `<div class="text-[10px] text-slate-400 italic">집계할 키워드 데이터가 없습니다.</div>`;
         return;
       }
 
@@ -4032,15 +3846,12 @@
       for (let i = 0; i < theses.length; i++) {
         const y = theses[i].year || 2020;
         const det = getCleanDetail(theses[i]);
-        const kws = det.keywords || [];
+        const kws = det.keywords;
+        const kwsLower = det.keywordsLower;
         for (let j = 0; j < kws.length; j++) {
-          const normalizedLabel = normalizeKeywordDisplayLanguage(kws[j]);
-          const normKey = normalizedLabel.toLowerCase().trim();
-          if (!normKey || INVALID_KW_SET.has(normKey)) continue;
+          const normKey = kwsLower[j];
           kwCounts.set(normKey, (kwCounts.get(normKey) || 0) + 1);
-          if (!kwDisplayLabel.has(normKey)) {
-            kwDisplayLabel.set(normKey, normalizedLabel);
-          }
+          if (!kwDisplayLabel.has(normKey)) kwDisplayLabel.set(normKey, kws[j]);
           if (showYearlySpark) {
             if (!kwYearSeries.has(normKey)) kwYearSeries.set(normKey, new Map());
             const yMap = kwYearSeries.get(normKey);
@@ -4054,7 +3865,7 @@
         .slice(0, limitCount);
 
       if (sortedTop.length === 0) {
-        container.innerHTML = `<div class="text-[10px] text-slate-500 italic">등록된 유효 키워드가 없습니다.</div>`;
+        container.innerHTML = `<div class="text-[10px] text-slate-400 italic">등록된 유효 키워드가 없습니다.</div>`;
         return;
       }
 
@@ -4077,10 +3888,7 @@
           let peakYr = minY;
           for (let y = minY; y <= maxY; y++) {
             const v = yMap.get(y) || 0;
-            if (v >= localMax) {
-              localMax = v;
-              peakYr = y;
-            }
+            if (v >= localMax) { localMax = v; peakYr = y; }
           }
           const sw = 58;
           const sh = 14;
@@ -4102,27 +3910,22 @@
         row.className = clickable
           ? 'flex items-center space-x-2 text-[10px] group cursor-pointer py-0.5'
           : 'flex items-center space-x-2 text-[10px] py-0.5 pointer-events-none';
-        if (clickable) {
-          row.title = `"${label}" 키워드 논문 보기`;
-        }
+        if (clickable) row.title = `"${label}" 키워드 논문 보기`;
 
         row.innerHTML = `
-          <span class="w-4 font-scifi text-[9px] text-slate-500 text-right shrink-0">${idx + 1}</span>
-          <span class="w-28 truncate ${clickable ? 'text-slate-200 group-hover:text-cyan-300 transition' : 'text-slate-200'} font-medium">${label}</span>
-          <div class="flex-1 h-1.5 rounded-full bg-white/5 overflow-hidden">
+          <span class="w-4 font-scifi text-[9px] text-slate-400 text-right shrink-0">${idx + 1}</span>
+          <span class="w-28 truncate ${clickable ? 'text-slate-100 group-hover:text-cyan-300 transition' : 'text-slate-100'} font-medium">${label}</span>
+          <div class="flex-1 h-1.5 rounded-full bg-white/10 overflow-hidden">
             <div class="h-full rounded-full mini-bar-fill" style="width: ${pct}%; background: ${color}; box-shadow: 0 0 6px ${color};"></div>
           </div>
           ${sparkSvgHtml}
-          <span class="w-7 text-right font-scifi font-bold ${clickable ? 'text-slate-300 group-hover:text-white' : 'text-slate-300'} shrink-0">${count}</span>
+          <span class="w-7 text-right font-scifi font-bold ${clickable ? 'text-slate-200 group-hover:text-white' : 'text-slate-200'} shrink-0">${count}</span>
         `;
 
         if (clickable) {
           row.addEventListener('click', () => {
             if (currentListContext) {
-              panelNavigationStack.push({
-                view: 'list',
-                context: { ...currentListContext }
-              });
+              panelNavigationStack.push({ view: 'list', context: { ...currentListContext } });
             }
             filterByKeywordWithHistory(label, true);
           });
@@ -4144,15 +3947,10 @@
       const targetConcepts = normalizeKeywordToConcepts(cleanKw);
       const q = cleanKw.toLowerCase();
 
-      const matchedTheses = ALL_NODES.filter(n => {
-        if (n.type !== 'thesis_planet') return false;
+      const matchedTheses = THESIS_NODES_ALL.filter(n => {
         const detail = getCleanDetail(n);
-        if (detail.keywords.some(k => normalizeKeywordDisplayLanguage(k).toLowerCase().includes(q) || k.toLowerCase().includes(q))) {
-          return true;
-        }
-        if (targetConcepts.length > 0 && detail.concepts.some(c => targetConcepts.includes(c))) {
-          return true;
-        }
+        if (detail.keywordsLower.some(kl => kl.includes(q))) return true;
+        if (targetConcepts.length > 0 && detail.concepts.some(c => targetConcepts.includes(c))) return true;
         return false;
       });
 
@@ -4160,11 +3958,11 @@
       if (!lockedTargetNode) {
         clearArcLinks();
         const matchIdSet = new Set(matchedTheses.map(m => m.id));
-        NODE_SPRITES.forEach(s => {
-          const id = s.userData.nodeData.id;
-          s.userData.isHighlight = matchIdSet.has(id);
+        for (let i = 0; i < NODE_SPRITES.length; i++) {
+          const s = NODE_SPRITES[i];
+          s.userData.isHighlight = matchIdSet.has(s.userData.nodeData.id);
           s.userData.isRelated = false;
-        });
+        }
       }
 
       const visibleMatches = matchedTheses.filter(t => passGlobalNodeFilters(t));
@@ -4181,8 +3979,8 @@
     }
 
     function performSearch() {
-      let rawQuery = searchInput.value.trim();
-      let q = rawQuery.toLowerCase();
+      const rawQuery = searchInput.value.trim();
+      const q = rawQuery.toLowerCase();
       const type = searchType.value;
 
       if (!q) {
@@ -4196,18 +3994,14 @@
       const normalizedKwQuery = normalizeKeywordDisplayLanguage(rawQuery).toLowerCase();
       const queryConcepts = normalizeKeywordToConcepts(rawQuery);
 
-      const matchedTheses = ALL_NODES.filter(n => {
-        if (n.type !== 'thesis_planet') return false;
-
+      const matchedTheses = THESIS_NODES_ALL.filter(n => {
         const detail = getCleanDetail(n);
-        const titleMatch = detail.title_ko.toLowerCase().includes(q);
-        const authorMatch = detail.author.toLowerCase().includes(q) || detail.author.toLowerCase().includes(cleanProfName);
-        const advisorMatch = detail.advisor.toLowerCase().includes(q) || detail.advisor.toLowerCase().includes(cleanProfName);
-        const deptMatch = detail.dept.toLowerCase().includes(q);
-        const kwMatch = detail.keywords.some(k => {
-          const nk = normalizeKeywordDisplayLanguage(k).toLowerCase();
-          return nk.includes(q) || nk.includes(normalizedKwQuery) || k.toLowerCase().includes(q);
-        }) || (queryConcepts.length > 0 && detail.concepts.some(c => queryConcepts.includes(c)));
+        const titleMatch = detail.titleLower.includes(q);
+        const authorMatch = detail.authorLower.includes(q) || detail.authorLower.includes(cleanProfName);
+        const advisorMatch = detail.advisorLower.includes(q) || detail.advisorLower.includes(cleanProfName);
+        const deptMatch = detail.deptLower.includes(q);
+        const kwMatch = detail.keywordsLower.some(kl => kl.includes(q) || kl.includes(normalizedKwQuery)) ||
+          (queryConcepts.length > 0 && detail.concepts.some(c => queryConcepts.includes(c)));
 
         if (type === 'advisor') return advisorMatch;
         if (type === 'name') return titleMatch;
@@ -4227,11 +4021,11 @@
       clearArcLinks();
 
       const matchIdSet = new Set(matchedTheses.map(m => m.id));
-      NODE_SPRITES.forEach(s => {
-        const id = s.userData.nodeData.id;
-        s.userData.isHighlight = matchIdSet.has(id);
+      for (let i = 0; i < NODE_SPRITES.length; i++) {
+        const s = NODE_SPRITES[i];
+        s.userData.isHighlight = matchIdSet.has(s.userData.nodeData.id);
         s.userData.isRelated = false;
-      });
+      }
 
       const visibleMatches = matchedTheses.filter(t => passGlobalNodeFilters(t));
       renderThesesListPanel({
@@ -4248,15 +4042,13 @@
 
     function showThesesOfAdvisor(advisorName, pushHistory = false, deptHint = '', explicitAdvSprite = null) {
       const clean = normalizePersonName(advisorName, deptHint);
-      const theses = ALL_NODES.filter(n => {
-        if (n.type !== 'thesis_planet') return false;
+      const theses = THESIS_NODES_ALL.filter(n => {
         const detail = getCleanDetail(n);
         const matchAdv = detail.advisor === clean || detail.advisor.includes(clean);
         return deptHint ? (matchAdv && detail.dept === deptHint) : matchAdv;
       });
 
-      const finalTheses = theses.length > 0 ? theses : ALL_NODES.filter(n => {
-        if (n.type !== 'thesis_planet') return false;
+      const finalTheses = theses.length > 0 ? theses : THESIS_NODES_ALL.filter(n => {
         const detail = getCleanDetail(n);
         return detail.advisor === clean || detail.advisor.includes(clean);
       });
@@ -4271,12 +4063,12 @@
       clearArcLinks();
 
       const matchIdSet = new Set(finalTheses.map(m => m.id));
-      NODE_SPRITES.forEach(s => {
-        const id = s.userData.nodeData.id;
+      for (let i = 0; i < NODE_SPRITES.length; i++) {
+        const s = NODE_SPRITES[i];
         const isAdvSun = advSprite && s.id === advSprite.id;
-        s.userData.isHighlight = matchIdSet.has(id) || isAdvSun;
+        s.userData.isHighlight = matchIdSet.has(s.userData.nodeData.id) || isAdvSun;
         s.userData.isRelated = false;
-      });
+      }
 
       const visibleMatches = finalTheses.filter(t => passGlobalNodeFilters(t));
       renderThesesListPanel({
@@ -4290,13 +4082,11 @@
         pushHistory: pushHistory
       });
 
-      if (advSprite) {
-        flyCameraAndAnchorToSprite(advSprite, { x: 46, y: 24, z: 58 });
-      }
+      if (advSprite) flyCameraAndAnchorToSprite(advSprite, { x: 46, y: 24, z: 58 });
     }
 
     function showThesesOfDepartment(deptName, pushHistory = false) {
-      const theses = ALL_NODES.filter(n => n.type === 'thesis_planet' && n.dept === deptName);
+      const theses = THESIS_NODES_ALL.filter(n => n.dept === deptName);
 
       isSearchActive = true;
       lockedTargetNode = null;
@@ -4304,11 +4094,11 @@
       clearArcLinks();
 
       const matchIdSet = new Set(theses.map(m => m.id));
-      NODE_SPRITES.forEach(s => {
-        const id = s.userData.nodeData.id;
-        s.userData.isHighlight = matchIdSet.has(id);
+      for (let i = 0; i < NODE_SPRITES.length; i++) {
+        const s = NODE_SPRITES[i];
+        s.userData.isHighlight = matchIdSet.has(s.userData.nodeData.id);
         s.userData.isRelated = false;
-      });
+      }
 
       const visibleMatches = theses.filter(t => passGlobalNodeFilters(t));
       renderThesesListPanel({
@@ -4324,7 +4114,7 @@
     }
 
     function showThesesOfClusterGroup(clusterKey, clusterLabel, pushHistory = false) {
-      const theses = ALL_NODES.filter(n => n.type === 'thesis_planet' && getDeptClusterCategory(n.dept) === clusterKey);
+      const theses = THESIS_NODES_ALL.filter(n => (n._clusterCat || getDeptClusterCategory(n.dept)) === clusterKey);
 
       isSearchActive = true;
       lockedTargetNode = null;
@@ -4332,11 +4122,11 @@
       clearArcLinks();
 
       const matchIdSet = new Set(theses.map(m => m.id));
-      NODE_SPRITES.forEach(s => {
-        const id = s.userData.nodeData.id;
-        s.userData.isHighlight = matchIdSet.has(id);
+      for (let i = 0; i < NODE_SPRITES.length; i++) {
+        const s = NODE_SPRITES[i];
+        s.userData.isHighlight = matchIdSet.has(s.userData.nodeData.id);
         s.userData.isRelated = false;
-      });
+      }
 
       const visibleMatches = theses.filter(t => passGlobalNodeFilters(t));
       renderThesesListPanel({
@@ -4353,18 +4143,17 @@
 
     function showFilteredOverviewAnalytics(pushHistory = false) {
       if (!pushHistory) panelNavigationStack = [];
-      const allTheses = ALL_NODES.filter(n => n.type === 'thesis_planet');
-      const visibleTheses = allTheses.filter(t => passGlobalNodeFilters(t));
+      const visibleTheses = THESIS_NODES_ALL.filter(t => passGlobalNodeFilters(t));
 
       isSearchActive = false;
       lockedTargetNode = null;
       lockedTargetSprite = null;
       clearArcLinks();
 
-      NODE_SPRITES.forEach(s => {
-        s.userData.isHighlight = false;
-        s.userData.isRelated = false;
-      });
+      for (let i = 0; i < NODE_SPRITES.length; i++) {
+        NODE_SPRITES[i].userData.isHighlight = false;
+        NODE_SPRITES[i].userData.isRelated = false;
+      }
 
       const isSingleDept = selectedDept !== 'ALL';
       const isClusterSelected = !isSingleDept && selectedCluster !== 'all';
@@ -4372,7 +4161,7 @@
       if (isClusterSelected) {
         const meta = CLUSTER_VISUAL_META.find(m => m.key === selectedCluster);
         const clusterLabel = meta ? meta.label : selectedCluster;
-        const clusterTheses = allTheses.filter(n => getDeptClusterCategory(n.dept) === selectedCluster);
+        const clusterTheses = THESIS_NODES_ALL.filter(n => (n._clusterCat || getDeptClusterCategory(n.dept)) === selectedCluster);
         renderThesesListPanel({
           theses: visibleTheses,
           baseTheses: clusterTheses,
@@ -4386,18 +4175,12 @@
         return;
       }
 
-      const label = isSingleDept
-        ? selectedDept
-        : `전체 학술 유니버스 (~${activeTimelineYear})`;
-      const mode = isSingleDept ? 'entity' : 'general';
-      const subMode = isSingleDept ? 'department' : 'overview';
-
       renderThesesListPanel({
         theses: visibleTheses,
-        baseTheses: allTheses,
-        queryText: label,
-        contextMode: mode,
-        subMode: subMode,
+        baseTheses: THESIS_NODES_ALL,
+        queryText: isSingleDept ? selectedDept : `전체 학술 유니버스 (~${activeTimelineYear})`,
+        contextMode: isSingleDept ? 'entity' : 'general',
+        subMode: isSingleDept ? 'department' : 'overview',
         deptName: isSingleDept ? selectedDept : '',
         clusterKey: '',
         pushHistory: pushHistory
@@ -4426,11 +4209,8 @@
       detailView.classList.add('hidden');
       rightPanel.classList.remove('hidden');
 
-      if (panelNavigationStack.length > 0) {
-        historyBackBtn.classList.remove('hidden');
-      } else {
-        historyBackBtn.classList.add('hidden');
-      }
+      if (panelNavigationStack.length > 0) historyBackBtn.classList.remove('hidden');
+      else historyBackBtn.classList.add('hidden');
 
       badgeEl.innerText = subMode === 'department'
         ? 'DEPARTMENT ANALYTICS'
@@ -4443,30 +4223,26 @@
 
       const sortedTheses = [...theses].sort((a, b) => {
         const yearDiff = (b.year || 0) - (a.year || 0);
-        if (yearDiff !== 0) return yearDiff;
-        return (b.id || 0) - (a.id || 0);
+        return yearDiff !== 0 ? yearDiff : ((b.id || 0) - (a.id || 0));
       });
 
       renderContextualMiniAnalytics(sortedTheses, contextMode, subMode, deptName, clusterKey);
 
-      if (subMode === 'overview') {
-        container.innerHTML = '';
-        return;
-      }
-
       container.innerHTML = '';
+      if (subMode === 'overview') return;
 
       if (sortedTheses.length === 0) {
-        container.innerHTML = `<div class="text-slate-500 py-8 text-center text-xs">일치하는 학위논문을 찾을 수 없습니다.</div>`;
+        container.innerHTML = `<div class="text-slate-400 py-8 text-center text-xs">일치하는 학위논문을 찾을 수 없습니다.</div>`;
         return;
       }
 
+      const frag = document.createDocumentFragment();
       const displaySlice = sortedTheses.slice(0, 150);
 
       displaySlice.forEach((n, idx) => {
         const detail = getCleanDetail(n);
         const card = document.createElement('div');
-        card.className = "p-2.5 rounded-lg bg-black/45 hover:bg-indigo-900/40 border border-white/10 hover:border-cyan-400/50 transition cursor-pointer flex flex-col space-y-1 shrink-0";
+        card.className = "p-2.5 rounded-lg bg-black/20 hover:bg-indigo-900/35 border border-white/10 hover:border-cyan-400/50 transition cursor-pointer flex flex-col space-y-1 shrink-0";
         
         card.innerHTML = `
           <div class="flex items-center justify-between">
@@ -4474,36 +4250,34 @@
             <span class="text-cyan-400 font-scifi text-[10px]">${detail.year}${TEXT_KO.yearSuffix}</span>
           </div>
           <h4 class="font-bold text-white text-xs leading-snug line-clamp-2">${detail.title_ko}</h4>
-          <div class="text-[10px] text-slate-400 flex items-center justify-between pt-1 border-t border-white/5">
+          <div class="text-[10px] text-slate-300 flex items-center justify-between pt-1 border-t border-white/10">
             <span>저자: ${detail.author}</span>
-            <span class="text-indigo-300 font-medium">지도: ${detail.advisor}</span>
+            <span class="text-indigo-200 font-medium">지도: ${detail.advisor}</span>
           </div>
-          <div class="text-[9px] text-slate-500 flex justify-between items-center truncate">
+          <div class="text-[9px] text-slate-400 flex justify-between items-center truncate">
             <span>${detail.dept}</span>
-            <span class="font-scifi text-[9px] text-cyan-400/80">${detail.uci ? detail.uci : TEXT_KO.uciNone}</span>
+            <span class="font-scifi text-[9px] text-cyan-300/85">${detail.uci ? detail.uci : TEXT_KO.uciNone}</span>
           </div>
         `;
 
         card.addEventListener('click', () => {
           if (currentListContext) {
-            panelNavigationStack.push({
-              view: 'list',
-              context: { ...currentListContext }
-            });
+            panelNavigationStack.push({ view: 'list', context: { ...currentListContext } });
           }
-          const sprite = SPRITE_BY_ID.get(n.id);
-          openSingleDetailView(n, sprite, true);
+          openSingleDetailView(n, SPRITE_BY_ID.get(n.id), true);
         });
 
-        container.appendChild(card);
+        frag.appendChild(card);
       });
 
       if (sortedTheses.length > 150) {
         const moreBanner = document.createElement('div');
-        moreBanner.className = "text-center text-[10px] text-slate-400 py-2 font-scifi";
+        moreBanner.className = "text-center text-[10px] text-slate-300 py-2 font-scifi";
         moreBanner.innerText = `+ 외 ${(sortedTheses.length - 150).toLocaleString()}건의 논문이 상단 통계에 반영되었습니다.`;
-        container.appendChild(moreBanner);
+        frag.appendChild(moreBanner);
       }
+
+      container.appendChild(frag);
     }
 
     function navigateBackInPanel() {
@@ -4525,12 +4299,12 @@
           lockedTargetNode = null;
           lockedTargetSprite = null;
           const matchIdSet = new Set(ctx.baseTheses.map(m => m.id));
-          isSearchActive = ctx.baseTheses.length < ALL_NODES.filter(n => n.type === 'thesis_planet').length;
-          NODE_SPRITES.forEach(s => {
-            const id = s.userData.nodeData.id;
-            s.userData.isHighlight = isSearchActive ? matchIdSet.has(id) : false;
+          isSearchActive = ctx.baseTheses.length < THESIS_NODES_ALL.length;
+          for (let i = 0; i < NODE_SPRITES.length; i++) {
+            const s = NODE_SPRITES[i];
+            s.userData.isHighlight = isSearchActive ? matchIdSet.has(s.userData.nodeData.id) : false;
             s.userData.isRelated = false;
-          });
+          }
         }
         renderThesesListPanel({
           theses: filteredSubset,
@@ -4545,8 +4319,7 @@
     }
 
     function closeRightPanel() {
-      const rightPanel = document.getElementById('right-panel');
-      rightPanel.classList.add('hidden');
+      document.getElementById('right-panel').classList.add('hidden');
       panelNavigationStack = [];
       currentListContext = null;
       resetSearchHighlight();
@@ -4563,16 +4336,16 @@
       lockedTargetSprite = null;
       clearArcLinks();
 
-      NODE_SPRITES.forEach(s => {
+      for (let i = 0; i < NODE_SPRITES.length; i++) {
+        const s = NODE_SPRITES[i];
         s.userData.isHighlight = false;
         s.userData.isRelated = false;
         if (s.visible) {
-          const det = s.userData.nodeData.type === 'thesis_planet' ? getCleanDetail(s.userData.nodeData) : null;
-          const baseOp = s.userData.isDeptSun ? 0.96 : (det && det.isPhd ? 0.92 : 0.88);
+          const baseOp = s.userData.isDeptSun ? 0.96 : (s.userData.isPhd ? 0.92 : 0.88);
           s.material.opacity = baseOp * cosmicRevealProgress;
           s.scale.set(s.userData.baseSize, s.userData.baseSize, 1);
         }
-      });
+      }
     }
 
     document.getElementById('btn-list-history-back').addEventListener('click', navigateBackInPanel);
@@ -4597,9 +4370,8 @@
       lockedZoomAnchorWorld = null;
       lockedZoomAnchorSprite = null;
       setActiveCameraBtn('btn-view-top');
-      const targetY = galaxyCenterYGlobal;
       new TWEEN.Tween(camera.position).to({ x: 0, y: 950, z: 0.001 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
-      new TWEEN.Tween(controls.target).to({ x: 0, y: targetY, z: 0 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
+      new TWEEN.Tween(controls.target).to({ x: 0, y: galaxyCenterYGlobal, z: 0 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
     });
 
     document.getElementById('btn-view-galaxy').addEventListener('click', () => {
@@ -4607,9 +4379,8 @@
       lockedZoomAnchorWorld = null;
       lockedZoomAnchorSprite = null;
       setActiveCameraBtn('btn-view-galaxy');
-      const targetY = galaxyCenterYGlobal;
-      new TWEEN.Tween(camera.position).to({ x: 0, y: targetY + 180, z: 720 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
-      new TWEEN.Tween(controls.target).to({ x: 0, y: targetY, z: 0 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
+      new TWEEN.Tween(camera.position).to({ x: 0, y: galaxyCenterYGlobal + 180, z: 720 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
+      new TWEEN.Tween(controls.target).to({ x: 0, y: galaxyCenterYGlobal, z: 0 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
     });
 
     document.getElementById('btn-view-3d').addEventListener('click', () => {
@@ -4622,10 +4393,8 @@
       const elevationRad = 42 * (Math.PI / 180);
       const camY = centerTargetY + Math.sin(elevationRad) * dist;
       const horizDist = Math.cos(elevationRad) * dist;
-      const camX = horizDist * 0.65;
-      const camZ = horizDist * 0.76;
 
-      new TWEEN.Tween(camera.position).to({ x: camX, y: camY, z: camZ }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
+      new TWEEN.Tween(camera.position).to({ x: horizDist * 0.65, y: camY, z: horizDist * 0.76 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
       new TWEEN.Tween(controls.target).to({ x: 0, y: centerTargetY, z: 0 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
     });
 
@@ -4689,7 +4458,6 @@
       keepGalaxyInViewport();
 
       const camDist = camera.position.distanceTo(controls.target);
-
       const zoomOutT = THREE.MathUtils.clamp((camDist - 680) / 1600, 0.0, 1.0);
       const zoomOutDimFactor = 1.0 - zoomOutT * 0.68;
       const zoomOutSizeDamp = 1.0 - zoomOutT * 0.38;
@@ -4725,42 +4493,40 @@
 
       const distFactor = Math.min(1.35, Math.max(0.95, camDist / 560)) * zoomOutSizeDamp;
       const hasActiveFocus = isSearchActive || lockedTargetNode !== null;
+      const revealScale = 0.4 + 0.6 * cosmicRevealProgress;
+      const strobeGlobal = 1.0 + Math.abs(Math.sin(elapsed * 7.5)) * 0.16;
 
-      for (let i = 0; i < NODE_SPRITES.length; i++) {
-        const s = NODE_SPRITES[i];
-        if (s.visible) {
-          if (hasActiveFocus) {
-            if (s.userData.isHighlight) {
-              const strobe = 1.0 + Math.abs(Math.sin(elapsed * 7.5)) * 0.16;
-              const isFocusedSun = lockedTargetSprite && s.id === lockedTargetSprite.id && s.userData.isSun;
-              const mult = isFocusedSun ? 3.2 : 5.0;
-              const b = s.userData.baseSize * mult * (1.0 - zoomOutT * 0.25);
-              s.scale.set(b * strobe, b * strobe, 1);
-              s.material.opacity = 1.0 * cosmicRevealProgress;
-            } else if (s.userData.isRelated) {
-              const b = s.userData.baseSize * 3.0 * (1.0 - zoomOutT * 0.25);
-              const shimmer = Math.sin(elapsed * 3.2 + s.userData.pulseOffset) * 0.08;
-              s.scale.set(b * (1.0 + shimmer), b * (1.0 + shimmer), 1);
-              s.material.opacity = 0.94 * cosmicRevealProgress * (1.0 - zoomOutT * 0.35);
-            } else {
-              const b = s.userData.baseSize * distFactor * 0.42;
-              s.scale.set(b, b, 1);
-              s.material.opacity = 0.04 * cosmicRevealProgress * zoomOutDimFactor;
-            }
-          } else {
-            const tSpeed = s.userData.twinkleSpeed;
-            const shimmer = Math.sin(elapsed * tSpeed + s.userData.pulseOffset) * Math.cos(elapsed * (tSpeed * 0.5)) * s.userData.shimmerAmp;
-            
-            const det = s.userData.nodeData.type === 'thesis_planet' ? getCleanDetail(s.userData.nodeData) : null;
-            const revealScale = 0.4 + 0.6 * cosmicRevealProgress;
-            const b = s.userData.baseSize * distFactor * revealScale;
+      for (let i = 0; i < VISIBLE_SPRITES_CACHE.length; i++) {
+        const s = VISIBLE_SPRITES_CACHE[i];
+        const ud = s.userData;
+
+        if (hasActiveFocus) {
+          if (ud.isHighlight) {
+            const isFocusedSun = lockedTargetSprite && s.id === lockedTargetSprite.id && ud.isSun;
+            const mult = isFocusedSun ? 3.2 : 5.0;
+            const b = ud.baseSize * mult * (1.0 - zoomOutT * 0.25);
+            s.scale.set(b * strobeGlobal, b * strobeGlobal, 1);
+            s.material.opacity = 1.0 * cosmicRevealProgress;
+          } else if (ud.isRelated) {
+            const b = ud.baseSize * 3.0 * (1.0 - zoomOutT * 0.25);
+            const shimmer = Math.sin(elapsed * 3.2 + ud.pulseOffset) * 0.08;
             s.scale.set(b * (1.0 + shimmer), b * (1.0 + shimmer), 1);
-
-            const baseTargetOpacity = s.userData.isDeptSun
-              ? 0.96
-              : ((det && det.isPhd) ? 0.92 : Math.min(0.92, 0.80 + Math.abs(shimmer) * 0.25));
-            s.material.opacity = baseTargetOpacity * cosmicRevealProgress * zoomOutDimFactor;
+            s.material.opacity = 0.94 * cosmicRevealProgress * (1.0 - zoomOutT * 0.35);
+          } else {
+            const b = ud.baseSize * distFactor * 0.42;
+            s.scale.set(b, b, 1);
+            s.material.opacity = 0.04 * cosmicRevealProgress * zoomOutDimFactor;
           }
+        } else {
+          const tSpeed = ud.twinkleSpeed;
+          const shimmer = Math.sin(elapsed * tSpeed + ud.pulseOffset) * Math.cos(elapsed * (tSpeed * 0.5)) * ud.shimmerAmp;
+          const b = ud.baseSize * distFactor * revealScale;
+          s.scale.set(b * (1.0 + shimmer), b * (1.0 + shimmer), 1);
+
+          const baseTargetOpacity = ud.isDeptSun
+            ? 0.96
+            : (ud.isPhd ? 0.92 : Math.min(0.92, 0.80 + Math.abs(shimmer) * 0.25));
+          s.material.opacity = baseTargetOpacity * cosmicRevealProgress * zoomOutDimFactor;
         }
       }
 
