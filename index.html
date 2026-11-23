@@ -135,7 +135,6 @@
       .header-safe {
         padding-top: 1.15rem;
       }
-      /* Trên PC: Đẩy panel filter và panel thông tin lên ngang hàng với nút (+) / 연구 통계 (top: 3.75rem) */
       .right-panel-pos {
         top: 3.75rem;
       }
@@ -183,13 +182,13 @@
         </h1>
       </div>
 
-      <!-- Nút (+) mở panel to & rõ hơn, nằm đúng độ cao top: 3.75rem trên PC -->
-      <button id="btn-panel-expand" class="md:hidden mt-2 self-start flex items-center justify-center w-8 h-8 scifi-panel rounded-full text-cyan-300 border border-cyan-400/50 text-base font-bold leading-none active:scale-95 transition-all shadow-[0_0_14px_rgba(6,182,212,0.35)]" title="패널 열기">
+      <!-- Nút (+) đổi thành hình vuông (rounded-lg) đồng bộ với nút (-) -->
+      <button id="btn-panel-expand" class="md:hidden mt-2 self-start flex items-center justify-center w-8 h-8 scifi-panel rounded-lg text-cyan-300 border border-cyan-400/50 text-base font-bold leading-none active:scale-95 transition-all shadow-[0_0_14px_rgba(6,182,212,0.35)]" title="패널 열기">
         +
       </button>
     </div>
 
-    <!-- Nút 연구 통계 to hơn và size chữ lớn hơn một chút, đồng bộ trên mọi màn hình -->
+    <!-- Nút 연구 통계 -->
     <div class="pointer-events-auto shrink-0">
       <button id="btn-open-overview-analytics" class="h-8 px-3.5 flex items-center space-x-2 scifi-panel rounded-full text-pink-300 border border-pink-500/50 hover:bg-pink-500/25 active:scale-95 transition-all shadow-[0_0_14px_rgba(236,72,153,0.35)]">
         <span class="w-2 h-2 rounded-full bg-pink-400 animate-ping shrink-0"></span>
@@ -198,7 +197,7 @@
     </div>
   </header>
 
-  <!-- UNIFIED FILTER & TIMELINE PANEL (Trên PC ngang hàng với nút + ở top: 3.75rem) -->
+  <!-- UNIFIED FILTER & TIMELINE PANEL -->
   <div id="dept-panel-container" class="hidden md:flex fixed md:absolute left-1/2 -translate-x-1/2 top-32 md:left-6 md:top-[3.75rem] md:translate-x-0 z-30 pointer-events-none transition-all duration-300">
     <div class="w-[90vw] max-w-[340px] md:w-80 scifi-panel p-4 rounded-xl pointer-events-auto border border-white/10 flex flex-col space-y-2.5 shadow-2xl max-h-[76vh] md:max-h-[84vh] overflow-y-auto">
       
@@ -209,7 +208,7 @@
           <button id="btn-view-galaxy" class="scifi-btn px-2 py-1.5 rounded text-slate-300 font-medium text-center">측면 뷰</button>
           <button id="btn-view-3d" class="scifi-btn px-2 py-1.5 rounded text-slate-300 font-medium text-center">입체 뷰</button>
         </div>
-        <button id="btn-panel-minimize" class="inline-flex items-center justify-center w-8 h-8 rounded bg-white/5 hover:bg-indigo-500/30 border border-white/15 text-slate-200 hover:text-white text-base font-bold leading-none transition shrink-0" title="패널 축소">-</button>
+        <button id="btn-panel-minimize" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-white/5 hover:bg-indigo-500/30 border border-white/15 text-slate-200 hover:text-white text-base font-bold leading-none transition shrink-0" title="패널 축소">-</button>
       </div>
 
       <!-- DEPARTMENT FILTER HEADER -->
@@ -314,7 +313,7 @@
     </div>
   </div>
 
-  <!-- RIGHT PANEL (Trên PC đẩy lên top: 3.75rem ngang hàng với nút + và 연구 통계) -->
+  <!-- RIGHT PANEL -->
   <aside id="right-panel" 
     class="fixed right-panel-pos z-40 w-[92vw] sm:w-[420px] max-w-[440px] scifi-panel pointer-events-auto hidden flex flex-col border-l border-t border-b-0 border-r-0 border-indigo-500/30 shadow-[-18px_0_40px_rgba(0,0,0,0.92)] rounded-tl-2xl">
     
@@ -341,7 +340,7 @@
         <!-- CONTEXTUAL MINI-ANALYTICS COMPACT MODULE -->
         <div id="mini-analytics-box" class="p-2.5 rounded-xl bg-black/55 border border-indigo-500/25 flex flex-col space-y-2.5">
           
-          <!-- MODE A: GENERAL / OVERVIEW / KEYWORD CONTEXT -> 6-CLUSTER STACKED BAR -->
+          <!-- 1. 6-CLUSTER STACKED BAR (계열별 연구 비중) -->
           <div id="mini-chart-stacked-section" class="flex flex-col space-y-1.5">
             <div class="flex items-center justify-between text-[10px]">
               <span class="font-bold text-slate-300 tracking-wide">계열별 연구 비중 <span class="text-[9px] text-indigo-400 font-normal">(클릭 시 상세 추이)</span></span>
@@ -351,7 +350,24 @@
             <div id="mini-stacked-legend" class="flex flex-wrap gap-x-2 gap-y-1 text-[9px] text-slate-300 pt-0.5"></div>
           </div>
 
-          <!-- MODE A-2 (ONLY IN OVERVIEW MODE): CLOUD / STREAM EVOLUTION CHART BY YEAR -->
+          <!-- 2. OVERVIEW ONLY: YEARLY COMPOSITION STREAM CHART (연도별 전공 구성 변화) -->
+          <div id="mini-chart-composition-section" class="hidden pt-2 border-t border-white/10 flex flex-col space-y-1.5">
+            <div class="flex items-center justify-between text-[10px]">
+              <span class="font-bold text-slate-200 tracking-wide">연도별 전공 구성 비율 추이</span>
+              <span id="comp-hover-readout" class="font-scifi text-[9px] text-cyan-300 font-bold">2001–2026 비율 변화</span>
+            </div>
+            <div class="w-full h-24 relative flex items-center select-none">
+              <svg id="mini-composition-svg" class="w-full h-full overflow-visible cursor-crosshair" preserveAspectRatio="none"></svg>
+            </div>
+            <div class="flex justify-between text-[9px] font-scifi text-slate-400 pt-0.5">
+              <span>2001년</span>
+              <span>2010년</span>
+              <span>2018년</span>
+              <span id="comp-end-year-label">2026년</span>
+            </div>
+          </div>
+
+          <!-- 3. OVERVIEW ONLY: CLOUD / STREAM EVOLUTION CHART BY YEAR -->
           <div id="mini-chart-cloud-section" class="hidden pt-2 border-t border-white/10 flex flex-col space-y-1">
             <div class="flex items-center justify-between text-[10px]">
               <span class="font-bold text-slate-300 tracking-wide">연도별 전공 확장 클라우드</span>
@@ -362,28 +378,7 @@
             </div>
           </div>
 
-          <!-- MODE A-3 (ONLY IN OVERVIEW MODE): UNIVERSITY RESEARCH TREND RADAR CHART -->
-          <div id="mini-chart-radar-section" class="hidden pt-2.5 border-t border-white/10 flex flex-col space-y-2">
-            <div class="flex items-center justify-between text-[10px]">
-              <span class="font-bold text-slate-200 tracking-wide">시대별 연구 균형 레이더</span>
-              <div class="flex items-center space-x-2 text-[9px] font-scifi">
-                <span class="flex items-center space-x-1 text-cyan-300">
-                  <span class="w-2 h-2 rounded-full bg-cyan-400 inline-block"></span>
-                  <span>2001–2015</span>
-                </span>
-                <span class="flex items-center space-x-1 text-pink-300">
-                  <span class="w-2 h-2 rounded-full bg-pink-500 inline-block"></span>
-                  <span>2016–2026</span>
-                </span>
-              </div>
-            </div>
-            <div class="w-full flex justify-center items-center py-1">
-              <svg id="mini-radar-svg" class="w-full max-w-[300px] h-52 overflow-visible"></svg>
-            </div>
-            <div id="mini-radar-insights" class="grid grid-cols-2 gap-1.5 pt-1 text-[10px]"></div>
-          </div>
-
-          <!-- MODE B: ADVISOR / DEPARTMENT / CLUSTER CONTEXT -> YEARLY TREND SPARKLINE -->
+          <!-- 4. ADVISOR / DEPARTMENT / CLUSTER CONTEXT -> YEARLY TREND SPARKLINE -->
           <div id="mini-chart-sparkline-section" class="hidden flex-col space-y-1 flex">
             <div class="flex items-center justify-between text-[10px]">
               <span class="font-bold text-slate-300 tracking-wide">연도별 발표 추이</span>
@@ -398,17 +393,17 @@
             </div>
           </div>
 
-          <!-- SHARED BOTTOM MODULE: TOP 5 KEYWORDS MINI TAG BARS (HIDDEN IN OVERVIEW MODE) -->
+          <!-- 5. TOP KEYWORDS MINI TAG BARS (TOP 5 default, TOP 10 with yearly trend for Cluster Groups) -->
           <div id="mini-chart-keywords-section" class="pt-2 border-t border-white/10 flex flex-col space-y-1">
             <div class="flex items-center justify-between text-[10px]">
-              <span class="font-bold text-slate-300 tracking-wide">핵심 주제어 TOP 5</span>
+              <span id="mini-keywords-title" class="font-bold text-slate-300 tracking-wide">핵심 주제어 TOP 5</span>
               <span class="text-[9px] text-indigo-400">클릭 시 키워드 필터</span>
             </div>
             <div id="mini-top-keywords" class="flex flex-col space-y-1 pt-0.5"></div>
           </div>
         </div>
 
-        <!-- DEPARTMENT ADVISORS DIRECTORY (SHOWN ONLY IN DEPARTMENT PANEL) -->
+        <!-- DEPARTMENT ADVISORS DIRECTORY (HEIGHT EXPANDED TO SHOW AT LEAST 3 ADVISORS PER SCROLL) -->
         <div id="dept-advisors-section" class="hidden p-2.5 rounded-xl bg-black/55 border border-amber-500/25 flex flex-col space-y-2">
           <div class="flex items-center justify-between text-[10px]">
             <div class="flex items-center space-x-1.5">
@@ -417,16 +412,16 @@
             </div>
             <span id="dept-advisors-count-badge" class="font-scifi text-[9px] text-amber-300">총 0명</span>
           </div>
-          <div id="dept-advisors-list" class="max-h-44 overflow-y-auto space-y-1.5 pr-1"></div>
+          <div id="dept-advisors-list" class="max-h-[275px] overflow-y-auto space-y-1.5 pr-1"></div>
         </div>
 
-        <!-- Thesis List Subhint (HIDDEN IN OVERVIEW MODE) -->
+        <!-- Thesis List Subhint -->
         <div id="thesis-list-header-bar" class="text-[10px] text-indigo-400 pt-0.5 flex justify-between items-center">
           <span>논문 리스트 (최신순)</span>
           <span id="list-view-subhint">클릭 시 상세 확인</span>
         </div>
 
-        <!-- Thesis Cards (HIDDEN IN OVERVIEW MODE) -->
+        <!-- Thesis Cards -->
         <div id="search-theses-list" class="space-y-2 text-xs pb-3"></div>
       </div>
     </div>
@@ -607,7 +602,6 @@
       return res;
     }
 
-    // Hàm làm sạch các ký tự &#xD; và HTML entities trong 초록 (Abstract)
     function cleanAbstractText(rawText) {
       if (!rawText || typeof rawText !== 'string') return '';
       return rawText
@@ -1131,7 +1125,7 @@
     const controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
-    controls.maxDistance = 4000;
+    controls.maxDistance = 3200;
     controls.minDistance = 12;
     controls.target.set(0, 200, 0);
     controls.enableZoom = false;
@@ -1270,6 +1264,8 @@
     let stardustMistPoints;
     let spiralArmRibbonPoints;
     let galaxyCenterYGlobal = 225;
+    let galaxyMinYGlobal = 0;
+    let galaxyMaxYGlobal = 450;
 
     let cosmicRevealProgress = 0.0;
     let panelNavigationStack = [];
@@ -1752,7 +1748,7 @@
     }
 
     /* ==========================================================================
-       7. 3D GALAXY SCENE CONSTRUCTION (ENFORCED CLUSTER COLOR CONSISTENCY FOR DESIGN)
+       7. 3D GALAXY SCENE CONSTRUCTION (UNIFIED COLORS FOR DESIGN & FUSION)
        ========================================================================== */
     function buildCosmicScene() {
       NODE_SPRITES = [];
@@ -1928,11 +1924,13 @@
           const masterBase = 2.4 + Math.min(1.4, connCount * 0.22);
           scaleSize = det.isPhd ? (masterBase * 3.0) : masterBase;
 
-          // Kiểm tra nhóm ngành để đồng nhất màu sắc (tránh trường hợp luận văn khoa Design bị lẫn màu tím nhạt)
+          // Khóa đồng nhất màu sắc theo nhóm ngành (không trộn lẫn màu khoa khác vào 디자인 hoặc 융합)
           const clusterCat = getDeptClusterCategory(normalizedDept);
           let rawHex = node.color || "#06B6D4";
           if (clusterCat === '디자인') {
-            rawHex = "#F43F5E"; // Khóa chuẩn màu hồng-đỏ neon của cụm Design
+            rawHex = "#F43F5E"; // Màu chuẩn của khoa 디자인
+          } else if (clusterCat === '융합') {
+            rawHex = "#8B5CF6"; // Màu chuẩn của khoa 융합
           }
 
           reusableColor.set(rawHex);
@@ -1988,6 +1986,8 @@
 
       const finalMinY = Math.min(baseBottomY, actualMinY);
       const finalMaxY = Math.max(baseTopY, actualMaxY);
+      galaxyMinYGlobal = finalMinY;
+      galaxyMaxYGlobal = finalMaxY;
       const galaxyCenterY = (finalMinY + finalMaxY) / 2;
       galaxyCenterYGlobal = galaxyCenterY;
       const galaxyHeight = Math.max(100, finalMaxY - finalMinY + 16);
@@ -2218,7 +2218,7 @@
               year: yr,
               uci: null,
               keywords: kws,
-              abstract_ko: `본 연구는 서울과학기술대학교 ${d}에서 수행된 연구로,&#xD;${kws.join(', ')} 분야의 심층적인 분석을 제공합니다.`,
+              abstract_ko: `본 연구는 서울과학기술대학교 ${d}에서 수행된 연구로, ${kws.join(', ')} 분야의 심층적인 분석을 제공합니다.`,
               x: ax + Math.cos(ta) * tr,
               y: ((yr - 2001) / 25.0) * 450,
               z: az + Math.sin(ta) * tr,
@@ -2684,9 +2684,9 @@
       _anchorPlane.setFromNormalAndCoplanarPoint(_anchorPlaneNormal, galaxyMidPoint);
 
       if (_zoomRaycaster.ray.intersectPlane(_anchorPlane, _anchorHitPoint)) {
-        _anchorHitPoint.x = THREE.MathUtils.clamp(_anchorHitPoint.x, -560, 560);
-        _anchorHitPoint.y = THREE.MathUtils.clamp(_anchorHitPoint.y, -40, 520);
-        _anchorHitPoint.z = THREE.MathUtils.clamp(_anchorHitPoint.z, -560, 560);
+        _anchorHitPoint.x = THREE.MathUtils.clamp(_anchorHitPoint.x, -420, 420);
+        _anchorHitPoint.y = THREE.MathUtils.clamp(_anchorHitPoint.y, -20, 490);
+        _anchorHitPoint.z = THREE.MathUtils.clamp(_anchorHitPoint.z, -420, 420);
         return {
           point: _anchorHitPoint.clone(),
           sprite: null
@@ -2979,7 +2979,6 @@
       document.getElementById('detail-title').innerText = detail.title_ko;
       document.getElementById('detail-author').innerText = detail.author;
 
-      // Liên kết trực tiếp từ 지도교수 sang panel của Giáo sư đó
       const advisorBtn = document.getElementById('detail-advisor');
       advisorBtn.innerText = detail.advisor;
       advisorBtn.onclick = () => {
@@ -2992,7 +2991,6 @@
         showThesesOfAdvisor(detail.advisor, true, detail.dept, null);
       };
 
-      // Liên kết trực tiếp từ 학과 sang panel của Khoa đó
       const deptBtn = document.getElementById('detail-dept');
       deptBtn.innerText = detail.dept;
       deptBtn.onclick = () => {
@@ -3052,241 +3050,244 @@
     }
 
     /* ==========================================================================
-       11. CONTEXTUAL MINI-ANALYTICS, CLOUD EVOLUTION & RADAR CHART
+       11. CONTEXTUAL MINI-ANALYTICS, 100% COMPOSITION STREAM & TOP 10 KEYWORDS
        ========================================================================== */
     function renderContextualMiniAnalytics(theses, contextMode, subMode = 'default', deptName = '') {
       const stackedSection = document.getElementById('mini-chart-stacked-section');
+      const compositionSection = document.getElementById('mini-chart-composition-section');
       const cloudSection = document.getElementById('mini-chart-cloud-section');
-      const radarSection = document.getElementById('mini-chart-radar-section');
       const sparklineSection = document.getElementById('mini-chart-sparkline-section');
       const keywordsSection = document.getElementById('mini-chart-keywords-section');
+      const keywordsTitleEl = document.getElementById('mini-keywords-title');
       const advisorsSection = document.getElementById('dept-advisors-section');
       const listHeaderBar = document.getElementById('thesis-list-header-bar');
       const listContainer = document.getElementById('search-theses-list');
 
       const isOverviewMode = (subMode === 'overview');
+      const isClusterMode = (subMode === 'cluster');
 
-      if (contextMode === 'entity') {
-        stackedSection.classList.add('hidden');
-        cloudSection.classList.add('hidden');
-        radarSection.classList.add('hidden');
-        sparklineSection.classList.remove('hidden');
-        renderYearSparkline(theses);
-      } else {
-        sparklineSection.classList.add('hidden');
-        stackedSection.classList.remove('hidden');
-        renderClusterStackedBar(theses);
+      // Reset visibility
+      stackedSection.classList.add('hidden');
+      compositionSection.classList.add('hidden');
+      cloudSection.classList.add('hidden');
+      sparklineSection.classList.add('hidden');
+      keywordsSection.classList.add('hidden');
+      advisorsSection.classList.add('hidden');
 
-        if (isOverviewMode) {
-          cloudSection.classList.remove('hidden');
-          radarSection.classList.remove('hidden');
-          renderCloudEvolutionChart(theses);
-          renderUniversityTrendRadarChart(theses);
-        } else {
-          cloudSection.classList.add('hidden');
-          radarSection.classList.add('hidden');
-        }
-      }
-
-      // Ở chế độ 전체 학술 유니버스 (overview): ẩn TOP 5 từ khóa và ẩn list luận văn, nhường chỗ cho Radar & Cloud
       if (isOverviewMode) {
-        keywordsSection.classList.add('hidden');
+        // Chế độ 전체 학술 유니버스:
+        // Hiện 계열별 연구 비중 + Biểu đồ 100% tỷ trọng thành phần chuyên ngành theo năm + Biểu đồ đám mây mở rộng
+        // Ẩn list luận văn & TOP 5 từ khóa
+        stackedSection.classList.remove('hidden');
+        compositionSection.classList.remove('hidden');
+        cloudSection.classList.remove('hidden');
         listHeaderBar.classList.add('hidden');
         listContainer.classList.add('hidden');
-      } else {
+
+        renderClusterStackedBar(theses);
+        renderYearlyCompositionChart(theses);
+        renderCloudEvolutionChart(theses);
+      } else if (isClusterMode) {
+        // Chế độ 5 nhóm ngành chính (공학, 디자인, 융합, 경영, 인문):
+        // Bỏ biểu đồ Radar; giữ 계열별 연구 비중 + 연도별 발표 추이 + TOP 10 từ khóa theo năm của nhóm ngành
+        stackedSection.classList.remove('hidden');
+        sparklineSection.classList.remove('hidden');
         keywordsSection.classList.remove('hidden');
         listHeaderBar.classList.remove('hidden');
         listContainer.classList.remove('hidden');
-        renderTop5KeywordsMiniBars(theses);
-      }
 
-      if (subMode === 'department') {
-        advisorsSection.classList.remove('hidden');
-        renderDepartmentAdvisorsDirectory(theses, deptName);
+        keywordsTitleEl.innerText = '계열 핵심 주제어 TOP 10 (연도별 추이)';
+        renderClusterStackedBar(theses);
+        renderYearSparkline(theses);
+        renderTopKeywordsMiniBars(theses, 10, true);
+      } else if (contextMode === 'entity') {
+        // Chế độ Giáo sư hoặc 1 Khoa cụ thể:
+        sparklineSection.classList.remove('hidden');
+        keywordsSection.classList.remove('hidden');
+        listHeaderBar.classList.remove('hidden');
+        listContainer.classList.remove('hidden');
+
+        keywordsTitleEl.innerText = '핵심 주제어 TOP 5';
+        renderYearSparkline(theses);
+        renderTopKeywordsMiniBars(theses, 5, false);
+
+        if (subMode === 'department') {
+          advisorsSection.classList.remove('hidden');
+          renderDepartmentAdvisorsDirectory(theses, deptName);
+        }
       } else {
-        advisorsSection.classList.add('hidden');
+        // Chế độ tìm kiếm từ khóa / tiêu đề / tác giả:
+        stackedSection.classList.remove('hidden');
+        keywordsSection.classList.remove('hidden');
+        listHeaderBar.classList.remove('hidden');
+        listContainer.classList.remove('hidden');
+
+        keywordsTitleEl.innerText = '핵심 주제어 TOP 5';
+        renderClusterStackedBar(theses);
+        renderTopKeywordsMiniBars(theses, 5, false);
       }
     }
 
-    // BIỂU ĐỒ RADAR PHÂN TÍCH XU HƯỚNG NGHIÊN CỨU TOÀN TRƯỜNG QUA CÁC NĂM
-    function renderUniversityTrendRadarChart(theses) {
-      const svg = document.getElementById('mini-radar-svg');
-      const insightsBox = document.getElementById('mini-radar-insights');
+    // BIỂU ĐỒ 100% THÀNH PHẦN CHUYÊN NGÀNH THAY ĐỔI THEO TỪNG NĂM (100% STACKED AREA COMPOSITION)
+    function renderYearlyCompositionChart(theses) {
+      const svg = document.getElementById('mini-composition-svg');
+      const readoutEl = document.getElementById('comp-hover-readout');
+      const endYearLabel = document.getElementById('comp-end-year-label');
       svg.innerHTML = '';
-      insightsBox.innerHTML = '';
+
+      const minY = 2001;
+      const maxY = Math.max(2002, activeTimelineYear);
+      endYearLabel.innerText = `${maxY}년`;
+      readoutEl.innerText = `${minY}–${maxY} 전공 비중 변화`;
 
       if (!theses || theses.length === 0) return;
 
-      const splitYear = 2016;
-      const earlyCounts = new Map();
-      const recentCounts = new Map();
-      CLUSTER_VISUAL_META.forEach(m => {
-        earlyCounts.set(m.key, 0);
-        recentCounts.set(m.key, 0);
-      });
+      const years = [];
+      for (let y = minY; y <= maxY; y++) years.push(y);
 
-      let earlyTotal = 0;
-      let recentTotal = 0;
+      const clusterKeys = CLUSTER_VISUAL_META.map(c => c.key);
+      const yearCounts = new Map();
+      years.forEach(y => {
+        const obj = { total: 0 };
+        clusterKeys.forEach(k => { obj[k] = 0; });
+        yearCounts.set(y, obj);
+      });
 
       for (let i = 0; i < theses.length; i++) {
         const y = theses[i].year || 2020;
+        if (!yearCounts.has(y)) continue;
         const cat = getDeptClusterCategory(theses[i].dept);
-        if (y < splitYear) {
-          earlyCounts.set(cat, (earlyCounts.get(cat) || 0) + 1);
-          earlyTotal++;
-        } else {
-          recentCounts.set(cat, (recentCounts.get(cat) || 0) + 1);
-          recentTotal++;
-        }
+        const rec = yearCounts.get(y);
+        rec[cat] = (rec[cat] || 0) + 1;
+        rec.total++;
       }
 
-      // Tính tỷ trọng % trong từng giai đoạn để so sánh công bằng sự dịch chuyển xu hướng
-      const axes = CLUSTER_VISUAL_META.map(meta => {
-        const eCount = earlyCounts.get(meta.key) || 0;
-        const rCount = recentCounts.get(meta.key) || 0;
-        const eShare = earlyTotal > 0 ? (eCount / earlyTotal) * 100 : 0;
-        const rShare = recentTotal > 0 ? (rCount / recentTotal) * 100 : 0;
-        return {
-          ...meta,
-          eCount,
-          rCount,
-          eShare,
-          rShare,
-          delta: rShare - eShare
-        };
+      const width = 340;
+      const height = 92;
+      const padX = 4;
+      const padY = 4;
+      const usableW = width - padX * 2;
+      const usableH = height - padY * 2;
+      svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+
+      // Tính tỷ trọng % (0..100%) từng nhóm ngành tại mỗi năm
+      let lastValidShares = {};
+      clusterKeys.forEach(k => { lastValidShares[k] = 0; });
+
+      const yearStacks = years.map((y, idx) => {
+        const x = padX + (years.length === 1 ? usableW / 2 : (idx / (years.length - 1)) * usableW);
+        const rec = yearCounts.get(y);
+        const shares = {};
+        if (rec.total > 0) {
+          clusterKeys.forEach(k => {
+            shares[k] = (rec[k] / rec.total) * 100;
+          });
+          lastValidShares = { ...shares };
+        } else {
+          clusterKeys.forEach(k => {
+            shares[k] = lastValidShares[k];
+          });
+        }
+
+        let accPct = 0;
+        const bands = {};
+        CLUSTER_VISUAL_META.forEach(meta => {
+          const pct = shares[meta.key] || 0;
+          const yBottom = padY + usableH - (accPct / 100) * usableH;
+          accPct += pct;
+          const yTop = padY + usableH - (accPct / 100) * usableH;
+          bands[meta.key] = { yTop, yBottom, pct, count: rec[meta.key] || 0 };
+        });
+
+        return { year: y, x, bands, total: rec.total };
       });
-
-      const maxShare = Math.max(25, ...axes.map(a => Math.max(a.eShare, a.rShare)));
-
-      const size = 240;
-      const cx = size / 2;
-      const cy = size / 2;
-      const maxR = 76;
-      const numAxes = axes.length;
-      svg.setAttribute('viewBox', `0 0 ${size} ${size}`);
 
       const ns = "http://www.w3.org/2000/svg";
 
-      // 3 vòng đồng tâm tối giản
-      [0.33, 0.66, 1.0].forEach(level => {
-        const ringPts = [];
-        for (let i = 0; i < numAxes; i++) {
-          const ang = -Math.PI / 2 + (Math.PI * 2 * i) / numAxes;
-          const r = maxR * level;
-          ringPts.push(`${(cx + Math.cos(ang) * r).toFixed(1)},${(cy + Math.sin(ang) * r).toFixed(1)}`);
-        }
-        const poly = document.createElementNS(ns, 'polygon');
-        poly.setAttribute('points', ringPts.join(' '));
-        poly.setAttribute('fill', 'none');
-        poly.setAttribute('stroke', 'rgba(148, 163, 184, 0.16)');
-        poly.setAttribute('stroke-width', '0.8');
-        svg.appendChild(poly);
-      });
+      // Vẽ các dải tỷ trọng % xếp chồng từ dưới lên trên (100% Full Height)
+      CLUSTER_VISUAL_META.forEach(meta => {
+        const topPts = yearStacks.map(ys => ({ x: ys.x, y: ys.bands[meta.key].yTop }));
+        const botPts = yearStacks.map(ys => ({ x: ys.x, y: ys.bands[meta.key].yBottom })).reverse();
 
-      // Trục 6 ngành & nhãn màu tương ứng
-      axes.forEach((ax, i) => {
-        const ang = -Math.PI / 2 + (Math.PI * 2 * i) / numAxes;
-        const x2 = cx + Math.cos(ang) * maxR;
-        const y2 = cy + Math.sin(ang) * maxR;
-
-        const axisLine = document.createElementNS(ns, 'line');
-        axisLine.setAttribute('x1', String(cx));
-        axisLine.setAttribute('y1', String(cy));
-        axisLine.setAttribute('x2', x2.toFixed(1));
-        axisLine.setAttribute('y2', y2.toFixed(1));
-        axisLine.setAttribute('stroke', 'rgba(148, 163, 184, 0.18)');
-        axisLine.setAttribute('stroke-width', '0.8');
-        svg.appendChild(axisLine);
-
-        const lx = cx + Math.cos(ang) * (maxR + 18);
-        const ly = cy + Math.sin(ang) * (maxR + 14);
-        const label = document.createElementNS(ns, 'text');
-        label.setAttribute('x', lx.toFixed(1));
-        label.setAttribute('y', (ly + 3).toFixed(1));
-        label.setAttribute('text-anchor', 'middle');
-        label.setAttribute('fill', ax.color);
-        label.setAttribute('font-size', '9.5');
-        label.setAttribute('font-family', 'Pretendard, sans-serif');
-        label.setAttribute('font-weight', '700');
-        label.textContent = ax.label.split('·')[0];
-        svg.appendChild(label);
-      });
-
-      // Đa giác Giai đoạn 1: 2001–2015 (Cyan)
-      if (earlyTotal > 0) {
-        const earlyPts = axes.map((ax, i) => {
-          const ang = -Math.PI / 2 + (Math.PI * 2 * i) / numAxes;
-          const r = (ax.eShare / maxShare) * maxR;
-          return `${(cx + Math.cos(ang) * r).toFixed(1)},${(cy + Math.sin(ang) * r).toFixed(1)}`;
-        });
-        const earlyPoly = document.createElementNS(ns, 'polygon');
-        earlyPoly.setAttribute('points', earlyPts.join(' '));
-        earlyPoly.setAttribute('fill', 'rgba(6, 182, 212, 0.18)');
-        earlyPoly.setAttribute('stroke', '#22D3EE');
-        earlyPoly.setAttribute('stroke-width', '1.6');
-        earlyPoly.setAttribute('stroke-dasharray', '3,2');
-        svg.appendChild(earlyPoly);
-      }
-
-      // Đa giác Giai đoạn 2: 2016–2026 (Neon Pink/Magenta)
-      if (recentTotal > 0) {
-        const recentCoords = axes.map((ax, i) => {
-          const ang = -Math.PI / 2 + (Math.PI * 2 * i) / numAxes;
-          const r = (ax.rShare / maxShare) * maxR;
-          return {
-            x: cx + Math.cos(ang) * r,
-            y: cy + Math.sin(ang) * r,
-            ax
-          };
-        });
-        const recentPoly = document.createElementNS(ns, 'polygon');
-        recentPoly.setAttribute('points', recentCoords.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' '));
-        recentPoly.setAttribute('fill', 'rgba(236, 72, 153, 0.28)');
-        recentPoly.setAttribute('stroke', '#F43F5E');
-        recentPoly.setAttribute('stroke-width', '2.0');
-        recentPoly.style.filter = 'drop-shadow(0 0 6px rgba(244, 63, 94, 0.6))';
-        svg.appendChild(recentPoly);
-
-        recentCoords.forEach(p => {
-          const dot = document.createElementNS(ns, 'circle');
-          dot.setAttribute('cx', p.x.toFixed(1));
-          dot.setAttribute('cy', p.y.toFixed(1));
-          dot.setAttribute('r', '2.8');
-          dot.setAttribute('fill', p.ax.color);
-          dot.setAttribute('stroke', '#FFFFFF');
-          dot.setAttribute('stroke-width', '1');
-          svg.appendChild(dot);
-        });
-      }
-
-      // Thẻ tóm tắt tốc độ dịch chuyển từng nhóm ngành dưới Radar
-      axes.forEach(ax => {
-        const sign = ax.delta >= 0 ? '+' : '';
-        const deltaColor = ax.delta > 0.5 ? 'text-emerald-400' : (ax.delta < -0.5 ? 'text-rose-400' : 'text-slate-400');
-        const card = document.createElement('div');
-        card.className = "px-2 py-1.5 rounded-lg bg-white/[0.04] border border-white/10 flex items-center justify-between cursor-pointer hover:bg-white/10 transition";
-        card.title = `${ax.label}: 클릭 시 해당 계열 상세 추이 보기`;
-        card.innerHTML = `
-          <div class="flex items-center space-x-1.5 min-w-0">
-            <span class="w-2 h-2 rounded-full shrink-0" style="background:${ax.color}; box-shadow: 0 0 5px ${ax.color};"></span>
-            <span class="text-slate-200 font-medium truncate">${ax.label}</span>
-          </div>
-          <div class="flex items-center space-x-1 font-scifi shrink-0">
-            <span class="text-white font-bold">${Math.round(ax.rShare)}%</span>
-            <span class="${deltaColor} text-[9px]">(${sign}${ax.delta.toFixed(1)}%)</span>
-          </div>
-        `;
-        card.addEventListener('click', () => {
-          if (currentListContext) {
-            panelNavigationStack.push({
-              view: 'list',
-              context: { ...currentListContext }
-            });
+        const buildLine = (pts, cmd) => {
+          let d = `${cmd} ${pts[0].x.toFixed(1)} ${pts[0].y.toFixed(1)}`;
+          for (let i = 0; i < pts.length - 1; i++) {
+            const p0 = pts[i];
+            const p1 = pts[i + 1];
+            const cx = ((p0.x + p1.x) / 2).toFixed(1);
+            d += ` C ${cx} ${p0.y.toFixed(1)}, ${cx} ${p1.y.toFixed(1)}, ${p1.x.toFixed(1)} ${p1.y.toFixed(1)}`;
           }
-          showThesesOfClusterGroup(ax.key, ax.label, true);
-        });
-        insightsBox.appendChild(card);
+          return d;
+        };
+
+        const areaD = `${buildLine(topPts, 'M')} L ${botPts[0].x.toFixed(1)} ${botPts[0].y.toFixed(1)} ${buildLine(botPts, 'L').replace(/^L\s[\d.]+\s[\d.]+/, '')} Z`;
+
+        const areaPath = document.createElementNS(ns, 'path');
+        areaPath.setAttribute('d', areaD);
+        areaPath.setAttribute('fill', meta.color);
+        areaPath.setAttribute('fill-opacity', '0.72');
+        areaPath.setAttribute('stroke', '#020306');
+        areaPath.setAttribute('stroke-width', '0.6');
+        svg.appendChild(areaPath);
       });
+
+      // Vạch gióng tương tác khi rê chuột xem tỷ trọng từng năm
+      const guideLine = document.createElementNS(ns, 'line');
+      guideLine.setAttribute('y1', String(padY));
+      guideLine.setAttribute('y2', String(height - padY));
+      guideLine.setAttribute('stroke', '#FFFFFF');
+      guideLine.setAttribute('stroke-width', '1.2');
+      guideLine.setAttribute('stroke-dasharray', '2,2');
+      guideLine.style.display = 'none';
+      svg.appendChild(guideLine);
+
+      const hitRect = document.createElementNS(ns, 'rect');
+      hitRect.setAttribute('x', '0');
+      hitRect.setAttribute('y', '0');
+      hitRect.setAttribute('width', String(width));
+      hitRect.setAttribute('height', String(height));
+      hitRect.setAttribute('fill', 'transparent');
+      svg.appendChild(hitRect);
+
+      const onCompMove = (clientX) => {
+        const rect = svg.getBoundingClientRect();
+        if (rect.width <= 0) return;
+        const relX = ((clientX - rect.left) / rect.width) * width;
+        let nearest = yearStacks[0];
+        let minDiff = Math.abs(relX - nearest.x);
+        for (let i = 1; i < yearStacks.length; i++) {
+          const d = Math.abs(relX - yearStacks[i].x);
+          if (d < minDiff) {
+            minDiff = d;
+            nearest = yearStacks[i];
+          }
+        }
+        guideLine.setAttribute('x1', nearest.x.toFixed(1));
+        guideLine.setAttribute('x2', nearest.x.toFixed(1));
+        guideLine.style.display = 'block';
+
+        const top3 = CLUSTER_VISUAL_META
+          .map(m => ({ label: m.label.split('·')[0], pct: nearest.bands[m.key].pct }))
+          .filter(x => x.pct > 0.5)
+          .sort((a, b) => b.pct - a.pct)
+          .slice(0, 3)
+          .map(x => `${x.label} ${Math.round(x.pct)}%`)
+          .join(' · ');
+
+        readoutEl.innerText = `${nearest.year}년: ${top3 || '데이터 없음'}`;
+      };
+
+      const onCompLeave = () => {
+        guideLine.style.display = 'none';
+        readoutEl.innerText = `${minY}–${maxY} 전공 비중 변화`;
+      };
+
+      hitRect.addEventListener('mousemove', (e) => onCompMove(e.clientX));
+      hitRect.addEventListener('touchmove', (e) => {
+        if (e.touches.length > 0) onCompMove(e.touches[0].clientX);
+      }, { passive: true });
+      hitRect.addEventListener('mouseleave', onCompLeave);
+      hitRect.addEventListener('touchend', onCompLeave);
     }
 
     function renderCloudEvolutionChart(theses) {
@@ -3875,7 +3876,8 @@
       hitRect.addEventListener('touchend', hideSparklineHover);
     }
 
-    function renderTop5KeywordsMiniBars(theses) {
+    // TOP KEYWORDS MINI BARS (Hỗ trợ Top 5 hoặc Top 10 kèm sparkline xu hướng từng năm)
+    function renderTopKeywordsMiniBars(theses, limitCount = 5, showYearlySpark = false) {
       const container = document.getElementById('mini-top-keywords');
       container.innerHTML = '';
 
@@ -3886,8 +3888,19 @@
 
       const kwCounts = new Map();
       const kwDisplayLabel = new Map();
+      const kwYearSeries = new Map();
+
+      let minY = 2026;
+      let maxY = 2001;
+      for (let i = 0; i < theses.length; i++) {
+        const y = theses[i].year || 2020;
+        if (y < minY) minY = y;
+        if (y > maxY) maxY = y;
+      }
+      if (minY >= maxY) minY = Math.max(2001, maxY - 4);
 
       for (let i = 0; i < theses.length; i++) {
+        const y = theses[i].year || 2020;
         const det = getCleanDetail(theses[i]);
         const kws = det.keywords || [];
         for (let j = 0; j < kws.length; j++) {
@@ -3898,35 +3911,74 @@
           if (!kwDisplayLabel.has(normKey)) {
             kwDisplayLabel.set(normKey, normalizedLabel);
           }
+          if (showYearlySpark) {
+            if (!kwYearSeries.has(normKey)) kwYearSeries.set(normKey, new Map());
+            const yMap = kwYearSeries.get(normKey);
+            yMap.set(y, (yMap.get(y) || 0) + 1);
+          }
         }
       }
 
-      const sortedTop5 = Array.from(kwCounts.entries())
+      const sortedTop = Array.from(kwCounts.entries())
         .sort((a, b) => b[1] - a[1])
-        .slice(0, 5);
+        .slice(0, limitCount);
 
-      if (sortedTop5.length === 0) {
+      if (sortedTop.length === 0) {
         container.innerHTML = `<div class="text-[10px] text-slate-500 italic">등록된 유효 키워드가 없습니다.</div>`;
         return;
       }
 
-      const maxFreq = sortedTop5[0][1];
-      const barColors = ['#22D3EE', '#818CF8', '#C084FC', '#F472B6', '#FB7185'];
+      const maxFreq = sortedTop[0][1];
+      const barColors = [
+        '#22D3EE', '#38BDF8', '#818CF8', '#A78BFA', '#C084FC',
+        '#E879F9', '#F472B6', '#FB7185', '#FBBF24', '#34D399'
+      ];
 
-      sortedTop5.forEach(([normKey, count], idx) => {
+      sortedTop.forEach(([normKey, count], idx) => {
         const label = kwDisplayLabel.get(normKey);
         const pct = Math.max(8, (count / maxFreq) * 100);
         const color = barColors[idx % barColors.length];
+
+        let sparkSvgHtml = '';
+        if (showYearlySpark && kwYearSeries.has(normKey)) {
+          const yMap = kwYearSeries.get(normKey);
+          const span = Math.max(1, maxY - minY);
+          let localMax = 1;
+          let peakYr = minY;
+          for (let y = minY; y <= maxY; y++) {
+            const v = yMap.get(y) || 0;
+            if (v >= localMax) {
+              localMax = v;
+              peakYr = y;
+            }
+          }
+          const sw = 54;
+          const sh = 14;
+          const pts = [];
+          for (let y = minY; y <= maxY; y++) {
+            const v = yMap.get(y) || 0;
+            const px = 2 + ((y - minY) / span) * (sw - 4);
+            const py = sh - 2 - (v / localMax) * (sh - 4);
+            pts.push(`${px.toFixed(1)},${py.toFixed(1)}`);
+          }
+          sparkSvgHtml = `
+            <svg class="w-14 h-3.5 shrink-0 overflow-visible" viewBox="0 0 ${sw} ${sh}" title="최다 출현: ${peakYr}년 (${localMax}건)">
+              <polyline fill="none" stroke="${color}" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" points="${pts.join(' ')}" />
+            </svg>
+          `;
+        }
 
         const row = document.createElement('div');
         row.className = 'flex items-center space-x-2 text-[10px] group cursor-pointer py-0.5';
         row.title = `"${label}" 키워드 논문 보기`;
         row.innerHTML = `
+          <span class="w-4 font-scifi text-[9px] text-slate-500 text-right shrink-0">${idx + 1}</span>
           <span class="w-24 truncate text-slate-200 group-hover:text-cyan-300 font-medium transition">${label}</span>
           <div class="flex-1 h-1.5 rounded-full bg-white/5 overflow-hidden">
             <div class="h-full rounded-full mini-bar-fill" style="width: ${pct}%; background: ${color}; box-shadow: 0 0 6px ${color};"></div>
           </div>
-          <span class="w-7 text-right font-scifi font-bold text-slate-300 group-hover:text-white">${count}</span>
+          ${sparkSvgHtml}
+          <span class="w-7 text-right font-scifi font-bold text-slate-300 group-hover:text-white shrink-0">${count}</span>
         `;
 
         row.addEventListener('click', () => {
@@ -4150,7 +4202,7 @@
         theses: visibleMatches,
         baseTheses: theses,
         queryText: `${clusterLabel} 계열`,
-        contextMode: 'entity',
+        contextMode: 'cluster',
         subMode: 'cluster',
         deptName: '',
         pushHistory: pushHistory
@@ -4173,9 +4225,27 @@
       });
 
       const isSingleDept = selectedDept !== 'ALL';
+      const isClusterSelected = !isSingleDept && selectedCluster !== 'all';
+
+      if (isClusterSelected) {
+        const meta = CLUSTER_VISUAL_META.find(m => m.key === selectedCluster);
+        const clusterLabel = meta ? meta.label : selectedCluster;
+        const clusterTheses = allTheses.filter(n => getDeptClusterCategory(n.dept) === selectedCluster);
+        renderThesesListPanel({
+          theses: visibleTheses,
+          baseTheses: clusterTheses,
+          queryText: `${clusterLabel} 계열`,
+          contextMode: 'cluster',
+          subMode: 'cluster',
+          deptName: '',
+          pushHistory: pushHistory
+        });
+        return;
+      }
+
       const label = isSingleDept
         ? selectedDept
-        : (selectedCluster !== 'all' ? `${selectedCluster} 계열 전체` : `전체 학술 유니버스 (~${activeTimelineYear})`);
+        : `전체 학술 유니버스 (~${activeTimelineYear})`;
       const mode = isSingleDept ? 'entity' : 'general';
       const subMode = isSingleDept ? 'department' : 'overview';
 
@@ -4219,7 +4289,9 @@
 
       badgeEl.innerText = subMode === 'department'
         ? 'DEPARTMENT ANALYTICS'
-        : (contextMode === 'entity' ? 'TREND ANALYTICS' : 'UNIVERSE ANALYTICS');
+        : (subMode === 'cluster'
+          ? 'CLUSTER ANALYTICS'
+          : (contextMode === 'entity' ? 'TREND ANALYTICS' : 'UNIVERSE ANALYTICS'));
       document.getElementById('list-view-title').innerText = `"${queryText}" 연구 분석`;
       document.getElementById('list-view-count').innerText = TEXT_KO.searchResultsCount(theses.length);
       document.getElementById('list-view-subhint').innerText = TEXT_KO.listViewSubhint;
@@ -4412,12 +4484,40 @@
     });
 
     /* ==========================================================================
-       13. REAL-TIME ANIMATION (WITH ZOOM-OUT ANTI-GLARE & TARGET TRACKING)
+       13. GALAXY VIEWPORT BOUNDARY GUARD & REAL-TIME ANIMATION
        ========================================================================== */
     const clock = new THREE.Clock();
     const _prevTrackedWorldPos = new THREE.Vector3();
     const _currTrackedWorldPos = new THREE.Vector3();
     const _trackDelta = new THREE.Vector3();
+    const _prevTargetSnapshot = new THREE.Vector3();
+
+    // Đảm bảo dù người dùng kéo/xoay camera thế nào, tâm ngắm vẫn nằm trong vùng dải ngân hà để không bao giờ trôi mất
+    function keepGalaxyInViewport() {
+      _prevTargetSnapshot.copy(controls.target);
+
+      const maxRadialBound = 430;
+      const minYBound = Math.max(-20, galaxyMinYGlobal - 15);
+      const maxYBound = Math.max(480, galaxyMaxYGlobal + 20);
+
+      const radialDist = Math.hypot(controls.target.x, controls.target.z);
+      if (radialDist > maxRadialBound) {
+        const ratio = maxRadialBound / radialDist;
+        controls.target.x *= ratio;
+        controls.target.z *= ratio;
+      }
+      controls.target.y = THREE.MathUtils.clamp(controls.target.y, minYBound, maxYBound);
+
+      // Dịch chuyển camera đồng bộ với phần bị kẹp biên để giữ nguyên góc nhìn mà không giật khung hình
+      const corrX = controls.target.x - _prevTargetSnapshot.x;
+      const corrY = controls.target.y - _prevTargetSnapshot.y;
+      const corrZ = controls.target.z - _prevTargetSnapshot.z;
+      if (corrX !== 0 || corrY !== 0 || corrZ !== 0) {
+        camera.position.x += corrX;
+        camera.position.y += corrY;
+        camera.position.z += corrZ;
+      }
+    }
 
     function animate() {
       requestAnimationFrame(animate);
@@ -4442,6 +4542,7 @@
 
       TWEEN.update();
       controls.update();
+      keepGalaxyInViewport();
 
       const camDist = camera.position.distanceTo(controls.target);
 
