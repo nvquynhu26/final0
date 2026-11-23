@@ -351,13 +351,13 @@
             <div id="mini-stacked-legend" class="flex flex-wrap gap-x-2.5 gap-y-1 text-[9px] text-slate-200 pt-0.5"></div>
           </div>
 
-          <!-- 2. OVERVIEW ONLY: YEARLY COMPOSITION STREAM CHART -->
+          <!-- 2. OVERVIEW ONLY: MERGED YEARLY COMPOSITION + NEW CLUSTER EMERGENCE MARKERS (+30% HEIGHT) -->
           <div id="mini-chart-composition-section" class="hidden pt-2 border-t border-white/10 flex flex-col space-y-1.5">
-            <div class="flex items-center justify-between text-[10px]">
-              <span class="font-bold text-slate-200 tracking-wide">연도별 전공 구성 비율 추이</span>
-              <span id="comp-hover-readout" class="font-scifi text-[9px] text-cyan-300 font-bold">2001–2026 비율 변화</span>
+            <div class="flex items-center justify-between text-[10px] gap-2">
+              <span class="font-bold text-slate-200 tracking-wide shrink-0">연도별 전공 구성 비율 추이</span>
+              <span id="comp-hover-readout" class="font-scifi text-[9px] text-cyan-300 font-bold truncate text-right">2001–2026 비율 및 신규 계열 출현</span>
             </div>
-            <div class="w-full h-24 relative flex items-center select-none">
+            <div class="w-full h-32 relative flex items-center select-none">
               <svg id="mini-composition-svg" class="w-full h-full overflow-visible cursor-crosshair" preserveAspectRatio="none"></svg>
             </div>
             <div class="flex justify-between text-[9px] font-scifi text-slate-300 pt-0.5">
@@ -368,18 +368,7 @@
             </div>
           </div>
 
-          <!-- 3. OVERVIEW ONLY: CLOUD / STREAM EVOLUTION CHART BY YEAR -->
-          <div id="mini-chart-cloud-section" class="hidden pt-2 border-t border-white/10 flex flex-col space-y-1">
-            <div class="flex items-center justify-between text-[10px]">
-              <span class="font-bold text-slate-200 tracking-wide">연도별 전공 확장 클라우드</span>
-              <span id="cloud-hover-readout" class="font-scifi text-[9px] text-cyan-300 font-bold">2001–2026 신규 계열 출현</span>
-            </div>
-            <div class="w-full h-16 relative flex items-center select-none">
-              <svg id="mini-cloud-evolution-svg" class="w-full h-full overflow-visible cursor-crosshair" preserveAspectRatio="none"></svg>
-            </div>
-          </div>
-
-          <!-- 4. ADVISOR / DEPARTMENT / CLUSTER CONTEXT -> YEARLY TREND SPARKLINE -->
+          <!-- 3. ADVISOR / DEPARTMENT / CLUSTER CONTEXT -> YEARLY TREND SPARKLINE -->
           <div id="mini-chart-sparkline-section" class="hidden flex-col space-y-1 flex">
             <div class="flex items-center justify-between text-[10px]">
               <span class="font-bold text-slate-200 tracking-wide">연도별 발표 추이</span>
@@ -394,7 +383,7 @@
             </div>
           </div>
 
-          <!-- 5. CLUSTER ONLY: SUB-DEPARTMENTS & YEARLY THESIS COUNTS -->
+          <!-- 4. CLUSTER ONLY: SUB-DEPARTMENTS & YEARLY THESIS COUNTS -->
           <div id="mini-cluster-subdepts-section" class="hidden pt-2 border-t border-white/10 flex flex-col space-y-1.5">
             <div class="flex items-center justify-between text-[10px]">
               <span class="font-bold text-slate-200 tracking-wide">계열 내 세부 학과별 연도 추이</span>
@@ -403,7 +392,7 @@
             <div id="mini-cluster-subdepts-list" class="max-h-52 overflow-y-auto space-y-1.5 pr-1"></div>
           </div>
 
-          <!-- 6. TOP KEYWORDS MINI TAG BARS -->
+          <!-- 5. TOP KEYWORDS MINI TAG BARS -->
           <div id="mini-chart-keywords-section" class="pt-2 border-t border-white/10 flex flex-col space-y-1">
             <div class="flex items-center justify-between text-[10px]">
               <span id="mini-keywords-title" class="font-bold text-slate-200 tracking-wide">핵심 주제어 TOP 5</span>
@@ -1574,7 +1563,7 @@
         n._clusterCat = getDeptClusterCategory(n.dept);
         if (n.type === 'thesis_planet') {
           THESIS_NODES_ALL.push(n);
-          getCleanDetail(n); // Pre-index chi tiết luận văn để lọc & tìm kiếm siêu tốc
+          getCleanDetail(n);
         }
       }
 
@@ -2007,7 +1996,7 @@
       funnelHazeMesh.position.y = galaxyCenterY;
       cosmosGroup.add(funnelHazeMesh);
 
-      // Spiral Arms (tối ưu số lượng hạt 4800 để khung hình mượt tối đa)
+      // Spiral Arms
       const spiralRibbonCount = 4800;
       const ribbonGeo = new THREE.BufferGeometry();
       const ribbonPositions = new Float32Array(spiralRibbonCount * 3);
@@ -2942,7 +2931,6 @@
     function renderContextualMiniAnalytics(theses, contextMode, subMode = 'default', deptName = '', clusterKey = '') {
       const stackedSection = document.getElementById('mini-chart-stacked-section');
       const compositionSection = document.getElementById('mini-chart-composition-section');
-      const cloudSection = document.getElementById('mini-chart-cloud-section');
       const sparklineSection = document.getElementById('mini-chart-sparkline-section');
       const clusterSubdeptsSection = document.getElementById('mini-cluster-subdepts-section');
       const keywordsSection = document.getElementById('mini-chart-keywords-section');
@@ -2957,7 +2945,6 @@
 
       stackedSection.classList.add('hidden');
       compositionSection.classList.add('hidden');
-      cloudSection.classList.add('hidden');
       sparklineSection.classList.add('hidden');
       clusterSubdeptsSection.classList.add('hidden');
       keywordsSection.classList.add('hidden');
@@ -2966,13 +2953,11 @@
       if (isOverviewMode) {
         stackedSection.classList.remove('hidden');
         compositionSection.classList.remove('hidden');
-        cloudSection.classList.remove('hidden');
         listHeaderBar.classList.add('hidden');
         listContainer.classList.add('hidden');
 
         renderClusterStackedBar(theses);
         renderYearlyCompositionChart(theses);
-        renderCloudEvolutionChart(theses);
       } else if (isClusterMode) {
         sparklineSection.classList.remove('hidden');
         clusterSubdeptsSection.classList.remove('hidden');
@@ -3108,7 +3093,7 @@
       });
     }
 
-    /* 1. BIỂU ĐỒ 연도별 전공 구성 비율 추이 - ĐÃ LOẠI BỎ HOÀN TOÀN ĐƯỜNG LINE ĐEN */
+    /* GỘP CÁC MỐC CHÚ THÍCH XUẤT HIỆN CHUYÊN NGÀNH MỚI VÀO BIỂU ĐỒ 연도별 전공 구성 비율 추이 & TĂNG CHIỀU CAO +30% */
     function renderYearlyCompositionChart(theses) {
       const svg = document.getElementById('mini-composition-svg');
       const readoutEl = document.getElementById('comp-hover-readout');
@@ -3118,7 +3103,7 @@
       const minY = 2001;
       const maxY = Math.max(2002, activeTimelineYear);
       endYearLabel.innerText = `${maxY}년`;
-      readoutEl.innerText = `${minY}–${maxY} 전공 비중 변화`;
+      readoutEl.innerText = `${minY}–${maxY} 비율 및 신규 계열 출현`;
 
       if (!theses || theses.length === 0) return;
 
@@ -3142,12 +3127,28 @@
         rec.total++;
       }
 
+      // Xác định năm đầu tiên xuất hiện của từng nhóm ngành
+      const emergenceYearMap = new Map();
+      const emergenceByYear = new Map();
+      CLUSTER_VISUAL_META.forEach(meta => {
+        for (let i = 0; i < years.length; i++) {
+          const y = years[i];
+          if ((yearCounts.get(y)[meta.key] || 0) > 0) {
+            emergenceYearMap.set(meta.key, y);
+            if (!emergenceByYear.has(y)) emergenceByYear.set(y, []);
+            emergenceByYear.get(y).push(meta.label.split('·')[0]);
+            break;
+          }
+        }
+      });
+
       const width = 340;
-      const height = 92;
-      const padX = 4;
-      const padY = 4;
+      const height = 124; // Tăng +35% so với 92 cũ để nhìn thoáng và rõ nét
+      const padX = 6;
+      const padTop = 16; // Chừa khoảng trống phía trên để gắn mốc năm xuất hiện chuyên ngành mới
+      const padBottom = 4;
       const usableW = width - padX * 2;
-      const usableH = height - padY * 2;
+      const usableH = height - padTop - padBottom;
       svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
 
       let lastValidShares = {};
@@ -3168,10 +3169,16 @@
         const bands = {};
         CLUSTER_VISUAL_META.forEach(meta => {
           const pct = shares[meta.key] || 0;
-          const yBottom = padY + usableH - (accPct / 100) * usableH;
+          const yBottom = padTop + usableH - (accPct / 100) * usableH;
           accPct += pct;
-          const yTop = padY + usableH - (accPct / 100) * usableH;
-          bands[meta.key] = { yTop, yBottom, pct, count: rec[meta.key] || 0 };
+          const yTop = padTop + usableH - (accPct / 100) * usableH;
+          bands[meta.key] = {
+            yTop,
+            yBottom,
+            midY: (yTop + yBottom) * 0.5,
+            pct,
+            count: rec[meta.key] || 0
+          };
         });
 
         return { year: y, x, bands, total: rec.total };
@@ -3179,6 +3186,7 @@
 
       const ns = "http://www.w3.org/2000/svg";
 
+      // Vẽ các lớp tỷ lệ phần trăm mượt mà (không có line đen)
       CLUSTER_VISUAL_META.forEach(meta => {
         const topPts = yearStacks.map(ys => ({ x: ys.x, y: ys.bands[meta.key].yTop }));
         const botPts = yearStacks.map(ys => ({ x: ys.x, y: ys.bands[meta.key].yBottom })).reverse();
@@ -3204,9 +3212,61 @@
         svg.appendChild(areaPath);
       });
 
+      // Gộp các mốc chú thích xuất hiện chuyên ngành mới trực tiếp lên biểu đồ tỷ lệ
+      const labeledPositions = [];
+      CLUSTER_VISUAL_META.forEach(meta => {
+        const emYear = emergenceYearMap.get(meta.key);
+        if (!emYear) return;
+        const stackObj = yearStacks.find(ys => ys.year === emYear);
+        if (!stackObj) return;
+
+        const band = stackObj.bands[meta.key];
+        const cy = Math.max(padTop + 4, Math.min(height - padBottom - 4, band.midY));
+
+        // Đường gióng dọc mảnh nối từ nhãn trên đỉnh xuống điểm xuất hiện
+        const tooClose = labeledPositions.some(lx => Math.abs(lx - stackObj.x) < 42);
+        if (!tooClose && emYear > 2001) {
+          labeledPositions.push(stackObj.x);
+          const clampedX = Math.max(24, Math.min(width - 28, stackObj.x));
+
+          const stemLine = document.createElementNS(ns, 'line');
+          stemLine.setAttribute('x1', stackObj.x.toFixed(1));
+          stemLine.setAttribute('y1', '12');
+          stemLine.setAttribute('x2', stackObj.x.toFixed(1));
+          stemLine.setAttribute('y2', cy.toFixed(1));
+          stemLine.setAttribute('stroke', meta.color);
+          stemLine.setAttribute('stroke-width', '0.9');
+          stemLine.setAttribute('stroke-dasharray', '1.5,1.5');
+          stemLine.setAttribute('stroke-opacity', '0.85');
+          svg.appendChild(stemLine);
+
+          const lbl = document.createElementNS(ns, 'text');
+          lbl.setAttribute('x', clampedX.toFixed(1));
+          lbl.setAttribute('y', '10');
+          lbl.setAttribute('text-anchor', 'middle');
+          lbl.setAttribute('fill', meta.color);
+          lbl.setAttribute('font-size', '8.5');
+          lbl.setAttribute('font-family', 'Space Grotesk, Pretendard, sans-serif');
+          lbl.setAttribute('font-weight', '700');
+          lbl.textContent = `'${String(emYear).slice(2)} ${meta.label.split('·')[0]}`;
+          svg.appendChild(lbl);
+        }
+
+        // Điểm tròn phát sáng đánh dấu năm xuất hiện đầu tiên
+        const dot = document.createElementNS(ns, 'circle');
+        dot.setAttribute('cx', stackObj.x.toFixed(1));
+        dot.setAttribute('cy', cy.toFixed(1));
+        dot.setAttribute('r', '2.8');
+        dot.setAttribute('fill', meta.color);
+        dot.setAttribute('stroke', '#FFFFFF');
+        dot.setAttribute('stroke-width', '1.0');
+        dot.style.filter = `drop-shadow(0 0 4px ${meta.color})`;
+        svg.appendChild(dot);
+      });
+
       const guideLine = document.createElementNS(ns, 'line');
-      guideLine.setAttribute('y1', String(padY));
-      guideLine.setAttribute('y2', String(height - padY));
+      guideLine.setAttribute('y1', String(padTop));
+      guideLine.setAttribute('y2', String(height - padBottom));
       guideLine.setAttribute('stroke', '#FFFFFF');
       guideLine.setAttribute('stroke-width', '1.2');
       guideLine.setAttribute('stroke-dasharray', '2,2');
@@ -3243,12 +3303,17 @@
           .map(x => `${x.label} ${Math.round(x.pct)}%`)
           .join(' · ');
 
-        readoutEl.innerText = `${nearest.year}년: ${top3 || '데이터 없음'}`;
+        const newArr = emergenceByYear.get(nearest.year);
+        const newTag = (newArr && newArr.length > 0 && nearest.year > 2001)
+          ? ` [신규: ${newArr.join(', ')}]`
+          : '';
+
+        readoutEl.innerText = `${nearest.year}년: ${top3 || '데이터 없음'}${newTag}`;
       };
 
       const onCompLeave = () => {
         guideLine.style.display = 'none';
-        readoutEl.innerText = `${minY}–${maxY} 전공 비중 변화`;
+        readoutEl.innerText = `${minY}–${maxY} 비율 및 신규 계열 출현`;
       };
 
       hitRect.addEventListener('mousemove', (e) => onCompMove(e.clientX));
@@ -3257,217 +3322,6 @@
       }, { passive: true });
       hitRect.addEventListener('mouseleave', onCompLeave);
       hitRect.addEventListener('touchend', onCompLeave);
-    }
-
-    function renderCloudEvolutionChart(theses) {
-      const svg = document.getElementById('mini-cloud-evolution-svg');
-      const readoutEl = document.getElementById('cloud-hover-readout');
-      svg.innerHTML = '';
-      readoutEl.innerText = '2001–2026 신규 계열 출현';
-
-      if (!theses || theses.length === 0) return;
-
-      const minY = 2001;
-      const maxY = Math.max(2001, activeTimelineYear);
-      const years = [];
-      for (let y = minY; y <= maxY; y++) years.push(y);
-
-      const clusterKeys = CLUSTER_VISUAL_META.map(c => c.key);
-      const yearCounts = new Map();
-      years.forEach(y => {
-        const obj = {};
-        clusterKeys.forEach(k => { obj[k] = 0; });
-        yearCounts.set(y, obj);
-      });
-
-      for (let i = 0; i < theses.length; i++) {
-        const y = theses[i].year || 2020;
-        const rec = yearCounts.get(y);
-        if (!rec) continue;
-        const cat = theses[i]._clusterCat || getDeptClusterCategory(theses[i].dept);
-        rec[cat] = (rec[cat] || 0) + 1;
-      }
-
-      const emergenceYearMap = new Map();
-      CLUSTER_VISUAL_META.forEach(meta => {
-        for (let i = 0; i < years.length; i++) {
-          const y = years[i];
-          if ((yearCounts.get(y)[meta.key] || 0) > 0) {
-            emergenceYearMap.set(meta.key, y);
-            break;
-          }
-        }
-      });
-
-      const width = 340;
-      const height = 62;
-      const padX = 8;
-      const padTop = 12;
-      const padBottom = 4;
-      const usableW = width - padX * 2;
-      const usableH = height - padTop - padBottom;
-      const baselineY = height / 2 + 3;
-
-      svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
-
-      let maxYearTotal = 1;
-      years.forEach(y => {
-        const obj = yearCounts.get(y);
-        let sum = 0;
-        clusterKeys.forEach(k => { sum += obj[k]; });
-        if (sum > maxYearTotal) maxYearTotal = sum;
-      });
-
-      const ns = "http://www.w3.org/2000/svg";
-      const defs = document.createElementNS(ns, 'defs');
-      CLUSTER_VISUAL_META.forEach(meta => {
-        const grad = document.createElementNS(ns, 'linearGradient');
-        grad.setAttribute('id', `cloudGrad_${meta.key}`);
-        grad.setAttribute('x1', '0%');
-        grad.setAttribute('y1', '0%');
-        grad.setAttribute('x2', '100%');
-        grad.setAttribute('y2', '0%');
-        grad.innerHTML = `
-          <stop offset="0%" stop-color="${meta.color}" stop-opacity="0.35" />
-          <stop offset="50%" stop-color="${meta.color}" stop-opacity="0.72" />
-          <stop offset="100%" stop-color="${meta.color}" stop-opacity="0.88" />
-        `;
-        defs.appendChild(grad);
-      });
-      svg.appendChild(defs);
-
-      const yearStacks = years.map((y, idx) => {
-        const x = padX + (years.length === 1 ? usableW / 2 : (idx / (years.length - 1)) * usableW);
-        const obj = yearCounts.get(y);
-        let total = 0;
-        clusterKeys.forEach(k => { total += obj[k]; });
-        const totalH = (total / maxYearTotal) * usableH;
-        let curY = baselineY - totalH / 2;
-
-        const layers = {};
-        CLUSTER_VISUAL_META.forEach(meta => {
-          const val = obj[meta.key] || 0;
-          const h = (val / maxYearTotal) * usableH;
-          layers[meta.key] = { y0: curY, y1: curY + h, val, midY: curY + h / 2 };
-          curY += h;
-        });
-        return { year: y, x, layers, total };
-      });
-
-      CLUSTER_VISUAL_META.forEach(meta => {
-        const activePoints = yearStacks.filter(ys => ys.layers[meta.key].val > 0 || ys.year >= (emergenceYearMap.get(meta.key) || 9999));
-        if (activePoints.length === 0) return;
-
-        const topPts = activePoints.map(p => ({ x: p.x, y: p.layers[meta.key].y0 }));
-        const botPts = activePoints.map(p => ({ x: p.x, y: p.layers[meta.key].y1 })).reverse();
-
-        const buildSmoothLine = (pts, moveCmd) => {
-          let d = `${moveCmd} ${pts[0].x.toFixed(1)} ${pts[0].y.toFixed(1)}`;
-          for (let i = 0; i < pts.length - 1; i++) {
-            const p0 = pts[i];
-            const p1 = pts[i + 1];
-            const cx = ((p0.x + p1.x) / 2).toFixed(1);
-            d += ` C ${cx} ${p0.y.toFixed(1)}, ${cx} ${p1.y.toFixed(1)}, ${p1.x.toFixed(1)} ${p1.y.toFixed(1)}`;
-          }
-          return d;
-        };
-
-        const pathD = `${buildSmoothLine(topPts, 'M')} L ${botPts[0].x.toFixed(1)} ${botPts[0].y.toFixed(1)} ${buildSmoothLine(botPts, 'L').replace(/^L\s[\d.]+\s[\d.]+/, '')} Z`;
-
-        const cloudPath = document.createElementNS(ns, 'path');
-        cloudPath.setAttribute('d', pathD);
-        cloudPath.setAttribute('fill', `url(#cloudGrad_${meta.key})`);
-        cloudPath.setAttribute('stroke', meta.color);
-        cloudPath.setAttribute('stroke-width', '0.6');
-        cloudPath.setAttribute('stroke-opacity', '0.65');
-        svg.appendChild(cloudPath);
-      });
-
-      const labeledPositions = [];
-      CLUSTER_VISUAL_META.forEach(meta => {
-        const emYear = emergenceYearMap.get(meta.key);
-        if (!emYear) return;
-        const stackObj = yearStacks.find(ys => ys.year === emYear);
-        if (!stackObj) return;
-
-        const cy = stackObj.layers[meta.key].midY;
-        const dot = document.createElementNS(ns, 'circle');
-        dot.setAttribute('cx', stackObj.x.toFixed(1));
-        dot.setAttribute('cy', cy.toFixed(1));
-        dot.setAttribute('r', '2.5');
-        dot.setAttribute('fill', meta.color);
-        dot.setAttribute('stroke', '#FFFFFF');
-        dot.setAttribute('stroke-width', '0.9');
-        dot.style.filter = `drop-shadow(0 0 4px ${meta.color})`;
-        svg.appendChild(dot);
-
-        const tooClose = labeledPositions.some(lx => Math.abs(lx - stackObj.x) < 42);
-        if (!tooClose && emYear > 2001) {
-          labeledPositions.push(stackObj.x);
-          const lbl = document.createElementNS(ns, 'text');
-          const clampedX = Math.max(22, Math.min(width - 26, stackObj.x));
-          lbl.setAttribute('x', clampedX.toFixed(1));
-          lbl.setAttribute('y', '9');
-          lbl.setAttribute('text-anchor', 'middle');
-          lbl.setAttribute('fill', meta.color);
-          lbl.setAttribute('font-size', '8.2');
-          lbl.setAttribute('font-family', 'Space Grotesk, Pretendard, sans-serif');
-          lbl.setAttribute('font-weight', '700');
-          lbl.textContent = `'${String(emYear).slice(2)} ${meta.label.split('·')[0]}`;
-          svg.appendChild(lbl);
-        }
-      });
-
-      const guideLine = document.createElementNS(ns, 'line');
-      guideLine.setAttribute('y1', '10');
-      guideLine.setAttribute('y2', String(height - 2));
-      guideLine.setAttribute('stroke', 'rgba(255,255,255,0.45)');
-      guideLine.setAttribute('stroke-width', '1');
-      guideLine.setAttribute('stroke-dasharray', '2,2');
-      guideLine.style.display = 'none';
-      svg.appendChild(guideLine);
-
-      const hitRect = document.createElementNS(ns, 'rect');
-      hitRect.setAttribute('x', '0');
-      hitRect.setAttribute('y', '0');
-      hitRect.setAttribute('width', String(width));
-      hitRect.setAttribute('height', String(height));
-      hitRect.setAttribute('fill', 'transparent');
-      svg.appendChild(hitRect);
-
-      const onCloudMove = (clientX) => {
-        const rect = svg.getBoundingClientRect();
-        if (rect.width <= 0) return;
-        const relX = ((clientX - rect.left) / rect.width) * width;
-        let nearest = yearStacks[0];
-        let minDiff = Math.abs(relX - nearest.x);
-        for (let i = 1; i < yearStacks.length; i++) {
-          const d = Math.abs(relX - yearStacks[i].x);
-          if (d < minDiff) { minDiff = d; nearest = yearStacks[i]; }
-        }
-        guideLine.setAttribute('x1', nearest.x.toFixed(1));
-        guideLine.setAttribute('x2', nearest.x.toFixed(1));
-        guideLine.style.display = 'block';
-
-        const activeCats = CLUSTER_VISUAL_META
-          .filter(m => nearest.layers[m.key].val > 0)
-          .map(m => `${m.label.split('·')[0]} ${nearest.layers[m.key].val}`)
-          .slice(0, 3)
-          .join(' · ');
-        readoutEl.innerText = `${nearest.year}년 (${nearest.total}건): ${activeCats || '0건'}`;
-      };
-
-      const onCloudLeave = () => {
-        guideLine.style.display = 'none';
-        readoutEl.innerText = '2001–2026 신규 계열 출현';
-      };
-
-      hitRect.addEventListener('mousemove', (e) => onCloudMove(e.clientX));
-      hitRect.addEventListener('touchmove', (e) => {
-        if (e.touches.length > 0) onCloudMove(e.touches[0].clientX);
-      }, { passive: true });
-      hitRect.addEventListener('mouseleave', onCloudLeave);
-      hitRect.addEventListener('touchend', onCloudLeave);
     }
 
     function renderDepartmentAdvisorsDirectory(theses, deptName) {
