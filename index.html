@@ -123,12 +123,21 @@
     .search-bottom-safe {
       bottom: calc(env(safe-area-inset-bottom, 0px) + 4.5rem);
     }
+    .right-panel-pos {
+      right: 0;
+      top: 5.5rem;
+      bottom: 0;
+    }
     @media (min-width: 768px) {
       .search-bottom-safe {
         bottom: 1.5rem;
       }
       .header-safe {
-        padding-top: 1.25rem;
+        padding-top: 1.15rem;
+      }
+      /* Trên PC: Đẩy panel filter và panel thông tin lên ngang hàng với nút (+) / 연구 통계 (top: 3.75rem) */
+      .right-panel-pos {
+        top: 3.75rem;
       }
     }
 
@@ -174,24 +183,24 @@
         </h1>
       </div>
 
-      <!-- Nút (+) mở panel mặc định hiển thị trên Mobile -->
-      <button id="btn-panel-expand" class="md:hidden mt-2.5 self-start flex items-center justify-center w-7 h-7 scifi-panel rounded-full text-cyan-300 border border-cyan-400/40 text-sm font-bold leading-none active:scale-95 transition-all shadow-[0_0_12px_rgba(6,182,212,0.3)]" title="패널 열기">
+      <!-- Nút (+) mở panel to & rõ hơn, nằm đúng độ cao top: 3.75rem trên PC -->
+      <button id="btn-panel-expand" class="md:hidden mt-2 self-start flex items-center justify-center w-8 h-8 scifi-panel rounded-full text-cyan-300 border border-cyan-400/50 text-base font-bold leading-none active:scale-95 transition-all shadow-[0_0_14px_rgba(6,182,212,0.35)]" title="패널 열기">
         +
       </button>
     </div>
 
-    <!-- Nút 연구 통계 cùng size nhỏ gọn ngang với nút (+) / 학과 필터 trên mọi màn hình -->
+    <!-- Nút 연구 통계 to hơn và size chữ lớn hơn một chút, đồng bộ trên mọi màn hình -->
     <div class="pointer-events-auto shrink-0">
-      <button id="btn-open-overview-analytics" class="h-7 px-2.5 flex items-center space-x-1.5 scifi-panel rounded-full text-pink-300 border border-pink-500/45 hover:bg-pink-500/20 active:scale-95 transition-all shadow-[0_0_12px_rgba(236,72,153,0.3)]">
-        <span class="w-1.5 h-1.5 rounded-full bg-pink-400 animate-ping shrink-0"></span>
-        <span class="text-[10px] font-bold tracking-wider leading-none">연구 통계</span>
+      <button id="btn-open-overview-analytics" class="h-8 px-3.5 flex items-center space-x-2 scifi-panel rounded-full text-pink-300 border border-pink-500/50 hover:bg-pink-500/25 active:scale-95 transition-all shadow-[0_0_14px_rgba(236,72,153,0.35)]">
+        <span class="w-2 h-2 rounded-full bg-pink-400 animate-ping shrink-0"></span>
+        <span class="text-xs font-bold tracking-wider leading-none">연구 통계</span>
       </button>
     </div>
   </header>
 
-  <!-- UNIFIED FILTER & TIMELINE PANEL -->
-  <div id="dept-panel-container" class="hidden md:flex fixed md:absolute left-1/2 -translate-x-1/2 top-32 md:left-6 md:top-20 md:translate-x-0 z-30 pointer-events-none transition-all duration-300">
-    <div class="w-[90vw] max-w-[340px] md:w-80 scifi-panel p-4 rounded-xl pointer-events-auto border border-white/10 flex flex-col space-y-2.5 shadow-2xl max-h-[76vh] md:max-h-[80vh] overflow-y-auto">
+  <!-- UNIFIED FILTER & TIMELINE PANEL (Trên PC ngang hàng với nút + ở top: 3.75rem) -->
+  <div id="dept-panel-container" class="hidden md:flex fixed md:absolute left-1/2 -translate-x-1/2 top-32 md:left-6 md:top-[3.75rem] md:translate-x-0 z-30 pointer-events-none transition-all duration-300">
+    <div class="w-[90vw] max-w-[340px] md:w-80 scifi-panel p-4 rounded-xl pointer-events-auto border border-white/10 flex flex-col space-y-2.5 shadow-2xl max-h-[76vh] md:max-h-[84vh] overflow-y-auto">
       
       <!-- TOP ROW: 3 NÚT VIEW + NÚT THU NHỎ (-) -->
       <div class="flex items-center space-x-1.5 pb-2 border-b border-indigo-500/20">
@@ -200,7 +209,7 @@
           <button id="btn-view-galaxy" class="scifi-btn px-2 py-1.5 rounded text-slate-300 font-medium text-center">측면 뷰</button>
           <button id="btn-view-3d" class="scifi-btn px-2 py-1.5 rounded text-slate-300 font-medium text-center">입체 뷰</button>
         </div>
-        <button id="btn-panel-minimize" class="inline-flex items-center justify-center w-7 h-7 rounded bg-white/5 hover:bg-indigo-500/30 border border-white/15 text-slate-200 hover:text-white text-sm font-bold leading-none transition shrink-0" title="패널 축소">-</button>
+        <button id="btn-panel-minimize" class="inline-flex items-center justify-center w-8 h-8 rounded bg-white/5 hover:bg-indigo-500/30 border border-white/15 text-slate-200 hover:text-white text-base font-bold leading-none transition shrink-0" title="패널 축소">-</button>
       </div>
 
       <!-- DEPARTMENT FILTER HEADER -->
@@ -209,7 +218,7 @@
         <button id="btn-reset-filters" class="text-[10px] text-cyan-400 hover:underline font-scifi">초기화</button>
       </div>
 
-      <!-- Quick Group Buttons (Có chấm màu đại diện cho 5 nhóm ngành) -->
+      <!-- Quick Group Buttons -->
       <div class="grid grid-cols-3 gap-1.5 text-[11px]" id="cluster-btn-group">
         <button class="cluster-btn scifi-btn py-1.5 px-1 rounded flex items-center justify-center active" data-cluster="all">
           <span>전체</span>
@@ -236,7 +245,7 @@
         </button>
       </div>
 
-      <!-- Department Dropdown (100% tiếng Hàn, đã dịch Hanja & gộp 전공 -> 학과) -->
+      <!-- Department Dropdown -->
       <div class="relative pt-0.5">
         <select id="dept-dropdown" class="w-full bg-black/60 text-slate-200 text-xs rounded-lg p-2 border border-indigo-500/30 focus:outline-none focus:border-cyan-400 cursor-pointer">
           <option value="ALL">-- 전체 학과 --</option>
@@ -305,10 +314,9 @@
     </div>
   </div>
 
-  <!-- RIGHT PANEL -->
+  <!-- RIGHT PANEL (Trên PC đẩy lên top: 3.75rem ngang hàng với nút + và 연구 통계) -->
   <aside id="right-panel" 
-    style="right: 0 !important; top: 5.5rem !important; bottom: 0 !important; transform: none !important; left: auto !important;"
-    class="fixed z-40 w-[92vw] sm:w-[420px] max-w-[440px] scifi-panel pointer-events-auto hidden flex flex-col border-l border-t border-b-0 border-r-0 border-indigo-500/30 shadow-[-18px_0_40px_rgba(0,0,0,0.92)] rounded-tl-2xl">
+    class="fixed right-panel-pos z-40 w-[92vw] sm:w-[420px] max-w-[440px] scifi-panel pointer-events-auto hidden flex flex-col border-l border-t border-b-0 border-r-0 border-indigo-500/30 shadow-[-18px_0_40px_rgba(0,0,0,0.92)] rounded-tl-2xl">
     
     <!-- 1. VIEW: LIST RESULTS + CONTEXTUAL MINI-ANALYTICS -->
     <div id="panel-list-view" class="hidden flex flex-col h-full p-4 md:p-5 min-h-0">
@@ -354,8 +362,29 @@
             </div>
           </div>
 
+          <!-- MODE A-3 (ONLY IN OVERVIEW MODE): UNIVERSITY RESEARCH TREND RADAR CHART -->
+          <div id="mini-chart-radar-section" class="hidden pt-2.5 border-t border-white/10 flex flex-col space-y-2">
+            <div class="flex items-center justify-between text-[10px]">
+              <span class="font-bold text-slate-200 tracking-wide">시대별 연구 균형 레이더</span>
+              <div class="flex items-center space-x-2 text-[9px] font-scifi">
+                <span class="flex items-center space-x-1 text-cyan-300">
+                  <span class="w-2 h-2 rounded-full bg-cyan-400 inline-block"></span>
+                  <span>2001–2015</span>
+                </span>
+                <span class="flex items-center space-x-1 text-pink-300">
+                  <span class="w-2 h-2 rounded-full bg-pink-500 inline-block"></span>
+                  <span>2016–2026</span>
+                </span>
+              </div>
+            </div>
+            <div class="w-full flex justify-center items-center py-1">
+              <svg id="mini-radar-svg" class="w-full max-w-[300px] h-52 overflow-visible"></svg>
+            </div>
+            <div id="mini-radar-insights" class="grid grid-cols-2 gap-1.5 pt-1 text-[10px]"></div>
+          </div>
+
           <!-- MODE B: ADVISOR / DEPARTMENT / CLUSTER CONTEXT -> YEARLY TREND SPARKLINE -->
-          <div id="mini-chart-sparkline-section" class="hidden flex flex-col space-y-1">
+          <div id="mini-chart-sparkline-section" class="hidden flex-col space-y-1 flex">
             <div class="flex items-center justify-between text-[10px]">
               <span class="font-bold text-slate-300 tracking-wide">연도별 발표 추이</span>
               <div class="flex items-center space-x-2 font-scifi text-[10px]">
@@ -369,7 +398,7 @@
             </div>
           </div>
 
-          <!-- SHARED BOTTOM MODULE: TOP 5 KEYWORDS MINI TAG BARS -->
+          <!-- SHARED BOTTOM MODULE: TOP 5 KEYWORDS MINI TAG BARS (HIDDEN IN OVERVIEW MODE) -->
           <div id="mini-chart-keywords-section" class="pt-2 border-t border-white/10 flex flex-col space-y-1">
             <div class="flex items-center justify-between text-[10px]">
               <span class="font-bold text-slate-300 tracking-wide">핵심 주제어 TOP 5</span>
@@ -379,7 +408,7 @@
           </div>
         </div>
 
-        <!-- DEPARTMENT ADVISORS DIRECTORY (SHOWN ONLY IN DEPARTMENT PANEL, RIGHT ABOVE THESIS LIST) -->
+        <!-- DEPARTMENT ADVISORS DIRECTORY (SHOWN ONLY IN DEPARTMENT PANEL) -->
         <div id="dept-advisors-section" class="hidden p-2.5 rounded-xl bg-black/55 border border-amber-500/25 flex flex-col space-y-2">
           <div class="flex items-center justify-between text-[10px]">
             <div class="flex items-center space-x-1.5">
@@ -391,13 +420,13 @@
           <div id="dept-advisors-list" class="max-h-44 overflow-y-auto space-y-1.5 pr-1"></div>
         </div>
 
-        <!-- Thesis List Subhint -->
-        <div class="text-[10px] text-indigo-400 pt-0.5 flex justify-between items-center">
+        <!-- Thesis List Subhint (HIDDEN IN OVERVIEW MODE) -->
+        <div id="thesis-list-header-bar" class="text-[10px] text-indigo-400 pt-0.5 flex justify-between items-center">
           <span>논문 리스트 (최신순)</span>
           <span id="list-view-subhint">클릭 시 상세 확인</span>
         </div>
 
-        <!-- Thesis Cards -->
+        <!-- Thesis Cards (HIDDEN IN OVERVIEW MODE) -->
         <div id="search-theses-list" class="space-y-2 text-xs pb-3"></div>
       </div>
     </div>
@@ -427,16 +456,16 @@
             <span id="detail-author" class="font-semibold text-slate-200">-</span>
           </div>
           <div>
-            <span id="detail-label-advisor" class="text-[10px] text-slate-400 block font-scifi">지도교수</span>
-            <span id="detail-advisor" class="font-semibold text-slate-200">-</span>
+            <span id="detail-label-advisor" class="text-[10px] text-slate-400 block font-scifi">지도교수 (클릭 시 이동)</span>
+            <button id="detail-advisor" type="button" class="text-left font-semibold text-amber-300 hover:text-amber-200 underline decoration-amber-400/40 hover:decoration-amber-300 underline-offset-2 transition cursor-pointer">-</button>
           </div>
           <div>
-            <span id="detail-label-dept" class="text-[10px] text-slate-400 block font-scifi">학과 / 전공</span>
-            <span id="detail-dept" class="font-semibold text-slate-200">-</span>
+            <span id="detail-label-dept" class="text-[10px] text-slate-400 block font-scifi">학과 / 전공 (클릭 시 이동)</span>
+            <button id="detail-dept" type="button" class="text-left font-semibold text-cyan-300 hover:text-cyan-200 underline decoration-cyan-400/40 hover:decoration-cyan-300 underline-offset-2 transition cursor-pointer">-</button>
           </div>
           <div>
             <span id="detail-label-degree" class="text-[10px] text-slate-400 block font-scifi">학위 구분</span>
-            <span id="detail-degree" class="font-semibold text-cyan-400">-</span>
+            <span id="detail-degree" class="font-semibold text-slate-200">-</span>
           </div>
         </div>
 
@@ -458,7 +487,7 @@
 
         <div>
           <span id="detail-label-abstract" class="text-[9px] uppercase font-bold text-indigo-400 font-scifi tracking-widest">논문 초록 (Abstract)</span>
-          <p id="detail-abstract" class="mt-1 text-slate-300 leading-relaxed text-xs max-h-56 md:max-h-60 overflow-y-auto pr-1 bg-black/40 p-2.5 rounded border border-white/5"></p>
+          <p id="detail-abstract" class="mt-1 text-slate-300 leading-relaxed text-xs max-h-56 md:max-h-60 overflow-y-auto pr-1 bg-black/40 p-2.5 rounded border border-white/5 whitespace-pre-line"></p>
         </div>
       </div>
     </div>
@@ -503,7 +532,7 @@
     ];
 
     /* ==========================================================================
-       2. HANJA (CHINESE CHARACTERS) -> HANGUL DEPARTMENT TRANSLATION & NORMALIZATION
+       2. HANJA -> HANGUL DEPARTMENT TRANSLATION & NORMALIZATION
        ========================================================================== */
     const HANJA_PHRASE_REPLACEMENTS = [
       [/機械工學科/g, "기계공학과"],
@@ -559,13 +588,13 @@
       '創': '창', '作': '작', '人': '인', '知': '지', '能': '능', '應': '응', '用': '용',
       '型': '형', '半': '반', '導': '도', '體': '체', '融': '융', '合': '합', '協': '협',
       '同': '동', '過': '과', '程': '정', '大': '대', '院': '원', '一': '일', '般': '반',
-      '鐵': '철', '道': '도', '門': '문', '住': '주', '宅': '택', '政': '정', '策': '책',
+      '鐵': '철', '道': '도', '門': '문', '住': '주', '宅': '택', '策': '책',
       '國': '국', '防': '방', '護': '호', '醫': '의', '物': '물', '理': '리', '數': '수',
       '統': '통', '媒': '매', '高': '고', '分': '분', '精': '정', '密': '밀', '自': '자',
       '動': '동', '車': '차', '航': '항', '空': '공', '海': '해', '洋': '양', '資': '자',
-      '源': '원', '法': '법', '經': '경', '濟': '제', '社': '사', '會': '회', '心': '심',
-      '敎': '교', '育': '육', '體': '체', '育': '육', '美': '미', '音': '음', '樂': '악',
-      '史': '사', '哲': '철', '國': '국', '際': '제', '貿': '무', '易': '역', '會': '회'
+      '源': '원', '法': '법', '濟': '제', '社': '사', '會': '회', '心': '심',
+      '敎': '교', '育': '육', '體': '체', '美': '미', '音': '음', '樂': '악',
+      '史': '사', '哲': '철', '際': '제', '貿': '무', '易': '역'
     };
 
     function convertHanjaToHangul(str) {
@@ -576,6 +605,25 @@
       }
       res = res.replace(/[\u4E00-\u9FFF\u3400-\u4DBF\uF900-\uFAFF]/g, ch => HANJA_CHAR_TO_HANGUL[ch] || '');
       return res;
+    }
+
+    // Hàm làm sạch các ký tự &#xD; và HTML entities trong 초록 (Abstract)
+    function cleanAbstractText(rawText) {
+      if (!rawText || typeof rawText !== 'string') return '';
+      return rawText
+        .replace(/&#x0*D;/gi, '\n')
+        .replace(/&#13;/g, '\n')
+        .replace(/&#x0*A;/gi, '\n')
+        .replace(/&#10;/g, '\n')
+        .replace(/&amp;/g, '&')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"')
+        .replace(/&apos;/g, "'")
+        .replace(/\r\n/g, '\n')
+        .replace(/\r/g, '\n')
+        .replace(/\n{3,}/g, '\n\n')
+        .trim();
     }
 
     const EXACT_DEPT_CANONICAL_RULES = [
@@ -659,7 +707,6 @@
       const cacheKey = rawDept.trim();
       if (DEPT_NORM_CACHE.has(cacheKey)) return DEPT_NORM_CACHE.get(cacheKey);
 
-      // Dịch toàn bộ chữ Hán / tiếng Trung sang tiếng Hàn trước khi chuẩn hóa
       let s = convertHanjaToHangul(cacheKey)
         .replace(/\(.*?\)/g, ' ')
         .replace(/\[.*?\]/g, ' ')
@@ -817,83 +864,26 @@
     const JONG_LIST = ['','ㄱ','ㄲ','ㄳ','ㄴ','ㄵ','ㄶ','ㄷ','ㄹ','ㄺ','ㄻ','ㄼ','ㄽ','ㄾ','ㄿ','ㅀ','ㅁ','ㅂ','ㅄ','ㅅ','ㅆ','ㅇ','ㅈ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
 
     const SURNAME_ROMAN_OVERRIDES = {
-      '노': ['noh', 'no', 'roh'],
-      '이': ['lee', 'yi', 'rhee', 'li'],
-      '박': ['park', 'pak', 'bak'],
-      '김': ['kim', 'gim'],
-      '최': ['choi', 'choe', 'che'],
-      '정': ['jung', 'jeong', 'chung', 'joung'],
-      '강': ['kang', 'gang'],
-      '조': ['cho', 'jo'],
-      '윤': ['yoon', 'yun'],
-      '장': ['jang', 'chang'],
-      '임': ['lim', 'im', 'yim'],
-      '한': ['han'],
-      '오': ['oh', 'o'],
-      '서': ['seo', 'suh', 'so'],
-      '신': ['shin', 'sin'],
-      '권': ['kwon', 'gwon'],
-      '황': ['hwang'],
-      '안': ['ahn', 'an'],
-      '송': ['song'],
-      '류': ['ryu', 'yoo', 'yu'],
-      '유': ['yoo', 'yu', 'you'],
-      '홍': ['hong'],
-      '전': ['jeon', 'jun', 'chun'],
-      '고': ['ko', 'go', 'koh'],
-      '문': ['moon', 'mun'],
-      '양': ['yang'],
-      '손': ['son', 'sohn'],
-      '배': ['bae', 'pae'],
-      '백': ['baek', 'paik', 'baik'],
-      '허': ['heo', 'hur', 'huh'],
-      '남': ['nam'],
-      '심': ['sim', 'shim'],
-      '하': ['ha'],
-      '주': ['joo', 'ju', 'chu'],
-      '우': ['woo', 'wu'],
-      '구': ['koo', 'gu', 'ku'],
-      '민': ['min'],
-      '진': ['jin', 'chin'],
-      '지': ['ji', 'jee'],
-      '엄': ['eom', 'um'],
-      '채': ['chae', 'chai'],
-      '원': ['won'],
-      '천': ['cheon', 'chun'],
-      '방': ['bang', 'pang'],
-      '공': ['kong', 'gong'],
-      '현': ['hyun', 'hyeon'],
-      '함': ['ham'],
-      '변': ['byun', 'byeon'],
-      '염': ['yeom', 'yum'],
-      '여': ['yeo', 'yu'],
-      '추': ['chu', 'choo'],
-      '도': ['do', 'doh'],
-      '소': ['so', 'soh'],
-      '석': ['seok', 'suk'],
-      '선': ['seon', 'sun'],
-      '설': ['seol', 'sul'],
-      '마': ['ma'],
-      '길': ['gil', 'kil'],
-      '연': ['yeon', 'youn'],
-      '위': ['wi', 'wee'],
-      '표': ['pyo'],
-      '명': ['myung', 'myeong'],
-      '기': ['ki', 'gi'],
-      '반': ['ban', 'pan'],
-      '왕': ['wang'],
-      '금': ['keum', 'geum'],
-      '옥': ['ok'],
-      '육': ['yook', 'yuk'],
-      '인': ['in'],
-      '맹': ['maeng'],
-      '제': ['je'],
-      '모': ['mo'],
-      '탁': ['tak'],
-      '국': ['kook', 'guk'],
-      '어': ['eo', 'uh'],
-      '은': ['eun'],
-      '편': ['pyun', 'pyeon']
+      '노': ['noh', 'no', 'roh'], '이': ['lee', 'yi', 'rhee', 'li'], '박': ['park', 'pak', 'bak'],
+      '김': ['kim', 'gim'], '최': ['choi', 'choe', 'che'], '정': ['jung', 'jeong', 'chung', 'joung'],
+      '강': ['kang', 'gang'], '조': ['cho', 'jo'], '윤': ['yoon', 'yun'], '장': ['jang', 'chang'],
+      '임': ['lim', 'im', 'yim'], '한': ['han'], '오': ['oh', 'o'], '서': ['seo', 'suh', 'so'],
+      '신': ['shin', 'sin'], '권': ['kwon', 'gwon'], '황': ['hwang'], '안': ['ahn', 'an'],
+      '송': ['song'], '류': ['ryu', 'yoo', 'yu'], '유': ['yoo', 'yu', 'you'], '홍': ['hong'],
+      '전': ['jeon', 'jun', 'chun'], '고': ['ko', 'go', 'koh'], '문': ['moon', 'mun'],
+      '양': ['yang'], '손': ['son', 'sohn'], '배': ['bae', 'pae'], '백': ['baek', 'paik', 'baik'],
+      '허': ['heo', 'hur', 'huh'], '남': ['nam'], '심': ['sim', 'shim'], '하': ['ha'],
+      '주': ['joo', 'ju', 'chu'], '우': ['woo', 'wu'], '구': ['koo', 'gu', 'ku'], '민': ['min'],
+      '진': ['jin', 'chin'], '지': ['ji', 'jee'], '엄': ['eom', 'um'], '채': ['chae', 'chai'],
+      '원': ['won'], '천': ['cheon', 'chun'], '방': ['bang', 'pang'], '공': ['kong', 'gong'],
+      '현': ['hyun', 'hyeon'], '함': ['ham'], '변': ['byun', 'byeon'], '염': ['yeom', 'yum'],
+      '여': ['yeo', 'yu'], '추': ['chu', 'choo'], '도': ['do', 'doh'], '소': ['so', 'soh'],
+      '석': ['seok', 'suk'], '선': ['seon', 'sun'], '설': ['seol', 'sul'], '마': ['ma'],
+      '길': ['gil', 'kil'], '연': ['yeon', 'youn'], '위': ['wi', 'wee'], '표': ['pyo'],
+      '명': ['myung', 'myeong'], '기': ['ki', 'gi'], '반': ['ban', 'pan'], '왕': ['wang'],
+      '금': ['keum', 'geum'], '옥': ['ok'], '육': ['yook', 'yuk'], '인': ['in'],
+      '맹': ['maeng'], '제': ['je'], '모': ['mo'], '탁': ['tak'], '국': ['kook', 'guk'],
+      '어': ['eo', 'uh'], '은': ['eun'], '편': ['pyun', 'pyeon']
     };
 
     function hangulSyllableVariants(ch, isSurname = false) {
@@ -939,7 +929,6 @@
       }
       combine(0, '');
 
-      // Hỗ trợ cả thứ tự Tên + Họ (ví dụ: Jun Gu Noh -> 노준구)
       if (chars.length >= 2) {
         const givenPart = sylLists.slice(1);
         const surPart = sylLists[0];
@@ -960,19 +949,17 @@
       return Array.from(keys);
     }
 
-    // Bản đồ ánh xạ Tên phiên âm tiếng Anh -> Tên tiếng Hàn chuẩn (xây dựng tự động từ dữ liệu)
     const PERSON_ROMAN_TO_HANGUL_GLOBAL = new Map();
     const PERSON_ROMAN_BY_DEPT = new Map();
 
     function cleanRawPersonName(raw) {
       if (!raw) return '';
-      let s = convertHanjaToHangul(String(raw))
+      return convertHanjaToHangul(String(raw))
         .replace(/\(.*?\)/g, ' ')
         .replace(/\[.*?\]/g, ' ')
         .replace(/지도교수|교수|Prof\.?|Professor|Dr\.?|Ph\.?D\.?/gi, ' ')
         .replace(/\s+/g, ' ')
         .trim();
-      return s;
     }
 
     function buildUnifiedPersonNameIndex() {
@@ -1029,7 +1016,6 @@
       if (!cleaned) return '';
       if (/^[가-힣]{2,4}$/.test(cleaned)) return cleaned;
 
-      // Nếu là tên tiếng Anh (ví dụ: "Noh Jun Gu", "Jun-Gu Noh", "Noh, Jungu") -> tra cứu về tên tiếng Hàn
       if (/[a-zA-Z]/.test(cleaned)) {
         const compactRoman = cleaned.toLowerCase().replace(/[^a-z]/g, '');
         if (compactRoman.length >= 4) {
@@ -1272,7 +1258,7 @@
     let NODE_BY_ID = new Map();
     let NODE_SPRITES = [];
     let SPRITE_BY_ID = new Map();
-    let ADVISOR_SPRITE_BY_NAME = new Map(); // Tra cứu nhanh Sprite Mặt trời Giáo sư để neo camera
+    let ADVISOR_SPRITE_BY_NAME = new Map();
     let DEPT_MAP = new Map();
     const DETAILS_STORE = new Map();
     let isSearchActive = false;
@@ -1638,13 +1624,9 @@
         }
       }
 
-      // 1. Gộp các tên "전공" vào "학과" tương ứng
       consolidateJeongongIntoHakgwa();
-
-      // 2. Xây dựng từ điển chuẩn hóa tên Giáo sư & Tác giả tiếng Anh <-> tiếng Hàn
       buildUnifiedPersonNameIndex();
 
-      // 3. Áp dụng tên chuẩn cho toàn bộ Node
       for (let i = 0; i < ALL_NODES.length; i++) {
         const n = ALL_NODES[i];
         if (n.type === 'advisor_sun') {
@@ -1709,7 +1691,7 @@
       const resolvedDept = normalizeDepartmentName(rawDept);
       node.dept = resolvedDept;
 
-      let resolvedTitleKo = (d && (d.title_ko || d.title)) || node.title_ko || node.name || "학위논문 연구";
+      let resolvedTitleKo = cleanAbstractText((d && (d.title_ko || d.title)) || node.title_ko || node.name || "학위논문 연구");
       let rawAuthor = (d && d.author) || node.author || `연구자_${node.id}`;
       let rawAdvisor = (d && (d.advisor || d.advisor_name)) || node.advisor || (node.type === 'advisor_sun' ? node.name : "지도교수");
 
@@ -1733,8 +1715,9 @@
         }
       }
       
-      let resolvedAbstractKo = (d && (d.abstract_ko || d.abstract || d.abstract_en)) || node.abstract_ko;
-      if (!resolvedAbstractKo || resolvedAbstractKo.trim() === "" || resolvedAbstractKo.toLowerCase() === "nan") {
+      let rawAbstract = (d && (d.abstract_ko || d.abstract || d.abstract_en)) || node.abstract_ko;
+      let resolvedAbstractKo = cleanAbstractText(rawAbstract);
+      if (!resolvedAbstractKo || resolvedAbstractKo.toLowerCase() === "nan") {
         resolvedAbstractKo = `본 연구는 서울과학기술대학교 ${resolvedDept}에서 수행된 학위논문으로, 주제와 관련된 심층적인 학술 분석과 연구 방법론을 종합적으로 기술하고 있습니다.`;
       }
 
@@ -1769,7 +1752,7 @@
     }
 
     /* ==========================================================================
-       7. 3D GALAXY SCENE CONSTRUCTION
+       7. 3D GALAXY SCENE CONSTRUCTION (ENFORCED CLUSTER COLOR CONSISTENCY FOR DESIGN)
        ========================================================================== */
     function buildCosmicScene() {
       NODE_SPRITES = [];
@@ -1945,14 +1928,21 @@
           const masterBase = 2.4 + Math.min(1.4, connCount * 0.22);
           scaleSize = det.isPhd ? (masterBase * 3.0) : masterBase;
 
-          reusableColor.set(node.color || "#06B6D4");
+          // Kiểm tra nhóm ngành để đồng nhất màu sắc (tránh trường hợp luận văn khoa Design bị lẫn màu tím nhạt)
+          const clusterCat = getDeptClusterCategory(normalizedDept);
+          let rawHex = node.color || "#06B6D4";
+          if (clusterCat === '디자인') {
+            rawHex = "#F43F5E"; // Khóa chuẩn màu hồng-đỏ neon của cụm Design
+          }
+
+          reusableColor.set(rawHex);
           reusableColor.getHSL(reusableHsl);
 
           const baseColor = new THREE.Color();
           if (det.isPhd) {
             baseColor.setHSL(reusableHsl.h, Math.min(0.90, Math.max(0.78, reusableHsl.s)), Math.min(0.60, Math.max(0.50, reusableHsl.l)));
           } else {
-            baseColor.setHSL(reusableHsl.h, Math.max(0.72, reusableHsl.s * 0.85), Math.min(0.70, Math.max(0.56, reusableHsl.l * 1.06)));
+            baseColor.setHSL(reusableHsl.h, Math.max(0.75, reusableHsl.s * 0.88), Math.min(0.68, Math.max(0.54, reusableHsl.l * 1.04)));
           }
 
           spriteMat = new THREE.SpriteMaterial({
@@ -2178,8 +2168,8 @@
 
     function generateRealisticNodes() {
       const nodes = [];
-      const depts = ["컴퓨터공학과", "기계시스템디자인공학과", "機械工學科", "시각디자인전공", "視覺디자인專攻", "산업디자인전공", "건축설계학과", "건축설계전공", "인공지능응용학과", "신소재공학과", "경영학과", "행정학과", "TESOL학과", "영어영문학과"];
-      const colors = ["#F43F5E", "#06B6D4", "#8B5CF6", "#F59E0B", "#10B981"];
+      const depts = ["컴퓨터공학과", "기계시스템디자인공학과", "시각디자인전공", "산업디자인전공", "건축설계학과", "인공지능응용학과", "신소재공학과", "경영학과", "행정학과", "TESOL학과", "영어영문학과"];
+      const colors = ["#06B6D4", "#06B6D4", "#F43F5E", "#F43F5E", "#06B6D4", "#8B5CF6", "#06B6D4", "#F59E0B", "#10B981", "#10B981", "#10B981"];
       const keywordPairs = [
         ["인공지능", "최적화", "딥러닝"],
         ["Artificial Intelligence", "Optimization", "Deep Learning"],
@@ -2198,7 +2188,7 @@
 
         nodes.push({ id: id++, name: d, type: 'dept_sun', dept: d, year: 2026, x: dx, y: 450, z: dz, color: '#EF4444' });
 
-        const advList = d.includes('시각') || d.includes('視覺') ? ["노준구", "Noh Jun Gu"] : ["박승배", "김민수"];
+        const advList = d.includes('시각') ? ["노준구", "Noh Jun Gu"] : ["박승배", "김민수"];
         advList.forEach((advName) => {
           const ax = dx + (Math.random() - 0.5) * 30;
           const az = dz + (Math.random() - 0.5) * 30;
@@ -2228,7 +2218,7 @@
               year: yr,
               uci: null,
               keywords: kws,
-              abstract_ko: `본 연구는 서울과학기술대학교 ${d}에서 수행된 연구로, ${kws.join(', ')} 분야의 심층적인 분석을 제공합니다.`,
+              abstract_ko: `본 연구는 서울과학기술대학교 ${d}에서 수행된 연구로,&#xD;${kws.join(', ')} 분야의 심층적인 분석을 제공합니다.`,
               x: ax + Math.cos(ta) * tr,
               y: ((yr - 2001) / 25.0) * 450,
               z: az + Math.sin(ta) * tr,
@@ -2988,8 +2978,33 @@
 
       document.getElementById('detail-title').innerText = detail.title_ko;
       document.getElementById('detail-author').innerText = detail.author;
-      document.getElementById('detail-advisor').innerText = detail.advisor;
-      document.getElementById('detail-dept').innerText = detail.dept;
+
+      // Liên kết trực tiếp từ 지도교수 sang panel của Giáo sư đó
+      const advisorBtn = document.getElementById('detail-advisor');
+      advisorBtn.innerText = detail.advisor;
+      advisorBtn.onclick = () => {
+        if (!detail.advisor || detail.advisor === '-' || detail.advisor === '지도교수') return;
+        panelNavigationStack.push({
+          view: 'detail',
+          node: node,
+          sprite: lockedTargetSprite
+        });
+        showThesesOfAdvisor(detail.advisor, true, detail.dept, null);
+      };
+
+      // Liên kết trực tiếp từ 학과 sang panel của Khoa đó
+      const deptBtn = document.getElementById('detail-dept');
+      deptBtn.innerText = detail.dept;
+      deptBtn.onclick = () => {
+        if (!detail.dept || detail.dept === '-') return;
+        panelNavigationStack.push({
+          view: 'detail',
+          node: node,
+          sprite: lockedTargetSprite
+        });
+        showThesesOfDepartment(detail.dept, true);
+      };
+
       document.getElementById('detail-degree').innerText = detail.degree;
       document.getElementById('detail-year').innerText = `${detail.year}${TEXT_KO.yearSuffix}`;
       
@@ -3037,17 +3052,24 @@
     }
 
     /* ==========================================================================
-       11. CONTEXTUAL MINI-ANALYTICS & CLOUD EVOLUTION CHART & DEPT ADVISORS LIST
+       11. CONTEXTUAL MINI-ANALYTICS, CLOUD EVOLUTION & RADAR CHART
        ========================================================================== */
     function renderContextualMiniAnalytics(theses, contextMode, subMode = 'default', deptName = '') {
       const stackedSection = document.getElementById('mini-chart-stacked-section');
       const cloudSection = document.getElementById('mini-chart-cloud-section');
+      const radarSection = document.getElementById('mini-chart-radar-section');
       const sparklineSection = document.getElementById('mini-chart-sparkline-section');
+      const keywordsSection = document.getElementById('mini-chart-keywords-section');
       const advisorsSection = document.getElementById('dept-advisors-section');
+      const listHeaderBar = document.getElementById('thesis-list-header-bar');
+      const listContainer = document.getElementById('search-theses-list');
+
+      const isOverviewMode = (subMode === 'overview');
 
       if (contextMode === 'entity') {
         stackedSection.classList.add('hidden');
         cloudSection.classList.add('hidden');
+        radarSection.classList.add('hidden');
         sparklineSection.classList.remove('hidden');
         renderYearSparkline(theses);
       } else {
@@ -3055,18 +3077,29 @@
         stackedSection.classList.remove('hidden');
         renderClusterStackedBar(theses);
 
-        // Nếu đang ở chế độ Tổng quan (전체 학술 유니버스) -> hiện thêm biểu đồ đám mây tiến hóa chuyên ngành theo năm
-        if (subMode === 'overview') {
+        if (isOverviewMode) {
           cloudSection.classList.remove('hidden');
+          radarSection.classList.remove('hidden');
           renderCloudEvolutionChart(theses);
+          renderUniversityTrendRadarChart(theses);
         } else {
           cloudSection.classList.add('hidden');
+          radarSection.classList.add('hidden');
         }
       }
 
-      renderTop5KeywordsMiniBars(theses);
+      // Ở chế độ 전체 학술 유니버스 (overview): ẩn TOP 5 từ khóa và ẩn list luận văn, nhường chỗ cho Radar & Cloud
+      if (isOverviewMode) {
+        keywordsSection.classList.add('hidden');
+        listHeaderBar.classList.add('hidden');
+        listContainer.classList.add('hidden');
+      } else {
+        keywordsSection.classList.remove('hidden');
+        listHeaderBar.classList.remove('hidden');
+        listContainer.classList.remove('hidden');
+        renderTop5KeywordsMiniBars(theses);
+      }
 
-      // Nếu đang xem panel của 1 Khoa cụ thể -> hiện danh sách Giáo sư hướng dẫn trong Khoa ngay trên list luận văn
       if (subMode === 'department') {
         advisorsSection.classList.remove('hidden');
         renderDepartmentAdvisorsDirectory(theses, deptName);
@@ -3075,7 +3108,187 @@
       }
     }
 
-    // BIỂU ĐỒ ĐÁM MÂY TIẾN HÓA CHUYÊN NGÀNH THEO NĂM (STREAM / CLOUD EVOLUTION CHART)
+    // BIỂU ĐỒ RADAR PHÂN TÍCH XU HƯỚNG NGHIÊN CỨU TOÀN TRƯỜNG QUA CÁC NĂM
+    function renderUniversityTrendRadarChart(theses) {
+      const svg = document.getElementById('mini-radar-svg');
+      const insightsBox = document.getElementById('mini-radar-insights');
+      svg.innerHTML = '';
+      insightsBox.innerHTML = '';
+
+      if (!theses || theses.length === 0) return;
+
+      const splitYear = 2016;
+      const earlyCounts = new Map();
+      const recentCounts = new Map();
+      CLUSTER_VISUAL_META.forEach(m => {
+        earlyCounts.set(m.key, 0);
+        recentCounts.set(m.key, 0);
+      });
+
+      let earlyTotal = 0;
+      let recentTotal = 0;
+
+      for (let i = 0; i < theses.length; i++) {
+        const y = theses[i].year || 2020;
+        const cat = getDeptClusterCategory(theses[i].dept);
+        if (y < splitYear) {
+          earlyCounts.set(cat, (earlyCounts.get(cat) || 0) + 1);
+          earlyTotal++;
+        } else {
+          recentCounts.set(cat, (recentCounts.get(cat) || 0) + 1);
+          recentTotal++;
+        }
+      }
+
+      // Tính tỷ trọng % trong từng giai đoạn để so sánh công bằng sự dịch chuyển xu hướng
+      const axes = CLUSTER_VISUAL_META.map(meta => {
+        const eCount = earlyCounts.get(meta.key) || 0;
+        const rCount = recentCounts.get(meta.key) || 0;
+        const eShare = earlyTotal > 0 ? (eCount / earlyTotal) * 100 : 0;
+        const rShare = recentTotal > 0 ? (rCount / recentTotal) * 100 : 0;
+        return {
+          ...meta,
+          eCount,
+          rCount,
+          eShare,
+          rShare,
+          delta: rShare - eShare
+        };
+      });
+
+      const maxShare = Math.max(25, ...axes.map(a => Math.max(a.eShare, a.rShare)));
+
+      const size = 240;
+      const cx = size / 2;
+      const cy = size / 2;
+      const maxR = 76;
+      const numAxes = axes.length;
+      svg.setAttribute('viewBox', `0 0 ${size} ${size}`);
+
+      const ns = "http://www.w3.org/2000/svg";
+
+      // 3 vòng đồng tâm tối giản
+      [0.33, 0.66, 1.0].forEach(level => {
+        const ringPts = [];
+        for (let i = 0; i < numAxes; i++) {
+          const ang = -Math.PI / 2 + (Math.PI * 2 * i) / numAxes;
+          const r = maxR * level;
+          ringPts.push(`${(cx + Math.cos(ang) * r).toFixed(1)},${(cy + Math.sin(ang) * r).toFixed(1)}`);
+        }
+        const poly = document.createElementNS(ns, 'polygon');
+        poly.setAttribute('points', ringPts.join(' '));
+        poly.setAttribute('fill', 'none');
+        poly.setAttribute('stroke', 'rgba(148, 163, 184, 0.16)');
+        poly.setAttribute('stroke-width', '0.8');
+        svg.appendChild(poly);
+      });
+
+      // Trục 6 ngành & nhãn màu tương ứng
+      axes.forEach((ax, i) => {
+        const ang = -Math.PI / 2 + (Math.PI * 2 * i) / numAxes;
+        const x2 = cx + Math.cos(ang) * maxR;
+        const y2 = cy + Math.sin(ang) * maxR;
+
+        const axisLine = document.createElementNS(ns, 'line');
+        axisLine.setAttribute('x1', String(cx));
+        axisLine.setAttribute('y1', String(cy));
+        axisLine.setAttribute('x2', x2.toFixed(1));
+        axisLine.setAttribute('y2', y2.toFixed(1));
+        axisLine.setAttribute('stroke', 'rgba(148, 163, 184, 0.18)');
+        axisLine.setAttribute('stroke-width', '0.8');
+        svg.appendChild(axisLine);
+
+        const lx = cx + Math.cos(ang) * (maxR + 18);
+        const ly = cy + Math.sin(ang) * (maxR + 14);
+        const label = document.createElementNS(ns, 'text');
+        label.setAttribute('x', lx.toFixed(1));
+        label.setAttribute('y', (ly + 3).toFixed(1));
+        label.setAttribute('text-anchor', 'middle');
+        label.setAttribute('fill', ax.color);
+        label.setAttribute('font-size', '9.5');
+        label.setAttribute('font-family', 'Pretendard, sans-serif');
+        label.setAttribute('font-weight', '700');
+        label.textContent = ax.label.split('·')[0];
+        svg.appendChild(label);
+      });
+
+      // Đa giác Giai đoạn 1: 2001–2015 (Cyan)
+      if (earlyTotal > 0) {
+        const earlyPts = axes.map((ax, i) => {
+          const ang = -Math.PI / 2 + (Math.PI * 2 * i) / numAxes;
+          const r = (ax.eShare / maxShare) * maxR;
+          return `${(cx + Math.cos(ang) * r).toFixed(1)},${(cy + Math.sin(ang) * r).toFixed(1)}`;
+        });
+        const earlyPoly = document.createElementNS(ns, 'polygon');
+        earlyPoly.setAttribute('points', earlyPts.join(' '));
+        earlyPoly.setAttribute('fill', 'rgba(6, 182, 212, 0.18)');
+        earlyPoly.setAttribute('stroke', '#22D3EE');
+        earlyPoly.setAttribute('stroke-width', '1.6');
+        earlyPoly.setAttribute('stroke-dasharray', '3,2');
+        svg.appendChild(earlyPoly);
+      }
+
+      // Đa giác Giai đoạn 2: 2016–2026 (Neon Pink/Magenta)
+      if (recentTotal > 0) {
+        const recentCoords = axes.map((ax, i) => {
+          const ang = -Math.PI / 2 + (Math.PI * 2 * i) / numAxes;
+          const r = (ax.rShare / maxShare) * maxR;
+          return {
+            x: cx + Math.cos(ang) * r,
+            y: cy + Math.sin(ang) * r,
+            ax
+          };
+        });
+        const recentPoly = document.createElementNS(ns, 'polygon');
+        recentPoly.setAttribute('points', recentCoords.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' '));
+        recentPoly.setAttribute('fill', 'rgba(236, 72, 153, 0.28)');
+        recentPoly.setAttribute('stroke', '#F43F5E');
+        recentPoly.setAttribute('stroke-width', '2.0');
+        recentPoly.style.filter = 'drop-shadow(0 0 6px rgba(244, 63, 94, 0.6))';
+        svg.appendChild(recentPoly);
+
+        recentCoords.forEach(p => {
+          const dot = document.createElementNS(ns, 'circle');
+          dot.setAttribute('cx', p.x.toFixed(1));
+          dot.setAttribute('cy', p.y.toFixed(1));
+          dot.setAttribute('r', '2.8');
+          dot.setAttribute('fill', p.ax.color);
+          dot.setAttribute('stroke', '#FFFFFF');
+          dot.setAttribute('stroke-width', '1');
+          svg.appendChild(dot);
+        });
+      }
+
+      // Thẻ tóm tắt tốc độ dịch chuyển từng nhóm ngành dưới Radar
+      axes.forEach(ax => {
+        const sign = ax.delta >= 0 ? '+' : '';
+        const deltaColor = ax.delta > 0.5 ? 'text-emerald-400' : (ax.delta < -0.5 ? 'text-rose-400' : 'text-slate-400');
+        const card = document.createElement('div');
+        card.className = "px-2 py-1.5 rounded-lg bg-white/[0.04] border border-white/10 flex items-center justify-between cursor-pointer hover:bg-white/10 transition";
+        card.title = `${ax.label}: 클릭 시 해당 계열 상세 추이 보기`;
+        card.innerHTML = `
+          <div class="flex items-center space-x-1.5 min-w-0">
+            <span class="w-2 h-2 rounded-full shrink-0" style="background:${ax.color}; box-shadow: 0 0 5px ${ax.color};"></span>
+            <span class="text-slate-200 font-medium truncate">${ax.label}</span>
+          </div>
+          <div class="flex items-center space-x-1 font-scifi shrink-0">
+            <span class="text-white font-bold">${Math.round(ax.rShare)}%</span>
+            <span class="${deltaColor} text-[9px]">(${sign}${ax.delta.toFixed(1)}%)</span>
+          </div>
+        `;
+        card.addEventListener('click', () => {
+          if (currentListContext) {
+            panelNavigationStack.push({
+              view: 'list',
+              context: { ...currentListContext }
+            });
+          }
+          showThesesOfClusterGroup(ax.key, ax.label, true);
+        });
+        insightsBox.appendChild(card);
+      });
+    }
+
     function renderCloudEvolutionChart(theses) {
       const svg = document.getElementById('mini-cloud-evolution-svg');
       const readoutEl = document.getElementById('cloud-hover-readout');
@@ -3104,7 +3317,6 @@
         yearCounts.get(y)[cat] = (yearCounts.get(y)[cat] || 0) + 1;
       }
 
-      // Tìm năm đầu tiên xuất hiện của từng nhóm ngành (Emergence Year)
       const emergenceYearMap = new Map();
       CLUSTER_VISUAL_META.forEach(meta => {
         for (let i = 0; i < years.length; i++) {
@@ -3127,7 +3339,6 @@
 
       svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
 
-      // Tính giá trị tổng từng năm để căn giữa đối xứng (Symmetric Stream / Cloud Silhouette)
       let maxYearTotal = 1;
       years.forEach(y => {
         const obj = yearCounts.get(y);
@@ -3154,7 +3365,6 @@
       });
       svg.appendChild(defs);
 
-      // Tính tọa độ xếp chồng đối xứng cho từng năm
       const yearStacks = years.map((y, idx) => {
         const x = padX + (years.length === 1 ? usableW / 2 : (idx / (years.length - 1)) * usableW);
         const obj = yearCounts.get(y);
@@ -3173,7 +3383,6 @@
         return { year: y, x, layers, total };
       });
 
-      // Vẽ từng đám mây màu mềm mại (Smooth Catmull-Rom / Cubic Bezier Cloud Ribbon)
       CLUSTER_VISUAL_META.forEach(meta => {
         const activePoints = yearStacks.filter(ys => ys.layers[meta.key].val > 0 || ys.year >= (emergenceYearMap.get(meta.key) || 9999));
         if (activePoints.length === 0) return;
@@ -3203,7 +3412,6 @@
         svg.appendChild(cloudPath);
       });
 
-      // Đánh dấu các năm khởi phát chuyên ngành mới (Emergence Milestones)
       const labeledPositions = [];
       CLUSTER_VISUAL_META.forEach(meta => {
         const emYear = emergenceYearMap.get(meta.key);
@@ -3222,7 +3430,6 @@
         dot.style.filter = `drop-shadow(0 0 4px ${meta.color})`;
         svg.appendChild(dot);
 
-        // Hiển thị nhãn năm cho các ngành xuất hiện sau năm 2001 (hoặc các mốc chính) tránh chồng chữ
         const tooClose = labeledPositions.some(lx => Math.abs(lx - stackObj.x) < 42);
         if (!tooClose && emYear > 2001) {
           labeledPositions.push(stackObj.x);
@@ -3240,7 +3447,6 @@
         }
       });
 
-      // Vạch gióng tương tác khi rê chuột qua đám mây năm
       const guideLine = document.createElementNS(ns, 'line');
       guideLine.setAttribute('y1', '10');
       guideLine.setAttribute('y2', String(height - 2));
@@ -3296,7 +3502,6 @@
       hitRect.addEventListener('touchend', onCloudLeave);
     }
 
-    // DANH SÁCH GIÁO SƯ HƯỚNG DẪN TRONG KHOA (Sắp xếp nhiều -> ít, Top 3-5 từ khóa tiếng Hàn ưu tiên >= 2 lần)
     function renderDepartmentAdvisorsDirectory(theses, deptName) {
       const listEl = document.getElementById('dept-advisors-list');
       const countBadge = document.getElementById('dept-advisors-count-badge');
@@ -3344,7 +3549,6 @@
       }
 
       sortedAdvisors.forEach((adv, rankIdx) => {
-        // Ưu tiên từ khóa lặp lại >= 2 lần, nếu chưa đủ 3 thì bổ sung các từ khóa top tiếp theo (tối đa 5 từ khóa)
         const allSortedKws = Array.from(adv.kwFreq.entries())
           .sort((a, b) => b[1] - a[1]);
         const repeatedKws = allSortedKws.filter(([, freq]) => freq >= 2);
@@ -3383,7 +3587,6 @@
               context: { ...currentListContext }
             });
           }
-          // Tìm mặt trời Giáo sư tương ứng trên thiên hà 3D để camera bay tới và neo vào
           const advSprite =
             ADVISOR_SPRITE_BY_NAME.get(`${deptName}||${adv.name}`) ||
             ADVISOR_SPRITE_BY_NAME.get(adv.name) ||
@@ -3867,7 +4070,6 @@
         return detail.advisor === clean || detail.advisor.includes(clean);
       });
 
-      // Tìm mặt trời Giáo sư (advisor_sun) trên thiên hà 3D để camera bay trực tiếp tới và neo vào
       const advSprite =
         explicitAdvSprite ||
         (deptHint ? ADVISOR_SPRITE_BY_NAME.get(`${deptHint}||${clean}`) : null) ||
@@ -4029,6 +4231,11 @@
       });
 
       renderContextualMiniAnalytics(sortedTheses, contextMode, subMode, deptName);
+
+      if (subMode === 'overview') {
+        container.innerHTML = '';
+        return;
+      }
 
       container.innerHTML = '';
 
