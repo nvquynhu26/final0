@@ -28,12 +28,13 @@
     }
     .font-scifi { font-family: 'Space Grotesk', monospace; }
     
+    /* Nền kính mờ đen trong suốt nhẹ (giảm opacity 8-10% để thấy dải ngân hà mờ phía sau) */
     .scifi-panel {
-      background: radial-gradient(135% 100% at 0% 0%, rgba(13, 17, 34, 0.95) 0%, rgba(5, 7, 18, 0.98) 100%);
-      backdrop-filter: blur(25px);
-      -webkit-backdrop-filter: blur(25px);
-      border: 1px solid rgba(129, 140, 248, 0.25);
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.85);
+      background: linear-gradient(145deg, rgba(6, 8, 14, 0.78) 0%, rgba(2, 3, 8, 0.84) 100%);
+      backdrop-filter: blur(22px) saturate(130%);
+      -webkit-backdrop-filter: blur(22px) saturate(130%);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.78);
     }
     .scifi-btn {
       background: rgba(255, 255, 255, 0.05);
@@ -53,9 +54,9 @@
     
     /* Scrollbar */
     ::-webkit-scrollbar { width: 5px; }
-    ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.4); border-radius: 3px; }
-    ::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.6); border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: rgba(236, 72, 153, 0.8); }
+    ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.35); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.45); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(236, 72, 153, 0.75); }
     
     /* Horizontal Range Slider */
     .slider-horizontal {
@@ -84,7 +85,7 @@
       position: relative;
       width: 52px;
       height: 20px;
-      background: rgba(0, 0, 0, 0.6);
+      background: rgba(0, 0, 0, 0.55);
       border-radius: 10px;
       border: 1px solid rgba(255, 255, 255, 0.15);
       cursor: pointer;
@@ -112,7 +113,7 @@
     }
 
     .vignette-overlay {
-      background: radial-gradient(circle at center, transparent 35%, rgba(2, 3, 6, 0.88) 100%);
+      background: radial-gradient(circle at center, transparent 35%, rgba(2, 3, 6, 0.85) 100%);
       pointer-events: none;
     }
 
@@ -182,7 +183,7 @@
         </h1>
       </div>
 
-      <!-- Nút (+) đổi thành hình vuông (rounded-lg) đồng bộ với nút (-) -->
+      <!-- Nút (+) hình vuông bo góc (rounded-lg) -->
       <button id="btn-panel-expand" class="md:hidden mt-2 self-start flex items-center justify-center w-8 h-8 scifi-panel rounded-lg text-cyan-300 border border-cyan-400/50 text-base font-bold leading-none active:scale-95 transition-all shadow-[0_0_14px_rgba(6,182,212,0.35)]" title="패널 열기">
         +
       </button>
@@ -199,10 +200,10 @@
 
   <!-- UNIFIED FILTER & TIMELINE PANEL -->
   <div id="dept-panel-container" class="hidden md:flex fixed md:absolute left-1/2 -translate-x-1/2 top-32 md:left-6 md:top-[3.75rem] md:translate-x-0 z-30 pointer-events-none transition-all duration-300">
-    <div class="w-[90vw] max-w-[340px] md:w-80 scifi-panel p-4 rounded-xl pointer-events-auto border border-white/10 flex flex-col space-y-2.5 shadow-2xl max-h-[76vh] md:max-h-[84vh] overflow-y-auto">
+    <div class="w-[90vw] max-w-[340px] md:w-80 scifi-panel p-4 rounded-xl pointer-events-auto border border-white/15 flex flex-col space-y-2.5 shadow-2xl max-h-[76vh] md:max-h-[84vh] overflow-y-auto">
       
       <!-- TOP ROW: 3 NÚT VIEW + NÚT THU NHỎ (-) -->
-      <div class="flex items-center space-x-1.5 pb-2 border-b border-indigo-500/20">
+      <div class="flex items-center space-x-1.5 pb-2 border-b border-white/10">
         <div class="flex-1 grid grid-cols-3 gap-1.5 text-xs">
           <button id="btn-view-top" class="scifi-btn px-2 py-1.5 rounded text-slate-300 font-medium text-center active">평면 뷰</button>
           <button id="btn-view-galaxy" class="scifi-btn px-2 py-1.5 rounded text-slate-300 font-medium text-center">측면 뷰</button>
@@ -246,13 +247,13 @@
 
       <!-- Department Dropdown -->
       <div class="relative pt-0.5">
-        <select id="dept-dropdown" class="w-full bg-black/60 text-slate-200 text-xs rounded-lg p-2 border border-indigo-500/30 focus:outline-none focus:border-cyan-400 cursor-pointer">
+        <select id="dept-dropdown" class="w-full bg-black/50 text-slate-200 text-xs rounded-lg p-2 border border-white/15 focus:outline-none focus:border-cyan-400 cursor-pointer">
           <option value="ALL">-- 전체 학과 --</option>
         </select>
       </div>
 
       <!-- DEGREE FILTER -->
-      <div class="pt-2 border-t border-indigo-500/20 flex flex-col space-y-1.5">
+      <div class="pt-2 border-t border-white/10 flex flex-col space-y-1.5">
         <span id="label-degree-filter" class="text-xs font-bold text-indigo-300 tracking-widest uppercase font-scifi">학위 필터</span>
         <div class="grid grid-cols-3 gap-1.5 text-[11px]" id="degree-btn-group">
           <button class="degree-btn scifi-btn py-1 px-1 rounded text-center active" data-degree="all">전체</button>
@@ -262,7 +263,7 @@
       </div>
 
       <!-- THESIS LANGUAGE FILTER -->
-      <div class="pt-2 border-t border-indigo-500/20 flex flex-col space-y-1.5">
+      <div class="pt-2 border-t border-white/10 flex flex-col space-y-1.5">
         <span id="label-thesis-lang-filter" class="text-xs font-bold text-indigo-300 tracking-widest uppercase font-scifi">언어 필터</span>
         <div class="grid grid-cols-3 gap-1.5 text-[11px]" id="thesis-lang-btn-group">
           <button class="thesis-lang-btn scifi-btn py-1 px-1 rounded text-center active" data-tlang="all">전체</button>
@@ -272,7 +273,7 @@
       </div>
 
       <!-- MERGED TIMELINE SECTION -->
-      <div class="pt-2 border-t border-indigo-500/20 flex flex-col space-y-1.5">
+      <div class="pt-2 border-t border-white/10 flex flex-col space-y-1.5">
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-2">
             <span id="label-timeline-title" class="text-xs font-bold text-indigo-300 tracking-widest uppercase font-scifi">연도</span>
@@ -294,8 +295,8 @@
 
   <!-- BOTTOM SEARCH BAR -->
   <div class="absolute search-bottom-safe left-1/2 -translate-x-1/2 z-20 w-11/12 max-w-2xl pointer-events-auto flex flex-col items-center transition-all">
-    <div class="w-full scifi-panel rounded-full px-3 md:px-4 py-1.5 md:py-2 flex items-center space-x-2 md:space-x-3 border border-indigo-500/40 shadow-[0_0_30px_rgba(79,70,229,0.3)]">
-      <select id="search-type" class="bg-black/60 text-slate-300 text-xs rounded-full px-2.5 md:px-3 py-1.5 border border-indigo-500/30 focus:outline-none focus:border-cyan-400 cursor-pointer font-medium">
+    <div class="w-full scifi-panel rounded-full px-3 md:px-4 py-1.5 md:py-2 flex items-center space-x-2 md:space-x-3 border border-white/15 shadow-[0_0_30px_rgba(79,70,229,0.3)]">
+      <select id="search-type" class="bg-black/55 text-slate-300 text-xs rounded-full px-2.5 md:px-3 py-1.5 border border-white/15 focus:outline-none focus:border-cyan-400 cursor-pointer font-medium">
         <option value="advisor">지도교수</option>
         <option value="all">통합검색</option>
         <option value="keyword">주제어</option>
@@ -313,14 +314,14 @@
     </div>
   </div>
 
-  <!-- RIGHT PANEL -->
+  <!-- RIGHT PANEL (Mở rộng bề ngang trên PC lên 480px - 500px để hiển thị thoáng hơn) -->
   <aside id="right-panel" 
-    class="fixed right-panel-pos z-40 w-[92vw] sm:w-[420px] max-w-[440px] scifi-panel pointer-events-auto hidden flex flex-col border-l border-t border-b-0 border-r-0 border-indigo-500/30 shadow-[-18px_0_40px_rgba(0,0,0,0.92)] rounded-tl-2xl">
+    class="fixed right-panel-pos z-40 w-[94vw] sm:w-[460px] lg:w-[500px] max-w-[520px] scifi-panel pointer-events-auto hidden flex flex-col border-l border-t border-b-0 border-r-0 border-white/15 shadow-[-18px_0_40px_rgba(0,0,0,0.85)] rounded-tl-2xl">
     
     <!-- 1. VIEW: LIST RESULTS + CONTEXTUAL MINI-ANALYTICS -->
     <div id="panel-list-view" class="hidden flex flex-col h-full p-4 md:p-5 min-h-0">
       <!-- Fixed Header -->
-      <div class="flex justify-between items-start pb-2.5 border-b border-indigo-500/20 shrink-0">
+      <div class="flex justify-between items-start pb-2.5 border-b border-white/10 shrink-0">
         <div class="min-w-0 pr-2 flex flex-col space-y-1">
           <div class="flex items-center space-x-1.5 flex-wrap gap-y-1">
             <button id="btn-list-history-back" class="hidden px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-600/60 hover:bg-indigo-500 text-white border border-indigo-400/50 transition">
@@ -334,23 +335,23 @@
         <button id="btn-close-list-panel" class="text-slate-400 hover:text-white p-1 text-base shrink-0">✕</button>
       </div>
 
-      <!-- Scrollable Analytics + Advisors + Thesis Cards Container -->
+      <!-- Scrollable Analytics + Sub-Departments + Advisors + Thesis Cards Container -->
       <div class="flex-1 overflow-y-auto pr-1 space-y-2.5 mt-2.5 min-h-0">
         
         <!-- CONTEXTUAL MINI-ANALYTICS COMPACT MODULE -->
-        <div id="mini-analytics-box" class="p-2.5 rounded-xl bg-black/55 border border-indigo-500/25 flex flex-col space-y-2.5">
+        <div id="mini-analytics-box" class="p-3 rounded-xl bg-black/40 border border-white/10 flex flex-col space-y-2.5">
           
-          <!-- 1. 6-CLUSTER STACKED BAR (계열별 연구 비중) -->
+          <!-- 1. 6-CLUSTER STACKED BAR (계열별 연구 비중 - Ẩn khi chọn 1 khối ngành đơn lẻ) -->
           <div id="mini-chart-stacked-section" class="flex flex-col space-y-1.5">
             <div class="flex items-center justify-between text-[10px]">
               <span class="font-bold text-slate-300 tracking-wide">계열별 연구 비중 <span class="text-[9px] text-indigo-400 font-normal">(클릭 시 상세 추이)</span></span>
               <span id="stacked-dominant-label" class="font-scifi text-[10px] font-bold text-cyan-300">-</span>
             </div>
             <div id="mini-stacked-bar" class="w-full h-3 rounded-full bg-white/5 overflow-hidden flex gap-[2px] p-[1px] border border-white/10"></div>
-            <div id="mini-stacked-legend" class="flex flex-wrap gap-x-2 gap-y-1 text-[9px] text-slate-300 pt-0.5"></div>
+            <div id="mini-stacked-legend" class="flex flex-wrap gap-x-2.5 gap-y-1 text-[9px] text-slate-300 pt-0.5"></div>
           </div>
 
-          <!-- 2. OVERVIEW ONLY: YEARLY COMPOSITION STREAM CHART (연도별 전공 구성 변화) -->
+          <!-- 2. OVERVIEW ONLY: YEARLY COMPOSITION STREAM CHART -->
           <div id="mini-chart-composition-section" class="hidden pt-2 border-t border-white/10 flex flex-col space-y-1.5">
             <div class="flex items-center justify-between text-[10px]">
               <span class="font-bold text-slate-200 tracking-wide">연도별 전공 구성 비율 추이</span>
@@ -393,18 +394,27 @@
             </div>
           </div>
 
-          <!-- 5. TOP KEYWORDS MINI TAG BARS (TOP 5 default, TOP 10 with yearly trend for Cluster Groups) -->
+          <!-- 5. CLUSTER ONLY: SUB-DEPARTMENTS & YEARLY THESIS COUNTS (세부 학과별 연도별 논문 수) -->
+          <div id="mini-cluster-subdepts-section" class="hidden pt-2 border-t border-white/10 flex flex-col space-y-1.5">
+            <div class="flex items-center justify-between text-[10px]">
+              <span class="font-bold text-slate-200 tracking-wide">계열 내 세부 학과별 연도 추이</span>
+              <span id="cluster-subdepts-count-badge" class="font-scifi text-[9px] text-cyan-300">총 0개 학과</span>
+            </div>
+            <div id="mini-cluster-subdepts-list" class="max-h-52 overflow-y-auto space-y-1.5 pr-1"></div>
+          </div>
+
+          <!-- 6. TOP KEYWORDS MINI TAG BARS -->
           <div id="mini-chart-keywords-section" class="pt-2 border-t border-white/10 flex flex-col space-y-1">
             <div class="flex items-center justify-between text-[10px]">
               <span id="mini-keywords-title" class="font-bold text-slate-300 tracking-wide">핵심 주제어 TOP 5</span>
-              <span class="text-[9px] text-indigo-400">클릭 시 키워드 필터</span>
+              <span id="mini-keywords-hint" class="text-[9px] text-indigo-400">클릭 시 키워드 필터</span>
             </div>
             <div id="mini-top-keywords" class="flex flex-col space-y-1 pt-0.5"></div>
           </div>
         </div>
 
-        <!-- DEPARTMENT ADVISORS DIRECTORY (HEIGHT EXPANDED TO SHOW AT LEAST 3 ADVISORS PER SCROLL) -->
-        <div id="dept-advisors-section" class="hidden p-2.5 rounded-xl bg-black/55 border border-amber-500/25 flex flex-col space-y-2">
+        <!-- DEPARTMENT ADVISORS DIRECTORY -->
+        <div id="dept-advisors-section" class="hidden p-2.5 rounded-xl bg-black/40 border border-amber-500/25 flex flex-col space-y-2">
           <div class="flex items-center justify-between text-[10px]">
             <div class="flex items-center space-x-1.5">
               <span class="w-2 h-2 rounded-full bg-yellow-400 shadow-[0_0_6px_#FACC15]"></span>
@@ -428,7 +438,7 @@
 
     <!-- 2. VIEW: DETAIL PANEL -->
     <div id="panel-detail-view" class="flex flex-col h-full p-4 md:p-6 min-h-0">
-      <div class="flex justify-between items-start pb-3 md:pb-4 border-b border-indigo-500/20 shrink-0">
+      <div class="flex justify-between items-start pb-3 md:pb-4 border-b border-white/10 shrink-0">
         <div class="flex items-center space-x-2">
           <button id="btn-back-to-list" class="hidden px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-600/50 hover:bg-indigo-600 text-white border border-indigo-400/40">
             ← 목록으로
@@ -445,7 +455,7 @@
           <h2 id="detail-title" class="text-sm md:text-base font-bold text-white mt-1 leading-snug"></h2>
         </div>
 
-        <div class="grid grid-cols-2 gap-2 p-3 rounded-lg bg-black/40 border border-white/5">
+        <div class="grid grid-cols-2 gap-2 p-3 rounded-lg bg-black/40 border border-white/10">
           <div>
             <span id="detail-label-author" class="text-[10px] text-slate-400 block font-scifi">저자</span>
             <span id="detail-author" class="font-semibold text-slate-200">-</span>
@@ -465,7 +475,7 @@
         </div>
 
         <!-- UCI IDENTIFIER ONLY -->
-        <div class="p-3 rounded-lg bg-black/50 border border-indigo-500/20 flex flex-col space-y-1.5">
+        <div class="p-3 rounded-lg bg-black/40 border border-white/10 flex flex-col space-y-1.5">
           <div class="flex items-center justify-between">
             <span id="detail-label-uci" class="text-[9px] uppercase font-bold text-indigo-400 font-scifi tracking-widest">UCI 등록번호 (UCI Identifier)</span>
             <span id="detail-uci-status-badge" class="px-1.5 py-0.2 rounded text-[9px] font-scifi font-bold bg-cyan-500/20 text-cyan-300">UCI</span>
@@ -482,7 +492,7 @@
 
         <div>
           <span id="detail-label-abstract" class="text-[9px] uppercase font-bold text-indigo-400 font-scifi tracking-widest">논문 초록 (Abstract)</span>
-          <p id="detail-abstract" class="mt-1 text-slate-300 leading-relaxed text-xs max-h-56 md:max-h-60 overflow-y-auto pr-1 bg-black/40 p-2.5 rounded border border-white/5 whitespace-pre-line"></p>
+          <p id="detail-abstract" class="mt-1 text-slate-300 leading-relaxed text-xs max-h-56 md:max-h-60 overflow-y-auto pr-1 bg-black/40 p-2.5 rounded border border-white/10 whitespace-pre-line"></p>
         </div>
       </div>
     </div>
@@ -1748,7 +1758,7 @@
     }
 
     /* ==========================================================================
-       7. 3D GALAXY SCENE CONSTRUCTION (UNIFIED COLORS FOR DESIGN & FUSION)
+       7. 3D GALAXY SCENE CONSTRUCTION
        ========================================================================== */
     function buildCosmicScene() {
       NODE_SPRITES = [];
@@ -1924,13 +1934,12 @@
           const masterBase = 2.4 + Math.min(1.4, connCount * 0.22);
           scaleSize = det.isPhd ? (masterBase * 3.0) : masterBase;
 
-          // Khóa đồng nhất màu sắc theo nhóm ngành (không trộn lẫn màu khoa khác vào 디자인 hoặc 융합)
           const clusterCat = getDeptClusterCategory(normalizedDept);
           let rawHex = node.color || "#06B6D4";
           if (clusterCat === '디자인') {
-            rawHex = "#F43F5E"; // Màu chuẩn của khoa 디자인
+            rawHex = "#F43F5E";
           } else if (clusterCat === '융합') {
-            rawHex = "#8B5CF6"; // Màu chuẩn của khoa 융합
+            rawHex = "#8B5CF6";
           }
 
           reusableColor.set(rawHex);
@@ -2168,8 +2177,8 @@
 
     function generateRealisticNodes() {
       const nodes = [];
-      const depts = ["컴퓨터공학과", "기계시스템디자인공학과", "시각디자인전공", "산업디자인전공", "건축설계학과", "인공지능응용학과", "신소재공학과", "경영학과", "행정학과", "TESOL학과", "영어영문학과"];
-      const colors = ["#06B6D4", "#06B6D4", "#F43F5E", "#F43F5E", "#06B6D4", "#8B5CF6", "#06B6D4", "#F59E0B", "#10B981", "#10B981", "#10B981"];
+      const depts = ["컴퓨터공학과", "기계시스템디자인공학과", "시각디자인전공", "산업디자인전공", "건축설계학과", "인공지능응용학과", "데이터사이언스학과", "신소재공학과", "경영학과", "행정학과", "TESOL학과", "영어영문학과"];
+      const colors = ["#06B6D4", "#06B6D4", "#F43F5E", "#F43F5E", "#06B6D4", "#8B5CF6", "#8B5CF6", "#06B6D4", "#F59E0B", "#10B981", "#10B981", "#10B981"];
       const keywordPairs = [
         ["인공지능", "최적화", "딥러닝"],
         ["Artificial Intelligence", "Optimization", "Deep Learning"],
@@ -2231,7 +2240,7 @@
     }
 
     /* ==========================================================================
-       8. UI FILTERS, UNIFIED MINIMIZE/EXPAND (+/-) & MERGED TIMELINE SETUP
+       8. UI FILTERS, AUTO-SYNCING OVERVIEW PANEL & MERGED TIMELINE SETUP
        ========================================================================== */
     let selectedCluster = 'all';
     let selectedDept = 'ALL';
@@ -2327,6 +2336,8 @@
         dropdown.value = prevSelected;
       }
 
+      // Khi bấm chọn 5 nút khối ngành (전체, 공학, 디자인, 융합, 경영, 인문):
+      // Nếu bảng 연구 통계 đang mở -> tự động cập nhật nội dung bảng 연구 통계 theo nhóm ngành vừa chọn!
       document.querySelectorAll('.cluster-btn').forEach(btn => {
         btn.onclick = () => {
           document.querySelectorAll('.cluster-btn').forEach(b => b.classList.remove('active'));
@@ -2335,6 +2346,11 @@
           dropdown.value = 'ALL';
           selectedDept = 'ALL';
           applyFilters();
+
+          const rightPanel = document.getElementById('right-panel');
+          if (!rightPanel.classList.contains('hidden')) {
+            showFilteredOverviewAnalytics(false);
+          }
         };
       });
 
@@ -2346,6 +2362,10 @@
           showThesesOfDepartment(selectedDept, false);
         } else {
           applyFilters();
+          const rightPanel = document.getElementById('right-panel');
+          if (!rightPanel.classList.contains('hidden')) {
+            showFilteredOverviewAnalytics(false);
+          }
         }
       };
 
@@ -2434,6 +2454,7 @@
           contextMode: currentListContext.contextMode,
           subMode: currentListContext.subMode,
           deptName: currentListContext.deptName,
+          clusterKey: currentListContext.clusterKey,
           pushHistory: false
         });
       }
@@ -3050,15 +3071,17 @@
     }
 
     /* ==========================================================================
-       11. CONTEXTUAL MINI-ANALYTICS, 100% COMPOSITION STREAM & TOP 10 KEYWORDS
+       11. CONTEXTUAL MINI-ANALYTICS, SUB-DEPARTMENTS & STATIC TOP 10 KEYWORDS
        ========================================================================== */
-    function renderContextualMiniAnalytics(theses, contextMode, subMode = 'default', deptName = '') {
+    function renderContextualMiniAnalytics(theses, contextMode, subMode = 'default', deptName = '', clusterKey = '') {
       const stackedSection = document.getElementById('mini-chart-stacked-section');
       const compositionSection = document.getElementById('mini-chart-composition-section');
       const cloudSection = document.getElementById('mini-chart-cloud-section');
       const sparklineSection = document.getElementById('mini-chart-sparkline-section');
+      const clusterSubdeptsSection = document.getElementById('mini-cluster-subdepts-section');
       const keywordsSection = document.getElementById('mini-chart-keywords-section');
       const keywordsTitleEl = document.getElementById('mini-keywords-title');
+      const keywordsHintEl = document.getElementById('mini-keywords-hint');
       const advisorsSection = document.getElementById('dept-advisors-section');
       const listHeaderBar = document.getElementById('thesis-list-header-bar');
       const listContainer = document.getElementById('search-theses-list');
@@ -3066,18 +3089,15 @@
       const isOverviewMode = (subMode === 'overview');
       const isClusterMode = (subMode === 'cluster');
 
-      // Reset visibility
       stackedSection.classList.add('hidden');
       compositionSection.classList.add('hidden');
       cloudSection.classList.add('hidden');
       sparklineSection.classList.add('hidden');
+      clusterSubdeptsSection.classList.add('hidden');
       keywordsSection.classList.add('hidden');
       advisorsSection.classList.add('hidden');
 
       if (isOverviewMode) {
-        // Chế độ 전체 학술 유니버스:
-        // Hiện 계열별 연구 비중 + Biểu đồ 100% tỷ trọng thành phần chuyên ngành theo năm + Biểu đồ đám mây mở rộng
-        // Ẩn list luận văn & TOP 5 từ khóa
         stackedSection.classList.remove('hidden');
         compositionSection.classList.remove('hidden');
         cloudSection.classList.remove('hidden');
@@ -3088,47 +3108,159 @@
         renderYearlyCompositionChart(theses);
         renderCloudEvolutionChart(theses);
       } else if (isClusterMode) {
-        // Chế độ 5 nhóm ngành chính (공학, 디자인, 융합, 경영, 인문):
-        // Bỏ biểu đồ Radar; giữ 계열별 연구 비중 + 연도별 발표 추이 + TOP 10 từ khóa theo năm của nhóm ngành
-        stackedSection.classList.remove('hidden');
+        // Chế độ 1 trong 5 khối ngành lớn (공학, 디자인, 융합, 경영, 인문):
+        // Loại bỏ 계열별 연구 비중 (100%), 연도별 전공 확장 클라우드, 연도별 전공 구성 비율 추이.
+        // Thay thế bằng:
+        // 1. Đường xu hướng tổng của khối ngành
+        // 2. Danh sách các khoa nhỏ trong chuyên ngành này & số lượng luận văn của từng khoa nhỏ theo năm
+        // 3. TOP 10 từ khóa của khối ngành theo từng năm (chỉ hiển thị, không click chuyển panel)
         sparklineSection.classList.remove('hidden');
+        clusterSubdeptsSection.classList.remove('hidden');
         keywordsSection.classList.remove('hidden');
         listHeaderBar.classList.remove('hidden');
         listContainer.classList.remove('hidden');
 
         keywordsTitleEl.innerText = '계열 핵심 주제어 TOP 10 (연도별 추이)';
-        renderClusterStackedBar(theses);
+        keywordsHintEl.classList.add('hidden');
+
         renderYearSparkline(theses);
-        renderTopKeywordsMiniBars(theses, 10, true);
+        renderClusterSubDepartmentsByYear(theses, clusterKey);
+        renderTopKeywordsMiniBars(theses, 10, true, false);
       } else if (contextMode === 'entity') {
-        // Chế độ Giáo sư hoặc 1 Khoa cụ thể:
         sparklineSection.classList.remove('hidden');
         keywordsSection.classList.remove('hidden');
         listHeaderBar.classList.remove('hidden');
         listContainer.classList.remove('hidden');
 
         keywordsTitleEl.innerText = '핵심 주제어 TOP 5';
+        keywordsHintEl.classList.remove('hidden');
+
         renderYearSparkline(theses);
-        renderTopKeywordsMiniBars(theses, 5, false);
+        renderTopKeywordsMiniBars(theses, 5, false, true);
 
         if (subMode === 'department') {
           advisorsSection.classList.remove('hidden');
           renderDepartmentAdvisorsDirectory(theses, deptName);
         }
       } else {
-        // Chế độ tìm kiếm từ khóa / tiêu đề / tác giả:
         stackedSection.classList.remove('hidden');
         keywordsSection.classList.remove('hidden');
         listHeaderBar.classList.remove('hidden');
         listContainer.classList.remove('hidden');
 
         keywordsTitleEl.innerText = '핵심 주제어 TOP 5';
+        keywordsHintEl.classList.remove('hidden');
+
         renderClusterStackedBar(theses);
-        renderTopKeywordsMiniBars(theses, 5, false);
+        renderTopKeywordsMiniBars(theses, 5, false, true);
       }
     }
 
-    // BIỂU ĐỒ 100% THÀNH PHẦN CHUYÊN NGÀNH THAY ĐỔI THEO TỪNG NĂM (100% STACKED AREA COMPOSITION)
+    // HIỂN THỊ CÁC KHOA NHỎ TRONG KHỐI NGÀNH VÀ SỐ LƯỢNG LUẬN VĂN THEO TỪNG NĂM
+    function renderClusterSubDepartmentsByYear(theses, clusterKey) {
+      const listEl = document.getElementById('mini-cluster-subdepts-list');
+      const countBadge = document.getElementById('cluster-subdepts-count-badge');
+      listEl.innerHTML = '';
+
+      if (!theses || theses.length === 0) {
+        countBadge.innerText = '총 0개 학과';
+        listEl.innerHTML = `<div class="text-[10px] text-slate-500 italic">해당 조건의 세부 학과 데이터가 없습니다.</div>`;
+        return;
+      }
+
+      const meta = CLUSTER_VISUAL_META.find(m => m.key === clusterKey);
+      const accentColor = meta ? meta.color : '#22D3EE';
+
+      let minY = 2026;
+      let maxY = 2001;
+      const subDeptMap = new Map();
+
+      for (let i = 0; i < theses.length; i++) {
+        const t = theses[i];
+        const dName = t.dept || '기타학과';
+        const yr = t.year || 2020;
+        if (yr < minY) minY = yr;
+        if (yr > maxY) maxY = yr;
+
+        if (!subDeptMap.has(dName)) {
+          subDeptMap.set(dName, {
+            dept: dName,
+            total: 0,
+            yearCounts: new Map()
+          });
+        }
+        const entry = subDeptMap.get(dName);
+        entry.total++;
+        entry.yearCounts.set(yr, (entry.yearCounts.get(yr) || 0) + 1);
+      }
+
+      if (minY >= maxY) minY = Math.max(2001, maxY - 4);
+
+      const sortedDepts = Array.from(subDeptMap.values())
+        .sort((a, b) => b.total - a.total);
+
+      countBadge.innerText = `총 ${sortedDepts.length}개 학과`;
+
+      const span = Math.max(1, maxY - minY);
+      const sw = 100;
+      const sh = 20;
+
+      sortedDepts.forEach((item, idx) => {
+        let localMax = 1;
+        let peakYr = minY;
+        const pts = [];
+        for (let y = minY; y <= maxY; y++) {
+          const val = item.yearCounts.get(y) || 0;
+          if (val >= localMax) {
+            localMax = val;
+            peakYr = y;
+          }
+        }
+        for (let y = minY; y <= maxY; y++) {
+          const val = item.yearCounts.get(y) || 0;
+          const px = 2 + ((y - minY) / span) * (sw - 4);
+          const py = sh - 3 - (val / localMax) * (sh - 6);
+          pts.push(`${px.toFixed(1)},${py.toFixed(1)}`);
+        }
+
+        const row = document.createElement('div');
+        row.className = "p-2 rounded-lg bg-white/[0.04] hover:bg-white/[0.09] border border-white/10 transition cursor-pointer flex items-center justify-between space-x-2";
+        row.title = `${item.dept}: 클릭 시 해당 학과 상세 분석 보기`;
+
+        row.innerHTML = `
+          <div class="min-w-0 flex-1 flex flex-col">
+            <div class="flex items-center space-x-1.5">
+              <span class="font-scifi text-[9px] text-slate-400 shrink-0">#${idx + 1}</span>
+              <span class="text-[11px] font-bold text-slate-100 truncate">${item.dept}</span>
+            </div>
+            <div class="text-[9px] font-scifi text-slate-400 mt-0.5">
+              최다 발표: <span class="text-slate-200 font-semibold">${peakYr}년 (${localMax}건)</span>
+            </div>
+          </div>
+          <div class="flex items-center space-x-2 shrink-0">
+            <svg class="w-24 h-5 overflow-visible" viewBox="0 0 ${sw} ${sh}">
+              <polyline fill="none" stroke="${accentColor}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" points="${pts.join(' ')}" />
+            </svg>
+            <span class="px-1.5 py-0.5 rounded text-[10px] font-scifi font-bold bg-white/10 text-white min-w-[42px] text-right">
+              ${item.total}건
+            </span>
+          </div>
+        `;
+
+        row.addEventListener('click', () => {
+          if (currentListContext) {
+            panelNavigationStack.push({
+              view: 'list',
+              context: { ...currentListContext }
+            });
+          }
+          showThesesOfDepartment(item.dept, true);
+        });
+
+        listEl.appendChild(row);
+      });
+    }
+
     function renderYearlyCompositionChart(theses) {
       const svg = document.getElementById('mini-composition-svg');
       const readoutEl = document.getElementById('comp-hover-readout');
@@ -3170,7 +3302,6 @@
       const usableH = height - padY * 2;
       svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
 
-      // Tính tỷ trọng % (0..100%) từng nhóm ngành tại mỗi năm
       let lastValidShares = {};
       clusterKeys.forEach(k => { lastValidShares[k] = 0; });
 
@@ -3204,7 +3335,6 @@
 
       const ns = "http://www.w3.org/2000/svg";
 
-      // Vẽ các dải tỷ trọng % xếp chồng từ dưới lên trên (100% Full Height)
       CLUSTER_VISUAL_META.forEach(meta => {
         const topPts = yearStacks.map(ys => ({ x: ys.x, y: ys.bands[meta.key].yTop }));
         const botPts = yearStacks.map(ys => ({ x: ys.x, y: ys.bands[meta.key].yBottom })).reverse();
@@ -3231,7 +3361,6 @@
         svg.appendChild(areaPath);
       });
 
-      // Vạch gióng tương tác khi rê chuột xem tỷ trọng từng năm
       const guideLine = document.createElementNS(ns, 'line');
       guideLine.setAttribute('y1', String(padY));
       guideLine.setAttribute('y2', String(height - padY));
@@ -3876,8 +4005,9 @@
       hitRect.addEventListener('touchend', hideSparklineHover);
     }
 
-    // TOP KEYWORDS MINI BARS (Hỗ trợ Top 5 hoặc Top 10 kèm sparkline xu hướng từng năm)
-    function renderTopKeywordsMiniBars(theses, limitCount = 5, showYearlySpark = false) {
+    // TOP KEYWORDS MINI BARS
+    // Khi clickable = false (trong bảng 계열 핵심 주제어 TOP 10), chỉ hiển thị danh sách tĩnh, không chuyển panel khi bấm
+    function renderTopKeywordsMiniBars(theses, limitCount = 5, showYearlySpark = false, clickable = true) {
       const container = document.getElementById('mini-top-keywords');
       container.innerHTML = '';
 
@@ -3952,7 +4082,7 @@
               peakYr = y;
             }
           }
-          const sw = 54;
+          const sw = 58;
           const sh = 14;
           const pts = [];
           for (let y = minY; y <= maxY; y++) {
@@ -3969,27 +4099,34 @@
         }
 
         const row = document.createElement('div');
-        row.className = 'flex items-center space-x-2 text-[10px] group cursor-pointer py-0.5';
-        row.title = `"${label}" 키워드 논문 보기`;
+        row.className = clickable
+          ? 'flex items-center space-x-2 text-[10px] group cursor-pointer py-0.5'
+          : 'flex items-center space-x-2 text-[10px] py-0.5 pointer-events-none';
+        if (clickable) {
+          row.title = `"${label}" 키워드 논문 보기`;
+        }
+
         row.innerHTML = `
           <span class="w-4 font-scifi text-[9px] text-slate-500 text-right shrink-0">${idx + 1}</span>
-          <span class="w-24 truncate text-slate-200 group-hover:text-cyan-300 font-medium transition">${label}</span>
+          <span class="w-28 truncate ${clickable ? 'text-slate-200 group-hover:text-cyan-300 transition' : 'text-slate-200'} font-medium">${label}</span>
           <div class="flex-1 h-1.5 rounded-full bg-white/5 overflow-hidden">
             <div class="h-full rounded-full mini-bar-fill" style="width: ${pct}%; background: ${color}; box-shadow: 0 0 6px ${color};"></div>
           </div>
           ${sparkSvgHtml}
-          <span class="w-7 text-right font-scifi font-bold text-slate-300 group-hover:text-white shrink-0">${count}</span>
+          <span class="w-7 text-right font-scifi font-bold ${clickable ? 'text-slate-300 group-hover:text-white' : 'text-slate-300'} shrink-0">${count}</span>
         `;
 
-        row.addEventListener('click', () => {
-          if (currentListContext) {
-            panelNavigationStack.push({
-              view: 'list',
-              context: { ...currentListContext }
-            });
-          }
-          filterByKeywordWithHistory(label, true);
-        });
+        if (clickable) {
+          row.addEventListener('click', () => {
+            if (currentListContext) {
+              panelNavigationStack.push({
+                view: 'list',
+                context: { ...currentListContext }
+              });
+            }
+            filterByKeywordWithHistory(label, true);
+          });
+        }
 
         container.appendChild(row);
       });
@@ -4038,6 +4175,7 @@
         contextMode: 'general',
         subMode: 'default',
         deptName: '',
+        clusterKey: '',
         pushHistory: pushHistory
       });
     }
@@ -4103,6 +4241,7 @@
         contextMode: contextMode,
         subMode: subMode,
         deptName: type === 'dept' ? rawQuery : '',
+        clusterKey: '',
         pushHistory: false
       });
     }
@@ -4147,6 +4286,7 @@
         contextMode: 'entity',
         subMode: 'advisor',
         deptName: deptHint,
+        clusterKey: '',
         pushHistory: pushHistory
       });
 
@@ -4178,6 +4318,7 @@
         contextMode: 'entity',
         subMode: 'department',
         deptName: deptName,
+        clusterKey: '',
         pushHistory: pushHistory
       });
     }
@@ -4205,6 +4346,7 @@
         contextMode: 'cluster',
         subMode: 'cluster',
         deptName: '',
+        clusterKey: clusterKey,
         pushHistory: pushHistory
       });
     }
@@ -4238,6 +4380,7 @@
           contextMode: 'cluster',
           subMode: 'cluster',
           deptName: '',
+          clusterKey: selectedCluster,
           pushHistory: pushHistory
         });
         return;
@@ -4256,18 +4399,20 @@
         contextMode: mode,
         subMode: subMode,
         deptName: isSingleDept ? selectedDept : '',
+        clusterKey: '',
         pushHistory: pushHistory
       });
     }
 
-    function renderThesesListPanel({ theses, baseTheses, queryText, contextMode = 'general', subMode = 'default', deptName = '' }) {
+    function renderThesesListPanel({ theses, baseTheses, queryText, contextMode = 'general', subMode = 'default', deptName = '', clusterKey = '' }) {
       currentListContext = {
         theses: theses,
         baseTheses: baseTheses || theses,
         queryText: queryText,
         contextMode: contextMode,
         subMode: subMode,
-        deptName: deptName
+        deptName: deptName,
+        clusterKey: clusterKey
       };
 
       const listView = document.getElementById('panel-list-view');
@@ -4302,7 +4447,7 @@
         return (b.id || 0) - (a.id || 0);
       });
 
-      renderContextualMiniAnalytics(sortedTheses, contextMode, subMode, deptName);
+      renderContextualMiniAnalytics(sortedTheses, contextMode, subMode, deptName, clusterKey);
 
       if (subMode === 'overview') {
         container.innerHTML = '';
@@ -4321,7 +4466,7 @@
       displaySlice.forEach((n, idx) => {
         const detail = getCleanDetail(n);
         const card = document.createElement('div');
-        card.className = "p-2.5 rounded-lg bg-black/50 hover:bg-indigo-900/40 border border-white/10 hover:border-cyan-400/50 transition cursor-pointer flex flex-col space-y-1 shrink-0";
+        card.className = "p-2.5 rounded-lg bg-black/45 hover:bg-indigo-900/40 border border-white/10 hover:border-cyan-400/50 transition cursor-pointer flex flex-col space-y-1 shrink-0";
         
         card.innerHTML = `
           <div class="flex items-center justify-between">
@@ -4393,7 +4538,8 @@
           queryText: ctx.queryText,
           contextMode: ctx.contextMode,
           subMode: ctx.subMode,
-          deptName: ctx.deptName
+          deptName: ctx.deptName,
+          clusterKey: ctx.clusterKey
         });
       }
     }
@@ -4492,7 +4638,6 @@
     const _trackDelta = new THREE.Vector3();
     const _prevTargetSnapshot = new THREE.Vector3();
 
-    // Đảm bảo dù người dùng kéo/xoay camera thế nào, tâm ngắm vẫn nằm trong vùng dải ngân hà để không bao giờ trôi mất
     function keepGalaxyInViewport() {
       _prevTargetSnapshot.copy(controls.target);
 
@@ -4508,7 +4653,6 @@
       }
       controls.target.y = THREE.MathUtils.clamp(controls.target.y, minYBound, maxYBound);
 
-      // Dịch chuyển camera đồng bộ với phần bị kẹp biên để giữ nguyên góc nhìn mà không giật khung hình
       const corrX = controls.target.x - _prevTargetSnapshot.x;
       const corrY = controls.target.y - _prevTargetSnapshot.y;
       const corrZ = controls.target.z - _prevTargetSnapshot.z;
