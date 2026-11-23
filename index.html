@@ -300,8 +300,8 @@
       <!-- Header -->
       <div class="flex justify-between items-center pb-2.5 border-b border-indigo-500/20 shrink-0">
         <div class="min-w-0 pr-2">
-          <div class="flex items-center space-x-1.5 flex-wrap gap-y-1">
-            <button id="btn-list-back" class="hidden px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-600/60 hover:bg-indigo-600 text-white border border-indigo-400/40 transition">
+          <div class="flex items-center space-x-1.5">
+            <button id="btn-back-to-prev-list" class="hidden px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-600/60 hover:bg-indigo-600 text-white border border-indigo-400/50 transition shrink-0">
               ← 목록으로
             </button>
             <span id="list-view-query-badge" class="px-2 py-0.5 rounded text-[9px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 font-scifi">SEARCH RESULTS</span>
@@ -327,7 +327,7 @@
           <div id="mini-stacked-legend" class="flex flex-wrap gap-x-2.5 gap-y-1 text-[9px] text-slate-300 pt-0.5"></div>
         </div>
 
-        <!-- MODE B: ADVISOR / DEPARTMENT CONTEXT -> YEARLY TREND SPARKLINE -->
+        <!-- MODE B: ADVISOR / DEPARTMENT CONTEXT -> YEARLY TREND SPARKLINE WITH HOVER TOOLTIP -->
         <div id="mini-chart-sparkline-section" class="hidden flex flex-col space-y-1">
           <div class="flex items-center justify-between text-[10px]">
             <span class="font-bold text-slate-300 tracking-wide">연도별 발표 추이</span>
@@ -336,10 +336,12 @@
               <span id="sparkline-peak-label" class="font-bold text-pink-400">최다: -</span>
             </div>
           </div>
-          <!-- Pure SVG Sparkline (Interactive Hover Tooltip) -->
+          <!-- Pure SVG Sparkline + Interactive Hover Readout -->
           <div id="sparkline-wrapper" class="w-full h-12 relative flex items-center cursor-crosshair">
             <svg id="mini-sparkline-svg" class="w-full h-full overflow-visible" preserveAspectRatio="none"></svg>
-            <div id="sparkline-hover-tooltip" class="hidden absolute -top-6 pointer-events-none z-20 px-2 py-0.5 rounded bg-[#090D1F]/95 border border-cyan-400/60 text-[10px] font-scifi text-white whitespace-nowrap shadow-[0_0_12px_rgba(6,182,212,0.5)]"></div>
+            <div id="sparkline-hover-pill" class="hidden absolute -top-5 pointer-events-none px-2 py-0.5 rounded-md bg-slate-950/95 border border-cyan-400/60 text-[10px] font-scifi font-bold text-white shadow-[0_0_12px_rgba(6,182,212,0.55)] whitespace-nowrap z-20 -translate-x-1/2">
+              2024년 · 0건
+            </div>
           </div>
         </div>
 
@@ -696,8 +698,8 @@
       const grad = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
       grad.addColorStop(0.0, 'rgba(255, 255, 255, 1.0)');
       grad.addColorStop(0.22, 'rgba(254, 249, 195, 0.98)');
-      grad.addColorStop(0.45, 'rgba(251, 191, 36, 0.72)');
-      grad.addColorStop(0.75, 'rgba(245, 158, 11, 0.22)');
+      grad.addColorStop(0.45, 'rgba(250, 204, 21, 0.65)');
+      grad.addColorStop(0.72, 'rgba(6, 182, 212, 0.22)');
       grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, 128, 128);
@@ -752,7 +754,7 @@
     cosmosGroup.add(arcLinksGroup);
 
     /* ==========================================================================
-       5. SHADERS (INCLUDING SATURN RING SHADER FOR DEPARTMENT SUNS)
+       5. SHADERS
        ========================================================================== */
     let funnelHazeMesh;
     const volumetricNebulaMat = new THREE.ShaderMaterial({
@@ -795,50 +797,6 @@
           
           float alpha = fade * (0.4 + swirl * 0.15) * uIntensity * coreBoost;
           gl_FragColor = vec4(col * alpha * 1.8, alpha);
-        }
-      `
-    });
-
-    // Shader vành đai ánh sáng tròn kiểu Sao Thổ cho Department Sun
-    const saturnRingShaderMat = new THREE.ShaderMaterial({
-      transparent: true,
-      depthWrite: false,
-      blending: THREE.AdditiveBlending,
-      side: THREE.DoubleSide,
-      uniforms: {
-        uTime: { value: 0 },
-        uOpacity: { value: 0.95 }
-      },
-      vertexShader: `
-        varying vec2 vUv;
-        void main() {
-          vUv = uv;
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        }
-      `,
-      fragmentShader: `
-        varying vec2 vUv;
-        uniform float uTime;
-        uniform float uOpacity;
-        void main() {
-          vec2 centered = vUv - 0.5;
-          float r = length(centered) * 2.0; // 0 ở tâm -> 1 ở viền ngoài
-          float angle = atan(centered.y, centered.x);
-
-          // Vành đai chính & vành đai phụ đồng tâm kiểu Sao Thổ
-          float mainRing = smoothstep(0.50, 0.56, r) * smoothstep(0.74, 0.67, r);
-          float outerRing = smoothstep(0.79, 0.83, r) * smoothstep(0.94, 0.89, r) * 0.65;
-          float ringMask = clamp(mainRing + outerRing, 0.0, 1.0);
-
-          if (ringMask <= 0.01) discard;
-
-          float shimmer = 0.82 + 0.18 * sin(angle * 3.0 - uTime * 2.2);
-          vec3 goldCore = vec3(1.0, 0.86, 0.28);
-          vec3 cyanRim = vec3(0.15, 0.90, 1.0);
-          vec3 col = mix(goldCore, cyanRim, smoothstep(0.55, 0.92, r));
-
-          float alpha = ringMask * shimmer * uOpacity;
-          gl_FragColor = vec4(col * 1.45, alpha);
         }
       `
     });
@@ -905,29 +863,33 @@
     });
 
     /* ==========================================================================
-       6. DATA LOADING, STEMMER, KEYWORD LANGUAGE NORMALIZER & SIMILARITY ENGINE
+       6. DATA LOADING, STEMMER, KEYWORD LANGUAGE CLEANER & SIMILARITY ENGINE
        ========================================================================== */
     let ALL_NODES = [];
     let NODE_BY_ID = new Map();
     let NODE_SPRITES = [];
-    let DEPT_SATURN_RINGS = [];
     let SPRITE_BY_ID = new Map();
     let DEPT_MAP = new Map();
     const DETAILS_STORE = new Map();
-
-    // Camera Tracking State (Độc lập với việc chuyển đổi giữa Detail & Keyword List)
-    let trackedThesisNode = null;
-    let trackedThesisSprite = null;
+    let hasSearchHistory = false;
     let isSearchActive = false;
-
-    // Navigation History Stack cho toàn bộ panel từ khóa & danh sách
-    let listHistoryStack = [];
-    let currentListContext = null;
-
+    let selectedActiveNode = null;
+    let selectedActiveSprite = null;
     let cosmicBeamMesh, cosmicBeamGlowMesh;
     let stardustMistPoints;
     let spiralArmRibbonPoints;
     let galaxyCenterYGlobal = 225;
+
+    // Context state & History Stack for Contextual Mini-Analytics
+    let currentListContext = {
+      theses: [],
+      rawBaseTheses: [],
+      queryText: '',
+      mode: 'general', // 'general' | 'entity'
+      searchType: 'all',
+      searchQueryInput: ''
+    };
+    let listNavigationHistory = [];
 
     const INVALID_KW_SET = new Set(["", "nan", "#nan", "null", "none", "undefined", "n/a", "-", "없음", "연구", "분석", "개발"]);
 
@@ -962,40 +924,6 @@
       ["security", "security"], ["secure", "security"], ["보안", "security"],
       ["cloud", "cloud_computing"], ["cloud computing", "cloud_computing"], ["클라우드", "cloud_computing"],
       ["blockchain", "blockchain"], ["블록체인", "blockchain"]
-    ]);
-
-    // Từ điển ánh xạ khái niệm chuẩn sang tiếng Hàn ưu tiên khi từ khóa tồn tại song song Anh & Hàn
-    const CONCEPT_PREFERRED_KO_LABEL = new Map([
-      ["artificial_intelligence", "인공지능"],
-      ["deep_learning", "딥러닝"],
-      ["machine_learning", "머신러닝"],
-      ["internet_of_things", "사물인터넷"],
-      ["user_experience", "사용자경험"],
-      ["user_interface", "사용자인터페이스"],
-      ["virtual_reality", "가상현실"],
-      ["augmented_reality", "증강현실"],
-      ["big_data", "빅데이터"],
-      ["robotics", "로봇"],
-      ["semiconductor", "반도체"],
-      ["convolutional_neural_network", "합성곱신경망"],
-      ["natural_language_processing", "자연어처리"],
-      ["autonomous_vehicle", "자율주행"],
-      ["design", "디자인"],
-      ["optimize", "최적화"],
-      ["network", "네트워크"],
-      ["system", "시스템"],
-      ["algorithm", "알고리즘"],
-      ["recognize", "인식"],
-      ["detect", "검출"],
-      ["predict", "예측"],
-      ["classify", "분류"],
-      ["simulate", "시뮬레이션"],
-      ["analyze", "분석"],
-      ["control", "제어"],
-      ["energy", "에너지"],
-      ["security", "보안"],
-      ["cloud_computing", "클라우드"],
-      ["blockchain", "블록체인"]
     ]);
 
     function stemEnglishWord(word) {
@@ -1059,25 +987,31 @@
     }
 
     /**
-     * Quy tắc hiển thị ngôn ngữ từ khóa:
-     * - Nếu từ khóa chứa cả tiếng Hàn và tiếng Anh trong ngoặc (vd: "인공지능 (Artificial Intelligence)") -> chỉ giữ tiếng Hàn ("인공지능").
-     * - Nếu tồn tại bản tiếng Hàn trong cùng khái niệm -> chỉ dùng tiếng Hàn.
-     * - Nếu chỉ có tiếng Anh -> giữ nguyên tiếng Anh.
+     * Chuẩn hóa từ khóa theo quy tắc ngôn ngữ:
+     * - Nếu có tiếng Hàn -> dùng tiếng Hàn
+     * - Nếu chỉ có tiếng Anh -> dùng tiếng Anh
+     * - Nếu chứa cả Anh và Hàn (ví dụ: "인공지능 (Artificial Intelligence)" hoặc "AI 인공지능") -> chỉ giữ phần tiếng Hàn
      */
-    function formatKeywordPreferKorean(rawKw) {
-      let k = String(rawKw || '').replace(/^#+/, '').trim();
-      if (!k) return '';
+    function extractPreferredKeywordForm(rawStr) {
+      if (!rawStr) return "";
+      let k = String(rawStr).replace(/^#+/, '').trim();
+      if (!k) return "";
 
-      // Tách phần tiếng Hàn nếu viết kèm tiếng Anh dạng "한글 (English)" hoặc "English (한글)"
-      const parenKoMatch = k.match(/^([가-힣0-9\s·\-]+)\s*\([A-Za-z0-9\s\-\/]+\)$/);
-      if (parenKoMatch) return parenKoMatch[1].trim();
+      const hasHangul = /[가-힣]/.test(k);
+      const hasLatin = /[a-zA-Z]/.test(k);
 
-      const koInParenMatch = k.match(/^[A-Za-z0-9\s\-\/]+\s*\(([가-힣0-9\s·\-]+)\)$/);
-      if (koInParenMatch) return koInParenMatch[1].trim();
+      if (hasHangul && hasLatin) {
+        // Loại bỏ phần tiếng Anh trong ngoặc đơn/ngoặc vuông, ví dụ: "인공지능(Artificial Intelligence)" -> "인공지능"
+        let koOnly = k
+          .replace(/\([a-zA-Z0-9\s\-_&.,/]+\)/g, ' ')
+          .replace(/\[[a-zA-Z0-9\s\-_&.,/]+\]/g, ' ')
+          .replace(/[a-zA-Z]+/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim();
 
-      const concepts = normalizeKeywordToConcepts(k);
-      if (concepts.length === 1 && CONCEPT_PREFERRED_KO_LABEL.has(concepts[0])) {
-        return CONCEPT_PREFERRED_KO_LABEL.get(concepts[0]);
+        if (/[가-힣]/.test(koOnly)) {
+          return koOnly;
+        }
       }
       return k;
     }
@@ -1088,18 +1022,18 @@
       if (Array.isArray(rawKeywords)) {
         arr = rawKeywords;
       } else if (typeof rawKeywords === 'string') {
-        arr = rawKeywords.split(/[,;|/]+/);
+        arr = rawKeywords.split(/[,;|]+/);
       }
       const cleaned = [];
       const seen = new Set();
       for (let i = 0; i < arr.length; i++) {
         if (arr[i] === null || arr[i] === undefined) continue;
-        let k = formatKeywordPreferKorean(arr[i]);
-        const lower = k.toLowerCase();
-        if (!k || INVALID_KW_SET.has(lower) || lower === 'nan' || lower.includes('#nan')) continue;
+        const preferred = extractPreferredKeywordForm(arr[i]);
+        const lower = preferred.toLowerCase();
+        if (!preferred || INVALID_KW_SET.has(lower) || lower === 'nan' || lower.includes('#nan')) continue;
         if (!seen.has(lower)) {
           seen.add(lower);
-          cleaned.push(k);
+          cleaned.push(preferred);
         }
       }
       return cleaned;
@@ -1324,11 +1258,29 @@
     }
 
     /* ==========================================================================
-       7. 3D GALAXY SCENE CONSTRUCTION (WITH 2X SATURN-RINGED DEPARTMENT SUNS)
+       7. 3D GALAXY SCENE CONSTRUCTION (WITH 2X DEPARTMENT SUN + SATURN LIGHT RING)
        ========================================================================== */
+    function createSaturnRingMesh(ringRadius) {
+      const innerR = ringRadius * 0.72;
+      const outerR = ringRadius * 0.80;
+      const ringGeo = new THREE.RingGeometry(innerR, outerR, 48);
+      const ringMat = new THREE.MeshBasicMaterial({
+        color: new THREE.Color("#FEF08A"),
+        transparent: true,
+        opacity: 0.78,
+        side: THREE.DoubleSide,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+      });
+      const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+      // Nghiêng nhẹ kiểu vành đai Sao Thổ
+      ringMesh.rotation.x = Math.PI * 0.36;
+      ringMesh.rotation.y = Math.PI * 0.14;
+      return ringMesh;
+    }
+
     function buildCosmicScene() {
       NODE_SPRITES = [];
-      DEPT_SATURN_RINGS = [];
       SPRITE_BY_ID.clear();
       DEPT_MAP.clear();
 
@@ -1465,30 +1417,18 @@
 
         let spriteMat;
         let scaleSize = 1.0;
-        let saturnRingMesh = null;
 
         if (isDept) {
-          // Department Sun: To gấp đôi (5.6) + Vành đai ánh sáng tròn kiểu Sao Thổ
+          // Department to gấp đôi Advisor (2.8 * 2 = 5.6) + Vành đai Sao Thổ gắn trực tiếp làm con
           scaleSize = 5.6;
           spriteMat = new THREE.SpriteMaterial({
             map: departmentSunTexture,
-            color: new THREE.Color("#FBBF24"),
+            color: new THREE.Color("#FEF08A"),
             transparent: true,
-            opacity: 0.98,
+            opacity: 0.96,
             blending: THREE.AdditiveBlending,
             depthWrite: false
           });
-
-          const ringPlaneGeo = new THREE.PlaneGeometry(13.5, 13.5);
-          saturnRingMesh = new THREE.Mesh(ringPlaneGeo, saturnRingShaderMat);
-          saturnRingMesh.position.set(node.fx, node.fy, node.fz);
-          // Nghiêng vành đai 28 độ giống Sao Thổ
-          saturnRingMesh.rotation.x = Math.PI * 0.36;
-          saturnRingMesh.rotation.y = (node.id % 5) * 0.35;
-          saturnRingMesh.userData = { baseScale: 1.0 };
-          cosmosGroup.add(saturnRingMesh);
-          DEPT_SATURN_RINGS.push(saturnRingMesh);
-
         } else if (isAdvisor) {
           scaleSize = 2.8;
           spriteMat = new THREE.SpriteMaterial({
@@ -1530,12 +1470,19 @@
         sprite.position.set(node.fx, node.fy, node.fz);
         sprite.scale.set(scaleSize, scaleSize, 1);
 
+        let saturnRing = null;
+        if (isDept) {
+          // Gắn trực tiếp vào sprite Department để cùng group, cùng hiện lên và cùng biến mất
+          saturnRing = createSaturnRingMesh(1.0);
+          sprite.add(saturnRing);
+        }
+
         sprite.userData = {
           nodeData: node,
           baseSize: scaleSize,
           isSun: isDept || isAdvisor,
           isDeptSun: isDept,
-          saturnRing: saturnRingMesh,
+          saturnRing: saturnRing,
           pulseOffset: Math.random() * Math.PI * 2,
           twinkleSpeed: 2.0 + Math.random() * 4.0,
           shimmerAmp: 0.14 + Math.random() * 0.18,
@@ -1733,12 +1680,12 @@
       const depts = ["컴퓨터공학과", "기계시스템디자인공학과", "시각디자인전공", "산업디자인전공", "인공지능응용학과", "신소재공학과", "경영학과", "행정학과", "TESOL학과", "영어영문학과"];
       const colors = ["#F43F5E", "#06B6D4", "#8B5CF6", "#F59E0B", "#10B981"];
       const keywordPairs = [
-        ["인공지능", "최적화", "딥러닝"],
-        ["Artificial Intelligence", "Optimizing", "Deep Learning"],
-        ["사용자경험", "사용자인터페이스", "Interaction"],
+        ["인공지능 (Artificial Intelligence)", "최적화 (Optimization)", "딥러닝"],
+        ["Artificial Intelligence", "Optimizing", "Neural Network"],
+        ["사용자경험 (UX Design)", "사용자 인터페이스", "인터랙션"],
         ["User Experience", "Designing", "Interactive System"],
-        ["로봇", "제어", "Automation"],
-        ["Robot", "Controlling", "자율주행"]
+        ["로보틱스 (Robotics)", "제어시스템", "자동화"],
+        ["Robot", "Controlling", "Autonomous Vehicle"]
       ];
       let id = 1;
 
@@ -1748,7 +1695,7 @@
         const dx = Math.cos(ang) * rad;
         const dz = Math.sin(ang) * rad;
 
-        nodes.push({ id: id++, name: d, type: 'dept_sun', dept: d, year: 2026, x: dx, y: 450, z: dz, color: '#FBBF24' });
+        nodes.push({ id: id++, name: d, type: 'dept_sun', dept: d, year: 2026, x: dx, y: 450, z: dz, color: '#FEF08A' });
 
         for (let a = 1; a <= 2; a++) {
           const advName = `박승배`;
@@ -1978,15 +1925,11 @@
         const visible = passGlobalNodeFilters(n);
         s.visible = visible;
 
-        if (s.userData.saturnRing) {
-          s.userData.saturnRing.visible = visible;
-        }
-
         if (!visible) {
           s.material.opacity = 0.0;
-        } else if (!isSearchActive && !trackedThesisNode) {
+        } else if (!isSearchActive && !selectedActiveNode) {
           const det = n.type === 'thesis_planet' ? getCleanDetail(n) : null;
-          s.material.opacity = s.userData.isDeptSun ? 0.98 : ((det && det.isPhd) ? 0.92 : 0.88);
+          s.material.opacity = s.userData.isDeptSun ? 0.96 : ((det && det.isPhd) ? 0.92 : 0.88);
           s.scale.set(s.userData.baseSize, s.userData.baseSize, 1);
         }
       });
@@ -1994,21 +1937,16 @@
       const rightPanel = document.getElementById('right-panel');
       const listView = document.getElementById('panel-list-view');
       if (!rightPanel.classList.contains('hidden') && !listView.classList.contains('hidden')) {
-        if (currentListContext && currentListContext.rawBaseTheses) {
+        if (currentListContext.rawBaseTheses && currentListContext.rawBaseTheses.length > 0) {
           const filteredSubset = currentListContext.rawBaseTheses.filter(t => passGlobalNodeFilters(t));
-          renderThesesListPanel(
-            filteredSubset,
-            currentListContext.queryText,
-            currentListContext.mode,
-            { pushHistory: false, rawBaseTheses: currentListContext.rawBaseTheses }
-          );
+          renderThesesListPanel(filteredSubset, currentListContext.queryText, currentListContext.mode, false);
         }
       }
 
-      if (trackedThesisNode) {
-        const activeSprite = SPRITE_BY_ID.get(trackedThesisNode.id);
+      if (selectedActiveNode) {
+        const activeSprite = SPRITE_BY_ID.get(selectedActiveNode.id);
         if (activeSprite && activeSprite.visible) {
-          highlightSelectedThesisConnections(trackedThesisNode);
+          highlightSelectedThesisConnections(selectedActiveNode);
         } else {
           resetSearchHighlight();
           document.getElementById('right-panel').classList.add('hidden');
@@ -2324,7 +2262,7 @@
         if (hoveredSprite !== sprite) {
           clearHover();
           hoveredSprite = sprite;
-          if (!trackedThesisNode && !isSearchActive) {
+          if (!selectedActiveNode && !isSearchActive) {
             const s = sprite.userData.baseSize * 1.35;
             sprite.scale.set(s, s, 1);
           }
@@ -2336,9 +2274,9 @@
 
           if (n.type === 'dept_sun') {
             hoverBadgeEl.innerText = "DEPARTMENT";
-            hoverBadgeEl.className = "inline-block px-1.5 py-0.5 rounded text-[9px] font-scifi font-bold mb-1 bg-amber-500/25 text-amber-300 border border-amber-400/30";
+            hoverBadgeEl.className = "inline-block px-1.5 py-0.5 rounded text-[9px] font-scifi font-bold mb-1 bg-amber-500/20 text-amber-300";
             hoverTitleEl.innerText = detail.dept;
-            hoverSubEl.innerText = "학과 태양 · 클릭 시 연구 추이 보기";
+            hoverSubEl.innerText = "클릭 시 학과 연구 추이 보기";
           } else if (n.type === 'advisor_sun') {
             hoverBadgeEl.innerText = "ADVISOR";
             hoverBadgeEl.className = "inline-block px-1.5 py-0.5 rounded text-[9px] font-scifi font-bold mb-1 bg-yellow-500/20 text-yellow-300";
@@ -2360,7 +2298,7 @@
 
     function clearHover() {
       if (hoveredSprite) {
-        if (!trackedThesisNode && !isSearchActive) {
+        if (!selectedActiveNode && !isSearchActive) {
           const s = hoveredSprite.userData.baseSize;
           hoveredSprite.scale.set(s, s, 1);
         }
@@ -2417,7 +2355,7 @@
         } else {
           openSingleDetailView(node, targetSprite, false);
         }
-      } else if (trackedThesisNode || isSearchActive || !document.getElementById('right-panel').classList.contains('hidden')) {
+      } else if (selectedActiveNode || isSearchActive) {
         closeRightPanel();
       }
     });
@@ -2430,8 +2368,8 @@
 
     function openSingleDetailView(node, sprite = null, fromList = false) {
       const targetSprite = sprite || SPRITE_BY_ID.get(node.id);
-      trackedThesisNode = node;
-      trackedThesisSprite = targetSprite || null;
+      selectedActiveNode = node;
+      selectedActiveSprite = targetSprite || null;
       isSearchActive = false;
       lockedZoomAnchorWorld = null;
       lockedZoomAnchorSprite = null;
@@ -2453,7 +2391,7 @@
       document.getElementById('panel-detail-view').classList.remove('hidden');
 
       const backBtn = document.getElementById('btn-back-to-list');
-      if (fromList || currentListContext !== null) {
+      if (fromList || hasSearchHistory) {
         backBtn.classList.remove('hidden');
       } else {
         backBtn.classList.add('hidden');
@@ -2462,7 +2400,7 @@
       const rightPanel = document.getElementById('right-panel');
       rightPanel.classList.remove('hidden');
 
-      if (trackedThesisSprite) {
+      if (selectedActiveSprite) {
         if (activeCameraFlyTween) activeCameraFlyTween.stop();
         isCameraFlying = true;
 
@@ -2474,16 +2412,16 @@
           .to({ progress: 1 }, 850)
           .easing(TWEEN.Easing.Cubic.Out)
           .onUpdate(() => {
-            if (!trackedThesisSprite) return;
-            const liveWorldPos = getSpriteCurrentWorldPos(trackedThesisSprite);
+            if (!selectedActiveSprite) return;
+            const liveWorldPos = getSpriteCurrentWorldPos(selectedActiveSprite);
             const desiredCamPos = new THREE.Vector3(liveWorldPos.x + 34, liveWorldPos.y + 18, liveWorldPos.z + 44);
             camera.position.lerpVectors(startCamPos, desiredCamPos, flyState.progress);
             controls.target.lerpVectors(startTarget, liveWorldPos, flyState.progress);
           })
           .onComplete(() => {
             isCameraFlying = false;
-            if (trackedThesisSprite) {
-              const liveWorldPos = getSpriteCurrentWorldPos(trackedThesisSprite);
+            if (selectedActiveSprite) {
+              const liveWorldPos = getSpriteCurrentWorldPos(selectedActiveSprite);
               controls.target.copy(liveWorldPos);
             }
           })
@@ -2539,19 +2477,12 @@
           tag.className = 'px-2 py-0.5 rounded text-[10px] font-medium bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 cursor-pointer hover:bg-indigo-500/40 transition';
           tag.innerText = `#${k}`;
           tag.onclick = () => {
-            // Lưu ngữ cảnh chi tiết luận văn đang xem vào stack để bấm '목록으로' có thể quay lại đúng bài này
-            const prevSnapshot = {
-              viewType: 'detail',
-              node: node,
-              sprite: trackedThesisSprite,
-              previousListContext: currentListContext
-            };
-            listHistoryStack.push(prevSnapshot);
-
+            // Lưu lại bài luận văn đang xem vào history để nút "← 목록으로" quay lại được
+            pushCurrentViewToHistory();
             searchType.value = 'keyword';
             searchInput.value = k;
-            // Giữ nguyên trackedThesisSprite để camera vẫn tiếp tục bám theo ngôi sao luận văn
-            performSearch({ preserveTracking: true, pushHistory: false });
+            // Giữ nguyên selectedActiveSprite để camera tiếp tục bám theo ngôi sao luận văn
+            performSearch(true, true);
           };
           kwBox.appendChild(tag);
         });
@@ -2564,7 +2495,7 @@
     }
 
     /* ==========================================================================
-       11. CONTEXTUAL MINI-ANALYTICS ENGINE (INTERACTIVE SPARKLINE + STACKED BAR + TOP 5 KW)
+       11. CONTEXTUAL MINI-ANALYTICS ENGINE (STACKED BAR / INTERACTIVE SPARKLINE / TOP 5 KW)
        ========================================================================== */
     function renderContextualMiniAnalytics(theses, contextMode) {
       const stackedSection = document.getElementById('mini-chart-stacked-section');
@@ -2583,6 +2514,7 @@
       renderTop5KeywordsMiniBars(theses);
     }
 
+    // 1. Thanh tỷ lệ phân bổ 6 nhóm ngành
     function renderClusterStackedBar(theses) {
       const barContainer = document.getElementById('mini-stacked-bar');
       const legendContainer = document.getElementById('mini-stacked-legend');
@@ -2639,16 +2571,16 @@
       });
     }
 
-    // 2. Đường xu hướng mini theo năm kèm Interactive Hover Tooltip hiển thị Năm & Số luận văn
+    // 2. Đường xu hướng mini theo năm kèm Hover Tooltip hiển thị Năm + Số lượng luận văn
     function renderYearSparkline(theses) {
-      const wrapper = document.getElementById('sparkline-wrapper');
       const svg = document.getElementById('mini-sparkline-svg');
-      const hoverTip = document.getElementById('sparkline-hover-tooltip');
+      const wrapper = document.getElementById('sparkline-wrapper');
+      const hoverPill = document.getElementById('sparkline-hover-pill');
       const rangeLabel = document.getElementById('sparkline-range-label');
       const peakLabel = document.getElementById('sparkline-peak-label');
 
       svg.innerHTML = '';
-      hoverTip.classList.add('hidden');
+      hoverPill.classList.add('hidden');
 
       if (!theses || theses.length === 0) {
         peakLabel.innerText = '0건';
@@ -2737,82 +2669,76 @@
       pathEl.style.filter = 'drop-shadow(0 0 5px rgba(236, 72, 153, 0.65))';
       svg.appendChild(pathEl);
 
-      // Peak & End Static Dots
-      coords.forEach((p, idx) => {
-        if (p.year === peakYear || idx === coords.length - 1) {
+      // Các chấm nhỏ trên từng năm để dễ nhận diện điểm dữ liệu
+      coords.forEach((p) => {
+        if (p.val > 0) {
           const dot = document.createElementNS(ns, 'circle');
           dot.setAttribute('cx', p.x.toFixed(1));
           dot.setAttribute('cy', p.y.toFixed(1));
-          dot.setAttribute('r', p.year === peakYear ? '3.0' : '2.2');
-          dot.setAttribute('fill', p.year === peakYear ? '#F43F5E' : '#22D3EE');
-          dot.setAttribute('stroke', '#FFFFFF');
-          dot.setAttribute('stroke-width', '0.9');
+          dot.setAttribute('r', p.year === peakYear ? '3.0' : '1.8');
+          dot.setAttribute('fill', p.year === peakYear ? '#F43F5E' : '#38BDF8');
           svg.appendChild(dot);
         }
       });
 
-      // Interactive Hover Guide Line & Active Point Marker
-      const hoverLine = document.createElementNS(ns, 'line');
-      hoverLine.setAttribute('y1', '2');
-      hoverLine.setAttribute('y2', String(height - 2));
-      hoverLine.setAttribute('stroke', 'rgba(34, 211, 238, 0.55)');
-      hoverLine.setAttribute('stroke-width', '1');
-      hoverLine.setAttribute('stroke-dasharray', '2,2');
-      hoverLine.style.display = 'none';
-      svg.appendChild(hoverLine);
+      // Đường gióng dọc & chấm sáng khi hover chuột
+      const guideLine = document.createElementNS(ns, 'line');
+      guideLine.setAttribute('y1', '2');
+      guideLine.setAttribute('y2', String(height - 2));
+      guideLine.setAttribute('stroke', 'rgba(34, 211, 238, 0.55)');
+      guideLine.setAttribute('stroke-width', '1');
+      guideLine.setAttribute('stroke-dasharray', '2,2');
+      guideLine.style.display = 'none';
+      svg.appendChild(guideLine);
 
-      const hoverDot = document.createElementNS(ns, 'circle');
-      hoverDot.setAttribute('r', '4.2');
-      hoverDot.setAttribute('fill', '#22D3EE');
-      hoverDot.setAttribute('stroke', '#FFFFFF');
-      hoverDot.setAttribute('stroke-width', '1.5');
-      hoverDot.style.filter = 'drop-shadow(0 0 6px #22D3EE)';
-      hoverDot.style.display = 'none';
-      svg.appendChild(hoverDot);
+      const activeCursorDot = document.createElementNS(ns, 'circle');
+      activeCursorDot.setAttribute('r', '4.2');
+      activeCursorDot.setAttribute('fill', '#22D3EE');
+      activeCursorDot.setAttribute('stroke', '#FFFFFF');
+      activeCursorDot.setAttribute('stroke-width', '1.5');
+      activeCursorDot.style.filter = 'drop-shadow(0 0 6px #22D3EE)';
+      activeCursorDot.style.display = 'none';
+      svg.appendChild(activeCursorDot);
 
       wrapper.onmousemove = (e) => {
         const rect = wrapper.getBoundingClientRect();
         if (rect.width <= 0) return;
         const relX = THREE.MathUtils.clamp((e.clientX - rect.left) / rect.width, 0, 1);
-        const targetSvgX = relX * width;
+        const svgX = relX * width;
 
-        // Tìm điểm năm gần vị trí con trỏ chuột nhất
+        // Tìm điểm năm gần nhất theo trục X
         let closest = coords[0];
-        let minDx = Math.abs(coords[0].x - targetSvgX);
+        let minDist = Math.abs(svgX - closest.x);
         for (let i = 1; i < coords.length; i++) {
-          const dx = Math.abs(coords[i].x - targetSvgX);
-          if (dx < minDx) {
-            minDx = dx;
+          const d = Math.abs(svgX - coords[i].x);
+          if (d < minDist) {
+            minDist = d;
             closest = coords[i];
           }
         }
 
-        hoverLine.setAttribute('x1', closest.x.toFixed(1));
-        hoverLine.setAttribute('x2', closest.x.toFixed(1));
-        hoverLine.style.display = 'block';
+        guideLine.setAttribute('x1', closest.x.toFixed(1));
+        guideLine.setAttribute('x2', closest.x.toFixed(1));
+        guideLine.style.display = 'block';
 
-        hoverDot.setAttribute('cx', closest.x.toFixed(1));
-        hoverDot.setAttribute('cy', closest.y.toFixed(1));
-        hoverDot.style.display = 'block';
+        activeCursorDot.setAttribute('cx', closest.x.toFixed(1));
+        activeCursorDot.setAttribute('cy', closest.y.toFixed(1));
+        activeCursorDot.style.display = 'block';
 
-        hoverTip.innerHTML = `<span class="text-cyan-300 font-bold">${closest.year}년</span> · <span class="text-pink-300 font-bold">${closest.val}건</span>`;
-        hoverTip.classList.remove('hidden');
-
-        // Căn vị trí tooltip không bị tràn khỏi mép trái/phải của box
-        const tipWidth = hoverTip.offsetWidth || 86;
-        const pixelX = (closest.x / width) * rect.width;
-        const clampedLeft = THREE.MathUtils.clamp(pixelX - tipWidth / 2, 0, Math.max(0, rect.width - tipWidth));
-        hoverTip.style.left = `${clampedLeft}px`;
+        const pctX = THREE.MathUtils.clamp((closest.x / width) * 100, 14, 86);
+        hoverPill.style.left = `${pctX}%`;
+        hoverPill.innerText = `${closest.year}년 · ${closest.val}건`;
+        hoverPill.classList.remove('hidden');
       };
 
       wrapper.onmouseleave = () => {
-        hoverLine.style.display = 'none';
-        hoverDot.style.display = 'none';
-        hoverTip.classList.add('hidden');
+        guideLine.style.display = 'none';
+        activeCursorDot.style.display = 'none';
+        hoverPill.classList.add('hidden');
       };
     }
 
-    // 3. Top 5 Từ khóa nổi bật (Ưu tiên tiếng Hàn nếu có cả Anh & Hàn; hỗ trợ nút quay lại '목록으로')
+    // 3. Top 5 Từ khóa nổi bật
     function renderTop5KeywordsMiniBars(theses) {
       const container = document.getElementById('mini-top-keywords');
       container.innerHTML = '';
@@ -2822,35 +2748,24 @@
         return;
       }
 
-      const conceptFreq = new Map();
-      const conceptLabelPool = new Map(); // Lưu danh sách nhãn hiển thị để ưu tiên nhãn tiếng Hàn
+      const kwCounts = new Map();
+      const kwDisplayLabel = new Map();
 
       for (let i = 0; i < theses.length; i++) {
         const det = getCleanDetail(theses[i]);
         const kws = det.keywords || [];
-        const seenConceptsInThesis = new Set();
-
         for (let j = 0; j < kws.length; j++) {
-          const formatted = formatKeywordPreferKorean(kws[j]);
-          const normKey = formatted.toLowerCase().trim();
+          const raw = kws[j];
+          const normKey = raw.toLowerCase().trim();
           if (!normKey || INVALID_KW_SET.has(normKey)) continue;
-
-          const concepts = normalizeKeywordToConcepts(formatted);
-          const groupKey = concepts[0] || normKey;
-
-          if (!seenConceptsInThesis.has(groupKey)) {
-            seenConceptsInThesis.add(groupKey);
-            conceptFreq.set(groupKey, (conceptFreq.get(groupKey) || 0) + 1);
+          kwCounts.set(normKey, (kwCounts.get(normKey) || 0) + 1);
+          if (!kwDisplayLabel.has(normKey)) {
+            kwDisplayLabel.set(normKey, raw);
           }
-
-          if (!conceptLabelPool.has(groupKey)) {
-            conceptLabelPool.set(groupKey, []);
-          }
-          conceptLabelPool.get(groupKey).push(formatted);
         }
       }
 
-      const sortedTop5 = Array.from(conceptFreq.entries())
+      const sortedTop5 = Array.from(kwCounts.entries())
         .sort((a, b) => b[1] - a[1])
         .slice(0, 5);
 
@@ -2862,20 +2777,16 @@
       const maxFreq = sortedTop5[0][1];
       const barColors = ['#22D3EE', '#818CF8', '#C084FC', '#F472B6', '#FB7185'];
 
-      sortedTop5.forEach(([groupKey, count], idx) => {
-        const candidates = conceptLabelPool.get(groupKey) || [groupKey];
-        // Nếu có bất kỳ nhãn tiếng Hàn nào trong cụm khái niệm -> chọn nhãn tiếng Hàn phổ biến nhất
-        const koCandidate = candidates.find(lbl => /[가-힣]/.test(lbl));
-        const displayLabel = koCandidate || candidates[0];
-
+      sortedTop5.forEach(([normKey, count], idx) => {
+        const label = kwDisplayLabel.get(normKey);
         const pct = Math.max(8, (count / maxFreq) * 100);
         const color = barColors[idx % barColors.length];
 
         const row = document.createElement('div');
         row.className = 'flex items-center space-x-2 text-[10px] group cursor-pointer py-0.5';
-        row.title = `"${displayLabel}" 키워드로 필터링`;
+        row.title = `"${label}" 키워드로 필터링`;
         row.innerHTML = `
-          <span class="w-24 truncate text-slate-200 group-hover:text-cyan-300 font-medium transition">${displayLabel}</span>
+          <span class="w-24 truncate text-slate-200 group-hover:text-cyan-300 font-medium transition">${label}</span>
           <div class="flex-1 h-1.5 rounded-full bg-white/5 overflow-hidden">
             <div class="h-full rounded-full mini-bar-fill" style="width: ${pct}%; background: ${color}; box-shadow: 0 0 6px ${color};"></div>
           </div>
@@ -2883,9 +2794,11 @@
         `;
 
         row.addEventListener('click', () => {
+          // Lưu lại màn hình hiện tại vào stack lịch sử để nút "← 목록으로" quay lại được
+          pushCurrentViewToHistory();
           searchType.value = 'keyword';
-          searchInput.value = displayLabel;
-          performSearch({ pushHistory: true, preserveTracking: trackedThesisNode !== null });
+          searchInput.value = label;
+          performSearch(true, selectedActiveNode !== null);
         });
 
         container.appendChild(row);
@@ -2893,33 +2806,94 @@
     }
 
     /* ==========================================================================
-       12. SEARCH, HISTORY STACK & NEWEST-FIRST LIST HANDLERS
+       12. NAVIGATION HISTORY, SEARCH & CONTEXTUAL LIST VIEW HANDLERS
        ========================================================================== */
     const searchInput = document.getElementById('search-input');
     const searchType = document.getElementById('search-type');
     const searchBtn = document.getElementById('search-submit-btn');
 
-    function sortThesesNewestFirst(list) {
-      return [...list].sort((a, b) => {
-        const yDiff = (b.year || 0) - (a.year || 0);
-        if (yDiff !== 0) return yDiff;
+    function pushCurrentViewToHistory() {
+      const rightPanel = document.getElementById('right-panel');
+      if (rightPanel.classList.contains('hidden')) return;
+
+      const isDetailOpen = !document.getElementById('panel-detail-view').classList.contains('hidden');
+      if (isDetailOpen && selectedActiveNode) {
+        listNavigationHistory.push({
+          viewType: 'detail',
+          node: selectedActiveNode,
+          sprite: selectedActiveSprite
+        });
+      } else if (currentListContext && currentListContext.rawBaseTheses) {
+        listNavigationHistory.push({
+          viewType: 'list',
+          rawBaseTheses: [...currentListContext.rawBaseTheses],
+          queryText: currentListContext.queryText,
+          mode: currentListContext.mode,
+          searchType: currentListContext.searchType,
+          searchQueryInput: currentListContext.searchQueryInput
+        });
+      }
+    }
+
+    function updateListBackButtonVisibility() {
+      const backBtn = document.getElementById('btn-back-to-prev-list');
+      if (listNavigationHistory.length > 0) {
+        backBtn.classList.remove('hidden');
+      } else {
+        backBtn.classList.add('hidden');
+      }
+    }
+
+    document.getElementById('btn-back-to-prev-list').addEventListener('click', () => {
+      if (listNavigationHistory.length === 0) return;
+      const prev = listNavigationHistory.pop();
+
+      if (prev.viewType === 'detail' && prev.node) {
+        openSingleDetailView(prev.node, prev.sprite, listNavigationHistory.length > 0);
+      } else if (prev.viewType === 'list') {
+        searchType.value = prev.searchType || 'all';
+        searchInput.value = prev.searchQueryInput || '';
+        const visibleMatches = prev.rawBaseTheses.filter(t => passGlobalNodeFilters(t));
+
+        const matchIdSet = new Set(prev.rawBaseTheses.map(m => m.id));
+        const isOverview = prev.rawBaseTheses.length === ALL_NODES.filter(n => n.type === 'thesis_planet').length;
+        isSearchActive = !isOverview && !selectedActiveNode;
+
+        NODE_SPRITES.forEach(s => {
+          const id = s.userData.nodeData.id;
+          s.userData.isHighlight = !isOverview && matchIdSet.has(id);
+          s.userData.isRelated = false;
+        });
+
+        renderThesesListPanel(visibleMatches, prev.queryText, prev.mode, true, prev.rawBaseTheses);
+      }
+    });
+
+    function sortThesesNewestFirst(thesesArr) {
+      return [...thesesArr].sort((a, b) => {
+        const yrDiff = (b.year || 0) - (a.year || 0);
+        if (yrDiff !== 0) return yrDiff;
         return (b.id || 0) - (a.id || 0);
       });
     }
 
-    function performSearch(options = {}) {
-      const { pushHistory = false, preserveTracking = false } = options;
+    function performSearch(pushHistory = false, preserveCameraLock = false) {
       let q = searchInput.value.trim().toLowerCase();
       const type = searchType.value;
 
       if (!q) {
+        listNavigationHistory = [];
         resetSearchHighlight();
         closeRightPanel();
+        hasSearchHistory = false;
         return;
       }
 
+      if (!pushHistory) {
+        listNavigationHistory = [];
+      }
+
       const cleanProfName = q.replace(/교수/g, '').trim();
-      const qConcepts = normalizeKeywordToConcepts(q);
 
       const matchedTheses = ALL_NODES.filter(n => {
         if (n.type !== 'thesis_planet') return false;
@@ -2929,8 +2903,7 @@
         const authorMatch = detail.author.toLowerCase().includes(q);
         const advisorMatch = detail.advisor.toLowerCase().includes(q) || detail.advisor.toLowerCase().includes(cleanProfName);
         const deptMatch = detail.dept.toLowerCase().includes(q);
-        const kwMatch = detail.keywords.some(k => k.toLowerCase().includes(q)) ||
-                        (qConcepts.length > 0 && detail.concepts.some(c => qConcepts.includes(c)));
+        const kwMatch = detail.keywords.some(k => k.toLowerCase().includes(q));
 
         if (type === 'advisor') return advisorMatch;
         if (type === 'name') return titleMatch;
@@ -2943,28 +2916,35 @@
 
       const contextMode = (type === 'advisor' || type === 'dept') ? 'entity' : 'general';
 
-      if (!preserveTracking) {
-        isSearchActive = true;
-        trackedThesisNode = null;
-        trackedThesisSprite = null;
-        clearArcLinks();
+      hasSearchHistory = true;
+      isSearchActive = true;
 
-        const matchIdSet = new Set(matchedTheses.map(m => m.id));
-        NODE_SPRITES.forEach(s => {
-          const id = s.userData.nodeData.id;
-          s.userData.isHighlight = matchIdSet.has(id);
-          s.userData.isRelated = false;
-        });
+      // Chỉ nhả camera khi người dùng chủ động tìm mới từ thanh tìm kiếm,
+      // còn khi bấm từ khóa từ panel chi tiết thì giữ nguyên camera bám theo ngôi sao luận văn
+      if (!preserveCameraLock) {
+        selectedActiveNode = null;
+        selectedActiveSprite = null;
+        clearArcLinks();
       }
 
-      const visibleMatches = matchedTheses.filter(t => passGlobalNodeFilters(t));
-      renderThesesListPanel(visibleMatches, searchInput.value.trim(), contextMode, {
-        pushHistory: pushHistory,
-        rawBaseTheses: matchedTheses
+      const matchIdSet = new Set(matchedTheses.map(m => m.id));
+      NODE_SPRITES.forEach(s => {
+        const id = s.userData.nodeData.id;
+        if (preserveCameraLock && selectedActiveNode && id === selectedActiveNode.id) {
+          s.userData.isHighlight = true;
+          s.userData.isRelated = false;
+        } else {
+          s.userData.isHighlight = matchIdSet.has(id);
+          s.userData.isRelated = false;
+        }
       });
+
+      const visibleMatches = matchedTheses.filter(t => passGlobalNodeFilters(t));
+      renderThesesListPanel(visibleMatches, searchInput.value.trim(), contextMode, true, matchedTheses);
     }
 
     function showThesesOfAdvisor(advisorName, pushHistory = false) {
+      if (!pushHistory) listNavigationHistory = [];
       const clean = advisorName.replace('교수', '').trim();
       const theses = ALL_NODES.filter(n => {
         if (n.type !== 'thesis_planet') return false;
@@ -2972,9 +2952,11 @@
         return detail.advisor.includes(clean);
       });
 
+      hasSearchHistory = true;
       isSearchActive = true;
-      trackedThesisNode = null;
-      trackedThesisSprite = null;
+      selectedActiveNode = null;
+      selectedActiveSprite = null;
+
       clearArcLinks();
 
       const matchIdSet = new Set(theses.map(m => m.id));
@@ -2985,18 +2967,18 @@
       });
 
       const visibleMatches = theses.filter(t => passGlobalNodeFilters(t));
-      renderThesesListPanel(visibleMatches, `${clean} 교수`, 'entity', {
-        pushHistory: pushHistory,
-        rawBaseTheses: theses
-      });
+      renderThesesListPanel(visibleMatches, `${clean} 교수`, 'entity', true, theses);
     }
 
     function showThesesOfDepartment(deptName, pushHistory = false) {
+      if (!pushHistory) listNavigationHistory = [];
       const theses = ALL_NODES.filter(n => n.type === 'thesis_planet' && n.dept === deptName);
 
+      hasSearchHistory = true;
       isSearchActive = true;
-      trackedThesisNode = null;
-      trackedThesisSprite = null;
+      selectedActiveNode = null;
+      selectedActiveSprite = null;
+
       clearArcLinks();
 
       const matchIdSet = new Set(theses.map(m => m.id));
@@ -3007,20 +2989,18 @@
       });
 
       const visibleMatches = theses.filter(t => passGlobalNodeFilters(t));
-      renderThesesListPanel(visibleMatches, deptName, 'entity', {
-        pushHistory: pushHistory,
-        rawBaseTheses: theses
-      });
+      renderThesesListPanel(visibleMatches, deptName, 'entity', true, theses);
     }
 
     function showFilteredOverviewAnalytics() {
+      listNavigationHistory = [];
       const allTheses = ALL_NODES.filter(n => n.type === 'thesis_planet');
       const visibleTheses = allTheses.filter(t => passGlobalNodeFilters(t));
 
-      listHistoryStack = [];
+      hasSearchHistory = true;
       isSearchActive = false;
-      trackedThesisNode = null;
-      trackedThesisSprite = null;
+      selectedActiveNode = null;
+      selectedActiveSprite = null;
       clearArcLinks();
 
       NODE_SPRITES.forEach(s => {
@@ -3033,52 +3013,37 @@
         : (selectedCluster !== 'all' ? `${selectedCluster} 계열 전체` : `전체 학술 유니버스 (~${activeTimelineYear})`);
       const mode = selectedDept !== 'ALL' ? 'entity' : 'general';
 
-      renderThesesListPanel(visibleTheses, label, mode, {
-        pushHistory: false,
-        rawBaseTheses: allTheses
-      });
+      renderThesesListPanel(visibleTheses, label, mode, true, allTheses);
     }
 
-    function renderThesesListPanel(theses, queryText, contextMode = 'general', opts = {}) {
-      const { pushHistory = false, rawBaseTheses = null } = opts;
-
-      // Lưu snapshot trạng thái list trước đó nếu có điều hướng lồng nhau (ví dụ bấm từ khóa từ 1 danh sách)
-      if (pushHistory && currentListContext && !document.getElementById('panel-list-view').classList.contains('hidden')) {
-        listHistoryStack.push({
-          viewType: 'list',
-          context: { ...currentListContext }
-        });
-      }
-
+    function renderThesesListPanel(theses, queryText, contextMode = 'general', updateBaseContext = true, rawBaseTheses = null) {
+      // Luôn sắp xếp danh sách từ năm mới nhất đến cũ nhất
       const sortedTheses = sortThesesNewestFirst(theses);
-      const sortedRawBase = sortThesesNewestFirst(rawBaseTheses || theses);
 
-      currentListContext = {
-        theses: sortedTheses,
-        rawBaseTheses: sortedRawBase,
-        queryText: queryText,
-        mode: contextMode
-      };
+      if (updateBaseContext) {
+        currentListContext = {
+          theses: sortedTheses,
+          rawBaseTheses: rawBaseTheses ? sortThesesNewestFirst(rawBaseTheses) : sortedTheses,
+          queryText: queryText,
+          mode: contextMode,
+          searchType: searchType.value,
+          searchQueryInput: searchInput.value
+        };
+      }
 
       const listView = document.getElementById('panel-list-view');
       const detailView = document.getElementById('panel-detail-view');
       const container = document.getElementById('search-theses-list');
       const rightPanel = document.getElementById('right-panel');
       const badgeEl = document.getElementById('list-view-query-badge');
-      const listBackBtn = document.getElementById('btn-list-back');
 
       listView.classList.remove('hidden');
       detailView.classList.add('hidden');
       rightPanel.classList.remove('hidden');
 
-      // Hiện nút '← 목록으로' trên toàn bộ các panel từ khóa / danh sách có lịch sử trước đó
-      if (listHistoryStack.length > 0) {
-        listBackBtn.classList.remove('hidden');
-      } else {
-        listBackBtn.classList.add('hidden');
-      }
+      updateListBackButtonVisibility();
 
-      badgeEl.innerText = contextMode === 'entity' ? 'ENTITY ANALYTICS' : 'KEYWORD & DISTRIBUTION';
+      badgeEl.innerText = contextMode === 'entity' ? 'ENTITY ANALYTICS' : 'DISTRIBUTION ANALYTICS';
       document.getElementById('list-view-title').innerText = `"${queryText}" 연구 분석`;
       document.getElementById('list-view-count').innerText = TEXT_KO.searchResultsCount(sortedTheses.length);
       document.getElementById('list-view-subhint').innerText = TEXT_KO.listViewSubhint;
@@ -3103,7 +3068,7 @@
         card.innerHTML = `
           <div class="flex items-center justify-between">
             <span class="px-1.5 py-0.5 rounded text-[9px] font-bold ${detail.isPhd ? 'bg-purple-500/25 text-purple-300' : 'bg-pink-500/20 text-pink-300'} font-scifi">#${idx + 1} · ${detail.isPhd ? '박사' : '석사'}</span>
-            <span class="text-cyan-400 font-scifi text-[10px] font-bold">${detail.year}${TEXT_KO.yearSuffix}</span>
+            <span class="text-cyan-400 font-scifi text-[10px]">${detail.year}${TEXT_KO.yearSuffix}</span>
           </div>
           <h4 class="font-bold text-white text-xs leading-snug line-clamp-2">${detail.title_ko}</h4>
           <div class="text-[10px] text-slate-400 flex items-center justify-between pt-1 border-t border-white/5">
@@ -3132,28 +3097,10 @@
       }
     }
 
-    // Nút '← 목록으로' ở header của panel danh sách / từ khóa
-    document.getElementById('btn-list-back').addEventListener('click', () => {
-      if (listHistoryStack.length === 0) return;
-      const prev = listHistoryStack.pop();
-
-      if (prev.viewType === 'detail') {
-        currentListContext = prev.previousListContext || null;
-        openSingleDetailView(prev.node, prev.sprite, currentListContext !== null);
-      } else if (prev.viewType === 'list' && prev.context) {
-        const filteredSubset = prev.context.rawBaseTheses.filter(t => passGlobalNodeFilters(t));
-        renderThesesListPanel(filteredSubset, prev.context.queryText, prev.context.mode, {
-          pushHistory: false,
-          rawBaseTheses: prev.context.rawBaseTheses
-        });
-      }
-    });
-
     function closeRightPanel() {
       const rightPanel = document.getElementById('right-panel');
       rightPanel.classList.add('hidden');
-      listHistoryStack = [];
-      currentListContext = null;
+      listNavigationHistory = [];
       resetSearchHighlight();
     }
 
@@ -3164,8 +3111,8 @@
       }
       isCameraFlying = false;
       isSearchActive = false;
-      trackedThesisNode = null;
-      trackedThesisSprite = null;
+      selectedActiveNode = null;
+      selectedActiveSprite = null;
       clearArcLinks();
 
       NODE_SPRITES.forEach(s => {
@@ -3173,38 +3120,26 @@
         s.userData.isRelated = false;
         if (s.visible) {
           const det = s.userData.nodeData.type === 'thesis_planet' ? getCleanDetail(s.userData.nodeData) : null;
-          s.material.opacity = s.userData.isDeptSun ? 0.98 : (det && det.isPhd ? 0.92 : 0.88);
+          s.material.opacity = s.userData.isDeptSun ? 0.96 : (det && det.isPhd ? 0.92 : 0.88);
           s.scale.set(s.userData.baseSize, s.userData.baseSize, 1);
         }
       });
     }
 
-    // Nút '← 목록으로' ở panel chi tiết luận văn
     document.getElementById('btn-back-to-list').addEventListener('click', () => {
-      if (currentListContext) {
-        document.getElementById('panel-detail-view').classList.add('hidden');
-        document.getElementById('panel-list-view').classList.remove('hidden');
-        const listBackBtn = document.getElementById('btn-list-back');
-        if (listHistoryStack.length > 0) listBackBtn.classList.remove('hidden');
-        else listBackBtn.classList.add('hidden');
-      } else if (listHistoryStack.length > 0) {
-        document.getElementById('btn-list-back').click();
-      }
+      document.getElementById('panel-detail-view').classList.add('hidden');
+      document.getElementById('panel-list-view').classList.remove('hidden');
+      updateListBackButtonVisibility();
+      // Giữ nguyên camera bám theo ngôi sao nếu người dùng chỉ quay lại danh sách
+      isCameraFlying = false;
+      isSearchActive = currentListContext.rawBaseTheses.length < ALL_NODES.filter(n => n.type === 'thesis_planet').length;
     });
 
     document.getElementById('btn-close-list-panel').addEventListener('click', closeRightPanel);
     document.getElementById('btn-close-detail-panel').addEventListener('click', closeRightPanel);
 
-    searchInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        listHistoryStack = [];
-        performSearch({ pushHistory: false, preserveTracking: false });
-      }
-    });
-    searchBtn.addEventListener('click', () => {
-      listHistoryStack = [];
-      performSearch({ pushHistory: false, preserveTracking: false });
-    });
+    searchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') performSearch(false, false); });
+    searchBtn.addEventListener('click', () => performSearch(false, false));
 
     // Camera Presets
     function setActiveCameraBtn(activeId) {
@@ -3216,7 +3151,7 @@
     }
 
     document.getElementById('btn-view-galaxy').addEventListener('click', () => {
-      if (trackedThesisNode) closeRightPanel();
+      if (selectedActiveNode) closeRightPanel();
       lockedZoomAnchorWorld = null;
       lockedZoomAnchorSprite = null;
       setActiveCameraBtn('btn-view-galaxy');
@@ -3226,7 +3161,7 @@
     });
 
     document.getElementById('btn-view-top').addEventListener('click', () => {
-      if (trackedThesisNode) closeRightPanel();
+      if (selectedActiveNode) closeRightPanel();
       lockedZoomAnchorWorld = null;
       lockedZoomAnchorSprite = null;
       setActiveCameraBtn('btn-view-top');
@@ -3236,7 +3171,7 @@
     });
 
     document.getElementById('btn-view-3d').addEventListener('click', () => {
-      if (trackedThesisNode) closeRightPanel();
+      if (selectedActiveNode) closeRightPanel();
       lockedZoomAnchorWorld = null;
       lockedZoomAnchorSprite = null;
       setActiveCameraBtn('btn-view-3d');
@@ -3253,7 +3188,7 @@
     });
 
     /* ==========================================================================
-       13. REAL-TIME ANIMATION & CONTINUOUS CAMERA TRACKING
+       13. REAL-TIME ANIMATION (CAMERA CONTINUOUSLY TRACKS SELECTED STAR UNTIL PANEL CLOSED)
        ========================================================================== */
     const clock = new THREE.Clock();
     const _prevTrackedWorldPos = new THREE.Vector3();
@@ -3264,18 +3199,19 @@
       requestAnimationFrame(animate);
       const elapsed = clock.getElapsedTime();
 
-      // Camera luôn bám sát ngôi sao luận văn đang chọn kể cả khi mở panel từ khóa
-      const hasLockedThesis = trackedThesisSprite && trackedThesisSprite.visible && !isCameraFlying;
+      const rightPanelOpen = !document.getElementById('right-panel').classList.contains('hidden');
+      const hasLockedThesis = rightPanelOpen && selectedActiveSprite && selectedActiveSprite.visible && !isCameraFlying;
+
       if (hasLockedThesis) {
         cosmosGroup.updateMatrixWorld();
-        trackedThesisSprite.getWorldPosition(_prevTrackedWorldPos);
+        selectedActiveSprite.getWorldPosition(_prevTrackedWorldPos);
       }
 
       cosmosGroup.rotation.y += 0.00018;
 
       if (hasLockedThesis) {
         cosmosGroup.updateMatrixWorld();
-        trackedThesisSprite.getWorldPosition(_currTrackedWorldPos);
+        selectedActiveSprite.getWorldPosition(_currTrackedWorldPos);
         _trackDelta.subVectors(_currTrackedWorldPos, _prevTrackedWorldPos);
 
         camera.position.add(_trackDelta);
@@ -3286,8 +3222,6 @@
       controls.update();
 
       volumetricNebulaMat.uniforms.uTime.value = elapsed;
-      saturnRingShaderMat.uniforms.uTime.value = elapsed;
-
       const links = arcLinksGroup.children;
       for (let i = 0; i < links.length; i++) {
         const mesh = links[i];
@@ -3305,26 +3239,34 @@
       const camDist = camera.position.distanceTo(controls.target);
       const distFactor = Math.min(2.2, Math.max(0.95, camDist / 520));
 
-      const hasActiveFocus = isSearchActive || trackedThesisNode !== null;
+      const hasActiveFocus = isSearchActive || selectedActiveNode !== null;
 
       for (let i = 0; i < NODE_SPRITES.length; i++) {
         const s = NODE_SPRITES[i];
         if (s.visible) {
+          // Xoay nhẹ vành đai Sao Thổ của Department
+          if (s.userData.saturnRing) {
+            s.userData.saturnRing.rotation.z = elapsed * 0.45 + s.userData.pulseOffset;
+          }
+
           if (hasActiveFocus) {
             if (s.userData.isHighlight) {
               const strobe = 1.0 + Math.abs(Math.sin(elapsed * 7.5)) * 0.16;
               const b = s.userData.baseSize * 5.0;
               s.scale.set(b * strobe, b * strobe, 1);
               s.material.opacity = 1.0;
+              if (s.userData.saturnRing) s.userData.saturnRing.material.opacity = 0.95;
             } else if (s.userData.isRelated) {
               const b = s.userData.baseSize * 3.0;
               const shimmer = Math.sin(elapsed * 3.2 + s.userData.pulseOffset) * 0.08;
               s.scale.set(b * (1.0 + shimmer), b * (1.0 + shimmer), 1);
               s.material.opacity = 0.94;
+              if (s.userData.saturnRing) s.userData.saturnRing.material.opacity = 0.85;
             } else {
               const b = s.userData.baseSize * distFactor * 0.42;
               s.scale.set(b, b, 1);
-              s.material.opacity = s.userData.isDeptSun ? 0.18 : 0.04;
+              s.material.opacity = 0.04;
+              if (s.userData.saturnRing) s.userData.saturnRing.material.opacity = 0.03;
             }
           } else {
             const tSpeed = s.userData.twinkleSpeed;
@@ -3333,15 +3275,8 @@
             const det = s.userData.nodeData.type === 'thesis_planet' ? getCleanDetail(s.userData.nodeData) : null;
             const b = s.userData.baseSize * distFactor;
             s.scale.set(b * (1.0 + shimmer), b * (1.0 + shimmer), 1);
-            s.material.opacity = s.userData.isDeptSun
-              ? 0.98
-              : ((det && det.isPhd) ? 0.92 : Math.min(0.92, 0.80 + Math.abs(shimmer) * 0.25));
-
-            if (s.userData.saturnRing) {
-              const ringScale = distFactor * (1.0 + shimmer * 0.4);
-              s.userData.saturnRing.scale.set(ringScale, ringScale, 1);
-              s.userData.saturnRing.rotation.z = elapsed * 0.35 + s.userData.pulseOffset;
-            }
+            s.material.opacity = s.userData.isDeptSun ? 0.96 : ((det && det.isPhd) ? 0.92 : Math.min(0.92, 0.80 + Math.abs(shimmer) * 0.25));
+            if (s.userData.saturnRing) s.userData.saturnRing.material.opacity = 0.78;
           }
         }
       }
