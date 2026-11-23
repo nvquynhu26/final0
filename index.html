@@ -323,7 +323,7 @@
     </div>
   </div>
 
-  <!-- RIGHT PANEL (Mobile: căn chính giữa màn hình; PC: cách mép phải 1.5rem = 24px giống panel trái) -->
+  <!-- RIGHT PANEL -->
   <aside id="right-panel" 
     class="fixed right-panel-pos z-40 w-[90vw] max-w-[360px] sm:w-[460px] sm:max-w-[500px] lg:w-[500px] lg:max-w-[520px] scifi-panel pointer-events-auto hidden flex flex-col border border-white/15 rounded-xl overflow-hidden">
     
@@ -336,10 +336,10 @@
             <button id="btn-list-history-back" class="hidden px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-600/60 hover:bg-indigo-500 text-white border border-indigo-400/50 transition">
               ← 목록으로
             </button>
-            <span id="list-view-query-badge" class="px-2 py-0.5 rounded text-[9px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 font-scifi">SEARCH RESULTS</span>
-            <span id="list-view-count" class="font-scifi text-[11px] font-bold text-pink-400">총 0건의 논문</span>
+            <span id="list-view-query-badge" class="px-2 py-0.5 rounded text-[9px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 font-scifi">ANALYTICS</span>
+            <span id="list-view-count" class="font-scifi text-[11px] font-bold text-pink-400">(0건)</span>
           </div>
-          <h3 id="list-view-title" class="text-xs md:text-sm font-bold text-white truncate">검색된 논문 목록</h3>
+          <h3 id="list-view-title" class="text-xs md:text-sm font-bold text-white truncate">검색 결과</h3>
         </div>
         <button id="btn-close-list-panel" class="text-slate-400 hover:text-white p-1 text-base shrink-0">✕</button>
       </div>
@@ -353,18 +353,18 @@
           <!-- 1. 6-CLUSTER STACKED BAR -->
           <div id="mini-chart-stacked-section" class="flex flex-col space-y-1.5">
             <div class="flex items-center justify-between text-[10px]">
-              <span class="font-bold text-slate-200 tracking-wide">계열별 연구 비중 <span class="text-[9px] text-indigo-300 font-normal">(클릭 시 상세 추이)</span></span>
+              <span class="font-bold text-slate-200 tracking-wide">계열별 비중</span>
               <span id="stacked-dominant-label" class="font-scifi text-[10px] font-bold text-cyan-300">-</span>
             </div>
             <div id="mini-stacked-bar" class="w-full h-3 rounded-full bg-white/5 overflow-hidden flex gap-[2px] p-[1px] border border-white/10"></div>
             <div id="mini-stacked-legend" class="flex flex-wrap gap-x-2.5 gap-y-1 text-[9px] text-slate-200 pt-0.5"></div>
           </div>
 
-          <!-- 2. OVERVIEW ONLY: BIỂU ĐỒ TỐI GIẢN ĐA TUYẾN THEO NĂM (Tăng chiều cao thêm 50%: h-36) -->
+          <!-- 2. OVERVIEW ONLY: BIỂU ĐỒ ĐA TUYẾN TỐI GIẢN -->
           <div id="mini-chart-yearly-cluster-section" class="hidden pt-2 border-t border-white/10 flex flex-col space-y-1.5">
             <div class="flex items-center justify-between text-[10px]">
-              <span class="font-bold text-slate-200 tracking-wide">연도별 계열 연구 추이</span>
-              <span id="yearly-cluster-hover-readout" class="font-scifi text-[9px] text-cyan-300 font-bold">2001–2026 연도별 추이</span>
+              <span class="font-bold text-slate-200 tracking-wide">연도별 추이</span>
+              <span id="yearly-cluster-hover-readout" class="font-scifi text-[9px] text-cyan-300 font-bold">2001–2026</span>
             </div>
             <div class="w-full h-36 relative flex items-center select-none">
               <svg id="mini-yearly-cluster-svg" class="w-full h-full overflow-visible cursor-crosshair" preserveAspectRatio="none"></svg>
@@ -380,11 +380,11 @@
           <!-- 3. ADVISOR / DEPARTMENT / CLUSTER CONTEXT -> YEARLY TREND SPARKLINE -->
           <div id="mini-chart-sparkline-section" class="hidden flex-col space-y-1 flex">
             <div class="flex items-center justify-between text-[10px]">
-              <span class="font-bold text-slate-200 tracking-wide">연도별 발표 추이</span>
+              <span class="font-bold text-slate-200 tracking-wide">발표 추이</span>
               <div class="flex items-center space-x-2 font-scifi text-[10px]">
                 <span id="sparkline-hover-readout" class="hidden px-1.5 py-0.2 rounded bg-cyan-500/25 text-cyan-200 border border-cyan-400/40 font-bold"></span>
                 <span id="sparkline-range-label" class="text-slate-300">2001–2026</span>
-                <span id="sparkline-peak-label" class="font-bold text-pink-400">최다: -</span>
+                <span id="sparkline-peak-label" class="font-bold text-pink-400">-</span>
               </div>
             </div>
             <div class="w-full h-12 relative flex items-center select-none">
@@ -395,8 +395,8 @@
           <!-- 4. CLUSTER ONLY: SUB-DEPARTMENTS & YEARLY THESIS COUNTS -->
           <div id="mini-cluster-subdepts-section" class="hidden pt-2 border-t border-white/10 flex flex-col space-y-1.5">
             <div class="flex items-center justify-between text-[10px]">
-              <span class="font-bold text-slate-200 tracking-wide">계열 내 세부 학과별 연도 추이</span>
-              <span id="cluster-subdepts-count-badge" class="font-scifi text-[9px] text-cyan-300">총 0개 학과</span>
+              <span class="font-bold text-slate-200 tracking-wide">세부 학과 추이</span>
+              <span id="cluster-subdepts-count-badge" class="font-scifi text-[9px] text-cyan-300">(0개 학과)</span>
             </div>
             <div id="mini-cluster-subdepts-list" class="max-h-52 overflow-y-auto space-y-1.5 pr-1"></div>
           </div>
@@ -405,7 +405,6 @@
           <div id="mini-chart-keywords-section" class="pt-2 border-t border-white/10 flex flex-col space-y-1">
             <div class="flex items-center justify-between text-[10px]">
               <span id="mini-keywords-title" class="font-bold text-slate-200 tracking-wide">핵심 주제어 TOP 5</span>
-              <span id="mini-keywords-hint" class="text-[9px] text-indigo-300">클릭 시 키워드 필터</span>
             </div>
             <div id="mini-top-keywords" class="flex flex-col space-y-1 pt-0.5"></div>
           </div>
@@ -416,17 +415,16 @@
           <div class="flex items-center justify-between text-[10px]">
             <div class="flex items-center space-x-1.5">
               <span class="w-2 h-2 rounded-full bg-yellow-400 shadow-[0_0_6px_#FACC15]"></span>
-              <span class="font-bold text-amber-200 tracking-wide">학과 지도교수 현황</span>
+              <span class="font-bold text-amber-200 tracking-wide">지도교수 현황</span>
             </div>
-            <span id="dept-advisors-count-badge" class="font-scifi text-[9px] text-amber-300">총 0명</span>
+            <span id="dept-advisors-count-badge" class="font-scifi text-[9px] text-amber-300">(0명)</span>
           </div>
           <div id="dept-advisors-list" class="max-h-[275px] overflow-y-auto space-y-1.5 pr-1"></div>
         </div>
 
         <!-- Thesis List Subhint -->
         <div id="thesis-list-header-bar" class="text-[10px] text-indigo-300 pt-0.5 flex justify-between items-center">
-          <span>논문 리스트 (최신순)</span>
-          <span id="list-view-subhint">클릭 시 상세 확인</span>
+          <span>논문 목록</span>
         </div>
 
         <!-- Thesis Cards -->
@@ -441,7 +439,7 @@
           <button id="btn-back-to-list" class="hidden px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-600/50 hover:bg-indigo-600 text-white border border-indigo-400/40">
             ← 목록으로
           </button>
-          <span id="detail-type-badge" class="px-2 py-0.5 rounded text-[10px] font-bold bg-pink-500/20 text-pink-300 border border-pink-400/30 font-scifi">THESIS PLANET</span>
+          <span id="detail-type-badge" class="px-2 py-0.5 rounded text-[10px] font-bold bg-pink-500/20 text-pink-300 border border-pink-400/30 font-scifi">THESIS</span>
           <span id="detail-year" class="font-scifi font-bold text-cyan-400 text-xs"></span>
         </div>
         <button id="btn-close-detail-panel" class="text-slate-400 hover:text-white p-1 text-base">✕</button>
@@ -459,11 +457,11 @@
             <span id="detail-author" class="font-semibold text-slate-100">-</span>
           </div>
           <div>
-            <span id="detail-label-advisor" class="text-[10px] text-slate-300 block font-scifi">지도교수 (클릭 시 이동)</span>
+            <span id="detail-label-advisor" class="text-[10px] text-slate-300 block font-scifi">지도교수</span>
             <button id="detail-advisor" type="button" class="text-left font-semibold text-amber-300 hover:text-amber-200 underline decoration-amber-400/40 hover:decoration-amber-300 underline-offset-2 transition cursor-pointer">-</button>
           </div>
           <div>
-            <span id="detail-label-dept" class="text-[10px] text-slate-300 block font-scifi">학과 / 전공 (클릭 시 이동)</span>
+            <span id="detail-label-dept" class="text-[10px] text-slate-300 block font-scifi">학과 / 전공</span>
             <button id="detail-dept" type="button" class="text-left font-semibold text-cyan-300 hover:text-cyan-200 underline decoration-cyan-400/40 hover:decoration-cyan-300 underline-offset-2 transition cursor-pointer">-</button>
           </div>
           <div>
@@ -475,7 +473,7 @@
         <!-- UCI IDENTIFIER ONLY -->
         <div class="p-3 rounded-lg bg-black/20 border border-white/10 flex flex-col space-y-1.5">
           <div class="flex items-center justify-between">
-            <span id="detail-label-uci" class="text-[9px] uppercase font-bold text-indigo-300 font-scifi tracking-widest">UCI 등록번호 (UCI Identifier)</span>
+            <span id="detail-label-uci" class="text-[9px] uppercase font-bold text-indigo-300 font-scifi tracking-widest">UCI 등록번호</span>
             <span id="detail-uci-status-badge" class="px-1.5 py-0.2 rounded text-[9px] font-scifi font-bold bg-cyan-500/20 text-cyan-300">UCI</span>
           </div>
           <div class="flex items-center">
@@ -484,12 +482,12 @@
         </div>
 
         <div>
-          <span id="detail-label-keywords" class="text-[9px] uppercase font-bold text-indigo-300 font-scifi tracking-widest">주제어 키워드</span>
+          <span id="detail-label-keywords" class="text-[9px] uppercase font-bold text-indigo-300 font-scifi tracking-widest">주제어</span>
           <div id="detail-keywords-container" class="flex flex-wrap gap-1.5 mt-1.5"></div>
         </div>
 
         <div>
-          <span id="detail-label-abstract" class="text-[9px] uppercase font-bold text-indigo-300 font-scifi tracking-widest">논문 초록 (Abstract)</span>
+          <span id="detail-label-abstract" class="text-[9px] uppercase font-bold text-indigo-300 font-scifi tracking-widest">초록</span>
           <p id="detail-abstract" class="mt-1 text-slate-200 leading-relaxed text-xs max-h-56 md:max-h-60 overflow-y-auto pr-1 bg-black/20 p-2.5 rounded border border-white/10 whitespace-pre-line"></p>
         </div>
       </div>
@@ -503,7 +501,7 @@
 
   <script>
     /* ==========================================================================
-       1. KOREAN TEXT CONSTANTS & CLUSTER NEON PALETTE
+       1. KOREAN TEXT CONSTANTS & CLUSTER NEON PALETTE (STRICT COLOR MAPPING)
        ========================================================================== */
     const TEXT_KO = {
       appTitle: "서울과학기술대학교 학술 유니버스",
@@ -517,11 +515,10 @@
       thesisLangFilterTitle: "언어 필터",
       timelineTitle: "연도",
       searchPlaceholder: "지도교수, 논문 제목, 키워드 검색...",
-      searchResultsCount: (c) => `총 ${c.toLocaleString()}건의 논문`,
-      listViewSubhint: "클릭 시 상세 확인",
+      searchResultsCount: (c) => `(${c.toLocaleString()}건)`,
       backToList: "← 목록으로",
-      uciNone: "없음 (해당 논문 UCI 미등록)",
-      keywordsNone: "등록된 키워드 없음",
+      uciNone: "없음 (미등록)",
+      keywordsNone: "키워드 없음",
       yearSuffix: "년"
     };
 
@@ -533,6 +530,8 @@
       { key: '인문', label: '인문·사회', color: '#10B981', glow: 'rgba(16, 185, 129, 0.65)' },
       { key: '기타', label: '기타·일반', color: '#94A3B8', glow: 'rgba(148, 163, 184, 0.5)' }
     ];
+
+    const CLUSTER_COLOR_MAP = new Map(CLUSTER_VISUAL_META.map(m => [m.key, m.color]));
 
     /* ==========================================================================
        2. HANJA -> HANGUL DEPARTMENT TRANSLATION & NORMALIZATION
@@ -740,9 +739,7 @@
       }
 
       const dupMatch = s.match(/^(.+?)\s+\1$/i);
-      if (dupMatch) {
-        s = dupMatch[1].trim();
-      }
+      if (dupMatch) s = dupMatch[1].trim();
 
       const hybridMatch = s.match(/^([가-힣A-Za-z0-9·]+(?:학과|전공|학부|과정|과))\s+(.+)$/);
       if (hybridMatch) {
@@ -782,9 +779,7 @@
       }
 
       for (const [rx, koReplacement] of ENGLISH_PHRASE_TO_KOREAN) {
-        if (rx.test(s)) {
-          s = s.replace(rx, koReplacement);
-        }
+        if (rx.test(s)) s = s.replace(rx, koReplacement);
       }
 
       s = s.replace(/학과학과$/g, '학과')
@@ -914,7 +909,7 @@
 
       const keys = new Set();
       function combine(idx, acc) {
-        if (keys.size > 160) return;
+        if (keys.size > 120) return;
         if (idx === sylLists.length) { keys.add(acc); return; }
         for (let i = 0; i < sylLists[idx].length; i++) combine(idx + 1, acc + sylLists[idx][i]);
       }
@@ -924,7 +919,7 @@
         const givenPart = sylLists.slice(1);
         const surPart = sylLists[0];
         function combineRev(idx, acc) {
-          if (keys.size > 260) return;
+          if (keys.size > 200) return;
           if (idx === givenPart.length) {
             for (let s = 0; s < surPart.length; s++) keys.add(acc + surPart[s]);
             return;
@@ -1210,7 +1205,7 @@
     });
 
     /* ==========================================================================
-       6. BILINGUAL KEYWORD MERGING & PRE-INDEXED DATA ENGINE
+       6. BILINGUAL KEYWORD MERGING & ULTRA-FAST INDEXING ENGINE
        ========================================================================== */
     let ALL_NODES = [];
     let THESIS_NODES_ALL = [];
@@ -1491,6 +1486,7 @@
       return /[가-힣]/.test(titleStr) ? 'ko' : 'en';
     }
 
+    /* 2. THỜI GIAN BỪNG SÁNG NGÂN HÀ TĂNG TỪ 2s LÊN 3s (3000ms) */
     function startCosmicIgnitionReveal() {
       cosmicRevealProgress = 0.0;
       const targetCenterY = galaxyCenterYGlobal;
@@ -1499,14 +1495,14 @@
 
       const revealState = { brightness: 0.0 };
       new TWEEN.Tween(revealState)
-        .to({ brightness: 1.0 }, 1600)
+        .to({ brightness: 1.0 }, 3000)
         .easing(TWEEN.Easing.Cubic.Out)
         .onUpdate(() => { cosmicRevealProgress = revealState.brightness; })
         .onComplete(() => { cosmicRevealProgress = 1.0; })
         .start();
 
       new TWEEN.Tween(camera.position)
-        .to({ x: 0, y: 950, z: 0.001 }, 1600)
+        .to({ x: 0, y: 950, z: 0.001 }, 3000)
         .easing(TWEEN.Easing.Cubic.Out)
         .start();
     }
@@ -1517,20 +1513,10 @@
           .then(r => (r.ok ? r.json() : null))
           .catch(() => null);
 
-      const nodePromises = [
+      // Nạp ngay file node chính để dựng cảnh 3D tức thì không chờ đợi
+      const nodeResults = await Promise.all([
         fetchJsonQuiet('galaxy_nodes_2.json'),
         fetchJsonQuiet('galaxy_nodes.json')
-      ];
-
-      const detailUrls = [];
-      for (let i = 0; i <= 16; i++) {
-        if (i <= 8) detailUrls.push(`details_${i}_2.json`);
-        detailUrls.push(`details_${i}.json`);
-      }
-
-      const [nodeResults, detailResults] = await Promise.all([
-        Promise.all(nodePromises),
-        Promise.all(detailUrls.map(fetchJsonQuiet))
       ]);
 
       for (let i = 0; i < nodeResults.length; i++) {
@@ -1545,20 +1531,20 @@
         ALL_NODES = generateRealisticNodes();
       }
 
+      THESIS_NODES_ALL = [];
       for (let i = 0; i < ALL_NODES.length; i++) {
         const n = ALL_NODES[i];
         if (n.dept) n.dept = normalizeDepartmentName(n.dept);
         NODE_BY_ID.set(n.id, n);
-      }
-
-      for (let i = 0; i < detailResults.length; i++) {
-        if (detailResults[i]) mergeDetails(detailResults[i]);
+        n._clusterCat = getDeptClusterCategory(n.dept);
+        n._isPhd = detectDoctoralDegree(n, null);
+        n._thesisLang = detectThesisLanguage(n, null);
+        if (n.type === 'thesis_planet') THESIS_NODES_ALL.push(n);
       }
 
       consolidateJeongongIntoHakgwa();
       buildUnifiedPersonNameIndex();
 
-      THESIS_NODES_ALL = [];
       for (let i = 0; i < ALL_NODES.length; i++) {
         const n = ALL_NODES[i];
         if (n.type === 'advisor_sun') {
@@ -1570,26 +1556,45 @@
           if (n.author) n.author = normalizePersonName(n.author, n.dept);
         }
         n._clusterCat = getDeptClusterCategory(n.dept);
-        if (n.type === 'thesis_planet') {
-          THESIS_NODES_ALL.push(n);
-          getCleanDetail(n);
-        }
       }
 
       buildCosmicScene();
       setupDepartmentFilterUI();
       refreshVisibleSpritesCache();
 
+      // Gỡ màn hình loading ngay lập tức và kích hoạt hiệu ứng bừng sáng 3s
       const loader = document.getElementById('loader-overlay');
       if (loader) {
         loader.classList.add('opacity-0');
         setTimeout(() => {
           loader.remove();
           startCosmicIgnitionReveal();
-        }, 180);
+        }, 120);
       } else {
         startCosmicIgnitionReveal();
       }
+
+      // Nạp song song các file details_*.json ở nền để không làm chậm tốc độ mở trang
+      const detailUrls = [];
+      for (let i = 0; i <= 16; i++) {
+        if (i <= 8) detailUrls.push(`details_${i}_2.json`);
+        detailUrls.push(`details_${i}.json`);
+      }
+
+      Promise.all(detailUrls.map(fetchJsonQuiet)).then(detailResults => {
+        let updatedAny = false;
+        for (let i = 0; i < detailResults.length; i++) {
+          if (detailResults[i]) {
+            mergeDetails(detailResults[i]);
+            updatedAny = true;
+          }
+        }
+        if (updatedAny) {
+          consolidateJeongongIntoHakgwa();
+          buildUnifiedPersonNameIndex();
+          syncAllSpriteClusterColors();
+        }
+      });
     }
 
     function mergeDetails(dataObj) {
@@ -1602,9 +1607,13 @@
         const node = NODE_BY_ID.get(idNum);
         if (node) {
           node.cachedDetail = val;
+          node._resolvedDetail = null;
           if (val.title_ko || val.title) node.title_ko = val.title_ko || val.title;
           if (val.title_en) node.title_en = val.title_en;
-          if (val.dept || val.department) node.dept = normalizeDepartmentName(val.dept || val.department);
+          if (val.dept || val.department) {
+            node.dept = normalizeDepartmentName(val.dept || val.department);
+            node._clusterCat = getDeptClusterCategory(node.dept);
+          }
           if (val.advisor || val.advisor_name) node.advisor = val.advisor || val.advisor_name;
           if (val.author) node.author = val.author;
           if (val.uci || val.uci_code || val.d_uci || val.identifier) {
@@ -1616,6 +1625,8 @@
           if (val.abstract_ko || val.abstract || val.abstract_en) {
             node.abstract_ko = val.abstract_ko || val.abstract || val.abstract_en;
           }
+          node._isPhd = detectDoctoralDegree(node, val);
+          node._thesisLang = detectThesisLanguage(node, val);
         }
       }
     }
@@ -1627,6 +1638,7 @@
       const rawDept = node.dept || (d && (d.dept || d.department)) || "공학·디자인융합부";
       const resolvedDept = normalizeDepartmentName(rawDept);
       node.dept = resolvedDept;
+      node._clusterCat = getDeptClusterCategory(resolvedDept);
 
       const resolvedTitleKo = cleanAbstractText((d && (d.title_ko || d.title)) || node.title_ko || node.name || "학위논문 연구");
       const rawAuthor = (d && d.author) || node.author || `연구자_${node.id}`;
@@ -1693,8 +1705,38 @@
     }
 
     /* ==========================================================================
-       7. 3D GALAXY SCENE CONSTRUCTION
+       7. 3D GALAXY SCENE CONSTRUCTION (100% CLUSTER-ALIGNED THESIS COLORS)
        ========================================================================== */
+    const CLUSTER_SPRITE_COLORS = new Map();
+    CLUSTER_VISUAL_META.forEach(meta => {
+      const c = new THREE.Color(meta.color);
+      const hsl = { h: 0, s: 0, l: 0 };
+      c.getHSL(hsl);
+      const masterCol = new THREE.Color().setHSL(hsl.h, Math.min(0.92, Math.max(0.80, hsl.s)), Math.min(0.64, Math.max(0.52, hsl.l)));
+      const phdCol = new THREE.Color().setHSL(hsl.h, Math.min(0.95, Math.max(0.85, hsl.s)), Math.min(0.58, Math.max(0.48, hsl.l * 0.94)));
+      CLUSTER_SPRITE_COLORS.set(meta.key, { master: masterCol, phd: phdCol });
+    });
+
+    function getStrictThesisColor(clusterCat, isPhd) {
+      const palette = CLUSTER_SPRITE_COLORS.get(clusterCat) || CLUSTER_SPRITE_COLORS.get('공학');
+      return isPhd ? palette.phd : palette.master;
+    }
+
+    function syncAllSpriteClusterColors() {
+      for (let i = 0; i < NODE_SPRITES.length; i++) {
+        const s = NODE_SPRITES[i];
+        const ud = s.userData;
+        if (!ud.isSun) {
+          const n = ud.nodeData;
+          const clusterCat = getDeptClusterCategory(n.dept);
+          n._clusterCat = clusterCat;
+          ud.isPhd = n._isPhd;
+          s.material.color.copy(getStrictThesisColor(clusterCat, n._isPhd));
+          s.material.map = n._isPhd ? doctoralStarTexture : starTexture;
+        }
+      }
+    }
+
     function buildCosmicScene() {
       NODE_SPRITES = [];
       SPRITE_BY_ID.clear();
@@ -1721,44 +1763,6 @@
         });
       }
 
-      const thesisNodes = [];
-      const conceptInvertedIndex = new Map();
-
-      for (let i = 0; i < THESIS_NODES_ALL.length; i++) {
-        const n = THESIS_NODES_ALL[i];
-        const det = getCleanDetail(n);
-        n._validConnectionCount = 0;
-        if (det.concepts.length > 0) {
-          thesisNodes.push(n);
-          for (let j = 0; j < det.concepts.length; j++) {
-            const c = det.concepts[j];
-            if (!conceptInvertedIndex.has(c)) conceptInvertedIndex.set(c, []);
-            conceptInvertedIndex.get(c).push(n);
-          }
-        }
-      }
-
-      for (let i = 0; i < thesisNodes.length; i++) {
-        const nA = thesisNodes[i];
-        const concA = nA._resolvedDetail.concepts;
-        const candidates = new Set();
-        for (let j = 0; j < concA.length; j++) {
-          const list = conceptInvertedIndex.get(concA[j]);
-          if (list && list.length < 350) {
-            for (let k = 0; k < list.length; k++) {
-              if (list[k].id !== nA.id) candidates.add(list[k]);
-            }
-          }
-        }
-        let count = 0;
-        candidates.forEach(nB => {
-          if (count < 8 && calculateConceptSimilarity(concA, nB._resolvedDetail.concepts) >= 0.60) {
-            count++;
-          }
-        });
-        nA._validConnectionCount = count;
-      }
-
       const yearNodeCounters = new Map();
       const yearNodeTotals = new Map();
       for (let i = 0; i < ALL_NODES.length; i++) {
@@ -1771,8 +1775,6 @@
       let actualMinY = Infinity;
       let actualMaxY = -Infinity;
       const goldenAngle = Math.PI * (3 - Math.sqrt(5));
-      const reusableColor = new THREE.Color();
-      const reusableHsl = { h: 0, s: 0, l: 0 };
 
       for (let i = 0; i < ALL_NODES.length; i++) {
         const node = ALL_NODES[i];
@@ -1824,6 +1826,9 @@
 
         const normalizedDept = normalizeDepartmentName(node.dept || node.name);
         node.dept = normalizedDept;
+        const clusterCat = getDeptClusterCategory(normalizedDept);
+        node._clusterCat = clusterCat;
+
         if (node.type === 'dept_sun') node.name = normalizedDept;
         if (normalizedDept) DEPT_MAP.set(normalizedDept, (DEPT_MAP.get(normalizedDept) || 0) + 1);
 
@@ -1854,29 +1859,15 @@
             depthWrite: false
           });
         } else {
-          const det = getCleanDetail(node);
-          const connCount = node._validConnectionCount || 0;
-          const masterBase = 2.4 + Math.min(1.4, connCount * 0.22);
-          scaleSize = det.isPhd ? (masterBase * 3.0) : masterBase;
-
-          const clusterCat = node._clusterCat || getDeptClusterCategory(normalizedDept);
-          let rawHex = node.color || "#06B6D4";
-          if (clusterCat === '디자인') rawHex = "#F43F5E";
-          else if (clusterCat === '융합') rawHex = "#8B5CF6";
-
-          reusableColor.set(rawHex);
-          reusableColor.getHSL(reusableHsl);
-
-          const baseColor = new THREE.Color();
-          if (det.isPhd) {
-            baseColor.setHSL(reusableHsl.h, Math.min(0.90, Math.max(0.78, reusableHsl.s)), Math.min(0.60, Math.max(0.50, reusableHsl.l)));
-          } else {
-            baseColor.setHSL(reusableHsl.h, Math.max(0.75, reusableHsl.s * 0.88), Math.min(0.68, Math.max(0.54, reusableHsl.l * 1.04)));
-          }
+          // 1. LUẬN VĂN THUỘC KHOA NÀO BẮT BUỘC MANG ĐÚNG MÀU CỦA NHÓM KHOA ĐÓ
+          const isPhd = Boolean(node._isPhd);
+          const masterBase = 2.5;
+          scaleSize = isPhd ? (masterBase * 2.8) : masterBase;
+          const strictColor = getStrictThesisColor(clusterCat, isPhd);
 
           spriteMat = new THREE.SpriteMaterial({
-            map: det.isPhd ? doctoralStarTexture : starTexture,
-            color: baseColor,
+            map: isPhd ? doctoralStarTexture : starTexture,
+            color: strictColor.clone(),
             transparent: true,
             opacity: 0.0,
             blending: THREE.AdditiveBlending,
@@ -1888,13 +1879,12 @@
         sprite.position.set(node.fx, node.fy, node.fz);
         sprite.scale.set(scaleSize, scaleSize, 1);
 
-        const detRef = (!isDept && !isAdvisor) ? getCleanDetail(node) : null;
         sprite.userData = {
           nodeData: node,
           baseSize: scaleSize,
           isSun: isDept || isAdvisor,
           isDeptSun: isDept,
-          isPhd: detRef ? detRef.isPhd : false,
+          isPhd: Boolean(node._isPhd),
           pulseOffset: Math.random() * Math.PI * 2,
           twinkleSpeed: 2.0 + Math.random() * 4.0,
           shimmerAmp: 0.14 + Math.random() * 0.18,
@@ -2005,8 +1995,8 @@
       funnelHazeMesh.position.y = galaxyCenterY;
       cosmosGroup.add(funnelHazeMesh);
 
-      // Spiral Arms
-      const spiralRibbonCount = 4800;
+      // Spiral Arms (tối ưu số hạt 4200 để khởi tạo tức thì)
+      const spiralRibbonCount = 4200;
       const ribbonGeo = new THREE.BufferGeometry();
       const ribbonPositions = new Float32Array(spiralRibbonCount * 3);
       const ribbonColors = new Float32Array(spiralRibbonCount * 3);
@@ -2056,7 +2046,7 @@
       cosmosGroup.add(spiralArmRibbonPoints);
 
       // Cosmic Dust
-      const mistCount = 2200;
+      const mistCount = 1800;
       const mistGeo = new THREE.BufferGeometry();
       const mistPositions = new Float32Array(mistCount * 3);
       const mistColors = new Float32Array(mistCount * 3);
@@ -2095,8 +2085,7 @@
 
     function generateRealisticNodes() {
       const nodes = [];
-      const depts = ["컴퓨터공학과", "기계시스템디자인공학과", "시각디자인전공", "산업디자인전공", "건축설계학과", "인공지능응용학과", "데이터사이언스학과", "신소재공학과", "경영학과", "행정학과", "TESOL학과", "영어영문학과"];
-      const colors = ["#06B6D4", "#06B6D4", "#F43F5E", "#F43F5E", "#06B6D4", "#8B5CF6", "#8B5CF6", "#06B6D4", "#F59E0B", "#10B981", "#10B981", "#10B981"];
+      const depts = ["컴퓨터공학과", "기계시스템디자인공학과", "시각디자인전공", "산업디자인전공", "건축설계학과", "인공지능응용학과", "데이터사이언스학과", "신소재공학과", "경영학과", "행정학과", "TESOL학과", "영어영문학과", "안경광학과"];
       const keywordPairs = [
         ["인공지능", "최적화", "딥러닝"],
         ["Artificial Intelligence", "Optimization", "Deep Learning"],
@@ -2112,6 +2101,8 @@
         const ang = (Math.PI * 2 / depts.length) * idx;
         const dx = Math.cos(ang) * rad;
         const dz = Math.sin(ang) * rad;
+        const clusterCat = getDeptClusterCategory(d);
+        const clusterHex = CLUSTER_COLOR_MAP.get(clusterCat) || "#06B6D4";
 
         nodes.push({ id: id++, name: d, type: 'dept_sun', dept: d, year: 2026, x: dx, y: 450, z: dz, color: '#EF4444' });
 
@@ -2149,7 +2140,7 @@
               x: ax + Math.cos(ta) * tr,
               y: ((yr - 2001) / 25.0) * 450,
               z: az + Math.sin(ta) * tr,
-              color: colors[idx % colors.length]
+              color: clusterHex
             });
           }
         });
@@ -2201,7 +2192,7 @@
       if (d.includes('디자인') || d.includes('예술') || d.includes('도예') || d.includes('금속') || d.includes('조형')) {
         return '디자인';
       }
-      if (d.includes('공학') || d.includes('기계') || d.includes('전자') || d.includes('전기') || d.includes('컴퓨터') || d.includes('건설') || d.includes('화학') || d.includes('신소재') || d.includes('ict') || d.includes('건축') || d.includes('도시계획') || d.includes('국방') || d.includes('스마트생산') || d.includes('안전') || d.includes('환경') || d.includes('식품') || d.includes('안경')) {
+      if (d.includes('공학') || d.includes('기계') || d.includes('전자') || d.includes('전기') || d.includes('컴퓨터') || d.includes('건설') || d.includes('화학') || d.includes('신소재') || d.includes('ict') || d.includes('건축') || d.includes('도시계획') || d.includes('국방') || d.includes('스마트생산') || d.includes('안전') || d.includes('환경') || d.includes('식품') || d.includes('안경') || d.includes('광학')) {
         return '공학';
       }
       if (d.includes('경영') || d.includes('기술경영') || d.includes('글로벌') || d.includes('msde') || d.includes('산업정보')) {
@@ -2224,10 +2215,11 @@
       }
 
       if (n.type === 'thesis_planet') {
-        const det = getCleanDetail(n);
-        if (selectedDegreeFilter === 'phd' && !det.isPhd) return false;
-        if (selectedDegreeFilter === 'master' && det.isPhd) return false;
-        if (selectedThesisLangFilter !== 'all' && det.thesisLang !== selectedThesisLangFilter) return false;
+        const isPhd = n._isPhd !== undefined ? n._isPhd : getCleanDetail(n).isPhd;
+        const tLang = n._thesisLang !== undefined ? n._thesisLang : getCleanDetail(n).thesisLang;
+        if (selectedDegreeFilter === 'phd' && !isPhd) return false;
+        if (selectedDegreeFilter === 'master' && isPhd) return false;
+        if (selectedThesisLangFilter !== 'all' && tLang !== selectedThesisLangFilter) return false;
       } else {
         if (selectedDegreeFilter !== 'all' || selectedThesisLangFilter !== 'all') return false;
       }
@@ -2494,7 +2486,7 @@
           rootSprite = s;
           s.userData.isHighlight = true;
           s.userData.isRelated = false;
-        } else if (n.type === 'thesis_planet' && hasValidRootConcepts) {
+        } else if (n.type === 'thesis_planet' && hasValidRootConcepts && relatedSprites.length < 18) {
           const d = getCleanDetail(n);
           if (calculateConceptSimilarity(rootConcepts, d.concepts) >= 0.60) {
             s.userData.isHighlight = false;
@@ -2741,14 +2733,14 @@
             hoverBadgeEl.innerText = "DEPARTMENT";
             hoverBadgeEl.className = "inline-block px-1.5 py-0.5 rounded text-[9px] font-scifi font-bold mb-1 bg-red-500/25 text-red-300 border border-red-400/30";
             hoverTitleEl.innerText = detail.dept;
-            hoverSubEl.innerText = "학과 중심 태양 (클릭 시 학과·지도교수 분석)";
+            hoverSubEl.innerText = `${n._clusterCat} 계열`;
           } else if (n.type === 'advisor_sun') {
             hoverBadgeEl.innerText = "ADVISOR";
             hoverBadgeEl.className = "inline-block px-1.5 py-0.5 rounded text-[9px] font-scifi font-bold mb-1 bg-yellow-500/20 text-yellow-300";
             hoverTitleEl.innerText = n.name;
-            hoverSubEl.innerText = `${detail.dept} · 클릭 시 지도논문 추이 보기`;
+            hoverSubEl.innerText = detail.dept;
           } else {
-            hoverBadgeEl.innerText = detail.isPhd ? "DOCTORAL THESIS (박사)" : "MASTER'S THESIS (석사)";
+            hoverBadgeEl.innerText = detail.isPhd ? "박사 학위논문" : "석사 학위논문";
             hoverBadgeEl.className = detail.isPhd
               ? "inline-block px-1.5 py-0.5 rounded text-[9px] font-scifi font-bold mb-1 bg-purple-500/30 text-purple-300"
               : "inline-block px-1.5 py-0.5 rounded text-[9px] font-scifi font-bold mb-1 bg-pink-500/20 text-pink-300";
@@ -2875,7 +2867,7 @@
         badge.innerText = "DEPARTMENT";
         badge.className = "px-2 py-0.5 rounded text-[10px] font-bold bg-red-500/20 text-red-300 border border-red-400/30";
       } else {
-        badge.innerText = detail.isPhd ? "DOCTORAL THESIS" : "MASTER'S THESIS";
+        badge.innerText = detail.isPhd ? "박사" : "석사";
         badge.className = detail.isPhd
           ? "px-2 py-0.5 rounded text-[10px] font-bold bg-purple-500/25 text-purple-300 border border-purple-400/40"
           : "px-2 py-0.5 rounded text-[10px] font-bold bg-pink-500/20 text-pink-300 border border-pink-400/30";
@@ -2909,12 +2901,12 @@
       if (detail.uci) {
         uciTextEl.innerText = detail.uci;
         uciTextEl.className = "font-scifi text-xs text-cyan-300 font-semibold select-all break-all tracking-wide flex-1";
-        uciStatusBadge.innerText = "REGISTERED";
+        uciStatusBadge.innerText = "등록";
         uciStatusBadge.className = "px-1.5 py-0.2 rounded text-[9px] font-scifi font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-400/30";
       } else {
         uciTextEl.innerText = TEXT_KO.uciNone;
         uciTextEl.className = "font-scifi text-xs text-slate-400 italic font-normal tracking-wide flex-1";
-        uciStatusBadge.innerText = "NO UCI";
+        uciStatusBadge.innerText = "미등록";
         uciStatusBadge.className = "px-1.5 py-0.2 rounded text-[9px] font-scifi font-bold bg-slate-500/20 text-slate-400 border border-slate-500/30";
       }
 
@@ -2951,7 +2943,6 @@
       const clusterSubdeptsSection = document.getElementById('mini-cluster-subdepts-section');
       const keywordsSection = document.getElementById('mini-chart-keywords-section');
       const keywordsTitleEl = document.getElementById('mini-keywords-title');
-      const keywordsHintEl = document.getElementById('mini-keywords-hint');
       const advisorsSection = document.getElementById('dept-advisors-section');
       const listHeaderBar = document.getElementById('thesis-list-header-bar');
       const listContainer = document.getElementById('search-theses-list');
@@ -2981,8 +2972,7 @@
         listHeaderBar.classList.remove('hidden');
         listContainer.classList.remove('hidden');
 
-        keywordsTitleEl.innerText = '계열 핵심 주제어 TOP 10 (연도별 추이)';
-        keywordsHintEl.classList.add('hidden');
+        keywordsTitleEl.innerText = '핵심 주제어 TOP 10';
 
         renderYearSparkline(theses);
         renderClusterSubDepartmentsByYear(theses, clusterKey);
@@ -2994,7 +2984,6 @@
         listContainer.classList.remove('hidden');
 
         keywordsTitleEl.innerText = '핵심 주제어 TOP 5';
-        keywordsHintEl.classList.remove('hidden');
 
         renderYearSparkline(theses);
         renderTopKeywordsMiniBars(theses, 5, false, true);
@@ -3010,7 +2999,6 @@
         listContainer.classList.remove('hidden');
 
         keywordsTitleEl.innerText = '핵심 주제어 TOP 5';
-        keywordsHintEl.classList.remove('hidden');
 
         renderClusterStackedBar(theses);
         renderTopKeywordsMiniBars(theses, 5, false, true);
@@ -3023,8 +3011,8 @@
       listEl.innerHTML = '';
 
       if (!theses || theses.length === 0) {
-        countBadge.innerText = '총 0개 학과';
-        listEl.innerHTML = `<div class="text-[10px] text-slate-400 italic">해당 조건의 세부 학과 데이터가 없습니다.</div>`;
+        countBadge.innerText = '(0개 학과)';
+        listEl.innerHTML = `<div class="text-[10px] text-slate-400 italic">학과 데이터 없음</div>`;
         return;
       }
 
@@ -3053,7 +3041,7 @@
       if (minY >= maxY) minY = Math.max(2001, maxY - 4);
 
       const sortedDepts = Array.from(subDeptMap.values()).sort((a, b) => b.total - a.total);
-      countBadge.innerText = `총 ${sortedDepts.length}개 학과`;
+      countBadge.innerText = `(${sortedDepts.length}개 학과)`;
 
       const span = Math.max(1, maxY - minY);
       const sw = 100;
@@ -3076,7 +3064,6 @@
 
         const row = document.createElement('div');
         row.className = "p-2 rounded-lg bg-white/[0.04] hover:bg-white/[0.1] border border-white/10 transition cursor-pointer flex items-center justify-between space-x-2";
-        row.title = `${item.dept}: 클릭 시 해당 학과 상세 분석 보기`;
 
         row.innerHTML = `
           <div class="min-w-0 flex-1 flex flex-col">
@@ -3085,7 +3072,7 @@
               <span class="text-[11px] font-bold text-slate-100 truncate">${item.dept}</span>
             </div>
             <div class="text-[9px] font-scifi text-slate-300 mt-0.5">
-              최다 발표: <span class="text-white font-semibold">${peakYr}년 (${localMax}건)</span>
+              최다 <span class="text-white font-semibold">${peakYr}년 (${localMax}건)</span>
             </div>
           </div>
           <div class="flex items-center space-x-2 shrink-0">
@@ -3093,7 +3080,7 @@
               <polyline fill="none" stroke="${accentColor}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" points="${pts.join(' ')}" />
             </svg>
             <span class="px-1.5 py-0.5 rounded text-[10px] font-scifi font-bold bg-white/10 text-white min-w-[42px] text-right">
-              ${item.total}건
+              (${item.total}건)
             </span>
           </div>
         `;
@@ -3109,7 +3096,6 @@
       });
     }
 
-    /* BIỂU ĐỒ ĐA TUYẾN TỐI GIẢN DUY NHẤT (THAY THẾ 2 BIỂU ĐỒ CŨ, CAO HƠN 50%, KHÔNG MỐC NĂM XUẤT HIỆN) */
     function renderMinimalistYearlyClusterChart(theses) {
       const svg = document.getElementById('mini-yearly-cluster-svg');
       const readoutEl = document.getElementById('yearly-cluster-hover-readout');
@@ -3119,7 +3105,7 @@
       const minY = 2001;
       const maxY = Math.max(2002, activeTimelineYear);
       endYearLabel.innerText = `${maxY}년`;
-      readoutEl.innerText = `${minY}–${maxY} 연도별 추이`;
+      readoutEl.innerText = `${minY}–${maxY}`;
 
       if (!theses || theses.length === 0) return;
 
@@ -3172,7 +3158,6 @@
         return { year: y, x, counts: rec, yCoords };
       });
 
-      // Vẽ từng đường cong màu tối giản đại diện cho các khối khoa
       CLUSTER_VISUAL_META.forEach(meta => {
         const hasAnyData = yearPoints.some(yp => (yp.counts[meta.key] || 0) > 0);
         if (!hasAnyData) return;
@@ -3206,7 +3191,6 @@
       guideLine.style.display = 'none';
       svg.appendChild(guideLine);
 
-      // Các chấm tròn sáng khi hover qua từng năm
       const hoverDots = {};
       CLUSTER_VISUAL_META.forEach(meta => {
         const dot = document.createElementNS(ns, 'circle');
@@ -3268,7 +3252,7 @@
       const onChartLeave = () => {
         guideLine.style.display = 'none';
         CLUSTER_VISUAL_META.forEach(meta => { hoverDots[meta.key].style.display = 'none'; });
-        readoutEl.innerText = `${minY}–${maxY} 연도별 추이`;
+        readoutEl.innerText = `${minY}–${maxY}`;
       };
 
       hitRect.addEventListener('mousemove', (e) => onChartMove(e.clientX));
@@ -3285,8 +3269,8 @@
       listEl.innerHTML = '';
 
       if (!theses || theses.length === 0) {
-        countBadge.innerText = '총 0명';
-        listEl.innerHTML = `<div class="text-[10px] text-slate-400 italic">지도교수 데이터가 없습니다.</div>`;
+        countBadge.innerText = '(0명)';
+        listEl.innerHTML = `<div class="text-[10px] text-slate-400 italic">지도교수 데이터 없음</div>`;
         return;
       }
 
@@ -3311,10 +3295,10 @@
       }
 
       const sortedAdvisors = Array.from(advisorStatsMap.values()).sort((a, b) => b.count - a.count);
-      countBadge.innerText = `총 ${sortedAdvisors.length}명`;
+      countBadge.innerText = `(${sortedAdvisors.length}명)`;
 
       if (sortedAdvisors.length === 0) {
-        listEl.innerHTML = `<div class="text-[10px] text-slate-400 italic">등록된 지도교수 정보가 없습니다.</div>`;
+        listEl.innerHTML = `<div class="text-[10px] text-slate-400 italic">지도교수 정보 없음</div>`;
         return;
       }
 
@@ -3326,14 +3310,13 @@
         const kwTagsHtml = topKws.length > 0
           ? topKws.map(([kw, freq]) => `
               <span class="px-1.5 py-0.2 rounded text-[9px] bg-indigo-500/20 text-indigo-200 border border-indigo-400/25 font-medium">
-                #${kw} <span class="font-scifi text-cyan-300 font-bold">${freq}</span>
+                #${kw} <span class="font-scifi text-cyan-300 font-bold">(${freq})</span>
               </span>
             `).join('')
           : `<span class="text-[9px] text-slate-400 italic">키워드 없음</span>`;
 
         const row = document.createElement('div');
         row.className = "p-2 rounded-lg bg-white/[0.04] hover:bg-amber-500/15 border border-white/10 hover:border-amber-400/50 transition cursor-pointer flex flex-col space-y-1";
-        row.title = `${adv.name} 교수 지도논문 및 3D 위치로 이동`;
         row.innerHTML = `
           <div class="flex items-center justify-between">
             <div class="flex items-center space-x-1.5">
@@ -3341,7 +3324,7 @@
               <span class="text-xs font-bold text-white">${adv.name} <span class="text-[10px] font-normal text-slate-300">교수</span></span>
             </div>
             <span class="px-1.5 py-0.2 rounded-full text-[9px] font-scifi font-bold bg-amber-500/20 text-amber-300 border border-amber-400/30">
-              ${adv.count}건
+              (${adv.count}건)
             </span>
           </div>
           <div class="flex flex-wrap gap-1 pt-0.5">
@@ -3414,14 +3397,12 @@
         seg.style.width = `${Math.max(3, item.pct)}%`;
         seg.style.backgroundColor = item.color;
         seg.style.boxShadow = `0 0 8px ${item.glow}`;
-        seg.title = `${item.label}: ${item.count.toLocaleString()}건 (${item.pct.toFixed(1)}%) — 클릭 시 해당 계열 연구 추이 보기`;
         seg.addEventListener('click', openClusterDrilldown);
         barContainer.appendChild(seg);
 
         const leg = document.createElement('button');
         leg.type = 'button';
         leg.className = 'flex items-center space-x-1 hover:bg-white/10 px-1 py-0.5 rounded transition cursor-pointer';
-        leg.title = `${item.label} 연구 추이 보기`;
         leg.innerHTML = `
           <span class="w-1.5 h-1.5 rounded-full shrink-0" style="background:${item.color}; box-shadow: 0 0 5px ${item.color};"></span>
           <span class="text-slate-200">${item.label}</span>
@@ -3441,7 +3422,7 @@
       hoverReadout.classList.add('hidden');
 
       if (!theses || theses.length === 0) {
-        peakLabel.innerText = '0건';
+        peakLabel.innerText = '(0건)';
         return;
       }
 
@@ -3608,10 +3589,10 @@
         const clampedX = Math.max(2, Math.min(width - boxW - 2, nearest.x - boxW / 2));
         const boxY = nearest.y > 22 ? Math.max(1, nearest.y - 21) : Math.min(height - 17, nearest.y + 6);
         hoverBadgeGroup.setAttribute('transform', `translate(${clampedX.toFixed(1)}, ${boxY.toFixed(1)})`);
-        badgeText.textContent = `${nearest.year}년 · ${nearest.val}건`;
+        badgeText.textContent = `${nearest.year}년 (${nearest.val}건)`;
         hoverBadgeGroup.style.display = 'block';
 
-        hoverReadout.innerText = `${nearest.year}년: ${nearest.val}건`;
+        hoverReadout.innerText = `${nearest.year}년 (${nearest.val}건)`;
         hoverReadout.classList.remove('hidden');
       };
 
@@ -3635,7 +3616,7 @@
       container.innerHTML = '';
 
       if (!theses || theses.length === 0) {
-        container.innerHTML = `<div class="text-[10px] text-slate-400 italic">집계할 키워드 데이터가 없습니다.</div>`;
+        container.innerHTML = `<div class="text-[10px] text-slate-400 italic">키워드 데이터 없음</div>`;
         return;
       }
 
@@ -3674,7 +3655,7 @@
         .slice(0, limitCount);
 
       if (sortedTop.length === 0) {
-        container.innerHTML = `<div class="text-[10px] text-slate-400 italic">등록된 유효 키워드가 없습니다.</div>`;
+        container.innerHTML = `<div class="text-[10px] text-slate-400 italic">키워드 없음</div>`;
         return;
       }
 
@@ -3694,10 +3675,9 @@
           const yMap = kwYearSeries.get(normKey);
           const span = Math.max(1, maxY - minY);
           let localMax = 1;
-          let peakYr = minY;
           for (let y = minY; y <= maxY; y++) {
             const v = yMap.get(y) || 0;
-            if (v >= localMax) { localMax = v; peakYr = y; }
+            if (v >= localMax) localMax = v;
           }
           const sw = 58;
           const sh = 14;
@@ -3709,7 +3689,7 @@
             pts.push(`${px.toFixed(1)},${py.toFixed(1)}`);
           }
           sparkSvgHtml = `
-            <svg class="w-14 h-3.5 shrink-0 overflow-visible" viewBox="0 0 ${sw} ${sh}" title="최다 출현: ${peakYr}년 (${localMax}건)">
+            <svg class="w-14 h-3.5 shrink-0 overflow-visible" viewBox="0 0 ${sw} ${sh}">
               <polyline fill="none" stroke="${color}" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" points="${pts.join(' ')}" />
             </svg>
           `;
@@ -3719,7 +3699,6 @@
         row.className = clickable
           ? 'flex items-center space-x-2 text-[10px] group cursor-pointer py-0.5'
           : 'flex items-center space-x-2 text-[10px] py-0.5 pointer-events-none';
-        if (clickable) row.title = `"${label}" 키워드 논문 보기`;
 
         row.innerHTML = `
           <span class="w-4 font-scifi text-[9px] text-slate-400 text-right shrink-0">${idx + 1}</span>
@@ -3728,7 +3707,7 @@
             <div class="h-full rounded-full mini-bar-fill" style="width: ${pct}%; background: ${color}; box-shadow: 0 0 6px ${color};"></div>
           </div>
           ${sparkSvgHtml}
-          <span class="w-7 text-right font-scifi font-bold ${clickable ? 'text-slate-200 group-hover:text-white' : 'text-slate-200'} shrink-0">${count}</span>
+          <span class="w-9 text-right font-scifi font-bold ${clickable ? 'text-slate-200 group-hover:text-white' : 'text-slate-200'} shrink-0">(${count})</span>
         `;
 
         if (clickable) {
@@ -4032,13 +4011,12 @@
       else historyBackBtn.classList.add('hidden');
 
       badgeEl.innerText = subMode === 'department'
-        ? 'DEPARTMENT ANALYTICS'
+        ? 'DEPARTMENT'
         : (subMode === 'cluster'
-          ? 'CLUSTER ANALYTICS'
-          : (contextMode === 'entity' ? 'TREND ANALYTICS' : 'UNIVERSE ANALYTICS'));
-      document.getElementById('list-view-title').innerText = `"${queryText}" 연구 분석`;
+          ? 'CLUSTER'
+          : (contextMode === 'entity' ? 'TREND' : 'UNIVERSE'));
+      document.getElementById('list-view-title').innerText = queryText;
       document.getElementById('list-view-count').innerText = TEXT_KO.searchResultsCount(theses.length);
-      document.getElementById('list-view-subhint').innerText = TEXT_KO.listViewSubhint;
 
       const sortedTheses = [...theses].sort((a, b) => {
         const yearDiff = (b.year || 0) - (a.year || 0);
@@ -4051,7 +4029,7 @@
       if (subMode === 'overview') return;
 
       if (sortedTheses.length === 0) {
-        container.innerHTML = `<div class="text-slate-400 py-8 text-center text-xs">일치하는 학위논문을 찾을 수 없습니다.</div>`;
+        container.innerHTML = `<div class="text-slate-400 py-8 text-center text-xs">일치하는 논문 없음</div>`;
         return;
       }
 
@@ -4092,7 +4070,7 @@
       if (sortedTheses.length > 150) {
         const moreBanner = document.createElement('div');
         moreBanner.className = "text-center text-[10px] text-slate-300 py-2 font-scifi";
-        moreBanner.innerText = `+ 외 ${(sortedTheses.length - 150).toLocaleString()}건의 논문이 상단 통계에 반영되었습니다.`;
+        moreBanner.innerText = `+ 외 (${(sortedTheses.length - 150).toLocaleString()}건)`;
         frag.appendChild(moreBanner);
       }
 
