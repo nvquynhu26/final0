@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
   <title>서울과학기술대학교 학술 유니버스</title>
   
-  <!-- Preconnect & Preload for Fast Startup -->
-  <link rel="preconnect" href="https://cdn.tailwindcss.com">
-  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
-  <link rel="preconnect" href="https://cdn.jsdelivr.net">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <!-- Preconnect & Preload for Ultra-Fast Startup -->
+  <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   
   <!-- Tailwind CSS & Three.js -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -116,8 +116,9 @@
       pointer-events: none;
     }
 
+    /* Safe Area for iPhone Notch / Dynamic Island on Mobile */
     .header-safe {
-      padding-top: calc(env(safe-area-inset-top, 0px) + 1.25rem);
+      padding-top: calc(env(safe-area-inset-top, 0px) + 3.25rem);
     }
     .search-bottom-safe {
       bottom: calc(env(safe-area-inset-bottom, 0px) + 4.5rem);
@@ -157,14 +158,14 @@
   </div>
 
   <!-- Loading Screen -->
-  <div id="loader-overlay" class="absolute inset-0 z-50 bg-[#020306] flex flex-col items-center justify-center transition-opacity duration-300 pointer-events-none">
-    <div class="w-12 h-12 rounded-full border-2 border-indigo-500/20 border-t-cyan-400 animate-spin mb-3"></div>
+  <div id="loader-overlay" class="absolute inset-0 z-50 bg-[#020306] flex flex-col items-center justify-center transition-opacity duration-200 pointer-events-none">
+    <div class="w-10 h-10 rounded-full border-2 border-indigo-500/20 border-t-cyan-400 animate-spin mb-2.5"></div>
     <div id="loader-text" class="text-xs font-scifi tracking-widest text-cyan-300 uppercase">COSMOS INITIALIZING...</div>
     <div id="loader-sub" class="text-[10px] text-slate-500 font-scifi mt-1">SEOULTECH GALAXY SIMULATION</div>
   </div>
 
-  <!-- HEADER: Tiêu đề bên trái, Nút 연구 통계 ngang hàng bên phải -->
-  <header class="absolute top-0 left-0 right-0 z-20 flex justify-between items-center px-4 md:px-6 header-safe pointer-events-none">
+  <!-- HEADER: Hạ thấp tránh tai thỏ iPhone trên Mobile; Nút 연구 통계 đồng bộ kích thước với nút (+) -->
+  <header class="absolute top-0 left-0 right-0 z-20 flex justify-between items-start px-4 md:px-6 header-safe pointer-events-none">
     <div class="pointer-events-auto flex flex-col min-w-0 pr-2">
       <div class="flex items-center space-x-2">
         <div class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_10px_#22D3EE] shrink-0"></div>
@@ -173,36 +174,39 @@
         </h1>
       </div>
 
-      <button id="btn-mobile-dept-open" class="md:hidden mt-2 self-start flex items-center space-x-1.5 px-3 py-1 scifi-panel rounded-full text-cyan-300 border border-cyan-400/40 text-xs active:scale-95 transition-all shadow-[0_0_12px_rgba(6,182,212,0.3)]">
-        <span class="text-base font-bold leading-none">+</span>
-        <span class="text-[10px] font-scifi uppercase tracking-wider" id="mobile-dept-btn-text">학과 필터</span>
+      <!-- Nút (+) mở panel mặc định hiển thị trên Mobile (PC mặc định mở panel sẵn nên ẩn nút + ban đầu) -->
+      <button id="btn-panel-expand" class="md:hidden mt-2.5 self-start flex items-center justify-center w-7 h-7 scifi-panel rounded-full text-cyan-300 border border-cyan-400/40 text-sm font-bold leading-none active:scale-95 transition-all shadow-[0_0_12px_rgba(6,182,212,0.3)]" title="패널 열기">
+        +
       </button>
     </div>
 
-    <!-- Nút 연구 통계 nằm ngang hàng bên phải với tiêu đề -->
+    <!-- Nút 연구 통계 cùng size nhỏ gọn ngang với nút (+) / 학과 필터 trên mọi màn hình -->
     <div class="pointer-events-auto shrink-0">
-      <button id="btn-open-overview-analytics" class="flex items-center space-x-1.5 px-3.5 py-1.5 scifi-panel rounded-full text-pink-300 border border-pink-500/50 text-xs hover:bg-pink-500/25 active:scale-95 transition-all shadow-[0_0_15px_rgba(236,72,153,0.35)]">
-        <span class="w-2 h-2 rounded-full bg-pink-400 animate-ping"></span>
-        <span class="text-[11px] font-bold tracking-wider">연구 통계</span>
+      <button id="btn-open-overview-analytics" class="h-7 px-2.5 flex items-center space-x-1.5 scifi-panel rounded-full text-pink-300 border border-pink-500/45 hover:bg-pink-500/20 active:scale-95 transition-all shadow-[0_0_12px_rgba(236,72,153,0.3)]">
+        <span class="w-1.5 h-1.5 rounded-full bg-pink-400 animate-ping shrink-0"></span>
+        <span class="text-[10px] font-bold tracking-wider leading-none">연구 통계</span>
       </button>
     </div>
   </header>
 
-  <!-- EXPAND BUTTON FOR LARGE PC WINDOW -->
-  <button id="btn-pc-panel-expand" class="hidden fixed left-6 top-24 z-30 scifi-panel w-9 h-9 rounded-full items-center justify-center text-cyan-300 border border-cyan-400/40 text-lg font-bold hover:scale-105 active:scale-95 transition-all shadow-[0_0_15px_rgba(6,182,212,0.35)] pointer-events-auto" title="필터 패널 열기">
-    +
-  </button>
-
-  <!-- UNIFIED FILTER & TIMELINE PANEL -->
-  <div id="dept-panel-container" class="hidden md:flex fixed md:absolute left-1/2 -translate-x-1/2 top-24 md:left-6 md:top-20 md:translate-x-0 z-30 pointer-events-none transition-all duration-300">
-    <div class="w-[90vw] max-w-[340px] md:w-80 scifi-panel p-4 rounded-xl pointer-events-auto border border-white/10 flex flex-col space-y-2.5 shadow-2xl max-h-[80vh] overflow-y-auto">
-      <div class="flex items-center justify-between border-b border-indigo-500/20 pb-2">
-        <span id="label-college-filters" class="text-xs font-bold text-indigo-300 tracking-widest uppercase font-scifi">학과 필터</span>
-        <div class="flex items-center space-x-2">
-          <button id="btn-reset-filters" class="text-[10px] text-cyan-400 hover:underline font-scifi">초기화</button>
-          <button id="btn-pc-panel-minimize" class="hidden lg:inline-flex items-center justify-center w-5 h-5 rounded bg-white/5 hover:bg-indigo-500/30 border border-white/15 text-slate-300 hover:text-white text-xs font-bold leading-none transition" title="패널 축소">-</button>
-          <button id="btn-mobile-dept-close" class="md:hidden text-slate-400 hover:text-white px-2 py-0.5 rounded bg-white/5 border border-white/10 text-xs font-bold font-scifi">✕</button>
+  <!-- UNIFIED FILTER & TIMELINE PANEL (Mặc định mở ở PC, mặc định đóng ở Mobile) -->
+  <div id="dept-panel-container" class="hidden md:flex fixed md:absolute left-1/2 -translate-x-1/2 top-32 md:left-6 md:top-20 md:translate-x-0 z-30 pointer-events-none transition-all duration-300">
+    <div class="w-[90vw] max-w-[340px] md:w-80 scifi-panel p-4 rounded-xl pointer-events-auto border border-white/10 flex flex-col space-y-2.5 shadow-2xl max-h-[76vh] md:max-h-[80vh] overflow-y-auto">
+      
+      <!-- TOP ROW: 3 NÚT VIEW (평면 뷰 đầu tiên bên trái) + NÚT THU NHỎ (-) ĐỒNG NHẤT TRÊN MỌI MÀN HÌNH -->
+      <div class="flex items-center space-x-1.5 pb-2 border-b border-indigo-500/20">
+        <div class="flex-1 grid grid-cols-3 gap-1.5 text-xs">
+          <button id="btn-view-top" class="scifi-btn px-2 py-1.5 rounded text-slate-300 font-medium text-center active">평면 뷰</button>
+          <button id="btn-view-galaxy" class="scifi-btn px-2 py-1.5 rounded text-slate-300 font-medium text-center">측면 뷰</button>
+          <button id="btn-view-3d" class="scifi-btn px-2 py-1.5 rounded text-slate-300 font-medium text-center">입체 뷰</button>
         </div>
+        <button id="btn-panel-minimize" class="inline-flex items-center justify-center w-7 h-7 rounded bg-white/5 hover:bg-indigo-500/30 border border-white/15 text-slate-200 hover:text-white text-sm font-bold leading-none transition shrink-0" title="패널 축소">-</button>
+      </div>
+
+      <!-- DEPARTMENT FILTER HEADER -->
+      <div class="flex items-center justify-between pt-0.5">
+        <span id="label-college-filters" class="text-xs font-bold text-indigo-300 tracking-widest uppercase font-scifi">학과 필터</span>
+        <button id="btn-reset-filters" class="text-[10px] text-cyan-400 hover:underline font-scifi">초기화</button>
       </div>
 
       <!-- Quick Group Buttons -->
@@ -220,13 +224,6 @@
         <select id="dept-dropdown" class="w-full bg-black/60 text-slate-200 text-xs rounded-lg p-2 border border-indigo-500/30 focus:outline-none focus:border-cyan-400 cursor-pointer">
           <option value="ALL">-- 전체 학과 --</option>
         </select>
-      </div>
-
-      <!-- Camera Presets -->
-      <div class="pt-2 border-t border-indigo-500/20 grid grid-cols-3 gap-1.5 text-xs">
-        <button id="btn-view-galaxy" class="scifi-btn px-2 py-1.5 rounded text-slate-300 font-medium text-center">측면 뷰</button>
-        <button id="btn-view-top" class="scifi-btn px-2 py-1.5 rounded text-slate-300 font-medium text-center active">평면 뷰</button>
-        <button id="btn-view-3d" class="scifi-btn px-2 py-1.5 rounded text-slate-300 font-medium text-center">입체 뷰</button>
       </div>
 
       <!-- DEGREE FILTER -->
@@ -293,12 +290,11 @@
 
   <!-- RIGHT PANEL -->
   <aside id="right-panel" 
-    style="right: 0 !important; top: 4.5rem !important; bottom: 0 !important; transform: none !important; left: auto !important;"
+    style="right: 0 !important; top: 5.5rem !important; bottom: 0 !important; transform: none !important; left: auto !important;"
     class="fixed z-40 w-[92vw] sm:w-[420px] max-w-[440px] scifi-panel pointer-events-auto hidden flex flex-col border-l border-t border-b-0 border-r-0 border-indigo-500/30 shadow-[-18px_0_40px_rgba(0,0,0,0.92)] rounded-tl-2xl">
     
     <!-- 1. VIEW: LIST RESULTS + CONTEXTUAL MINI-ANALYTICS -->
     <div id="panel-list-view" class="hidden flex flex-col h-full p-4 md:p-5 min-h-0">
-      <!-- Header with Back Button (목록으로) -->
       <div class="flex justify-between items-start pb-2.5 border-b border-indigo-500/20 shrink-0">
         <div class="min-w-0 pr-2 flex flex-col space-y-1">
           <div class="flex items-center space-x-1.5 flex-wrap gap-y-1">
@@ -322,9 +318,7 @@
             <span class="font-bold text-slate-300 tracking-wide">계열별 연구 비중 <span class="text-[9px] text-indigo-400 font-normal">(클릭 시 상세 추이)</span></span>
             <span id="stacked-dominant-label" class="font-scifi text-[10px] font-bold text-cyan-300">-</span>
           </div>
-          <!-- Thin Glowing Stacked Bar -->
           <div id="mini-stacked-bar" class="w-full h-3 rounded-full bg-white/5 overflow-hidden flex gap-[2px] p-[1px] border border-white/10"></div>
-          <!-- Clickable Legend Pills -->
           <div id="mini-stacked-legend" class="flex flex-wrap gap-x-2 gap-y-1 text-[9px] text-slate-300 pt-0.5"></div>
         </div>
 
@@ -338,7 +332,6 @@
               <span id="sparkline-peak-label" class="font-bold text-pink-400">최다: -</span>
             </div>
           </div>
-          <!-- Pure SVG Sparkline with Interactive Hover -->
           <div class="w-full h-12 relative flex items-center select-none">
             <svg id="mini-sparkline-svg" class="w-full h-full overflow-visible cursor-crosshair" preserveAspectRatio="none"></svg>
           </div>
@@ -641,10 +634,9 @@
     }
 
     function isMobileView() { return window.innerWidth < 768; }
-    function isLargePCView() { return window.innerWidth >= 1024; }
 
     /* ==========================================================================
-       3. PROCEDURAL OPTICAL TEXTURES (ADVISOR YELLOW SUN & DEPARTMENT RED SUN)
+       3. PROCEDURAL OPTICAL TEXTURES
        ========================================================================== */
     function createStarlightTexture() {
       const c = document.createElement('canvas');
@@ -690,7 +682,6 @@
       return new THREE.CanvasTexture(c);
     }
 
-    // Texture riêng cho Mặt trời Department màu Đỏ rực (Red Sun)
     function createRedDeptSunTexture() {
       const c = document.createElement('canvas');
       c.width = 64; c.height = 64;
@@ -764,7 +755,7 @@
       side: THREE.DoubleSide,
       uniforms: {
         uTime: { value: 0 },
-        uIntensity: { value: 0.65 }
+        uIntensity: { value: 0.0 } // Starts at 0.0 for Big-Bang 2s reveal
       },
       vertexShader: `
         varying vec2 vUv;
@@ -863,7 +854,7 @@
     });
 
     /* ==========================================================================
-       6. DATA LOADING, STEMMER, KEYWORD LANGUAGE NORMALIZER & SIMILARITY ENGINE
+       6. ULTRA-FAST PARALLEL DATA LOADING & 2-SECOND COSMIC IGNITION REVEAL
        ========================================================================== */
     let ALL_NODES = [];
     let NODE_BY_ID = new Map();
@@ -871,10 +862,9 @@
     let SPRITE_BY_ID = new Map();
     let DEPT_MAP = new Map();
     const DETAILS_STORE = new Map();
+    const RAW_DETAIL_CHUNKS = [];
     let isSearchActive = false;
 
-    // Giữ trạng thái ngôi sao luận văn đang được chọn để camera luôn bám theo
-    // kể cả khi chuyển sang panel từ khóa hoặc panel danh sách
     let lockedThesisNode = null;
     let lockedThesisSprite = null;
 
@@ -883,18 +873,14 @@
     let spiralArmRibbonPoints;
     let galaxyCenterYGlobal = 225;
 
-    // Navigation History Stack cho các panel danh sách / thống kê / từ khóa
+    // Global cosmic ignition multiplier (0.0 = Pitch Black -> 1.0 = Full Brightness in 2000ms)
+    let cosmicRevealProgress = 0.0;
+
     let panelNavigationStack = [];
     let currentListContext = null;
 
     const INVALID_KW_SET = new Set(["", "nan", "#nan", "null", "none", "undefined", "n/a", "-", "없음", "연구", "분석", "개발"]);
 
-    /**
-     * Chuẩn hóa từ khóa theo quy tắc:
-     * - Nếu có tiếng Hàn -> dùng tiếng Hàn
-     * - Nếu chỉ có tiếng Anh -> dùng tiếng Anh
-     * - Nếu có cả tiếng Hàn và tiếng Anh (ví dụ: "인공지능 (Artificial Intelligence)" hoặc "딥러닝 Deep Learning") -> chỉ giữ tiếng Hàn
-     */
     function normalizeKeywordDisplayLanguage(rawKw) {
       if (!rawKw) return '';
       let s = String(rawKw).replace(/^#+/, '').trim();
@@ -904,7 +890,6 @@
       const hasLatin = /[a-zA-Z]/.test(s);
 
       if (hasHangul && hasLatin) {
-        // Loại bỏ phần tiếng Anh trong ngoặc đơn/ngoặc vuông: ví dụ "인공지능(AI)" -> "인공지능"
         let cleaned = s
           .replace(/\(\s*[a-zA-Z0-9\s\-\/&.,]+\s*\)/g, ' ')
           .replace(/\[\s*[a-zA-Z0-9\s\-\/&.,]+\s*\]/g, ' ')
@@ -1101,18 +1086,68 @@
       return hasHangul ? 'ko' : 'en';
     }
 
+    // Trigger 2.0-second Cosmic Ignition Reveal AFTER loading screen completes
+    function startCosmicIgnitionReveal() {
+      cosmicRevealProgress = 0.0;
+      const targetCenterY = galaxyCenterYGlobal;
+      // Subtle dramatic camera settle from higher altitude into Top View during the 2s reveal
+      camera.position.set(0, 1280, 0.001);
+      controls.target.set(0, targetCenterY, 0);
+
+      const revealState = { brightness: 0.0 };
+      new TWEEN.Tween(revealState)
+        .to({ brightness: 1.0 }, 2000)
+        .easing(TWEEN.Easing.Cubic.Out)
+        .onUpdate(() => {
+          cosmicRevealProgress = revealState.brightness;
+          volumetricNebulaMat.uniforms.uIntensity.value = 0.65 * cosmicRevealProgress;
+          if (spiralArmRibbonPoints) spiralArmRibbonPoints.material.opacity = 0.68 * cosmicRevealProgress;
+          if (stardustMistPoints) stardustMistPoints.material.opacity = 0.35 * cosmicRevealProgress;
+          if (cosmicBeamMesh) cosmicBeamMesh.material.uniforms.uAlphaScale.value = cosmicRevealProgress;
+          if (cosmicBeamGlowMesh) cosmicBeamGlowMesh.material.uniforms.uAlphaScale.value = cosmicRevealProgress;
+        })
+        .onComplete(() => {
+          cosmicRevealProgress = 1.0;
+        })
+        .start();
+
+      new TWEEN.Tween(camera.position)
+        .to({ x: 0, y: 950, z: 0.001 }, 2000)
+        .easing(TWEEN.Easing.Cubic.Out)
+        .start();
+    }
+
     async function initializeCosmos() {
-      const loaderText = document.getElementById('loader-text');
-      
-      const nodeResults = await Promise.all(
-        ['galaxy_nodes_2.json', 'galaxy_nodes.json'].map(fname =>
-          fetch(fname, { cache: 'force-cache' })
-            .then(r => r.ok ? r.json() : null)
-            .catch(() => null)
-        )
+      // Launch all network fetches in a SINGLE parallel wave for maximum speed
+      const nodeFetchPromises = ['galaxy_nodes_2.json', 'galaxy_nodes.json'].map(fname =>
+        fetch(fname, { cache: 'force-cache' })
+          .then(r => r.ok ? r.json() : null)
+          .catch(() => null)
       );
 
-      for (const data of nodeResults) {
+      const detailFetchPromises = [];
+      for (let i = 0; i <= 16; i++) {
+        if (i <= 8) {
+          detailFetchPromises.push(
+            fetch(`details_${i}_2.json`, { cache: 'force-cache' })
+              .then(r => r.ok ? r.json() : null)
+              .catch(() => null)
+          );
+        }
+        detailFetchPromises.push(
+          fetch(`details_${i}.json`, { cache: 'force-cache' })
+            .then(r => r.ok ? r.json() : null)
+            .catch(() => null)
+        );
+      }
+
+      const [nodeResults, detailResults] = await Promise.all([
+        Promise.all(nodeFetchPromises),
+        Promise.all(detailFetchPromises)
+      ]);
+
+      for (let i = 0; i < nodeResults.length; i++) {
+        const data = nodeResults[i];
         if (data && data.nodes && data.nodes.length > 0) {
           ALL_NODES = data.nodes;
           break;
@@ -1123,43 +1158,32 @@
         ALL_NODES = generateRealisticNodes();
       }
 
-      ALL_NODES.forEach(n => {
+      for (let i = 0; i < ALL_NODES.length; i++) {
+        const n = ALL_NODES[i];
         if (n.dept) n.dept = normalizeDepartmentName(n.dept);
         NODE_BY_ID.set(n.id, n);
-      });
+      }
 
-      loaderText.innerText = "LOADING RESEARCH METADATA...";
-      await preloadAllDetailsFast();
+      for (let i = 0; i < detailResults.length; i++) {
+        if (detailResults[i]) {
+          mergeDetails(detailResults[i]);
+        }
+      }
 
       buildCosmicScene();
       setupDepartmentFilterUI();
 
+      // Dismiss loader first, then trigger the 2-second pitch-black to bright cosmic reveal
       const loader = document.getElementById('loader-overlay');
       if (loader) {
         loader.classList.add('opacity-0');
-        setTimeout(() => loader.remove(), 300);
+        setTimeout(() => {
+          loader.remove();
+          startCosmicIgnitionReveal();
+        }, 220);
+      } else {
+        startCosmicIgnitionReveal();
       }
-    }
-
-    async function preloadAllDetailsFast() {
-      const promises = [];
-      for (let i = 0; i <= 16; i++) {
-        if (i <= 8) {
-          promises.push(
-            fetch(`details_${i}_2.json`, { cache: 'force-cache' })
-              .then(r => r.ok ? r.json() : null)
-              .then(data => { if (data) mergeDetails(data); })
-              .catch(() => {})
-          );
-        }
-        promises.push(
-          fetch(`details_${i}.json`, { cache: 'force-cache' })
-            .then(r => r.ok ? r.json() : null)
-            .then(data => { if (data) mergeDetails(data); })
-            .catch(() => {})
-        );
-      }
-      await Promise.all(promises);
     }
 
     function mergeDetails(dataObj) {
@@ -1256,7 +1280,7 @@
     }
 
     /* ==========================================================================
-       7. 3D GALAXY SCENE CONSTRUCTION
+       7. 3D GALAXY SCENE CONSTRUCTION (OPTIMIZED)
        ========================================================================== */
     function buildCosmicScene() {
       NODE_SPRITES = [];
@@ -1285,54 +1309,61 @@
       const thesisNodes = [];
       const conceptInvertedIndex = new Map();
 
-      ALL_NODES.forEach(n => {
+      for (let i = 0; i < ALL_NODES.length; i++) {
+        const n = ALL_NODES[i];
         if (n.type === 'thesis_planet') {
           const det = getCleanDetail(n);
           n._validConnectionCount = 0;
           if (det.concepts.length > 0) {
             thesisNodes.push(n);
-            det.concepts.forEach(c => {
+            for (let j = 0; j < det.concepts.length; j++) {
+              const c = det.concepts[j];
               if (!conceptInvertedIndex.has(c)) conceptInvertedIndex.set(c, []);
               conceptInvertedIndex.get(c).push(n);
-            });
-          }
-        }
-      });
-
-      thesisNodes.forEach(nA => {
-        const concA = nA._resolvedDetail.concepts;
-        const candidates = new Set();
-        concA.forEach(c => {
-          const list = conceptInvertedIndex.get(c);
-          if (list) {
-            for (let i = 0; i < list.length; i++) {
-              if (list[i].id !== nA.id) candidates.add(list[i]);
             }
           }
-        });
+        }
+      }
+
+      for (let i = 0; i < thesisNodes.length; i++) {
+        const nA = thesisNodes[i];
+        const concA = nA._resolvedDetail.concepts;
+        const candidates = new Set();
+        for (let j = 0; j < concA.length; j++) {
+          const list = conceptInvertedIndex.get(concA[j]);
+          if (list && list.length < 350) { // Skip ultra-generic bucket bottlenecks
+            for (let k = 0; k < list.length; k++) {
+              if (list[k].id !== nA.id) candidates.add(list[k]);
+            }
+          }
+        }
         let count = 0;
         candidates.forEach(nB => {
-          if (calculateConceptSimilarity(concA, nB._resolvedDetail.concepts) >= 0.60) {
+          if (count < 8 && calculateConceptSimilarity(concA, nB._resolvedDetail.concepts) >= 0.60) {
             count++;
           }
         });
         nA._validConnectionCount = count;
-      });
+      }
 
       const yearNodeCounters = new Map();
       const yearNodeTotals = new Map();
-      ALL_NODES.forEach(node => {
-        if (node.type === 'galactic_core') return;
+      for (let i = 0; i < ALL_NODES.length; i++) {
+        const node = ALL_NODES[i];
+        if (node.type === 'galactic_core') continue;
         const yr = Math.max(minYear, Math.min(maxYear, node.year || 2020));
         yearNodeTotals.set(yr, (yearNodeTotals.get(yr) || 0) + 1);
-      });
+      }
 
       let actualMinY = Infinity;
       let actualMaxY = -Infinity;
       const goldenAngle = Math.PI * (3 - Math.sqrt(5));
+      const reusableColor = new THREE.Color();
+      const reusableHsl = { h: 0, s: 0, l: 0 };
 
-      ALL_NODES.forEach((node) => {
-        if (node.type === 'galactic_core') return;
+      for (let i = 0; i < ALL_NODES.length; i++) {
+        const node = ALL_NODES[i];
+        if (node.type === 'galactic_core') continue;
 
         const year = Math.max(minYear, Math.min(maxYear, node.year || 2020));
         const yearOffset = year - minYear;
@@ -1398,24 +1429,22 @@
         let scaleSize = 1.0;
 
         if (isDept) {
-          // Mặt trời Department màu ĐỎ rực, giữ nguyên kích thước 2.8
           scaleSize = 2.8;
           spriteMat = new THREE.SpriteMaterial({
             map: redDeptSunTexture,
             color: new THREE.Color("#EF4444"),
             transparent: true,
-            opacity: 0.96,
+            opacity: 0.0, // Starts at 0.0 for Big-Bang 2s reveal
             blending: THREE.AdditiveBlending,
             depthWrite: false
           });
         } else if (isAdvisor) {
-          // Mặt trời Advisor màu VÀNG sáng, giữ nguyên kích thước 2.8
           scaleSize = 2.8;
           spriteMat = new THREE.SpriteMaterial({
             map: moderateSunTexture,
             color: new THREE.Color("#FDE047"),
             transparent: true,
-            opacity: 0.92,
+            opacity: 0.0,
             blending: THREE.AdditiveBlending,
             depthWrite: false
           });
@@ -1426,21 +1455,21 @@
           const masterBase = 2.4 + Math.min(1.4, connCount * 0.22);
           scaleSize = det.isPhd ? (masterBase * 3.0) : masterBase;
 
-          const baseColor = new THREE.Color(node.color || "#06B6D4");
-          const hsl = {};
-          baseColor.getHSL(hsl);
+          reusableColor.set(node.color || "#06B6D4");
+          reusableColor.getHSL(reusableHsl);
 
+          const baseColor = new THREE.Color();
           if (det.isPhd) {
-            baseColor.setHSL(hsl.h, Math.min(0.90, Math.max(0.78, hsl.s)), Math.min(0.60, Math.max(0.50, hsl.l)));
+            baseColor.setHSL(reusableHsl.h, Math.min(0.90, Math.max(0.78, reusableHsl.s)), Math.min(0.60, Math.max(0.50, reusableHsl.l)));
           } else {
-            baseColor.setHSL(hsl.h, Math.max(0.72, hsl.s * 0.85), Math.min(0.70, Math.max(0.56, hsl.l * 1.06)));
+            baseColor.setHSL(reusableHsl.h, Math.max(0.72, reusableHsl.s * 0.85), Math.min(0.70, Math.max(0.56, reusableHsl.l * 1.06)));
           }
 
           spriteMat = new THREE.SpriteMaterial({
             map: det.isPhd ? doctoralStarTexture : starTexture,
             color: baseColor,
             transparent: true,
-            opacity: det.isPhd ? 0.92 : 0.86,
+            opacity: 0.0,
             blending: THREE.AdditiveBlending,
             depthWrite: false
           });
@@ -1465,7 +1494,7 @@
         cosmosGroup.add(sprite);
         NODE_SPRITES.push(sprite);
         SPRITE_BY_ID.set(node.id, sprite);
-      });
+      }
 
       const finalMinY = Math.min(baseBottomY, actualMinY);
       const finalMaxY = Math.max(baseTopY, actualMaxY);
@@ -1474,7 +1503,7 @@
       const galaxyHeight = Math.max(100, finalMaxY - finalMinY + 16);
       controls.target.set(0, galaxyCenterY, 0);
 
-      // Central Beam
+      // Central Beam (Starts at uAlphaScale = 0.0)
       const beamHeight = galaxyHeight;
       const beamGeo = new THREE.CylinderGeometry(1.6, 1.6, beamHeight, 24, 1, true);
       const beamMat = new THREE.ShaderMaterial({
@@ -1482,7 +1511,7 @@
         depthWrite: false,
         blending: THREE.AdditiveBlending,
         side: THREE.DoubleSide,
-        uniforms: { uTime: { value: 0 } },
+        uniforms: { uTime: { value: 0 }, uAlphaScale: { value: 0.0 } },
         vertexShader: `
           varying vec2 vUv;
           varying vec3 vPos;
@@ -1496,13 +1525,14 @@
           varying vec2 vUv;
           varying vec3 vPos;
           uniform float uTime;
+          uniform float uAlphaScale;
           void main() {
             float fade = smoothstep(0.0, 0.05, vUv.y) * smoothstep(1.0, 0.95, vUv.y);
             vec3 cyan = vec3(0.02, 0.75, 0.90);
             vec3 pink = vec3(0.98, 0.25, 0.65);
             float wave = sin(vPos.y * 0.03 - uTime * 2.0) * 0.5 + 0.5;
             vec3 col = mix(cyan, pink, wave);
-            float alpha = fade * (0.85 + sin(uTime * 3.0 + vPos.y * 0.04) * 0.15);
+            float alpha = fade * (0.85 + sin(uTime * 3.0 + vPos.y * 0.04) * 0.15) * uAlphaScale;
             gl_FragColor = vec4(col * alpha * 2.0, alpha);
           }
         `
@@ -1517,7 +1547,7 @@
         depthWrite: false,
         blending: THREE.AdditiveBlending,
         side: THREE.DoubleSide,
-        uniforms: { uTime: { value: 0 } },
+        uniforms: { uTime: { value: 0 }, uAlphaScale: { value: 0.0 } },
         vertexShader: `
           varying vec2 vUv;
           varying vec3 vPos;
@@ -1531,12 +1561,13 @@
           varying vec2 vUv;
           varying vec3 vPos;
           uniform float uTime;
+          uniform float uAlphaScale;
           void main() {
             float fade = smoothstep(0.0, 0.05, vUv.y) * smoothstep(1.0, 0.95, vUv.y);
             vec3 violet = vec3(0.55, 0.36, 0.96);
             vec3 pink = vec3(0.95, 0.25, 0.55);
             vec3 col = mix(violet, pink, sin(vUv.y * 6.0 + uTime) * 0.5 + 0.5);
-            float alpha = fade * 0.28;
+            float alpha = fade * 0.28 * uAlphaScale;
             gl_FragColor = vec4(col * alpha * 1.4, alpha);
           }
         `
@@ -1551,8 +1582,8 @@
       funnelHazeMesh.position.y = galaxyCenterY;
       cosmosGroup.add(funnelHazeMesh);
 
-      // Spiral Arms
-      const spiralRibbonCount = 7000;
+      // Spiral Arms (Optimized without per-iteration object allocation)
+      const spiralRibbonCount = 6500;
       const ribbonGeo = new THREE.BufferGeometry();
       const ribbonPositions = new Float32Array(spiralRibbonCount * 3);
       const ribbonColors = new Float32Array(spiralRibbonCount * 3);
@@ -1562,6 +1593,7 @@
       const colorPurple = new THREE.Color("#A855F7");
       const colorCyanNeon = new THREE.Color("#06B6D4");
       const colorBlueSoft = new THREE.Color("#38BDF8");
+      const tempC = new THREE.Color();
 
       for (let i = 0; i < spiralRibbonCount; i++) {
         const arm = i % 2; 
@@ -1572,25 +1604,21 @@
         const y = finalMinY + progress * baseGalaxyHeight + Math.sin(theta * 2.0) * 14.0 + (Math.random() - 0.5) * 10.0;
         
         const spread = (Math.random() - 0.5) * (10.0 + progress * 38.0);
-        const x = Math.cos(theta) * (radius + spread);
-        const z = Math.sin(theta) * (radius + spread);
-
-        ribbonPositions[i * 3] = x;
+        ribbonPositions[i * 3] = Math.cos(theta) * (radius + spread);
         ribbonPositions[i * 3 + 1] = y;
-        ribbonPositions[i * 3 + 2] = z;
+        ribbonPositions[i * 3 + 2] = Math.sin(theta) * (radius + spread);
 
         const wave = Math.sin(theta * 2.0 + progress * 5.0) * 0.5 + 0.5;
-        let c = new THREE.Color();
         if (arm === 0) {
-          c.lerpColors(colorPinkNeon, colorPinkSoft, wave);
+          tempC.lerpColors(colorPinkNeon, colorPinkSoft, wave);
         } else {
-          c.lerpColors(colorCyanNeon, colorBlueSoft, wave);
+          tempC.lerpColors(colorCyanNeon, colorBlueSoft, wave);
         }
-        c.lerp(colorPurple, Math.random() * 0.35);
+        tempC.lerp(colorPurple, Math.random() * 0.35);
 
-        ribbonColors[i * 3] = c.r;
-        ribbonColors[i * 3 + 1] = c.g;
-        ribbonColors[i * 3 + 2] = c.b;
+        ribbonColors[i * 3] = tempC.r;
+        ribbonColors[i * 3 + 1] = tempC.g;
+        ribbonColors[i * 3 + 2] = tempC.b;
       }
 
       ribbonGeo.setAttribute('position', new THREE.BufferAttribute(ribbonPositions, 3));
@@ -1601,7 +1629,7 @@
         map: softDustTexture,
         vertexColors: true,
         transparent: true,
-        opacity: 0.68,
+        opacity: 0.0, // Starts at 0.0 for Big-Bang 2s reveal
         blending: THREE.AdditiveBlending,
         depthWrite: false
       });
@@ -1609,7 +1637,7 @@
       cosmosGroup.add(spiralArmRibbonPoints);
 
       // Cosmic Dust
-      const mistCount = 3200;
+      const mistCount = 2800;
       const mistGeo = new THREE.BufferGeometry();
       const mistPositions = new Float32Array(mistCount * 3);
       const mistColors = new Float32Array(mistCount * 3);
@@ -1625,8 +1653,7 @@
         mistPositions[i * 3 + 1] = y + (Math.random() - 0.5) * 12;
         mistPositions[i * 3 + 2] = Math.sin(angle) * rad;
 
-        const isPink = Math.random() > 0.5;
-        const col = isPink ? colorPinkSoft : colorCyanNeon;
+        const col = Math.random() > 0.5 ? colorPinkSoft : colorCyanNeon;
         mistColors[i * 3] = col.r;
         mistColors[i * 3 + 1] = col.g;
         mistColors[i * 3 + 2] = col.b;
@@ -1639,7 +1666,7 @@
         map: softDustTexture,
         vertexColors: true,
         transparent: true,
-        opacity: 0.35,
+        opacity: 0.0,
         blending: THREE.AdditiveBlending,
         depthWrite: false
       });
@@ -1712,7 +1739,7 @@
     }
 
     /* ==========================================================================
-       8. UI FILTERS & MERGED TIMELINE SETUP
+       8. UI FILTERS, UNIFIED MINIMIZE/EXPAND (+/-) & MERGED TIMELINE SETUP
        ========================================================================== */
     let selectedCluster = 'all';
     let selectedDept = 'ALL';
@@ -1720,6 +1747,24 @@
     let selectedThesisLangFilter = 'all';
     let activeTimelineYear = 2026;
     let isCumulativeMode = true;
+    let isFilterPanelExpanded = !isMobileView(); // PC: mặc định mở, Mobile: mặc định đóng
+
+    function syncFilterPanelVisibility() {
+      const deptPanelContainer = document.getElementById('dept-panel-container');
+      const expandBtn = document.getElementById('btn-panel-expand');
+
+      if (isFilterPanelExpanded) {
+        deptPanelContainer.classList.remove('hidden');
+        deptPanelContainer.classList.add('flex');
+        expandBtn.classList.add('hidden');
+        expandBtn.classList.remove('flex', 'md:flex');
+      } else {
+        deptPanelContainer.classList.add('hidden');
+        deptPanelContainer.classList.remove('flex', 'md:flex');
+        expandBtn.classList.remove('hidden', 'md:hidden');
+        expandBtn.classList.add('flex');
+      }
+    }
 
     function getDeptClusterCategory(deptName) {
       if (!deptName) return '기타';
@@ -1770,6 +1815,9 @@
     }
 
     function setupDepartmentFilterUI() {
+      isFilterPanelExpanded = !isMobileView();
+      syncFilterPanelVisibility();
+
       const dropdown = document.getElementById('dept-dropdown');
       const prevSelected = selectedDept;
       dropdown.innerHTML = `<option value="ALL">${TEXT_KO.allDeptsOpt}</option>`;
@@ -1856,38 +1904,15 @@
         showFilteredOverviewAnalytics(false);
       };
 
-      const mobileDeptBtn = document.getElementById('btn-mobile-dept-open');
-      const mobileDeptCloseBtn = document.getElementById('btn-mobile-dept-close');
-      const deptPanelContainer = document.getElementById('dept-panel-container');
-
-      mobileDeptBtn.onclick = () => {
-        deptPanelContainer.classList.remove('hidden');
-        deptPanelContainer.classList.add('flex');
-        mobileDeptBtn.classList.add('hidden');
+      // Unified (+) Expand and (-) Minimize for both Mobile & PC
+      document.getElementById('btn-panel-expand').onclick = () => {
+        isFilterPanelExpanded = true;
+        syncFilterPanelVisibility();
       };
 
-      mobileDeptCloseBtn.onclick = () => {
-        deptPanelContainer.classList.add('hidden');
-        deptPanelContainer.classList.remove('flex');
-        mobileDeptBtn.classList.remove('hidden');
-      };
-
-      const pcMinimizeBtn = document.getElementById('btn-pc-panel-minimize');
-      const pcExpandBtn = document.getElementById('btn-pc-panel-expand');
-
-      pcMinimizeBtn.onclick = () => {
-        if (!isLargePCView()) return;
-        deptPanelContainer.classList.add('hidden');
-        deptPanelContainer.classList.remove('md:flex');
-        pcExpandBtn.classList.remove('hidden');
-        pcExpandBtn.classList.add('flex');
-      };
-
-      pcExpandBtn.onclick = () => {
-        pcExpandBtn.classList.add('hidden');
-        pcExpandBtn.classList.remove('flex');
-        deptPanelContainer.classList.remove('hidden');
-        deptPanelContainer.classList.add('md:flex');
+      document.getElementById('btn-panel-minimize').onclick = () => {
+        isFilterPanelExpanded = false;
+        syncFilterPanelVisibility();
       };
     }
 
@@ -1901,7 +1926,8 @@
           s.material.opacity = 0.0;
         } else if (!isSearchActive && !lockedThesisNode) {
           const det = n.type === 'thesis_planet' ? getCleanDetail(n) : null;
-          s.material.opacity = s.userData.isDeptSun ? 0.96 : ((det && det.isPhd) ? 0.92 : 0.88);
+          const baseOp = s.userData.isDeptSun ? 0.96 : ((det && det.isPhd) ? 0.92 : 0.88);
+          s.material.opacity = baseOp * cosmicRevealProgress;
           s.scale.set(s.userData.baseSize, s.userData.baseSize, 1);
         }
       });
@@ -2288,7 +2314,7 @@
         e.target.closest('aside') ||
         e.target.closest('header') ||
         e.target.closest('#dept-panel-container') ||
-        e.target.closest('#btn-pc-panel-expand') ||
+        e.target.closest('#btn-panel-expand') ||
         e.target.closest('input') ||
         e.target.closest('select') ||
         e.target.closest('button') ||
@@ -2358,11 +2384,8 @@
       renderDetailContent(node, detail);
 
       if (isMobileView()) {
-        const deptPanelContainer = document.getElementById('dept-panel-container');
-        const mobileDeptBtn = document.getElementById('btn-mobile-dept-open');
-        deptPanelContainer.classList.add('hidden');
-        deptPanelContainer.classList.remove('flex');
-        mobileDeptBtn.classList.remove('hidden');
+        isFilterPanelExpanded = false;
+        syncFilterPanelVisibility();
       }
 
       document.getElementById('panel-list-view').classList.add('hidden');
@@ -2456,7 +2479,6 @@
           tag.className = 'px-2 py-0.5 rounded text-[10px] font-medium bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 cursor-pointer hover:bg-indigo-500/40 transition';
           tag.innerText = `#${displayKw}`;
           tag.onclick = () => {
-            // Lưu trạng thái hiện tại vào stack để có thể bấm "목록으로" quay lại bài luận văn đang đọc
             panelNavigationStack.push({
               view: 'detail',
               node: node,
@@ -2494,7 +2516,6 @@
       renderTop5KeywordsMiniBars(theses);
     }
 
-    // 1. Thanh tỷ lệ phân bổ 6 nhóm ngành (Click vào mảng màu -> Chuyển sang thống kê xu hướng của nhóm ngành đó)
     function renderClusterStackedBar(theses) {
       const barContainer = document.getElementById('mini-stacked-bar');
       const legendContainer = document.getElementById('mini-stacked-legend');
@@ -2533,7 +2554,6 @@
 
       stats.forEach(item => {
         const openClusterDrilldown = () => {
-          // Lưu trạng thái hiện tại để bấm "목록으로" quay lại
           if (currentListContext) {
             panelNavigationStack.push({
               view: 'list',
@@ -2566,7 +2586,6 @@
       });
     }
 
-    // 2. Đường xu hướng mini theo năm + Hover Tooltip hiển thị chính xác Năm & Số luận văn
     function renderYearSparkline(theses) {
       const svg = document.getElementById('mini-sparkline-svg');
       const rangeLabel = document.getElementById('sparkline-range-label');
@@ -2660,7 +2679,6 @@
       pathEl.style.filter = 'drop-shadow(0 0 5px rgba(236, 72, 153, 0.65))';
       svg.appendChild(pathEl);
 
-      // Static Peak & End Dots
       coords.forEach((p, idx) => {
         if (p.year === peakYear || idx === coords.length - 1) {
           const dot = document.createElementNS(ns, 'circle');
@@ -2674,7 +2692,6 @@
         }
       });
 
-      // Interactive Hover Guide Line + Neon Dot + Floating SVG Label
       const hoverGuide = document.createElementNS(ns, 'line');
       hoverGuide.setAttribute('y1', '2');
       hoverGuide.setAttribute('y2', String(height - 2));
@@ -2718,7 +2735,6 @@
       hoverBadgeGroup.appendChild(badgeText);
       svg.appendChild(hoverBadgeGroup);
 
-      // Transparent Hit Area Overlay for Smooth Mouse & Touch Tracking
       const hitRect = document.createElementNS(ns, 'rect');
       hitRect.setAttribute('x', '0');
       hitRect.setAttribute('y', '0');
@@ -2776,7 +2792,6 @@
       hitRect.addEventListener('touchend', hideSparklineHover);
     }
 
-    // 3. Top 5 Từ khóa nổi bật (Chuẩn hóa Hàn/Anh & Click có lưu lịch sử để quay lại)
     function renderTop5KeywordsMiniBars(theses) {
       const container = document.getElementById('mini-top-keywords');
       container.innerHTML = '';
@@ -2862,7 +2877,6 @@
         return detail.keywords.some(k => normalizeKeywordDisplayLanguage(k).toLowerCase().includes(q) || k.toLowerCase().includes(q));
       });
 
-      // Lưu ý: Không xóa lockedThesisNode để camera tiếp tục bám theo ngôi sao luận văn đang chọn!
       isSearchActive = lockedThesisNode === null;
       if (!lockedThesisNode) {
         clearArcLinks();
@@ -3068,7 +3082,6 @@
       detailView.classList.add('hidden');
       rightPanel.classList.remove('hidden');
 
-      // Hiển thị nút "← 목록으로" nếu có màn hình trước đó trong lịch sử
       if (panelNavigationStack.length > 0) {
         historyBackBtn.classList.remove('hidden');
       } else {
@@ -3080,14 +3093,12 @@
       document.getElementById('list-view-count').innerText = TEXT_KO.searchResultsCount(theses.length);
       document.getElementById('list-view-subhint').innerText = TEXT_KO.listViewSubhint;
 
-      // Sắp xếp danh sách luận văn từ MỚI NHẤT đến CŨ NHẤT (2026 -> 2001)
       const sortedTheses = [...theses].sort((a, b) => {
         const yearDiff = (b.year || 0) - (a.year || 0);
         if (yearDiff !== 0) return yearDiff;
         return (b.id || 0) - (a.id || 0);
       });
 
-      // Render Contextual Mini-Analytics
       renderContextualMiniAnalytics(sortedTheses, contextMode);
 
       container.innerHTML = '';
@@ -3199,7 +3210,8 @@
         s.userData.isRelated = false;
         if (s.visible) {
           const det = s.userData.nodeData.type === 'thesis_planet' ? getCleanDetail(s.userData.nodeData) : null;
-          s.material.opacity = s.userData.isDeptSun ? 0.96 : (det && det.isPhd ? 0.92 : 0.88);
+          const baseOp = s.userData.isDeptSun ? 0.96 : (det && det.isPhd ? 0.92 : 0.88);
+          s.material.opacity = baseOp * cosmicRevealProgress;
           s.scale.set(s.userData.baseSize, s.userData.baseSize, 1);
         }
       });
@@ -3215,22 +3227,12 @@
 
     // Camera Presets
     function setActiveCameraBtn(activeId) {
-      ['btn-view-galaxy', 'btn-view-top', 'btn-view-3d'].forEach(id => {
+      ['btn-view-top', 'btn-view-galaxy', 'btn-view-3d'].forEach(id => {
         const el = document.getElementById(id);
         if (id === activeId) el.classList.add('active');
         else el.classList.remove('active');
       });
     }
-
-    document.getElementById('btn-view-galaxy').addEventListener('click', () => {
-      if (lockedThesisNode) closeRightPanel();
-      lockedZoomAnchorWorld = null;
-      lockedZoomAnchorSprite = null;
-      setActiveCameraBtn('btn-view-galaxy');
-      const targetY = galaxyCenterYGlobal;
-      new TWEEN.Tween(camera.position).to({ x: 0, y: targetY + 180, z: 720 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
-      new TWEEN.Tween(controls.target).to({ x: 0, y: targetY, z: 0 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
-    });
 
     document.getElementById('btn-view-top').addEventListener('click', () => {
       if (lockedThesisNode) closeRightPanel();
@@ -3239,6 +3241,16 @@
       setActiveCameraBtn('btn-view-top');
       const targetY = galaxyCenterYGlobal;
       new TWEEN.Tween(camera.position).to({ x: 0, y: 950, z: 0.001 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
+      new TWEEN.Tween(controls.target).to({ x: 0, y: targetY, z: 0 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
+    });
+
+    document.getElementById('btn-view-galaxy').addEventListener('click', () => {
+      if (lockedThesisNode) closeRightPanel();
+      lockedZoomAnchorWorld = null;
+      lockedZoomAnchorSprite = null;
+      setActiveCameraBtn('btn-view-galaxy');
+      const targetY = galaxyCenterYGlobal;
+      new TWEEN.Tween(camera.position).to({ x: 0, y: targetY + 180, z: 720 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
       new TWEEN.Tween(controls.target).to({ x: 0, y: targetY, z: 0 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
     });
 
@@ -3260,7 +3272,7 @@
     });
 
     /* ==========================================================================
-       13. REAL-TIME ANIMATION (CONTINUOUS CAMERA TRACKING ON LOCKED THESIS)
+       13. REAL-TIME ANIMATION (WITH 2S COSMIC REVEAL & CONTINUOUS TRACKING)
        ========================================================================== */
     const clock = new THREE.Clock();
     const _prevTrackedWorldPos = new THREE.Vector3();
@@ -3271,7 +3283,6 @@
       requestAnimationFrame(animate);
       const elapsed = clock.getElapsedTime();
 
-      // Luôn bám theo ngôi sao luận văn đang chọn chừng nào chưa thoát panel
       const hasLockedThesis = lockedThesisSprite && lockedThesisSprite.visible && !isCameraFlying;
       if (hasLockedThesis) {
         cosmosGroup.updateMatrixWorld();
@@ -3320,27 +3331,30 @@
               const strobe = 1.0 + Math.abs(Math.sin(elapsed * 7.5)) * 0.16;
               const b = s.userData.baseSize * 5.0;
               s.scale.set(b * strobe, b * strobe, 1);
-              s.material.opacity = 1.0;
+              s.material.opacity = 1.0 * cosmicRevealProgress;
             } else if (s.userData.isRelated) {
               const b = s.userData.baseSize * 3.0;
               const shimmer = Math.sin(elapsed * 3.2 + s.userData.pulseOffset) * 0.08;
               s.scale.set(b * (1.0 + shimmer), b * (1.0 + shimmer), 1);
-              s.material.opacity = 0.94;
+              s.material.opacity = 0.94 * cosmicRevealProgress;
             } else {
               const b = s.userData.baseSize * distFactor * 0.42;
               s.scale.set(b, b, 1);
-              s.material.opacity = 0.04;
+              s.material.opacity = 0.04 * cosmicRevealProgress;
             }
           } else {
             const tSpeed = s.userData.twinkleSpeed;
             const shimmer = Math.sin(elapsed * tSpeed + s.userData.pulseOffset) * Math.cos(elapsed * (tSpeed * 0.5)) * s.userData.shimmerAmp;
             
             const det = s.userData.nodeData.type === 'thesis_planet' ? getCleanDetail(s.userData.nodeData) : null;
-            const b = s.userData.baseSize * distFactor;
+            const revealScale = 0.4 + 0.6 * cosmicRevealProgress;
+            const b = s.userData.baseSize * distFactor * revealScale;
             s.scale.set(b * (1.0 + shimmer), b * (1.0 + shimmer), 1);
-            s.material.opacity = s.userData.isDeptSun
+
+            const targetOpacity = s.userData.isDeptSun
               ? 0.96
               : ((det && det.isPhd) ? 0.92 : Math.min(0.92, 0.80 + Math.abs(shimmer) * 0.25));
+            s.material.opacity = targetOpacity * cosmicRevealProgress;
           }
         }
       }
@@ -3353,25 +3367,7 @@
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
-
-      const deptPanelContainer = document.getElementById('dept-panel-container');
-      const pcExpandBtn = document.getElementById('btn-pc-panel-expand');
-
-      if (!isMobileView()) {
-        if (!isLargePCView()) {
-          pcExpandBtn.classList.add('hidden');
-          pcExpandBtn.classList.remove('flex');
-          deptPanelContainer.classList.remove('hidden');
-          deptPanelContainer.classList.add('md:flex');
-        } else if (pcExpandBtn.classList.contains('hidden')) {
-          deptPanelContainer.classList.remove('hidden');
-          deptPanelContainer.classList.add('md:flex');
-        }
-        document.getElementById('btn-mobile-dept-open').classList.add('md:hidden');
-      } else {
-        pcExpandBtn.classList.add('hidden');
-        pcExpandBtn.classList.remove('flex');
-      }
+      syncFilterPanelVisibility();
     });
 
     // Boot
