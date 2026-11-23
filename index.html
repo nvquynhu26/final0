@@ -164,7 +164,7 @@
     <div id="loader-sub" class="text-[10px] text-slate-500 font-scifi mt-1">SEOULTECH GALAXY SIMULATION</div>
   </div>
 
-  <!-- HEADER: Hạ thấp tránh tai thỏ iPhone trên Mobile; Nút 연구 통계 đồng bộ kích thước với nút (+) -->
+  <!-- HEADER -->
   <header class="absolute top-0 left-0 right-0 z-20 flex justify-between items-start px-4 md:px-6 header-safe pointer-events-none">
     <div class="pointer-events-auto flex flex-col min-w-0 pr-2">
       <div class="flex items-center space-x-2">
@@ -174,7 +174,7 @@
         </h1>
       </div>
 
-      <!-- Nút (+) mở panel mặc định hiển thị trên Mobile (PC mặc định mở panel sẵn nên ẩn nút + ban đầu) -->
+      <!-- Nút (+) mở panel mặc định hiển thị trên Mobile -->
       <button id="btn-panel-expand" class="md:hidden mt-2.5 self-start flex items-center justify-center w-7 h-7 scifi-panel rounded-full text-cyan-300 border border-cyan-400/40 text-sm font-bold leading-none active:scale-95 transition-all shadow-[0_0_12px_rgba(6,182,212,0.3)]" title="패널 열기">
         +
       </button>
@@ -189,11 +189,11 @@
     </div>
   </header>
 
-  <!-- UNIFIED FILTER & TIMELINE PANEL (Mặc định mở ở PC, mặc định đóng ở Mobile) -->
+  <!-- UNIFIED FILTER & TIMELINE PANEL -->
   <div id="dept-panel-container" class="hidden md:flex fixed md:absolute left-1/2 -translate-x-1/2 top-32 md:left-6 md:top-20 md:translate-x-0 z-30 pointer-events-none transition-all duration-300">
     <div class="w-[90vw] max-w-[340px] md:w-80 scifi-panel p-4 rounded-xl pointer-events-auto border border-white/10 flex flex-col space-y-2.5 shadow-2xl max-h-[76vh] md:max-h-[80vh] overflow-y-auto">
       
-      <!-- TOP ROW: 3 NÚT VIEW (평면 뷰 đầu tiên bên trái) + NÚT THU NHỎ (-) ĐỒNG NHẤT TRÊN MỌI MÀN HÌNH -->
+      <!-- TOP ROW: 3 NÚT VIEW + NÚT THU NHỎ (-) -->
       <div class="flex items-center space-x-1.5 pb-2 border-b border-indigo-500/20">
         <div class="flex-1 grid grid-cols-3 gap-1.5 text-xs">
           <button id="btn-view-top" class="scifi-btn px-2 py-1.5 rounded text-slate-300 font-medium text-center active">평면 뷰</button>
@@ -209,17 +209,34 @@
         <button id="btn-reset-filters" class="text-[10px] text-cyan-400 hover:underline font-scifi">초기화</button>
       </div>
 
-      <!-- Quick Group Buttons -->
+      <!-- Quick Group Buttons (Có chấm màu đại diện cho 5 nhóm ngành) -->
       <div class="grid grid-cols-3 gap-1.5 text-[11px]" id="cluster-btn-group">
-        <button class="cluster-btn scifi-btn py-1.5 px-1 rounded text-center active" data-cluster="all">전체</button>
-        <button class="cluster-btn scifi-btn py-1.5 px-1 rounded text-center" data-cluster="공학">공학</button>
-        <button class="cluster-btn scifi-btn py-1.5 px-1 rounded text-center" data-cluster="디자인">디자인</button>
-        <button class="cluster-btn scifi-btn py-1.5 px-1 rounded text-center" data-cluster="융합">융합</button>
-        <button class="cluster-btn scifi-btn py-1.5 px-1 rounded text-center" data-cluster="경영">경영</button>
-        <button class="cluster-btn scifi-btn py-1.5 px-1 rounded text-center" data-cluster="인문">인문</button>
+        <button class="cluster-btn scifi-btn py-1.5 px-1 rounded flex items-center justify-center active" data-cluster="all">
+          <span>전체</span>
+        </button>
+        <button class="cluster-btn scifi-btn py-1.5 px-1 rounded flex items-center justify-center space-x-1.5" data-cluster="공학">
+          <span class="w-1.5 h-1.5 rounded-full shrink-0" style="background-color: #06B6D4; box-shadow: 0 0 6px #06B6D4;"></span>
+          <span>공학</span>
+        </button>
+        <button class="cluster-btn scifi-btn py-1.5 px-1 rounded flex items-center justify-center space-x-1.5" data-cluster="디자인">
+          <span class="w-1.5 h-1.5 rounded-full shrink-0" style="background-color: #F43F5E; box-shadow: 0 0 6px #F43F5E;"></span>
+          <span>디자인</span>
+        </button>
+        <button class="cluster-btn scifi-btn py-1.5 px-1 rounded flex items-center justify-center space-x-1.5" data-cluster="융합">
+          <span class="w-1.5 h-1.5 rounded-full shrink-0" style="background-color: #8B5CF6; box-shadow: 0 0 6px #8B5CF6;"></span>
+          <span>융합</span>
+        </button>
+        <button class="cluster-btn scifi-btn py-1.5 px-1 rounded flex items-center justify-center space-x-1.5" data-cluster="경영">
+          <span class="w-1.5 h-1.5 rounded-full shrink-0" style="background-color: #F59E0B; box-shadow: 0 0 6px #F59E0B;"></span>
+          <span>경영</span>
+        </button>
+        <button class="cluster-btn scifi-btn py-1.5 px-1 rounded flex items-center justify-center space-x-1.5" data-cluster="인문">
+          <span class="w-1.5 h-1.5 rounded-full shrink-0" style="background-color: #10B981; box-shadow: 0 0 6px #10B981;"></span>
+          <span>인문</span>
+        </button>
       </div>
 
-      <!-- Department Dropdown -->
+      <!-- Department Dropdown (Không chấm màu, đã tự động gộp 전공 vào 학과) -->
       <div class="relative pt-0.5">
         <select id="dept-dropdown" class="w-full bg-black/60 text-slate-200 text-xs rounded-lg p-2 border border-indigo-500/30 focus:outline-none focus:border-cyan-400 cursor-pointer">
           <option value="ALL">-- 전체 학과 --</option>
@@ -458,7 +475,7 @@
     ];
 
     /* ==========================================================================
-       2. DEPARTMENT NORMALIZATION ENGINE
+       2. DEPARTMENT NORMALIZATION ENGINE & JEONGONG -> HAKGWA CONSOLIDATION
        ========================================================================== */
     const EXACT_DEPT_CANONICAL_RULES = [
       { pattern: /^스마트생산융합시스템학과/i, canonical: "스마트생산융합시스템공학과" },
@@ -633,6 +650,47 @@
       return s;
     }
 
+    /**
+     * Gộp các tên kết thúc bằng "전공" vào tên giống hệt nhưng kết thúc bằng "학과"
+     * Ví dụ: "건축설계전공" -> "건축설계학과" (nếu "건축설계학과" có tồn tại trong dữ liệu)
+     */
+    function consolidateJeongongIntoHakgwa() {
+      const existingDeptNames = new Set();
+      for (let i = 0; i < ALL_NODES.length; i++) {
+        if (ALL_NODES[i].dept) existingDeptNames.add(ALL_NODES[i].dept);
+      }
+
+      const jeongongToHakgwaMap = new Map();
+      existingDeptNames.forEach(deptName => {
+        if (deptName.endsWith('전공')) {
+          const baseName = deptName.slice(0, -2);
+          const candidateHakgwa = `${baseName}학과`;
+          const candidateGonghakgwa = `${baseName}공학과`;
+          if (existingDeptNames.has(candidateHakgwa)) {
+            jeongongToHakgwaMap.set(deptName, candidateHakgwa);
+          } else if (existingDeptNames.has(candidateGonghakgwa)) {
+            jeongongToHakgwaMap.set(deptName, candidateGonghakgwa);
+          }
+        }
+      });
+
+      if (jeongongToHakgwaMap.size === 0) return;
+
+      for (let i = 0; i < ALL_NODES.length; i++) {
+        const n = ALL_NODES[i];
+        if (n.dept && jeongongToHakgwaMap.has(n.dept)) {
+          const mergedDept = jeongongToHakgwaMap.get(n.dept);
+          n.dept = mergedDept;
+          if (n.type === 'dept_sun') {
+            n.name = mergedDept;
+          }
+          if (n._resolvedDetail) {
+            n._resolvedDetail.dept = mergedDept;
+          }
+        }
+      }
+    }
+
     function isMobileView() { return window.innerWidth < 768; }
 
     /* ==========================================================================
@@ -755,7 +813,7 @@
       side: THREE.DoubleSide,
       uniforms: {
         uTime: { value: 0 },
-        uIntensity: { value: 0.0 } // Starts at 0.0 for Big-Bang 2s reveal
+        uIntensity: { value: 0.0 }
       },
       vertexShader: `
         varying vec2 vUv;
@@ -854,7 +912,7 @@
     });
 
     /* ==========================================================================
-       6. ULTRA-FAST PARALLEL DATA LOADING & 2-SECOND COSMIC IGNITION REVEAL
+       6. BILINGUAL KEYWORD MERGING ENGINE (KOREAN + ENGLISH SAME MEANING -> KOREAN)
        ========================================================================== */
     let ALL_NODES = [];
     let NODE_BY_ID = new Map();
@@ -862,7 +920,6 @@
     let SPRITE_BY_ID = new Map();
     let DEPT_MAP = new Map();
     const DETAILS_STORE = new Map();
-    const RAW_DETAIL_CHUNKS = [];
     let isSearchActive = false;
 
     let lockedThesisNode = null;
@@ -873,18 +930,250 @@
     let spiralArmRibbonPoints;
     let galaxyCenterYGlobal = 225;
 
-    // Global cosmic ignition multiplier (0.0 = Pitch Black -> 1.0 = Full Brightness in 2000ms)
     let cosmicRevealProgress = 0.0;
-
     let panelNavigationStack = [];
     let currentListContext = null;
 
     const INVALID_KW_SET = new Set(["", "nan", "#nan", "null", "none", "undefined", "n/a", "-", "없음", "연구", "분석", "개발"]);
 
+    // Từ điển gộp các từ khóa tiếng Anh & tiếng Hàn đồng nghĩa về cùng 1 nhãn tiếng Hàn chuẩn
+    const BILINGUAL_SYNONYM_TO_KOREAN = new Map([
+      ["ai", "인공지능"],
+      ["artificial intelligence", "인공지능"],
+      ["artificial_intelligence", "인공지능"],
+      ["인공지능", "인공지능"],
+
+      ["dl", "딥러닝"],
+      ["deep learning", "딥러닝"],
+      ["deeplearning", "딥러닝"],
+      ["deep_learning", "딥러닝"],
+      ["심층학습", "딥러닝"],
+      ["딥러닝", "딥러닝"],
+
+      ["ml", "머신러닝"],
+      ["machine learning", "머신러닝"],
+      ["machinelearning", "머신러닝"],
+      ["machine_learning", "머신러닝"],
+      ["기계학습", "머신러닝"],
+      ["머신러닝", "머신러닝"],
+
+      ["cnn", "합성곱신경망"],
+      ["convolutional neural network", "합성곱신경망"],
+      ["convolutional neural networks", "합성곱신경망"],
+      ["합성곱신경망", "합성곱신경망"],
+
+      ["rnn", "순환신경망"],
+      ["recurrent neural network", "순환신경망"],
+      ["순환신경망", "순환신경망"],
+
+      ["neural network", "신경망"],
+      ["neural networks", "신경망"],
+      ["artificial neural network", "인공신경망"],
+      ["인공신경망", "인공신경망"],
+      ["신경망", "신경망"],
+
+      ["nlp", "자연어처리"],
+      ["natural language processing", "자연어처리"],
+      ["자연어처리", "자연어처리"],
+
+      ["computer vision", "컴퓨터비전"],
+      ["컴퓨터비전", "컴퓨터비전"],
+
+      ["iot", "사물인터넷"],
+      ["internet of things", "사물인터넷"],
+      ["internet_of_things", "사물인터넷"],
+      ["사물인터넷", "사물인터넷"],
+
+      ["ux", "사용자경험"],
+      ["ux design", "사용자경험"],
+      ["user experience", "사용자경험"],
+      ["user experience design", "사용자경험"],
+      ["사용자경험", "사용자경험"],
+
+      ["ui", "사용자인터페이스"],
+      ["ui design", "사용자인터페이스"],
+      ["user interface", "사용자인터페이스"],
+      ["인터페이스", "사용자인터페이스"],
+      ["사용자인터페이스", "사용자인터페이스"],
+
+      ["vr", "가상현실"],
+      ["virtual reality", "가상현실"],
+      ["가상현실", "가상현실"],
+
+      ["ar", "증강현실"],
+      ["augmented reality", "증강현실"],
+      ["증강현실", "증강현실"],
+
+      ["xr", "확장현실"],
+      ["extended reality", "확장현실"],
+      ["확장현실", "확장현실"],
+
+      ["metaverse", "메타버스"],
+      ["메타버스", "메타버스"],
+
+      ["big data", "빅데이터"],
+      ["bigdata", "빅데이터"],
+      ["빅데이터", "빅데이터"],
+
+      ["data mining", "데이터마이닝"],
+      ["datamining", "데이터마이닝"],
+      ["데이터마이닝", "데이터마이닝"],
+
+      ["data analysis", "데이터분석"],
+      ["데이터분석", "데이터분석"],
+
+      ["robot", "로보틱스"],
+      ["robots", "로보틱스"],
+      ["robotics", "로보틱스"],
+      ["로봇", "로보틱스"],
+      ["로보틱스", "로보틱스"],
+
+      ["autonomous driving", "자율주행"],
+      ["autonomous vehicle", "자율주행"],
+      ["autonomous vehicles", "자율주행"],
+      ["self-driving", "자율주행"],
+      ["자율주행", "자율주행"],
+
+      ["semiconductor", "반도체"],
+      ["semiconductors", "반도체"],
+      ["반도체", "반도체"],
+
+      ["design", "디자인"],
+      ["designing", "디자인"],
+      ["디자인", "디자인"],
+
+      ["service design", "서비스디자인"],
+      ["서비스디자인", "서비스디자인"],
+
+      ["interaction", "인터랙션"],
+      ["interaction design", "인터랙션디자인"],
+      ["인터랙션", "인터랙션"],
+      ["인터랙션디자인", "인터랙션디자인"],
+
+      ["optimization", "최적화"],
+      ["optimizing", "최적화"],
+      ["optimize", "최적화"],
+      ["최적화", "최적화"],
+
+      ["simulation", "시뮬레이션"],
+      ["simulating", "시뮬레이션"],
+      ["simulate", "시뮬레이션"],
+      ["시뮬레이션", "시뮬레이션"],
+
+      ["algorithm", "알고리즘"],
+      ["algorithms", "알고리즘"],
+      ["알고리즘", "알고리즘"],
+
+      ["network", "네트워크"],
+      ["networks", "네트워크"],
+      ["네트워크", "네트워크"],
+
+      ["system", "시스템"],
+      ["systems", "시스템"],
+      ["시스템", "시스템"],
+
+      ["control", "제어"],
+      ["control system", "제어시스템"],
+      ["제어", "제어"],
+      ["제어시스템", "제어시스템"],
+
+      ["energy", "에너지"],
+      ["renewable energy", "신재생에너지"],
+      ["신재생에너지", "신재생에너지"],
+      ["에너지", "에너지"],
+
+      ["sustainability", "지속가능성"],
+      ["sustainable", "지속가능성"],
+      ["sustainable design", "지속가능디자인"],
+      ["지속가능성", "지속가능성"],
+
+      ["security", "보안"],
+      ["cyber security", "사이버보안"],
+      ["cybersecurity", "사이버보안"],
+      ["정보보안", "정보보안"],
+      ["보안", "보안"],
+
+      ["cloud", "클라우드"],
+      ["cloud computing", "클라우드컴퓨팅"],
+      ["클라우드", "클라우드"],
+      ["클라우드컴퓨팅", "클라우드컴퓨팅"],
+
+      ["blockchain", "블록체인"],
+      ["블록체인", "블록체인"],
+
+      ["smart factory", "스마트팩토리"],
+      ["스마트팩토리", "스마트팩토리"],
+
+      ["digital twin", "디지털트윈"],
+      ["디지털트윈", "디지털트윈"],
+
+      ["object detection", "객체탐지"],
+      ["detection", "탐지"],
+      ["객체탐지", "객체탐지"],
+      ["객체인식", "객체인식"],
+
+      ["prediction", "예측"],
+      ["forecasting", "예측"],
+      ["예측", "예측"],
+
+      ["classification", "분류"],
+      ["분류", "분류"],
+
+      ["recognition", "인식"],
+      ["인식", "인식"],
+
+      ["finite element analysis", "유한요소해석"],
+      ["fea", "유한요소해석"],
+      ["유한요소해석", "유한요소해석"],
+
+      ["cfd", "전산유체역학"],
+      ["computational fluid dynamics", "전산유체역학"],
+      ["전산유체역학", "전산유체역학"],
+
+      ["3d printing", "3D프린팅"],
+      ["additive manufacturing", "적층제조"],
+      ["적층제조", "적층제조"],
+
+      ["battery", "배터리"],
+      ["lithium-ion battery", "리튬이온배터리"],
+      ["리튬이온배터리", "리튬이온배터리"],
+      ["배터리", "배터리"],
+
+      ["sensor", "센서"],
+      ["sensors", "센서"],
+      ["센서", "센서"],
+
+      ["wireless power transfer", "무선전력전송"],
+      ["wpt", "무선전력전송"],
+      ["무선전력전송", "무선전력전송"],
+
+      ["education", "교육"],
+      ["교육", "교육"],
+
+      ["marketing", "마케팅"],
+      ["마케팅", "마케팅"],
+
+      ["brand", "브랜드"],
+      ["branding", "브랜딩"],
+      ["브랜드", "브랜드"],
+      ["브랜딩", "브랜딩"],
+
+      ["consumer behavior", "소비자행동"],
+      ["소비자행동", "소비자행동"],
+
+      ["satisfaction", "만족도"],
+      ["만족도", "만족도"]
+    ]);
+
     function normalizeKeywordDisplayLanguage(rawKw) {
       if (!rawKw) return '';
       let s = String(rawKw).replace(/^#+/, '').trim();
       if (!s) return '';
+
+      const lowerFull = s.toLowerCase().replace(/\s+/g, ' ').trim();
+      if (BILINGUAL_SYNONYM_TO_KOREAN.has(lowerFull)) {
+        return BILINGUAL_SYNONYM_TO_KOREAN.get(lowerFull);
+      }
 
       const hasHangul = /[가-힣]/.test(s);
       const hasLatin = /[a-zA-Z]/.test(s);
@@ -899,7 +1188,8 @@
           .trim();
 
         if (/[가-힣]/.test(cleaned)) {
-          return cleaned;
+          const cleanedLower = cleaned.toLowerCase();
+          return BILINGUAL_SYNONYM_TO_KOREAN.get(cleanedLower) || cleaned;
         }
       }
 
@@ -1086,11 +1376,9 @@
       return hasHangul ? 'ko' : 'en';
     }
 
-    // Trigger 2.0-second Cosmic Ignition Reveal AFTER loading screen completes
     function startCosmicIgnitionReveal() {
       cosmicRevealProgress = 0.0;
       const targetCenterY = galaxyCenterYGlobal;
-      // Subtle dramatic camera settle from higher altitude into Top View during the 2s reveal
       camera.position.set(0, 1280, 0.001);
       controls.target.set(0, targetCenterY, 0);
 
@@ -1118,7 +1406,6 @@
     }
 
     async function initializeCosmos() {
-      // Launch all network fetches in a SINGLE parallel wave for maximum speed
       const nodeFetchPromises = ['galaxy_nodes_2.json', 'galaxy_nodes.json'].map(fname =>
         fetch(fname, { cache: 'force-cache' })
           .then(r => r.ok ? r.json() : null)
@@ -1170,10 +1457,12 @@
         }
       }
 
+      // Gộp các tên "전공" vào "학과" tương ứng
+      consolidateJeongongIntoHakgwa();
+
       buildCosmicScene();
       setupDepartmentFilterUI();
 
-      // Dismiss loader first, then trigger the 2-second pitch-black to bright cosmic reveal
       const loader = document.getElementById('loader-overlay');
       if (loader) {
         loader.classList.add('opacity-0');
@@ -1280,7 +1569,7 @@
     }
 
     /* ==========================================================================
-       7. 3D GALAXY SCENE CONSTRUCTION (OPTIMIZED)
+       7. 3D GALAXY SCENE CONSTRUCTION
        ========================================================================== */
     function buildCosmicScene() {
       NODE_SPRITES = [];
@@ -1331,7 +1620,7 @@
         const candidates = new Set();
         for (let j = 0; j < concA.length; j++) {
           const list = conceptInvertedIndex.get(concA[j]);
-          if (list && list.length < 350) { // Skip ultra-generic bucket bottlenecks
+          if (list && list.length < 350) {
             for (let k = 0; k < list.length; k++) {
               if (list[k].id !== nA.id) candidates.add(list[k]);
             }
@@ -1434,7 +1723,7 @@
             map: redDeptSunTexture,
             color: new THREE.Color("#EF4444"),
             transparent: true,
-            opacity: 0.0, // Starts at 0.0 for Big-Bang 2s reveal
+            opacity: 0.0,
             blending: THREE.AdditiveBlending,
             depthWrite: false
           });
@@ -1503,7 +1792,7 @@
       const galaxyHeight = Math.max(100, finalMaxY - finalMinY + 16);
       controls.target.set(0, galaxyCenterY, 0);
 
-      // Central Beam (Starts at uAlphaScale = 0.0)
+      // Central Beam (Cột ánh sáng trung tâm đại diện cho 서울과학기술대학교)
       const beamHeight = galaxyHeight;
       const beamGeo = new THREE.CylinderGeometry(1.6, 1.6, beamHeight, 24, 1, true);
       const beamMat = new THREE.ShaderMaterial({
@@ -1539,6 +1828,7 @@
       });
       cosmicBeamMesh = new THREE.Mesh(beamGeo, beamMat);
       cosmicBeamMesh.position.y = galaxyCenterY;
+      cosmicBeamMesh.userData = { isCentralBeam: true };
       cosmosGroup.add(cosmicBeamMesh);
 
       const beamGlowGeo = new THREE.CylinderGeometry(14, 14, beamHeight, 24, 1, true);
@@ -1574,6 +1864,7 @@
       });
       cosmicBeamGlowMesh = new THREE.Mesh(beamGlowGeo, beamGlowMat);
       cosmicBeamGlowMesh.position.y = galaxyCenterY;
+      cosmicBeamGlowMesh.userData = { isCentralBeam: true };
       cosmosGroup.add(cosmicBeamGlowMesh);
 
       // Funnel Haze
@@ -1582,7 +1873,7 @@
       funnelHazeMesh.position.y = galaxyCenterY;
       cosmosGroup.add(funnelHazeMesh);
 
-      // Spiral Arms (Optimized without per-iteration object allocation)
+      // Spiral Arms
       const spiralRibbonCount = 6500;
       const ribbonGeo = new THREE.BufferGeometry();
       const ribbonPositions = new Float32Array(spiralRibbonCount * 3);
@@ -1629,7 +1920,7 @@
         map: softDustTexture,
         vertexColors: true,
         transparent: true,
-        opacity: 0.0, // Starts at 0.0 for Big-Bang 2s reveal
+        opacity: 0.0,
         blending: THREE.AdditiveBlending,
         depthWrite: false
       });
@@ -1676,15 +1967,15 @@
 
     function generateRealisticNodes() {
       const nodes = [];
-      const depts = ["컴퓨터공학과", "기계시스템디자인공학과", "시각디자인전공", "산업디자인전공", "인공지능응용학과", "신소재공학과", "경영학과", "행정학과", "TESOL학과", "영어영문학과"];
+      const depts = ["컴퓨터공학과", "기계시스템디자인공학과", "시각디자인전공", "산업디자인전공", "건축설계학과", "건축설계전공", "인공지능응용학과", "신소재공학과", "경영학과", "행정학과", "TESOL학과", "영어영문학과"];
       const colors = ["#F43F5E", "#06B6D4", "#8B5CF6", "#F59E0B", "#10B981"];
       const keywordPairs = [
-        ["인공지능 (AI)", "최적화 (Optimization)", "딥러닝"],
-        ["Artificial Intelligence", "Optimizing", "Neural Network"],
-        ["사용자경험 (UX Design)", "인터페이스", "Interaction"],
+        ["인공지능", "최적화", "딥러닝"],
+        ["Artificial Intelligence", "Optimization", "Deep Learning"],
+        ["사용자경험", "사용자인터페이스", "Interaction"],
         ["User Experience", "Designing", "Interactive System"],
-        ["로보틱스 (Robotics)", "제어시스템", "Automation"],
-        ["Robot", "Controlling", "자율주행 (Autonomous Vehicle)"]
+        ["로보틱스", "제어시스템", "Automation"],
+        ["Robotics", "Controlling", "자율주행"]
       ];
       let id = 1;
 
@@ -1702,7 +1993,7 @@
           const az = dz + (Math.random() - 0.5) * 30;
           nodes.push({ id: id++, name: `교수 ${advName}`, type: 'advisor_sun', dept: d, year: 2026, x: ax, y: 440, z: az, color: '#FDE047' });
 
-          for (let t = 1; t <= 11; t++) {
+          for (let t = 1; t <= 10; t++) {
             const yr = 2001 + Math.floor(Math.random() * 26);
             const tr = 15 + Math.random() * 35;
             const ta = Math.random() * Math.PI * 2;
@@ -1747,7 +2038,7 @@
     let selectedThesisLangFilter = 'all';
     let activeTimelineYear = 2026;
     let isCumulativeMode = true;
-    let isFilterPanelExpanded = !isMobileView(); // PC: mặc định mở, Mobile: mặc định đóng
+    let isFilterPanelExpanded = !isMobileView();
 
     function syncFilterPanelVisibility() {
       const deptPanelContainer = document.getElementById('dept-panel-container');
@@ -1904,7 +2195,6 @@
         showFilteredOverviewAnalytics(false);
       };
 
-      // Unified (+) Expand and (-) Minimize for both Mobile & PC
       document.getElementById('btn-panel-expand').onclick = () => {
         isFilterPanelExpanded = true;
         syncFilterPanelVisibility();
@@ -2094,12 +2384,13 @@
     }
 
     /* ==========================================================================
-       10. ZOOM & RAYCAST INTERACTION
+       10. ZOOM & RAYCAST INTERACTION (INCLUDING CENTRAL BEAM HOVER)
        ========================================================================== */
     const raycaster = new THREE.Raycaster();
     raycaster.params.Sprite = { threshold: 5.5 };
     const mouse = new THREE.Vector2();
     let hoveredSprite = null;
+    let isHoveringCentralBeam = false;
     let activeCameraFlyTween = null;
     let isCameraFlying = false;
 
@@ -2260,6 +2551,7 @@
       const intersects = raycaster.intersectObjects(visibleSprites);
 
       if (intersects.length > 0) {
+        isHoveringCentralBeam = false;
         const sprite = intersects[0].object;
         if (hoveredSprite !== sprite) {
           clearHover();
@@ -2272,6 +2564,9 @@
           const n = sprite.userData.nodeData;
           const detail = getCleanDetail(n);
 
+          hoverBadgeEl.classList.remove('hidden');
+          hoverSubEl.classList.remove('hidden');
+          hoverTitleEl.className = "font-bold text-white mb-0.5 tracking-wide leading-snug";
           tooltipEl.classList.remove('hidden');
 
           if (n.type === 'dept_sun') {
@@ -2293,8 +2588,28 @@
             hoverSubEl.innerText = `${detail.dept} · ${detail.advisor} · ${detail.year}${TEXT_KO.yearSuffix}`;
           }
         }
-      } else {
-        if (hoveredSprite) clearHover();
+        return;
+      }
+
+      // Kiểm tra rê chuột vào cột ánh sáng trung tâm (Central Beam)
+      if (cosmicBeamGlowMesh) {
+        const beamHits = raycaster.intersectObject(cosmicBeamGlowMesh, false);
+        if (beamHits.length > 0) {
+          if (hoveredSprite) clearHover();
+          if (!isHoveringCentralBeam) {
+            isHoveringCentralBeam = true;
+            hoverBadgeEl.classList.add('hidden');
+            hoverSubEl.classList.add('hidden');
+            hoverTitleEl.className = "font-bold text-white tracking-wide";
+            hoverTitleEl.innerText = "서울과학기술대학교";
+            tooltipEl.classList.remove('hidden');
+          }
+          return;
+        }
+      }
+
+      if (hoveredSprite || isHoveringCentralBeam) {
+        clearHover();
       }
     }
 
@@ -2306,6 +2621,7 @@
         }
         hoveredSprite = null;
       }
+      isHoveringCentralBeam = false;
       tooltipEl.classList.add('hidden');
     }
 
@@ -2497,7 +2813,7 @@
     }
 
     /* ==========================================================================
-       11. CONTEXTUAL MINI-ANALYTICS ENGINE (STACKED BAR / INTERACTIVE SPARKLINE / TOP 5 KW)
+       11. CONTEXTUAL MINI-ANALYTICS ENGINE
        ========================================================================== */
     function renderContextualMiniAnalytics(theses, contextMode) {
       const stackedSection = document.getElementById('mini-chart-stacked-section');
@@ -2869,12 +3185,19 @@
 
     function filterByKeywordWithHistory(keywordLabel, pushHistory = true) {
       const cleanKw = normalizeKeywordDisplayLanguage(keywordLabel);
+      const targetConcepts = normalizeKeywordToConcepts(cleanKw);
       const q = cleanKw.toLowerCase();
 
       const matchedTheses = ALL_NODES.filter(n => {
         if (n.type !== 'thesis_planet') return false;
         const detail = getCleanDetail(n);
-        return detail.keywords.some(k => normalizeKeywordDisplayLanguage(k).toLowerCase().includes(q) || k.toLowerCase().includes(q));
+        if (detail.keywords.some(k => normalizeKeywordDisplayLanguage(k).toLowerCase().includes(q) || k.toLowerCase().includes(q))) {
+          return true;
+        }
+        if (targetConcepts.length > 0 && detail.concepts.some(c => targetConcepts.includes(c))) {
+          return true;
+        }
+        return false;
       });
 
       isSearchActive = lockedThesisNode === null;
@@ -2899,7 +3222,8 @@
     }
 
     function performSearch() {
-      let q = searchInput.value.trim().toLowerCase();
+      let rawQuery = searchInput.value.trim();
+      let q = rawQuery.toLowerCase();
       const type = searchType.value;
 
       if (!q) {
@@ -2910,6 +3234,8 @@
 
       panelNavigationStack = [];
       const cleanProfName = q.replace(/교수/g, '').trim();
+      const normalizedKwQuery = normalizeKeywordDisplayLanguage(rawQuery).toLowerCase();
+      const queryConcepts = normalizeKeywordToConcepts(rawQuery);
 
       const matchedTheses = ALL_NODES.filter(n => {
         if (n.type !== 'thesis_planet') return false;
@@ -2919,7 +3245,10 @@
         const authorMatch = detail.author.toLowerCase().includes(q);
         const advisorMatch = detail.advisor.toLowerCase().includes(q) || detail.advisor.toLowerCase().includes(cleanProfName);
         const deptMatch = detail.dept.toLowerCase().includes(q);
-        const kwMatch = detail.keywords.some(k => k.toLowerCase().includes(q));
+        const kwMatch = detail.keywords.some(k => {
+          const nk = normalizeKeywordDisplayLanguage(k).toLowerCase();
+          return nk.includes(q) || nk.includes(normalizedKwQuery) || k.toLowerCase().includes(q);
+        }) || (queryConcepts.length > 0 && detail.concepts.some(c => queryConcepts.includes(c)));
 
         if (type === 'advisor') return advisorMatch;
         if (type === 'name') return titleMatch;
@@ -2948,7 +3277,7 @@
       renderThesesListPanel({
         theses: visibleMatches,
         baseTheses: matchedTheses,
-        queryText: type === 'keyword' ? `#${normalizeKeywordDisplayLanguage(searchInput.value.trim())}` : searchInput.value.trim(),
+        queryText: type === 'keyword' ? `#${normalizeKeywordDisplayLanguage(rawQuery)}` : rawQuery,
         contextMode: contextMode,
         pushHistory: false
       });
@@ -3272,7 +3601,7 @@
     });
 
     /* ==========================================================================
-       13. REAL-TIME ANIMATION (WITH 2S COSMIC REVEAL & CONTINUOUS TRACKING)
+       13. REAL-TIME ANIMATION
        ========================================================================== */
     const clock = new THREE.Clock();
     const _prevTrackedWorldPos = new THREE.Vector3();
