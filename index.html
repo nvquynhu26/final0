@@ -8,9 +8,8 @@
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="theme-color" content="#020306" />
   <title>서울과학기술대학교 학술 유니버스</title>
-<!-- Icon cho trình duyệt máy tính -->
+  <!-- Icon cho trình duyệt máy tính -->
 <link rel="icon" type="image/png" href="icon.png">
-
 <!-- Icon riêng cho Web App trên iPhone / iPad -->
 <link rel="apple-touch-icon" sizes="180x180" href="icon.png">
   
@@ -241,7 +240,7 @@
     </div>
   </header>
 
-  <!-- UNIFIED FILTER & TIMELINE PANEL (Mobile: nằm bên dưới nút (+) và căn giữa màn hình) -->
+  <!-- UNIFIED FILTER & TIMELINE PANEL -->
   <div id="dept-panel-container" class="hidden md:flex fixed md:absolute mobile-panel-pos left-panel-desktop z-30 pointer-events-none transition-all duration-300">
     <div class="w-[90vw] max-w-[340px] md:w-80 scifi-panel p-3.5 md:p-4 rounded-xl pointer-events-auto border border-white/15 flex flex-col space-y-2.5 max-h-full overflow-y-auto">
       
@@ -357,7 +356,7 @@
     </div>
   </div>
 
-  <!-- RIGHT PANEL (Mobile: nằm bên dưới nút (+), căn chính giữa màn hình và chiều cao gọn gàng; Desktop: giữ nguyên) -->
+  <!-- RIGHT PANEL -->
   <aside id="right-panel" 
     class="fixed mobile-panel-pos right-panel-desktop z-40 w-[90vw] max-w-[340px] sm:w-[460px] sm:max-w-[500px] lg:w-[500px] lg:max-w-[520px] scifi-panel pointer-events-auto hidden flex flex-col border border-white/15 rounded-xl overflow-hidden">
     
@@ -1081,6 +1080,26 @@
         .trim();
     }
 
+    // Tách chính xác từng giáo sư nếu có đồng hướng dẫn (vd: "박달재, 김민수" -> ["박달재", "김민수"])
+    function extractAdvisorList(rawAdvisorStr, dept = '') {
+      if (!rawAdvisorStr) return [];
+      const str = String(rawAdvisorStr).trim();
+      if (!str || str === '-' || str === 'nan' || str === 'N/A' || str === '미상' || str === '지도교수') return [];
+
+      const parts = str.split(/[,;/·&]+|\s+and\s+/i);
+      const result = [];
+      const seen = new Set();
+      for (let i = 0; i < parts.length; i++) {
+        const norm = normalizePersonName(parts[i], dept);
+        if (!norm || norm === '-' || norm === 'nan' || norm === '미상' || norm === '지도교수') continue;
+        if (!seen.has(norm)) {
+          seen.add(norm);
+          result.push(norm);
+        }
+      }
+      return result;
+    }
+
     function buildUnifiedPersonNameIndex() {
       PERSON_ROMAN_TO_HANGUL_GLOBAL.clear();
       PERSON_ROMAN_BY_DEPT.clear();
@@ -1090,12 +1109,16 @@
       const seenHangul = new Set();
 
       const registerHangulPerson = (rawName, dept) => {
-        const cleaned = cleanRawPersonName(rawName);
-        if (!cleaned || !/^[가-힣]{2,4}$/.test(cleaned)) return;
-        const key = `${dept || ''}||${cleaned}`;
-        if (seenHangul.has(key)) return;
-        seenHangul.add(key);
-        hangulPersonEntries.push({ hangul: cleaned, dept: dept || '' });
+        if (!rawName) return;
+        const parts = String(rawName).split(/[,;/·&]+|\s+and\s+/i);
+        for (let p = 0; p < parts.length; p++) {
+          const cleaned = cleanRawPersonName(parts[p]);
+          if (!cleaned || !/^[가-힣]{2,4}$/.test(cleaned)) continue;
+          const key = `${dept || ''}||${cleaned}`;
+          if (seenHangul.has(key)) continue;
+          seenHangul.add(key);
+          hangulPersonEntries.push({ hangul: cleaned, dept: dept || '' });
+        }
       };
 
       for (let i = 0; i < ALL_NODES.length; i++) {
@@ -1341,7 +1364,7 @@
     });
 
     /* ==========================================================================
-       6. BILINGUAL KEYWORD MERGING & ULTRA-FAST LAZY DATA ENGINE
+       6. BILINGUAL KEYWORD MERGING & UNIFIED ADVISOR-THESIS INDEX ENGINE
        ========================================================================== */
     let ALL_NODES = [];
     let THESIS_NODES_ALL = [];
@@ -1353,6 +1376,10 @@
     let DEPT_MAP = new Map();
     const DETAILS_STORE = new Map();
     let isSearchActive = false;
+
+    // BỘ CHỈ MỤC THỐNG NHẤT 100% GIỮA DANH SÁCH KHOA VÀ TRANG RIÊNG CỦA GIÁO SƯ
+    const ADVISOR_THESES_GLOBAL_MAP = new Map();
+    const ADVISOR_THESES_BY_DEPT_MAP = new Map();
 
     let lockedTargetNode = null;
     let lockedTargetSprite = null;
@@ -1646,6 +1673,48 @@
       return CLUSTER_COLOR_MAP[clusterCat] || '#94A3B8';
     }
 
+    // XÂY DỰNG BẢNG TRA CỨU CHÍNH XÁC CHO TỪNG GIÁO SƯ (LOẠI BỎ HOÀN TOÀN SAI LỆCH 54 VS 55)
+    function rebuildAdvisorThesesIndex() {
+      ADVISOR_THESES_GLOBAL_MAP.clear();
+      ADVISOR_THESES_BY_DEPT_MAP.clear();
+
+      for (let i = 0; i < THESIS_NODES_ALL.length; i++) {
+        const n = THESIS_NODES_ALL[i];
+        const det = getCleanDetail(n);
+        const deptName = det.dept;
+        const advList = det.advisorList;
+
+        for (let a = 0; a < advList.length; a++) {
+          const advName = advList[a];
+
+          if (!ADVISOR_THESES_GLOBAL_MAP.has(advName)) {
+            ADVISOR_THESES_GLOBAL_MAP.set(advName, []);
+          }
+          ADVISOR_THESES_GLOBAL_MAP.get(advName).push(n);
+
+          const deptAdvKey = `${deptName}||${advName}`;
+          if (!ADVISOR_THESES_BY_DEPT_MAP.has(deptAdvKey)) {
+            ADVISOR_THESES_BY_DEPT_MAP.set(deptAdvKey, []);
+          }
+          ADVISOR_THESES_BY_DEPT_MAP.get(deptAdvKey).push(n);
+        }
+      }
+    }
+
+    function getExactThesesForAdvisor(advisorName, deptHint = '') {
+      const cleanList = extractAdvisorList(advisorName, deptHint);
+      const targetName = cleanList.length > 0 ? cleanList[0] : normalizePersonName(advisorName, deptHint);
+      if (!targetName) return [];
+
+      if (deptHint) {
+        const exactDeptKey = `${deptHint}||${targetName}`;
+        if (ADVISOR_THESES_BY_DEPT_MAP.has(exactDeptKey)) {
+          return ADVISOR_THESES_BY_DEPT_MAP.get(exactDeptKey);
+        }
+      }
+      return ADVISOR_THESES_GLOBAL_MAP.get(targetName) || [];
+    }
+
     function syncAllNodeCategoriesAndColors() {
       consolidateJeongongIntoHakgwa();
       buildUnifiedPersonNameIndex();
@@ -1696,6 +1765,8 @@
           }
         }
       }
+
+      rebuildAdvisorThesesIndex();
     }
 
     async function initializeCosmos() {
@@ -1722,6 +1793,7 @@
       }
 
       buildCosmicScene();
+      rebuildAdvisorThesesIndex();
       setupDepartmentFilterUI();
       refreshVisibleSpritesCache();
 
@@ -1812,7 +1884,10 @@
       const rawAdvisor = (d && (d.advisor || d.advisor_name)) || node.advisor || (node.type === 'advisor_sun' ? node.name : "지도교수");
 
       const resolvedAuthor = normalizePersonName(rawAuthor, resolvedDept) || `연구자_${node.id}`;
-      const resolvedAdvisor = normalizePersonName(rawAdvisor, resolvedDept) || "지도교수";
+      const advisorList = extractAdvisorList(rawAdvisor, resolvedDept);
+      const resolvedAdvisor = advisorList.length > 0
+        ? advisorList.join(', ')
+        : (normalizePersonName(rawAdvisor, resolvedDept) || "지도교수");
       
       const isPhd = detectDoctoralDegree(node, d);
       const rawDegreeStr = (d && (d.degree || d.degree_name)) || node.degree;
@@ -1853,6 +1928,7 @@
         author: resolvedAuthor,
         authorLower: resolvedAuthor.toLowerCase(),
         advisor: resolvedAdvisor,
+        advisorList: advisorList,
         advisorLower: resolvedAdvisor.toLowerCase(),
         dept: resolvedDept,
         deptLower: resolvedDept.toLowerCase(),
@@ -3026,7 +3102,8 @@
       advisorBtn.onclick = () => {
         if (!detail.advisor || detail.advisor === '-' || detail.advisor === '지도교수') return;
         panelNavigationStack.push({ view: 'detail', node: node, sprite: lockedTargetSprite });
-        showThesesOfAdvisor(detail.advisor, true, detail.dept, null);
+        const targetAdv = (detail.advisorList && detail.advisorList.length > 0) ? detail.advisorList[0] : detail.advisor;
+        showThesesOfAdvisor(targetAdv, true, detail.dept, null);
       };
 
       const deptBtn = document.getElementById('detail-dept');
@@ -3422,19 +3499,21 @@
 
       for (let i = 0; i < theses.length; i++) {
         const det = getCleanDetail(theses[i]);
-        const advName = det.advisor;
-        if (!advName || advName === '지도교수' || advName === '미상' || advName === 'nan') continue;
+        const advList = det.advisorList;
 
-        if (!advisorStatsMap.has(advName)) {
-          advisorStatsMap.set(advName, { name: advName, count: 0, kwFreq: new Map() });
-        }
-        const entry = advisorStatsMap.get(advName);
-        entry.count++;
+        for (let a = 0; a < advList.length; a++) {
+          const advName = advList[a];
+          if (!advisorStatsMap.has(advName)) {
+            advisorStatsMap.set(advName, { name: advName, count: 0, kwFreq: new Map() });
+          }
+          const entry = advisorStatsMap.get(advName);
+          entry.count++;
 
-        const kws = det.keywords || [];
-        for (let j = 0; j < kws.length; j++) {
-          const koKw = kws[j];
-          entry.kwFreq.set(koKw, (entry.kwFreq.get(koKw) || 0) + 1);
+          const kws = det.keywords || [];
+          for (let j = 0; j < kws.length; j++) {
+            const koKw = kws[j];
+            entry.kwFreq.set(koKw, (entry.kwFreq.get(koKw) || 0) + 1);
+          }
         }
       }
 
@@ -3929,15 +4008,23 @@
       }
 
       panelNavigationStack = [];
-      const cleanProfName = normalizePersonName(rawQuery).toLowerCase();
+      const cleanProfName = normalizePersonName(rawQuery);
+      const cleanProfLower = cleanProfName.toLowerCase();
       const normalizedKwQuery = normalizeKeywordDisplayLanguage(rawQuery).toLowerCase();
       const queryConcepts = normalizeKeywordToConcepts(rawQuery);
+
+      // Nếu tìm kiếm chính xác tên giáo sư trong 지도교수, dùng trực tiếp bộ chỉ mục thống nhất
+      if (type === 'advisor' && ADVISOR_THESES_GLOBAL_MAP.has(cleanProfName)) {
+        showThesesOfAdvisor(cleanProfName, false, '', null);
+        return;
+      }
 
       const matchedTheses = THESIS_NODES_ALL.filter(n => {
         const detail = getCleanDetail(n);
         const titleMatch = detail.titleLower.includes(q);
-        const authorMatch = detail.authorLower.includes(q) || detail.authorLower.includes(cleanProfName);
-        const advisorMatch = detail.advisorLower.includes(q) || detail.advisorLower.includes(cleanProfName);
+        const authorMatch = detail.authorLower.includes(q) || detail.authorLower.includes(cleanProfLower);
+        const advisorMatch = detail.advisorList.some(a => a.toLowerCase() === cleanProfLower || a.toLowerCase().includes(q)) ||
+          detail.advisorLower.includes(q);
         const deptMatch = detail.deptLower.includes(q);
         const kwMatch = detail.keywordsLower.some(kl => kl.includes(q) || kl.includes(normalizedKwQuery)) ||
           (queryConcepts.length > 0 && detail.concepts.some(c => queryConcepts.includes(c)));
@@ -3979,22 +4066,17 @@
       });
     }
 
+    // ĐỒNG BỘ TUYỆT ĐỐI SỐ LƯỢNG LUẬN VĂN GIỮA DANH SÁCH KHOA VÀ TRANG RIÊNG CỦA GIÁO SƯ
     function showThesesOfAdvisor(advisorName, pushHistory = false, deptHint = '', explicitAdvSprite = null) {
-      const clean = normalizePersonName(advisorName, deptHint);
-      const theses = THESIS_NODES_ALL.filter(n => {
-        const detail = getCleanDetail(n);
-        const matchAdv = detail.advisor === clean || detail.advisor.includes(clean);
-        return deptHint ? (matchAdv && detail.dept === deptHint) : matchAdv;
-      });
+      const cleanList = extractAdvisorList(advisorName, deptHint);
+      const clean = cleanList.length > 0 ? cleanList[0] : normalizePersonName(advisorName, deptHint);
+      const effectiveDeptHint = deptHint || (selectedDept !== 'ALL' ? selectedDept : '');
 
-      const finalTheses = theses.length > 0 ? theses : THESIS_NODES_ALL.filter(n => {
-        const detail = getCleanDetail(n);
-        return detail.advisor === clean || detail.advisor.includes(clean);
-      });
+      const finalTheses = getExactThesesForAdvisor(clean, effectiveDeptHint);
 
       const advSprite =
         explicitAdvSprite ||
-        (deptHint ? ADVISOR_SPRITE_BY_NAME.get(`${deptHint}||${clean}`) : null) ||
+        (effectiveDeptHint ? ADVISOR_SPRITE_BY_NAME.get(`${effectiveDeptHint}||${clean}`) : null) ||
         ADVISOR_SPRITE_BY_NAME.get(clean) ||
         null;
 
@@ -4016,7 +4098,7 @@
         queryText: `${clean} 교수`,
         contextMode: 'entity',
         subMode: 'advisor',
-        deptName: deptHint,
+        deptName: effectiveDeptHint,
         clusterKey: '',
         pushHistory: pushHistory
       });
