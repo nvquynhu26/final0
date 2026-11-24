@@ -9,9 +9,9 @@
   <meta name="theme-color" content="#020306" />
   <title>서울과학기술대학교 학술 유니버스</title>
   <!-- Icon cho trình duyệt máy tính -->
-<link rel="icon" type="image/png" href="icon.png">
-<!-- Icon riêng cho Web App trên iPhone / iPad -->
-<link rel="apple-touch-icon" sizes="180x180" href="icon.png">
+  <link rel="icon" type="image/png" href="icon.png">
+  <!-- Icon riêng cho Web App trên iPhone / iPad -->
+  <link rel="apple-touch-icon" sizes="180x180" href="icon.png">
   
   <!-- Preconnect & Preload for Instant Startup -->
   <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
@@ -19,6 +19,7 @@
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://www.youtube.com" crossorigin>
   <link rel="preload" href="galaxy_nodes_2.json" as="fetch" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   
@@ -141,7 +142,7 @@
       bottom: calc(env(safe-area-inset-bottom, 0px) + 4.5rem);
     }
 
-    /* Mobile: Cả 2 panel đều nằm ngay bên dưới nút (+), căn chính giữa màn hình và không che thanh tìm kiếm phía dưới */
+    /* Mobile: Cả 2 panel đều nằm ngay bên dưới hàng nút (+ / 연구 통계), căn chính giữa màn hình */
     .mobile-panel-pos {
       left: 50%;
       right: auto;
@@ -185,9 +186,27 @@
     .mini-bar-fill {
       transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
+
+    /* Hidden 1x1 Off-screen YouTube Audio Container */
+    #yt-bgm-wrapper {
+      position: fixed;
+      left: -9999px;
+      top: -9999px;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: -1;
+    }
   </style>
 </head>
 <body class="relative w-screen h-screen overflow-hidden">
+
+  <!-- Hidden 1px x 1px YouTube Audio Player -->
+  <div id="yt-bgm-wrapper" aria-hidden="true">
+    <div id="yt-bgm-player"></div>
+  </div>
 
   <canvas id="cosmos-canvas" class="absolute inset-0 z-0 pointer-events-auto cursor-grab active:cursor-grabbing touch-none"></canvas>
   <div class="vignette-overlay absolute inset-0 z-10 pointer-events-none"></div>
@@ -207,36 +226,66 @@
   </div>
 
   <!-- HEADER -->
-  <header class="absolute top-0 left-0 right-0 z-20 flex justify-between items-start px-4 md:px-6 header-safe pointer-events-none">
-    <div class="pointer-events-auto flex flex-col min-w-0 pr-2">
-      <div class="flex items-center space-x-2">
+  <header class="absolute top-0 left-0 right-0 z-20 flex flex-col px-4 md:px-6 header-safe pointer-events-none">
+    <!-- Hàng 1: Tiêu đề bên trái + Cụm nút điều khiển bên phải -->
+    <div class="w-full flex justify-between items-center">
+      <div class="pointer-events-auto flex items-center space-x-2 min-w-0 pr-2">
         <div class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_10px_#22D3EE] shrink-0"></div>
         <h1 id="app-title" class="text-base sm:text-lg md:text-2xl font-black tracking-widest uppercase bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-indigo-200 to-pink-500 truncate">
           서울과학기술대학교 학술 유니버스
         </h1>
       </div>
 
-      <!-- Nút (+) hình vuông bo góc (rounded-lg) -->
-      <button id="btn-panel-expand" class="md:hidden mt-2 self-start flex items-center justify-center w-8 h-8 scifi-panel rounded-lg text-cyan-300 border border-cyan-400/50 text-base font-bold leading-none active:scale-95 transition-all shadow-[0_0_14px_rgba(6,182,212,0.35)]" title="패널 열기">
-        +
-      </button>
+      <!-- Cụm nút góc phải trên:
+           - Desktop: [연구 통계] -> [Nút Loa 2D] -> [Fullscreen]
+           - Mobile: [Nút Loa 2D] (thay thế vị trí 연구 통계 ở hàng trên) -->
+      <div class="pointer-events-auto shrink-0 flex items-center space-x-2">
+        <button id="btn-open-overview-analytics" class="hidden md:flex h-8 px-3.5 items-center space-x-2 scifi-panel rounded-full text-pink-300 border border-pink-500/50 hover:bg-pink-500/25 active:scale-95 transition-all shadow-[0_0_14px_rgba(236,72,153,0.35)]">
+          <span class="w-2 h-2 rounded-full bg-pink-400 animate-ping shrink-0"></span>
+          <span class="text-xs font-bold tracking-wider leading-none">연구 통계</span>
+        </button>
+
+        <!-- Nút Loa Tối Giản 2D (Giữa 연구 통계 và Fullscreen trên PC; thay thế 연구 통계 trên Mobile) -->
+        <button id="btn-bgm-toggle" class="flex w-8 h-8 items-center justify-center scifi-panel rounded-full text-cyan-300 border border-cyan-400/50 hover:bg-cyan-500/25 active:scale-95 transition-all shadow-[0_0_14px_rgba(6,182,212,0.35)]" title="배경 음악 재생/일시정지" aria-label="배경 음악 재생/일시정지">
+          <!-- Icon Loa Tắt (Mặc định trước khi bấm) -->
+          <svg id="icon-bgm-off" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <line x1="22" y1="9" x2="16" y2="15"></line>
+            <line x1="16" y1="9" x2="22" y2="15"></line>
+          </svg>
+          <!-- Icon Loa Bật (Khi nhạc đang phát) -->
+          <svg id="icon-bgm-on" class="w-4 h-4 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+          </svg>
+        </button>
+
+        <button id="btn-fullscreen-toggle" class="hidden md:flex w-8 h-8 items-center justify-center scifi-panel rounded-full text-cyan-300 border border-cyan-400/50 hover:bg-cyan-500/25 active:scale-95 transition-all shadow-[0_0_14px_rgba(6,182,212,0.35)]" title="전체 화면 (Fullscreen)">
+          <svg id="icon-fs-enter" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 8V4h4M20 8V4h-4M4 16v4h4M20 16v4h-4" />
+          </svg>
+          <svg id="icon-fs-exit" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M8 4v4H4M16 4v4h4M8 20v-4H4M16 20v-4h4" />
+          </svg>
+        </button>
+      </div>
     </div>
 
-    <!-- Mobile: ẩn nút Fullscreen, nút "연구 통계" tự động căn sát lề phải; Desktop: giữ nguyên thứ tự -->
-    <div class="pointer-events-auto shrink-0 flex items-center space-x-2">
-      <button id="btn-open-overview-analytics" class="h-8 px-3.5 flex items-center space-x-2 scifi-panel rounded-full text-pink-300 border border-pink-500/50 hover:bg-pink-500/25 active:scale-95 transition-all shadow-[0_0_14px_rgba(236,72,153,0.35)]">
-        <span class="w-2 h-2 rounded-full bg-pink-400 animate-ping shrink-0"></span>
-        <span class="text-xs font-bold tracking-wider leading-none">연구 통계</span>
-      </button>
+    <!-- Hàng 2 (Chỉ hiển thị trên Mobile): Nút (+) bên trái & Nút 연구 통계 ngang hàng canh lề phải -->
+    <div class="md:hidden w-full flex items-center justify-between mt-2">
+      <div>
+        <button id="btn-panel-expand" class="flex items-center justify-center w-8 h-8 scifi-panel rounded-lg text-cyan-300 border border-cyan-400/50 text-base font-bold leading-none active:scale-95 transition-all shadow-[0_0_14px_rgba(6,182,212,0.35)]" title="패널 열기">
+          +
+        </button>
+      </div>
 
-      <button id="btn-fullscreen-toggle" class="hidden md:flex w-8 h-8 items-center justify-center scifi-panel rounded-full text-cyan-300 border border-cyan-400/50 hover:bg-cyan-500/25 active:scale-95 transition-all shadow-[0_0_14px_rgba(6,182,212,0.35)]" title="전체 화면 (Fullscreen)">
-        <svg id="icon-fs-enter" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 8V4h4M20 8V4h-4M4 16v4h4M20 16v4h-4" />
-        </svg>
-        <svg id="icon-fs-exit" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M8 4v4H4M16 4v4h4M8 20v-4H4M16 20v-4h4" />
-        </svg>
-      </button>
+      <div class="pointer-events-auto ml-auto">
+        <button id="btn-open-overview-analytics-mobile" class="h-8 px-3.5 flex items-center space-x-2 scifi-panel rounded-full text-pink-300 border border-pink-500/50 hover:bg-pink-500/25 active:scale-95 transition-all shadow-[0_0_14px_rgba(236,72,153,0.35)]">
+          <span class="w-2 h-2 rounded-full bg-pink-400 animate-ping shrink-0"></span>
+          <span class="text-xs font-bold tracking-wider leading-none">연구 통계</span>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -534,7 +583,139 @@
 
   <script>
     /* ==========================================================================
-       0. FULLSCREEN CONTROLLER (DESKTOP)
+       0A. YOUTUBE IFRAME AUDIO-ONLY BGM CONTROLLER (SINGLE VIDEO LOOP + ANTI-PAUSE)
+       ========================================================================== */
+    const YT_BGM_VIDEO_ID = '3qUW5Yl8XyU';
+    let ytBgmPlayer = null;
+    let isYtApiReady = false;
+    let userWantsBgmPlaying = false;
+    let bgmWatchdogTimer = null;
+
+    const bgmToggleBtn = document.getElementById('btn-bgm-toggle');
+    const iconBgmOff = document.getElementById('icon-bgm-off');
+    const iconBgmOn = document.getElementById('icon-bgm-on');
+
+    function syncBgmButtonUI(playing) {
+      if (playing) {
+        iconBgmOff.classList.add('hidden');
+        iconBgmOn.classList.remove('hidden');
+        bgmToggleBtn.classList.add('active');
+      } else {
+        iconBgmOn.classList.add('hidden');
+        iconBgmOff.classList.remove('hidden');
+        bgmToggleBtn.classList.remove('active');
+      }
+    }
+
+    function ensureBgmKeepAlive() {
+      if (bgmWatchdogTimer) clearInterval(bgmWatchdogTimer);
+      bgmWatchdogTimer = setInterval(() => {
+        if (!userWantsBgmPlaying || !ytBgmPlayer || typeof ytBgmPlayer.getPlayerState !== 'function') return;
+        const state = ytBgmPlayer.getPlayerState();
+        // 1 = PLAYING, 3 = BUFFERING; nếu bị YouTube tự ý tạm dừng (2), kết thúc (0) hoặc chưa chạy (-1/5) thì ép phát lại ngay
+        if (state !== 1 && state !== 3) {
+          try {
+            if (typeof ytBgmPlayer.unMute === 'function') ytBgmPlayer.unMute();
+            ytBgmPlayer.playVideo();
+          } catch (e) {}
+        }
+      }, 2500);
+    }
+
+    function createYtBgmPlayerInstance(autoPlayOnReady) {
+      if (ytBgmPlayer) return;
+      ytBgmPlayer = new YT.Player('yt-bgm-player', {
+        width: '1',
+        height: '1',
+        videoId: YT_BGM_VIDEO_ID,
+        playerVars: {
+          autoplay: autoPlayOnReady ? 1 : 0,
+          controls: 0,
+          disablekb: 1,
+          fs: 0,
+          iv_load_policy: 3,
+          loop: 1,
+          modestbranding: 1,
+          playsinline: 1,
+          rel: 0,
+          playlist: YT_BGM_VIDEO_ID
+        },
+        events: {
+          onReady: (event) => {
+            event.target.setVolume(85);
+            if (userWantsBgmPlaying || autoPlayOnReady) {
+              event.target.unMute();
+              event.target.playVideo();
+              ensureBgmKeepAlive();
+            }
+          },
+          onStateChange: (event) => {
+            // YT.PlayerState.ENDED (0) hoặc PAUSED (2) khi người dùng vẫn đang bật nhạc -> ép phát lại
+            if (event.data === 0) {
+              event.target.seekTo(0);
+              event.target.playVideo();
+            } else if (event.data === 2 && userWantsBgmPlaying) {
+              setTimeout(() => {
+                if (userWantsBgmPlaying && ytBgmPlayer) {
+                  ytBgmPlayer.playVideo();
+                }
+              }, 150);
+            }
+          },
+          onError: () => {
+            if (userWantsBgmPlaying && ytBgmPlayer) {
+              setTimeout(() => {
+                try { ytBgmPlayer.loadVideoById(YT_BGM_VIDEO_ID); } catch (e) {}
+              }, 1500);
+            }
+          }
+        }
+      });
+    }
+
+    window.onYouTubeIframeAPIReady = function () {
+      isYtApiReady = true;
+      if (userWantsBgmPlaying) {
+        createYtBgmPlayerInstance(true);
+      }
+    };
+
+    (function loadYouTubeIframeAPI() {
+      const tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      tag.async = true;
+      document.head.appendChild(tag);
+    })();
+
+    bgmToggleBtn.addEventListener('click', () => {
+      userWantsBgmPlaying = !userWantsBgmPlaying;
+      syncBgmButtonUI(userWantsBgmPlaying);
+
+      if (userWantsBgmPlaying) {
+        if (!isYtApiReady || typeof YT === 'undefined' || !YT.Player) {
+          // API sẽ tự động gọi createYtBgmPlayerInstance(true) ngay khi tải xong
+          return;
+        }
+        if (!ytBgmPlayer) {
+          createYtBgmPlayerInstance(true);
+        } else if (typeof ytBgmPlayer.playVideo === 'function') {
+          ytBgmPlayer.unMute();
+          ytBgmPlayer.playVideo();
+          ensureBgmKeepAlive();
+        }
+      } else {
+        if (bgmWatchdogTimer) {
+          clearInterval(bgmWatchdogTimer);
+          bgmWatchdogTimer = null;
+        }
+        if (ytBgmPlayer && typeof ytBgmPlayer.pauseVideo === 'function') {
+          ytBgmPlayer.pauseVideo();
+        }
+      }
+    });
+
+    /* ==========================================================================
+       0B. FULLSCREEN CONTROLLER (DESKTOP)
        ========================================================================== */
     const fsToggleBtn = document.getElementById('btn-fullscreen-toggle');
     const iconFsEnter = document.getElementById('icon-fs-enter');
@@ -1080,7 +1261,6 @@
         .trim();
     }
 
-    // Tách chính xác từng giáo sư nếu có đồng hướng dẫn (vd: "박달재, 김민수" -> ["박달재", "김민수"])
     function extractAdvisorList(rawAdvisorStr, dept = '') {
       if (!rawAdvisorStr) return [];
       const str = String(rawAdvisorStr).trim();
@@ -1239,7 +1419,14 @@
     const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 9000);
     camera.position.set(0, 950, 0.001);
 
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: "high-performance" });
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: true,
+      alpha: false,
+      stencil: false,
+      desynchronized: true,
+      powerPreference: "high-performance"
+    });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -1377,7 +1564,6 @@
     const DETAILS_STORE = new Map();
     let isSearchActive = false;
 
-    // BỘ CHỈ MỤC THỐNG NHẤT 100% GIỮA DANH SÁCH KHOA VÀ TRANG RIÊNG CỦA GIÁO SƯ
     const ADVISOR_THESES_GLOBAL_MAP = new Map();
     const ADVISOR_THESES_BY_DEPT_MAP = new Map();
 
@@ -1657,14 +1843,14 @@
 
       const revealState = { brightness: 0.0 };
       new TWEEN.Tween(revealState)
-        .to({ brightness: 1.0 }, 2500)
+        .to({ brightness: 1.0 }, 2200)
         .easing(TWEEN.Easing.Cubic.Out)
         .onUpdate(() => { cosmicRevealProgress = revealState.brightness; })
         .onComplete(() => { cosmicRevealProgress = 1.0; })
         .start();
 
       new TWEEN.Tween(camera.position)
-        .to({ x: 0, y: 950, z: 0.001 }, 2500)
+        .to({ x: 0, y: 950, z: 0.001 }, 2200)
         .easing(TWEEN.Easing.Cubic.Out)
         .start();
     }
@@ -1673,7 +1859,6 @@
       return CLUSTER_COLOR_MAP[clusterCat] || '#94A3B8';
     }
 
-    // XÂY DỰNG BẢNG TRA CỨU CHÍNH XÁC CHO TỪNG GIÁO SƯ (LOẠI BỎ HOÀN TOÀN SAI LỆCH 54 VS 55)
     function rebuildAdvisorThesesIndex() {
       ADVISOR_THESES_GLOBAL_MAP.clear();
       ADVISOR_THESES_BY_DEPT_MAP.clear();
@@ -1803,33 +1988,26 @@
         setTimeout(() => {
           loader.remove();
           startCosmicIgnitionReveal();
-        }, 80);
+        }, 60);
       } else {
         startCosmicIgnitionReveal();
       }
 
-      const scheduleIdle = window.requestIdleCallback || ((cb) => setTimeout(cb, 120));
-      scheduleIdle(async () => {
-        const detailUrls = [];
-        for (let i = 0; i <= 16; i++) {
-          if (i <= 8) detailUrls.push(`details_${i}_2.json`);
-          detailUrls.push(`details_${i}.json`);
-        }
+      // Tải song song toàn bộ file details ngay lập tức để đạt tốc độ nhanh nhất
+      const detailUrls = [];
+      for (let i = 0; i <= 16; i++) {
+        if (i <= 8) detailUrls.push(`details_${i}_2.json`);
+        detailUrls.push(`details_${i}.json`);
+      }
 
-        const BATCH_SIZE = 6;
+      Promise.all(detailUrls.map(fetchJsonQuiet)).then((results) => {
         let anyMerged = false;
-        for (let b = 0; b < detailUrls.length; b += BATCH_SIZE) {
-          const chunk = detailUrls.slice(b, b + BATCH_SIZE);
-          const results = await Promise.all(chunk.map(fetchJsonQuiet));
-          for (let j = 0; j < results.length; j++) {
-            if (results[j]) {
-              mergeDetails(results[j]);
-              anyMerged = true;
-            }
+        for (let j = 0; j < results.length; j++) {
+          if (results[j]) {
+            mergeDetails(results[j]);
+            anyMerged = true;
           }
-          await new Promise(r => setTimeout(r, 16));
         }
-
         if (anyMerged) {
           syncAllNodeCategoriesAndColors();
           setupDepartmentFilterUI();
@@ -2540,13 +2718,16 @@
         applyFilters();
       };
 
-      document.getElementById('btn-open-overview-analytics').onclick = () => {
+      const openAnalyticsHandler = () => {
         if (isMobileView()) {
           isFilterPanelExpanded = false;
           syncFilterPanelVisibility();
         }
         showFilteredOverviewAnalytics(false);
       };
+
+      document.getElementById('btn-open-overview-analytics').onclick = openAnalyticsHandler;
+      document.getElementById('btn-open-overview-analytics-mobile').onclick = openAnalyticsHandler;
 
       document.getElementById('btn-panel-expand').onclick = () => {
         if (isMobileView()) {
@@ -4013,7 +4194,6 @@
       const normalizedKwQuery = normalizeKeywordDisplayLanguage(rawQuery).toLowerCase();
       const queryConcepts = normalizeKeywordToConcepts(rawQuery);
 
-      // Nếu tìm kiếm chính xác tên giáo sư trong 지도교수, dùng trực tiếp bộ chỉ mục thống nhất
       if (type === 'advisor' && ADVISOR_THESES_GLOBAL_MAP.has(cleanProfName)) {
         showThesesOfAdvisor(cleanProfName, false, '', null);
         return;
@@ -4066,7 +4246,6 @@
       });
     }
 
-    // ĐỒNG BỘ TUYỆT ĐỐI SỐ LƯỢNG LUẬN VĂN GIỮA DANH SÁCH KHOA VÀ TRANG RIÊNG CỦA GIÁO SƯ
     function showThesesOfAdvisor(advisorName, pushHistory = false, deptHint = '', explicitAdvSprite = null) {
       const cleanList = extractAdvisorList(advisorName, deptHint);
       const clean = cleanList.length > 0 ? cleanList[0] : normalizePersonName(advisorName, deptHint);
