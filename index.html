@@ -3,8 +3,33 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="학술 유니버스" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="theme-color" content="#020306" />
   <title>서울과학기술대학교 학술 유니버스</title>
   
+  <!-- Dynamic PWA Standalone Manifest for True Fullscreen on Mobile -->
+  <script>
+    (function() {
+      const manifest = {
+        name: "서울과학기술대학교 학술 유니버스",
+        short_name: "학술 유니버스",
+        start_url: ".",
+        display: "fullscreen",
+        orientation: "any",
+        background_color: "#020306",
+        theme_color: "#020306"
+      };
+      const blob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
+      const link = document.createElement('link');
+      link.rel = 'manifest';
+      link.href = URL.createObjectURL(blob);
+      document.head.appendChild(link);
+    })();
+  </script>
+
   <!-- Preconnect & Preload for Instant Startup -->
   <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
@@ -21,10 +46,13 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
 
   <style>
-    * { box-sizing: border-box; user-select: none; }
+    * { box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
     body, html {
-      margin: 0; padding: 0; width: 100%; height: 100%;
-      overflow: hidden; background-color: #020306;
+      margin: 0; padding: 0;
+      width: 100vw; height: 100vh; height: 100dvh;
+      position: fixed; inset: 0;
+      overflow: hidden; overscroll-behavior: none;
+      background-color: #020306;
       font-family: 'Pretendard', sans-serif; color: #E2E8F0;
     }
     .font-scifi { font-family: 'Space Grotesk', monospace; }
@@ -120,10 +148,10 @@
 
     /* Safe Area for iPhone Notch / Dynamic Island on Mobile */
     .header-safe {
-      padding-top: calc(env(safe-area-inset-top, 0px) + 3.25rem);
+      padding-top: calc(env(safe-area-inset-top, 0px) + 1rem);
     }
     .search-bottom-safe {
-      bottom: calc(env(safe-area-inset-bottom, 0px) + 4.5rem);
+      bottom: calc(env(safe-area-inset-bottom, 0px) + 1.25rem);
     }
 
     /* Right Panel: Mobile căn chính giữa đồng bộ với panel 필터; PC cách mép phải 1.5rem (24px) giống panel trái */
@@ -131,8 +159,8 @@
       left: 50%;
       right: auto;
       transform: translateX(-50%);
-      top: 8rem;
-      max-height: 74vh;
+      top: calc(env(safe-area-inset-top, 0px) + 5.75rem);
+      max-height: 74dvh;
     }
     @media (min-width: 768px) {
       .search-bottom-safe {
@@ -147,7 +175,7 @@
         transform: none;
         top: 3.75rem;
         bottom: 1.5rem;
-        max-height: calc(100vh - 5.25rem);
+        max-height: calc(100dvh - 5.25rem);
       }
     }
 
@@ -199,8 +227,17 @@
       </button>
     </div>
 
-    <!-- Nút 연구 통계 -->
-    <div class="pointer-events-auto shrink-0">
+    <!-- Nút 전체 화면 (Fullscreen) + Nút 연구 통계 -->
+    <div class="pointer-events-auto shrink-0 flex items-center space-x-2">
+      <button id="btn-toggle-fullscreen" class="w-8 h-8 flex items-center justify-center scifi-panel rounded-full text-cyan-300 border border-cyan-400/45 hover:bg-cyan-500/20 active:scale-95 transition-all shadow-[0_0_12px_rgba(6,182,212,0.3)]" title="전체 화면 전환 (F)">
+        <svg id="icon-fs-enter" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path>
+        </svg>
+        <svg id="icon-fs-exit" class="w-3.5 h-3.5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 9V4H4m0 5l5-5m6 5V4h5m0 5l-5-5M9 15v5H4m0-5l5 5m6-5v5h5m0-5l-5 5"></path>
+        </svg>
+      </button>
+
       <button id="btn-open-overview-analytics" class="h-8 px-3.5 flex items-center space-x-2 scifi-panel rounded-full text-pink-300 border border-pink-500/50 hover:bg-pink-500/25 active:scale-95 transition-all shadow-[0_0_14px_rgba(236,72,153,0.35)]">
         <span class="w-2 h-2 rounded-full bg-pink-400 animate-ping shrink-0"></span>
         <span class="text-xs font-bold tracking-wider leading-none">연구 통계</span>
@@ -209,8 +246,8 @@
   </header>
 
   <!-- UNIFIED FILTER & TIMELINE PANEL -->
-  <div id="dept-panel-container" class="hidden md:flex fixed md:absolute left-1/2 -translate-x-1/2 top-32 md:left-6 md:top-[3.75rem] md:translate-x-0 z-30 pointer-events-none transition-all duration-300">
-    <div class="w-[90vw] max-w-[340px] md:w-80 scifi-panel p-4 rounded-xl pointer-events-auto border border-white/15 flex flex-col space-y-2.5 max-h-[76vh] md:max-h-[84vh] overflow-y-auto">
+  <div id="dept-panel-container" class="hidden md:flex fixed md:absolute left-1/2 -translate-x-1/2 top-24 md:left-6 md:top-[3.75rem] md:translate-x-0 z-30 pointer-events-none transition-all duration-300">
+    <div class="w-[90vw] max-w-[340px] md:w-80 scifi-panel p-4 rounded-xl pointer-events-auto border border-white/15 flex flex-col space-y-2.5 max-h-[76dvh] md:max-h-[84dvh] overflow-y-auto">
       
       <!-- TOP ROW: 3 NÚT VIEW + NÚT THU NHỎ (-) -->
       <div class="flex items-center space-x-1.5 pb-2 border-b border-white/10">
@@ -502,6 +539,72 @@
 
   <script>
     /* ==========================================================================
+       0. TRUE FULLSCREEN CONTROLLER (HIDE BROWSER CHROME / BARS)
+       ========================================================================== */
+    const btnFullscreen = document.getElementById('btn-toggle-fullscreen');
+    const iconFsEnter = document.getElementById('icon-fs-enter');
+    const iconFsExit = document.getElementById('icon-fs-exit');
+
+    function isDocumentFullscreen() {
+      return Boolean(
+        document.fullscreenElement ||
+        document.webkitFullscreenElement ||
+        document.mozFullScreenElement ||
+        document.msFullscreenElement
+      );
+    }
+
+    function updateFullscreenIcons() {
+      const active = isDocumentFullscreen();
+      if (active) {
+        iconFsEnter.classList.add('hidden');
+        iconFsExit.classList.remove('hidden');
+      } else {
+        iconFsEnter.classList.remove('hidden');
+        iconFsExit.classList.add('hidden');
+      }
+    }
+
+    async function toggleTrueFullscreen() {
+      try {
+        if (!isDocumentFullscreen()) {
+          const docEl = document.documentElement;
+          if (docEl.requestFullscreen) {
+            await docEl.requestFullscreen({ navigationUI: 'hide' });
+          } else if (docEl.webkitRequestFullscreen) {
+            await docEl.webkitRequestFullscreen();
+          } else if (docEl.msRequestFullscreen) {
+            await docEl.msRequestFullscreen();
+          }
+        } else {
+          if (document.exitFullscreen) {
+            await document.exitFullscreen();
+          } else if (document.webkitExitFullscreen) {
+            await document.webkitExitFullscreen();
+          } else if (document.msExitFullscreen) {
+            await document.msExitFullscreen();
+          }
+        }
+      } catch (err) {
+        // Fallback cho iOS Safari khi chưa cài ra màn hình chính
+        window.scrollTo(0, 1);
+      }
+      updateFullscreenIcons();
+    }
+
+    btnFullscreen.addEventListener('click', toggleTrueFullscreen);
+    document.addEventListener('fullscreenchange', updateFullscreenIcons);
+    document.addEventListener('webkitfullscreenchange', updateFullscreenIcons);
+
+    // Phím tắt F để bật/tắt nhanh chế độ toàn màn hình (khi không gõ trong ô tìm kiếm)
+    window.addEventListener('keydown', (e) => {
+      if ((e.key === 'f' || e.key === 'F') && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'SELECT') {
+        e.preventDefault();
+        toggleTrueFullscreen();
+      }
+    });
+
+    /* ==========================================================================
        1. KOREAN TEXT CONSTANTS & STRICT CLUSTER NEON PALETTE
        ========================================================================== */
     const TEXT_KO = {
@@ -609,7 +712,6 @@
       return res.replace(HANJA_GLOBAL_REGEX, ch => HANJA_CHAR_TO_HANGUL[ch] || '');
     }
 
-    /* 1. SỬA TRIỆT ĐỂ LỖI KHOẢNG TRẮNG TRONG TIẾNG HÀN CỦA ABSTRACT (제 목 -> 제목, 목 차 -> 목차, 요 약 -> 요약...) */
     const KOREAN_SPACED_HEADINGS = [
       [/국\s*문\s*초\s*록/g, '국문초록'],
       [/영\s*문\s*초\s*록/g, '영문초록'],
@@ -658,15 +760,11 @@
         .replace(/\r\n/g, '\n')
         .replace(/\r/g, '\n');
 
-      // Sửa toàn bộ tiêu đề và từ khóa 2-4 âm tiết bị tách rời khoảng trắng (vd: "제 목" -> "제목", "요 약" -> "요약")
       for (let i = 0; i < KOREAN_SPACED_HEADINGS.length; i++) {
         text = text.replace(KOREAN_SPACED_HEADINGS[i][0], KOREAN_SPACED_HEADINGS[i][1]);
       }
 
-      // Sửa các từ 2 âm tiết đứng đầu dòng hoặc trước dấu hai chấm/ngoặc bị tách bởi dấu cách (vd: "제 목 :" -> "제목 :")
       text = text.replace(/(^|\n)\s*([가-힣])\s+([가-힣])(?=\s*[:：\-\(\[\n]|$)/gm, '$1$2$3');
-
-      // Sửa chuỗi 3-5 âm tiết Hangul đơn lẻ bị tách rời bởi khoảng trắng
       text = text.replace(/(^|[\s(\["'‘“])([가-힣])\s+([가-힣])\s+([가-힣])(?:\s+([가-힣]))?(?:\s+([가-힣]))?(?=[\s.,;:!?)\]"'’”]|$)/g, (m, prefix, c1, c2, c3, c4, c5) => {
         return prefix + c1 + c2 + c3 + (c4 || '') + (c5 || '');
       });
@@ -1611,7 +1709,6 @@
       }
     }
 
-    /* 2. TỐI ƯU TỐC ĐỘ TẢI TRANG SIÊU TỐC (INSTANT SCENE + BACKGROUND CHUNKED DETAILS) */
     async function initializeCosmos() {
       const fetchJsonQuiet = (url) =>
         fetch(url, { cache: 'force-cache' })
@@ -1635,7 +1732,6 @@
         if (n.type === 'thesis_planet') THESIS_NODES_ALL.push(n);
       }
 
-      // Dựng 3D và mở khóa màn hình ngay lập tức (< 100ms)
       buildCosmicScene();
       setupDepartmentFilterUI();
       refreshVisibleSpritesCache();
@@ -1651,7 +1747,6 @@
         startCosmicIgnitionReveal();
       }
 
-      // Nạp ngầm các file details_*.json theo đợt nhỏ để không làm chậm tốc độ tải trang
       const scheduleIdle = window.requestIdleCallback || ((cb) => setTimeout(cb, 120));
       scheduleIdle(async () => {
         const detailUrls = [];
