@@ -193,7 +193,12 @@
 .header-right-pos {
   position: absolute;
   right: 1rem;
-  top: calc(env(safe-area-inset-top, 0px) + 3.25rem);
+  /* nút loa 32px canh giữa dòng tiêu đề 24px (mobile) */
+  top: calc(env(safe-area-inset-top, 0px) + 3.25rem - 0.25rem);
+}
+@media (min-width: 640px) and (max-width: 767px) {
+  /* tiêu đề cao 28px ở breakpoint sm */
+  .header-right-pos { top: calc(env(safe-area-inset-top, 0px) + 3.25rem - 0.125rem); }
 }
 @media (min-width: 768px) {
   .header-right-pos { position: static; }
@@ -222,7 +227,7 @@
 
   <!-- HEADER -->
   <header class="absolute top-0 left-0 right-0 z-20 flex justify-between items-start px-4 md:px-6 header-safe pointer-events-none">
-  <div class="pointer-events-auto flex flex-col min-w-0 flex-1 pr-2">
+  <div class="pointer-events-auto flex flex-col min-w-0 flex-1 pr-0 md:pr-2">
     <div class="flex items-center space-x-2 pr-10 md:pr-0">
       <div class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_10px_#22D3EE] shrink-0"></div>
       <h1 id="app-title" class="text-base sm:text-lg md:text-2xl font-black tracking-widest uppercase bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-indigo-200 to-pink-500 truncate">
