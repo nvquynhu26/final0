@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+editing
+  <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
@@ -8,21 +9,28 @@
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="theme-color" content="#020306" />
   <title>서울과학기술대학교 학술 유니버스</title>
+  <!-- Icon cho trình duyệt máy tính -->
+<link rel="icon" type="image/png" href="icon.png">
+<!-- Icon riêng cho Web App trên iPhone / iPad -->
+<link rel="apple-touch-icon" sizes="180x180" href="icon.png">
   
   <!-- Preconnect & Preload for Instant Startup -->
   <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
-  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" href="galaxy_nodes_2.json" as="fetch" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  
-  <!-- Tailwind CSS & Three.js -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://www.youtube.com" crossorigin>
+<link rel="preload" href="galaxy_nodes_2.json" as="fetch" crossorigin>
+<link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" as="script" crossorigin>
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js" as="script" crossorigin>
+<link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js" as="script" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
 
   <style>
     * { box-sizing: border-box; user-select: none; }
@@ -137,7 +145,7 @@
       bottom: calc(env(safe-area-inset-bottom, 0px) + 4.5rem);
     }
 
-    /* Mobile: Cả 2 panel đều nằm ngay bên dưới hàng nút (+) / 연구 통계, căn chính giữa màn hình */
+    /* Mobile: Cả 2 panel đều nằm ngay bên dưới nút (+), căn chính giữa màn hình và không che thanh tìm kiếm phía dưới */
     .mobile-panel-pos {
       left: 50%;
       right: auto;
@@ -181,14 +189,20 @@
     .mini-bar-fill {
       transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
+
+    /* Cụm nút góc phải: mobile = nút loa nằm góc trên phải; PC = hàng ngang như cũ */
+.header-right-pos {
+  position: absolute;
+  right: 1rem;
+  top: calc(env(safe-area-inset-top, 0px) + 3.25rem);
+}
+@media (min-width: 768px) {
+  .header-right-pos { position: static; }
+}
+    
   </style>
 </head>
 <body class="relative w-screen h-screen overflow-hidden">
-
-  <!-- Hidden 1x1 YouTube Background Audio Container (Off-screen, Opacity 0, Audio Only) -->
-  <div id="yt-audio-wrapper" style="position:fixed; left:-9999px; top:-9999px; width:1px; height:1px; opacity:0; pointer-events:none; overflow:hidden; z-index:-1;">
-    <div id="yt-bg-audio-player"></div>
-  </div>
 
   <canvas id="cosmos-canvas" class="absolute inset-0 z-0 pointer-events-auto cursor-grab active:cursor-grabbing touch-none"></canvas>
   <div class="vignette-overlay absolute inset-0 z-10 pointer-events-none"></div>
@@ -208,61 +222,59 @@
   </div>
 
   <!-- HEADER -->
-  <header class="absolute top-0 left-0 right-0 z-20 flex flex-col px-4 md:px-6 header-safe pointer-events-none">
-    <!-- ROW 1: Tiêu đề bên trái + Cụm nút góc trên bên phải -->
-    <div class="w-full flex justify-between items-center">
-      <div class="pointer-events-auto flex items-center space-x-2 min-w-0 pr-2">
-        <div class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_10px_#22D3EE] shrink-0"></div>
-        <h1 id="app-title" class="text-base sm:text-lg md:text-2xl font-black tracking-widest uppercase bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-indigo-200 to-pink-500 truncate">
-          서울과학기술대학교 학술 유니버스
-        </h1>
-      </div>
-
-      <!-- PC: [연구 통계] [Loa] [Fullscreen] | Mobile: [Loa] (thay thế vị trí của 연구 통계 ở hàng 1) -->
-      <div class="pointer-events-auto shrink-0 flex items-center space-x-2">
-        <!-- Nút 연구 통계 trên PC -->
-        <button id="btn-open-overview-analytics" class="hidden md:flex h-8 px-3.5 items-center space-x-2 scifi-panel rounded-full text-pink-300 border border-pink-500/50 hover:bg-pink-500/25 active:scale-95 transition-all shadow-[0_0_14px_rgba(236,72,153,0.35)]">
-          <span class="w-2 h-2 rounded-full bg-pink-400 animate-ping shrink-0"></span>
-          <span class="text-xs font-bold tracking-wider leading-none">연구 통계</span>
-        </button>
-
-        <!-- Nút Loa tối giản 2D (PC: nằm giữa 연구 통계 và Fullscreen; Mobile: nằm góc trên bên phải) -->
-        <button id="btn-audio-toggle" class="w-8 h-8 flex items-center justify-center scifi-panel rounded-full text-slate-300 border border-white/20 hover:border-cyan-400/60 hover:text-cyan-300 active:scale-95 transition-all shadow-[0_0_14px_rgba(6,182,212,0.2)]" title="배경 음악 재생 / 일시정지">
-          <!-- Speaker Off Icon (Default) -->
-          <svg id="icon-audio-off" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5L6 9H3v6h3l5 4V5z" />
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M22 9l-6 6M16 9l6 6" />
-          </svg>
-          <!-- Speaker On Icon (Active) -->
-          <svg id="icon-audio-on" class="w-4 h-4 hidden text-cyan-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5L6 9H3v6h3l5 4V5z" />
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.54 8.46a5 5 0 010 7.07M19.07 4.93a10 10 0 010 14.14" />
-          </svg>
-        </button>
-
-        <!-- Nút Fullscreen (PC only) -->
-        <button id="btn-fullscreen-toggle" class="hidden md:flex w-8 h-8 items-center justify-center scifi-panel rounded-full text-cyan-300 border border-cyan-400/50 hover:bg-cyan-500/25 active:scale-95 transition-all shadow-[0_0_14px_rgba(6,182,212,0.35)]" title="전체 화면 (Fullscreen)">
-          <svg id="icon-fs-enter" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 8V4h4M20 8V4h-4M4 16v4h4M20 16v4h-4" />
-          </svg>
-          <svg id="icon-fs-exit" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M8 4v4H4M16 4v4h4M8 20v-4H4M16 20v-4h4" />
-          </svg>
-        </button>
-      </div>
+  <header class="absolute top-0 left-0 right-0 z-20 flex justify-between items-start px-4 md:px-6 header-safe pointer-events-none">
+  <div class="pointer-events-auto flex flex-col min-w-0 flex-1 pr-2">
+    <div class="flex items-center space-x-2 pr-10 md:pr-0">
+      <div class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_10px_#22D3EE] shrink-0"></div>
+      <h1 id="app-title" class="text-base sm:text-lg md:text-2xl font-black tracking-widest uppercase bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-indigo-200 to-pink-500 truncate">
+        서울과학기술대학교 학술 유니버스
+      </h1>
     </div>
 
-    <!-- ROW 2 (Mobile only): Nút (+) bên trái + Nút 연구 통계 ngang hàng và canh lề phải -->
-    <div class="md:hidden w-full flex justify-between items-center mt-2">
-      <button id="btn-panel-expand" class="pointer-events-auto flex items-center justify-center w-8 h-8 scifi-panel rounded-lg text-cyan-300 border border-cyan-400/50 text-base font-bold leading-none active:scale-95 transition-all shadow-[0_0_14px_rgba(6,182,212,0.35)]" title="패널 열기">
+    <!-- Mobile: nút (+) bên trái, nút 연구 통계 canh lề phải cùng hàng -->
+    <div class="flex items-center justify-between mt-2 w-full">
+      <button id="btn-panel-expand" class="md:hidden flex items-center justify-center w-8 h-8 scifi-panel rounded-lg text-cyan-300 border border-cyan-400/50 text-base font-bold leading-none active:scale-95 transition-all shadow-[0_0_14px_rgba(6,182,212,0.35)]" title="패널 열기">
         +
       </button>
-
-      <button id="btn-open-overview-analytics-mobile" class="pointer-events-auto ml-auto h-8 px-3.5 flex items-center space-x-2 scifi-panel rounded-full text-pink-300 border border-pink-500/50 hover:bg-pink-500/25 active:scale-95 transition-all shadow-[0_0_14px_rgba(236,72,153,0.35)]">
+      <button data-open-overview class="flex md:hidden h-8 px-3.5 items-center space-x-2 scifi-panel rounded-full text-pink-300 border border-pink-500/50 hover:bg-pink-500/25 active:scale-95 transition-all shadow-[0_0_14px_rgba(236,72,153,0.35)] ml-auto">
         <span class="w-2 h-2 rounded-full bg-pink-400 animate-ping shrink-0"></span>
         <span class="text-xs font-bold tracking-wider leading-none">연구 통계</span>
       </button>
     </div>
+  </div>
+
+  <div class="header-right-pos pointer-events-auto shrink-0 flex items-center space-x-2">
+    <!-- PC: 연구 통계 -->
+    <button id="btn-open-overview-analytics" data-open-overview class="hidden md:flex h-8 px-3.5 items-center space-x-2 scifi-panel rounded-full text-pink-300 border border-pink-500/50 hover:bg-pink-500/25 active:scale-95 transition-all shadow-[0_0_14px_rgba(236,72,153,0.35)]">
+      <span class="w-2 h-2 rounded-full bg-pink-400 animate-ping shrink-0"></span>
+      <span class="text-xs font-bold tracking-wider leading-none">연구 통계</span>
+    </button>
+
+    <!-- Nút loa (PC: giữa 연구 통계 và Fullscreen | Mobile: thay vị trí 연구 통계 cũ) -->
+    <button id="btn-music-toggle" class="flex w-8 h-8 items-center justify-center scifi-panel rounded-full text-cyan-300 border border-cyan-400/50 hover:bg-cyan-500/25 active:scale-95 transition-all shadow-[0_0_14px_rgba(6,182,212,0.35)]" title="배경 음악 재생">
+      <svg id="icon-music-off" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M17 9l4 6M21 9l-4 6"/>
+      </svg>
+      <svg id="icon-music-on" class="w-4 h-4 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12"/>
+      </svg>
+    </button>
+
+    <button id="btn-fullscreen-toggle" class="hidden md:flex w-8 h-8 items-center justify-center scifi-panel rounded-full text-cyan-300 border border-cyan-400/50 hover:bg-cyan-500/25 active:scale-95 transition-all shadow-[0_0_14px_rgba(6,182,212,0.35)]" title="전체 화면 (Fullscreen)">
+      <svg id="icon-fs-enter" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 8V4h4M20 8V4h-4M4 16v4h4M20 16v4h-4" />
+      </svg>
+      <svg id="icon-fs-exit" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M8 4v4H4M16 4v4h4M8 20v-4H4M16 20v-4h4" />
+      </svg>
+    </button>
+  </div>
+</header>
+
+<!-- Trình phát YouTube: 1x1px, opacity 0, đẩy ra ngoài rìa màn hình (KHÔNG display:none) -->
+<div id="yt-player-holder" aria-hidden="true" style="position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;opacity:0;overflow:hidden;pointer-events:none;">
+  <div id="yt-player"></div>
+</div>
   </header>
 
   <!-- UNIFIED FILTER & TIMELINE PANEL -->
@@ -557,128 +569,9 @@
     Data Visualization Design Project - By Youme
   </footer>
 
-  <!-- YouTube IFrame Player API -->
-  <script src="https://www.youtube.com/iframe_api"></script>
-
   <script>
     /* ==========================================================================
-       0A. YOUTUBE BACKGROUND AUDIO PLAYER (LOOP 8H VIDEO, AUDIO ONLY, AUTO-RESUME)
-       ========================================================================== */
-    const YT_VIDEO_ID = '3qUW5Yl8XyU';
-    let ytPlayer = null;
-    let isYtPlayerReady = false;
-    let userWantsAudioPlaying = false;
-    let pendingPlayOnReady = false;
-
-    const audioToggleBtn = document.getElementById('btn-audio-toggle');
-    const iconAudioOff = document.getElementById('icon-audio-off');
-    const iconAudioOn = document.getElementById('icon-audio-on');
-
-    function syncAudioButtonUI(playing) {
-      if (playing) {
-        iconAudioOff.classList.add('hidden');
-        iconAudioOn.classList.remove('hidden');
-        audioToggleBtn.classList.add('active');
-        audioToggleBtn.style.boxShadow = '0 0 16px rgba(6, 182, 212, 0.55)';
-      } else {
-        iconAudioOff.classList.remove('hidden');
-        iconAudioOn.classList.add('hidden');
-        audioToggleBtn.classList.remove('active');
-        audioToggleBtn.style.boxShadow = '0 0 14px rgba(6, 182, 212, 0.2)';
-      }
-    }
-
-    window.onYouTubeIframeAPIReady = function () {
-      ytPlayer = new YT.Player('yt-bg-audio-player', {
-        height: '1',
-        width: '1',
-        videoId: YT_VIDEO_ID,
-        playerVars: {
-          autoplay: 0,
-          controls: 0,
-          disablekb: 1,
-          fs: 0,
-          iv_load_policy: 3,
-          loop: 1,
-          playlist: YT_VIDEO_ID,
-          modestbranding: 1,
-          playsinline: 1,
-          rel: 0,
-          origin: window.location.origin
-        },
-        events: {
-          onReady: function (event) {
-            isYtPlayerReady = true;
-            event.target.setVolume(80);
-            if (pendingPlayOnReady && userWantsAudioPlaying) {
-              pendingPlayOnReady = false;
-              event.target.unMute();
-              event.target.playVideo();
-            }
-          },
-          onStateChange: function (event) {
-            // Lặp lại vô tận khi kết thúc video 8 tiếng
-            if (event.data === YT.PlayerState.ENDED) {
-              if (userWantsAudioPlaying) {
-                event.target.seekTo(0);
-                event.target.playVideo();
-              }
-            }
-            // Tự động ép phát lại nếu YouTube tự ý tạm dừng ngoài ý muốn khi người dùng chưa bấm tắt
-            else if (event.data === YT.PlayerState.PAUSED) {
-              if (userWantsAudioPlaying) {
-                setTimeout(() => {
-                  if (userWantsAudioPlaying && ytPlayer && typeof ytPlayer.playVideo === 'function') {
-                    ytPlayer.playVideo();
-                  }
-                }, 250);
-              }
-            } else if (event.data === YT.PlayerState.PLAYING) {
-              syncAudioButtonUI(true);
-            }
-          },
-          onError: function () {
-            if (userWantsAudioPlaying && ytPlayer && typeof ytPlayer.playVideo === 'function') {
-              setTimeout(() => ytPlayer.playVideo(), 1000);
-            }
-          }
-        }
-      });
-    };
-
-    // Bộ giám sát định kỳ đảm bảo nhạc không bao giờ bị YouTube tự ngắt khi đang bật
-    setInterval(() => {
-      if (userWantsAudioPlaying && isYtPlayerReady && ytPlayer && typeof ytPlayer.getPlayerState === 'function') {
-        const state = ytPlayer.getPlayerState();
-        if (state !== YT.PlayerState.PLAYING && state !== YT.PlayerState.BUFFERING) {
-          ytPlayer.unMute();
-          ytPlayer.playVideo();
-        }
-      }
-    }, 3000);
-
-    audioToggleBtn.addEventListener('click', () => {
-      userWantsAudioPlaying = !userWantsAudioPlaying;
-      syncAudioButtonUI(userWantsAudioPlaying);
-
-      if (userWantsAudioPlaying) {
-        if (isYtPlayerReady && ytPlayer && typeof ytPlayer.playVideo === 'function') {
-          ytPlayer.unMute();
-          ytPlayer.setVolume(80);
-          ytPlayer.playVideo();
-        } else {
-          pendingPlayOnReady = true;
-        }
-      } else {
-        pendingPlayOnReady = false;
-        if (isYtPlayerReady && ytPlayer && typeof ytPlayer.pauseVideo === 'function') {
-          ytPlayer.pauseVideo();
-        }
-      }
-    });
-
-    /* ==========================================================================
-       0B. FULLSCREEN CONTROLLER (DESKTOP)
+       0. FULLSCREEN CONTROLLER (DESKTOP)
        ========================================================================== */
     const fsToggleBtn = document.getElementById('btn-fullscreen-toggle');
     const iconFsEnter = document.getElementById('icon-fs-enter');
@@ -1224,6 +1117,7 @@
         .trim();
     }
 
+    // Tách chính xác từng giáo sư nếu có đồng hướng dẫn (vd: "박달재, 김민수" -> ["박달재", "김민수"])
     function extractAdvisorList(rawAdvisorStr, dept = '') {
       if (!rawAdvisorStr) return [];
       const str = String(rawAdvisorStr).trim();
@@ -1520,6 +1414,7 @@
     const DETAILS_STORE = new Map();
     let isSearchActive = false;
 
+    // BỘ CHỈ MỤC THỐNG NHẤT 100% GIỮA DANH SÁCH KHOA VÀ TRANG RIÊNG CỦA GIÁO SƯ
     const ADVISOR_THESES_GLOBAL_MAP = new Map();
     const ADVISOR_THESES_BY_DEPT_MAP = new Map();
 
@@ -1815,6 +1710,7 @@
       return CLUSTER_COLOR_MAP[clusterCat] || '#94A3B8';
     }
 
+    // XÂY DỰNG BẢNG TRA CỨU CHÍNH XÁC CHO TỪNG GIÁO SƯ (LOẠI BỎ HOÀN TOÀN SAI LỆCH 54 VS 55)
     function rebuildAdvisorThesesIndex() {
       ADVISOR_THESES_GLOBAL_MAP.clear();
       ADVISOR_THESES_BY_DEPT_MAP.clear();
@@ -1910,74 +1806,64 @@
       rebuildAdvisorThesesIndex();
     }
 
-    async function initializeCosmos() {
-      const fetchJsonQuiet = (url) =>
-        fetch(url, { cache: 'force-cache' })
-          .then(r => (r.ok ? r.json() : null))
-          .catch(() => null);
+const fetchJsonQuiet = (url) =>
+  fetch(url, { cache: 'force-cache' })
+    .then(r => (r.ok ? r.json() : null))
+    .catch(() => null);
 
-      let nodeData = await fetchJsonQuiet('galaxy_nodes_2.json');
-      if (!nodeData || !nodeData.nodes || nodeData.nodes.length === 0) {
-        nodeData = await fetchJsonQuiet('galaxy_nodes.json');
-      }
+async function initializeCosmos() {
+  let nodeData = await fetchJsonQuiet('galaxy_nodes_2.json');
+  if (!nodeData || !nodeData.nodes || nodeData.nodes.length === 0) {
+    nodeData = await fetchJsonQuiet('galaxy_nodes.json');
+  }
 
-      ALL_NODES = (nodeData && nodeData.nodes && nodeData.nodes.length > 0)
-        ? nodeData.nodes
-        : generateRealisticNodes();
+  // Tải song song toàn bộ file details NGAY, trong lúc dựng cảnh 3D (không chờ idle)
+  const detailUrls = [];
+  for (let i = 0; i <= 16; i++) {
+    if (i <= 8) detailUrls.push(`details_${i}_2.json`);
+    detailUrls.push(`details_${i}.json`);
+  }
+  const detailPromise = Promise.all(detailUrls.map(fetchJsonQuiet));
 
-      for (let i = 0; i < ALL_NODES.length; i++) {
-        const n = ALL_NODES[i];
-        if (n.dept) n.dept = normalizeDepartmentName(n.dept);
-        n._clusterCat = getDeptClusterCategory(n.dept);
-        NODE_BY_ID.set(n.id, n);
-        if (n.type === 'thesis_planet') THESIS_NODES_ALL.push(n);
-      }
+  ALL_NODES = (nodeData && nodeData.nodes && nodeData.nodes.length > 0)
+    ? nodeData.nodes
+    : generateRealisticNodes();
 
-      buildCosmicScene();
-      rebuildAdvisorThesesIndex();
-      setupDepartmentFilterUI();
-      refreshVisibleSpritesCache();
+  for (let i = 0; i < ALL_NODES.length; i++) {
+    const n = ALL_NODES[i];
+    if (n.dept) n.dept = normalizeDepartmentName(n.dept);
+    n._clusterCat = getDeptClusterCategory(n.dept);
+    NODE_BY_ID.set(n.id, n);
+    if (n.type === 'thesis_planet') THESIS_NODES_ALL.push(n);
+  }
 
-      const loader = document.getElementById('loader-overlay');
-      if (loader) {
-        loader.classList.add('opacity-0');
-        setTimeout(() => {
-          loader.remove();
-          startCosmicIgnitionReveal();
-        }, 80);
-      } else {
-        startCosmicIgnitionReveal();
-      }
+  buildCosmicScene();
+  rebuildAdvisorThesesIndex();
+  setupDepartmentFilterUI();
+  refreshVisibleSpritesCache();
 
-      const scheduleIdle = window.requestIdleCallback || ((cb) => setTimeout(cb, 120));
-      scheduleIdle(async () => {
-        const detailUrls = [];
-        for (let i = 0; i <= 16; i++) {
-          if (i <= 8) detailUrls.push(`details_${i}_2.json`);
-          detailUrls.push(`details_${i}.json`);
-        }
+  const loader = document.getElementById('loader-overlay');
+  if (loader) {
+    loader.classList.add('opacity-0');
+    setTimeout(() => loader.remove(), 150);
+  }
+  startCosmicIgnitionReveal();
 
-        const BATCH_SIZE = 6;
-        let anyMerged = false;
-        for (let b = 0; b < detailUrls.length; b += BATCH_SIZE) {
-          const chunk = detailUrls.slice(b, b + BATCH_SIZE);
-          const results = await Promise.all(chunk.map(fetchJsonQuiet));
-          for (let j = 0; j < results.length; j++) {
-            if (results[j]) {
-              mergeDetails(results[j]);
-              anyMerged = true;
-            }
-          }
-          await new Promise(r => setTimeout(r, 16));
-        }
+  // Tải API YouTube sau khi cảnh đã hiện để không làm chậm khởi động
+  (window.requestIdleCallback || ((cb) => setTimeout(cb, 300)))(() => loadYouTubeApi());
 
-        if (anyMerged) {
-          syncAllNodeCategoriesAndColors();
-          setupDepartmentFilterUI();
-          applyFilters();
-        }
-      });
+  detailPromise.then(results => {
+    let anyMerged = false;
+    for (let j = 0; j < results.length; j++) {
+      if (results[j]) { mergeDetails(results[j]); anyMerged = true; }
     }
+    if (anyMerged) {
+      syncAllNodeCategoriesAndColors();
+      setupDepartmentFilterUI();
+      applyFilters();
+    }
+  });
+}    
 
     function mergeDetails(dataObj) {
       const entries = Object.entries(dataObj);
@@ -2681,16 +2567,13 @@
         applyFilters();
       };
 
-      const handleOpenOverviewAnalytics = () => {
+      document.querySelectorAll('[data-open-overview]').forEach(btn => btn.onclick = () => {
         if (isMobileView()) {
           isFilterPanelExpanded = false;
           syncFilterPanelVisibility();
         }
         showFilteredOverviewAnalytics(false);
-      };
-
-      document.getElementById('btn-open-overview-analytics').onclick = handleOpenOverviewAnalytics;
-      document.getElementById('btn-open-overview-analytics-mobile').onclick = handleOpenOverviewAnalytics;
+      });
 
       document.getElementById('btn-panel-expand').onclick = () => {
         if (isMobileView()) {
@@ -4157,6 +4040,7 @@
       const normalizedKwQuery = normalizeKeywordDisplayLanguage(rawQuery).toLowerCase();
       const queryConcepts = normalizeKeywordToConcepts(rawQuery);
 
+      // Nếu tìm kiếm chính xác tên giáo sư trong 지도교수, dùng trực tiếp bộ chỉ mục thống nhất
       if (type === 'advisor' && ADVISOR_THESES_GLOBAL_MAP.has(cleanProfName)) {
         showThesesOfAdvisor(cleanProfName, false, '', null);
         return;
@@ -4209,6 +4093,7 @@
       });
     }
 
+    // ĐỒNG BỘ TUYỆT ĐỐI SỐ LƯỢNG LUẬN VĂN GIỮA DANH SÁCH KHOA VÀ TRANG RIÊNG CỦA GIÁO SƯ
     function showThesesOfAdvisor(advisorName, pushHistory = false, deptHint = '', explicitAdvSprite = null) {
       const cleanList = extractAdvisorList(advisorName, deptHint);
       const clean = cleanList.length > 0 ? cleanList[0] : normalizePersonName(advisorName, deptHint);
@@ -4708,6 +4593,98 @@
       syncFilterPanelVisibility();
       syncFullscreenIcon();
     });
+
+/* ==========================================================================
+   14. YOUTUBE BACKGROUND MUSIC (audio only, loop all day)
+   ========================================================================== */
+const YT_VIDEO_ID = '3qUW5Yl8XyU';
+let ytPlayer = null;
+let ytReady = false;
+let ytApiRequested = false;
+let userWantsMusic = false;
+let ytWatchdog = null;
+
+const musicBtn = document.getElementById('btn-music-toggle');
+const iconMusicOn = document.getElementById('icon-music-on');
+const iconMusicOff = document.getElementById('icon-music-off');
+
+function syncMusicIcon() {
+  iconMusicOn.classList.toggle('hidden', !userWantsMusic);
+  iconMusicOff.classList.toggle('hidden', userWantsMusic);
+  musicBtn.classList.toggle('active', userWantsMusic);
+  musicBtn.title = userWantsMusic ? '배경 음악 끄기' : '배경 음악 재생';
+}
+
+function loadYouTubeApi() {
+  if (ytApiRequested) return;
+  ytApiRequested = true;
+  const s = document.createElement('script');
+  s.src = 'https://www.youtube.com/iframe_api';
+  s.async = true;
+  document.head.appendChild(s);
+}
+
+window.onYouTubeIframeAPIReady = function () {
+  const vars = {
+    autoplay: 0, controls: 0, disablekb: 1, fs: 0, iv_load_policy: 3,
+    modestbranding: 1, playsinline: 1, rel: 0,
+    loop: 1, playlist: YT_VIDEO_ID
+  };
+  if (/^https?:$/.test(location.protocol)) vars.origin = location.origin;
+
+  ytPlayer = new YT.Player('yt-player', {
+    width: '1',
+    height: '1',
+    videoId: YT_VIDEO_ID,
+    playerVars: vars,
+    events: {
+      onReady: () => {
+        ytReady = true;
+        if (userWantsMusic) ytPlayer.playVideo();
+      },
+      onStateChange: (e) => {
+        const st = e.data;
+        if (st === YT.PlayerState.ENDED) {
+          ytPlayer.seekTo(0, true);
+          ytPlayer.playVideo();
+        } else if (userWantsMusic && (st === YT.PlayerState.PAUSED || st === YT.PlayerState.CUED || st === -1)) {
+          ytPlayer.playVideo(); // ép phát lại nếu YouTube tự tạm dừng
+        }
+      },
+      onError: () => {
+        if (userWantsMusic && ytReady) setTimeout(() => ytPlayer.playVideo(), 1500);
+      }
+    }
+  });
+};
+
+function startMusicWatchdog() {
+  if (ytWatchdog) return;
+  ytWatchdog = setInterval(() => {
+    if (!userWantsMusic || !ytReady || !ytPlayer || !ytPlayer.getPlayerState) return;
+    const st = ytPlayer.getPlayerState();
+    if (st !== YT.PlayerState.PLAYING && st !== YT.PlayerState.BUFFERING) ytPlayer.playVideo();
+  }, 2500);
+}
+
+musicBtn.addEventListener('click', () => {
+  userWantsMusic = !userWantsMusic;   // thao tác bấm ban đầu của người dùng
+  syncMusicIcon();
+  if (!ytApiRequested) loadYouTubeApi();
+
+  if (ytReady && ytPlayer) {
+    if (userWantsMusic) { ytPlayer.playVideo(); startMusicWatchdog(); }
+    else ytPlayer.pauseVideo();
+  } else if (userWantsMusic) {
+    startMusicWatchdog(); // sẽ tự phát khi onReady
+  }
+});
+
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden && userWantsMusic && ytReady && ytPlayer) ytPlayer.playVideo();
+});
+
+syncMusicIcon();
 
     // Boot
     initializeCosmos();
