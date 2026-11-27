@@ -1650,9 +1650,13 @@
           cosmicRevealProgress = revealState.brightness;
           galaxyStarsShaderMat.uniforms.uReveal.value = cosmicRevealProgress;
         })
-        .onComplete(() => {
+                .onComplete(() => {
           cosmicRevealProgress = 1.0;
           galaxyStarsShaderMat.uniforms.uReveal.value = 1.0;
+          // Hiệu ứng đã xong, giờ mới nạp dữ liệu nặng lúc trình duyệt rảnh
+          const kick = () => loadDetailsInBackground();
+          if ('requestIdleCallback' in window) requestIdleCallback(kick, { timeout: 1500 });
+          else setTimeout(kick, 500);
         })
         .start();
 
@@ -1791,7 +1795,11 @@
           }
         }
         // Nhường lại main thread cho requestAnimationFrame render mượt
-        await new Promise(r => setTimeout(r, 40));
+                await new Promise(r =>
+          ('requestIdleCallback' in window)
+            ? requestIdleCallback(() => r(), { timeout: 200 })
+            : setTimeout(r, 60)
+        );
       }
 
       if (anyMerged) {
@@ -1819,9 +1827,15 @@
         if (n.type === 'thesis_planet') THESIS_NODES_ALL.push(n);
       }
 
-      buildCosmicScene();
+            buildCosmicScene();
       rebuildAdvisorThesesIndex();
       setupDepartmentFilterUI();
+
+      // Làm nóng GPU: biên dịch shader + upload buffer khi màn hình loading còn che
+      galaxyStarsShaderMat.uniforms.uReveal.value = 0.0;
+      renderer.compile(scene, camera);
+      renderer.render(scene, camera);
+      await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
 
       const loader = document.getElementById('loader-overlay');
       if (loader) {
@@ -1829,9 +1843,7 @@
         setTimeout(() => loader.remove(), 150);
       }
       startCosmicIgnitionReveal();
-
-      // Nạp chi tiết sau khi khung hình đầu tiên đã chạy
-      setTimeout(loadDetailsInBackground, 300);
+      // KHÔNG tải details ở đây nữa: sẽ chạy sau khi hiệu ứng hiện xong
     }
 
     function mergeDetails(dataObj) {
