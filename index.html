@@ -1813,18 +1813,19 @@ const fetchJsonQuiet = (url) =>
     .catch(() => null);
 
 async function initializeCosmos() {
-  let nodeData = await fetchJsonQuiet('galaxy_nodes_2.json');
-  if (!nodeData || !nodeData.nodes || nodeData.nodes.length === 0) {
-    nodeData = await fetchJsonQuiet('galaxy_nodes.json');
-  }
-
-  // Tải song song toàn bộ file details NGAY, trong lúc dựng cảnh 3D (không chờ idle)
   const detailUrls = [];
   for (let i = 0; i <= 16; i++) {
     if (i <= 8) detailUrls.push(`details_${i}_2.json`);
     detailUrls.push(`details_${i}.json`);
   }
+
+  // Tải details SONG SONG với node ngay từ đầu
   const detailPromise = Promise.all(detailUrls.map(fetchJsonQuiet));
+
+  let nodeData = await fetchJsonQuiet('galaxy_nodes_2.json');
+  if (!nodeData || !nodeData.nodes || nodeData.nodes.length === 0) {
+    nodeData = await fetchJsonQuiet('galaxy_nodes.json');
+  }
 
   ALL_NODES = (nodeData && nodeData.nodes && nodeData.nodes.length > 0)
     ? nodeData.nodes
@@ -1837,6 +1838,32 @@ async function initializeCosmos() {
     NODE_BY_ID.set(n.id, n);
     if (n.type === 'thesis_planet') THESIS_NODES_ALL.push(n);
   }
+
+  // Chờ details rồi gộp MỘT LẦN, trước khi dựng cảnh (không còn đợt xử lý thứ 2)
+  const detailResults = await detailPromise;
+  for (let j = 0; j < detailResults.length; j++) {
+    if (detailResults[j]) mergeDetails(detailResults[j]);
+  }
+  syncAllNodeCategoriesAndColors();
+
+  buildCosmicScene();
+  setupDepartmentFilterUI();
+  refreshVisibleSpritesCache();
+
+  // Làm nóng GPU (biên dịch shader + nạp texture) khi loader còn che màn hình
+  renderer.compile(scene, camera);
+  renderer.render(scene, camera);
+
+  // Chỉ bắt đầu hiệu ứng sau khi mọi việc nặng đã xong
+  requestAnimationFrame(() => {
+    const loader = document.getElementById('loader-overlay');
+    if (loader) {
+      loader.classList.add('opacity-0');
+      setTimeout(() => loader.remove(), 150);
+    }
+    startCosmicIgnitionReveal();
+  });
+}
 
   buildCosmicScene();
   rebuildAdvisorThesesIndex();
