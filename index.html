@@ -236,7 +236,7 @@
 
     <!-- Mobile: nút (+) bên trái, nút 연구 통계 canh lề phải cùng hàng -->
     <div class="flex items-center justify-between mt-2 w-full">
-      <button id="btn-panel-expand" class="md:hidden flex items-center justify-center w-8 h-8 scifi-panel rounded-lg text-cyan-300 border border-cyan-400/50 text-base font-bold leading-none active:scale-95 transition-all shadow-[0_0_14px_rgba(6,182,212,0.35)]" title="패널 열기">
+      <button id="btn-panel-expand" class="flex items-center justify-center w-8 h-8 scifi-panel rounded-lg text-cyan-300 border border-cyan-400/50 text-base font-bold leading-none active:scale-95 transition-all shadow-[0_0_14px_rgba(6,182,212,0.35)]" title="패널 열기">
         +
       </button>
       <button data-open-overview class="flex md:hidden h-8 px-3.5 items-center space-x-2 scifi-panel rounded-full text-pink-300 border border-pink-500/50 hover:bg-pink-500/25 active:scale-95 transition-all shadow-[0_0_14px_rgba(236,72,153,0.35)] ml-auto">
@@ -279,7 +279,7 @@
   </header>
 
   <!-- UNIFIED FILTER & TIMELINE PANEL -->
-  <div id="dept-panel-container" class="hidden md:flex fixed md:absolute mobile-panel-pos left-panel-desktop z-30 pointer-events-none transition-all duration-300">
+  <div id="dept-panel-container" class="hidden fixed md:absolute mobile-panel-pos left-panel-desktop z-30 pointer-events-none transition-all duration-300">
     <div class="w-[90vw] max-w-[340px] md:w-80 scifi-panel p-3.5 md:p-4 rounded-xl pointer-events-auto border border-white/15 flex flex-col space-y-2.5 max-h-full overflow-y-auto">
       
       <!-- TOP ROW: 3 NÚT VIEW + NÚT THU NHỎ (-) -->
@@ -377,11 +377,11 @@
   <div class="absolute search-bottom-safe left-1/2 -translate-x-1/2 z-20 w-11/12 max-w-2xl pointer-events-auto flex flex-col items-center transition-all">
     <div class="w-full scifi-panel rounded-full px-3 md:px-4 py-1.5 md:py-2 flex items-center space-x-2 md:space-x-3 border border-white/15 shadow-[0_0_24px_rgba(79,70,229,0.25)]">
       <select id="search-type" class="bg-black/35 text-slate-300 text-xs rounded-full px-2.5 md:px-3 py-1.5 border border-white/15 focus:outline-none focus:border-cyan-400 cursor-pointer font-medium">
+        <option value="author" selected>저자</option>
         <option value="advisor">지도교수</option>
         <option value="all">통합검색</option>
         <option value="keyword">주제어</option>
         <option value="name">논문제목</option>
-        <option value="author">저자</option>
         <option value="dept">학과</option>
       </select>
       
@@ -2404,7 +2404,7 @@ async function initializeCosmos() {
     let selectedThesisLangFilter = 'all';
     let activeTimelineYear = 2026;
     let isCumulativeMode = true;
-    let isFilterPanelExpanded = !isMobileView();
+    let isFilterPanelExpanded = false;
 
     function refreshVisibleSpritesCache() {
       VISIBLE_SPRITES_CACHE = [];
@@ -2473,8 +2473,7 @@ async function initializeCosmos() {
     }
 
     function setupDepartmentFilterUI() {
-      isFilterPanelExpanded = !isMobileView();
-      syncFilterPanelVisibility();
+  syncFilterPanelVisibility();
 
       const dropdown = document.getElementById('dept-dropdown');
       const prevSelected = selectedDept;
