@@ -377,15 +377,15 @@
   <div class="absolute search-bottom-safe left-1/2 -translate-x-1/2 z-20 w-11/12 max-w-2xl pointer-events-auto flex flex-col items-center transition-all">
     <div class="w-full scifi-panel rounded-full px-3 md:px-4 py-1.5 md:py-2 flex items-center space-x-2 md:space-x-3 border border-white/15 shadow-[0_0_24px_rgba(79,70,229,0.25)]">
       <select id="search-type" class="bg-black/35 text-slate-300 text-xs rounded-full px-2.5 md:px-3 py-1.5 border border-white/15 focus:outline-none focus:border-cyan-400 cursor-pointer font-medium">
-        <option value="advisor">지도교수</option>
-        <option value="all">통합검색</option>
-        <option value="keyword">주제어</option>
-        <option value="name">논문제목</option>
-        <option value="author">저자</option>
-        <option value="dept">학과</option>
+<option value="author" selected>저자</option>
+<option value="advisor">지도교수</option>
+<option value="all">통합검색</option>
+<option value="keyword">주제어</option>
+<option value="name">논문제목</option>
+<option value="dept">학과</option>
       </select>
       
-      <input id="search-input" type="text" placeholder="지도교수, 논문 제목, 키워드 검색..." 
+      <input id="search-input" type="text" placeholder="저자,지도교수, 논문 제목, 키워드 검색..." 
         class="bg-transparent flex-1 text-xs md:text-sm text-white placeholder-slate-400 focus:outline-none tracking-wide" />
       
       <button id="search-submit-btn" class="bg-gradient-to-r from-cyan-500 via-indigo-600 to-pink-500 text-white p-2 rounded-full hover:brightness-125 transition transform active:scale-95 shadow-[0_0_12px_rgba(6,182,212,0.5)]">
