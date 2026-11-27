@@ -219,7 +219,7 @@
 
   <!-- Loading Screen -->
   <div id="loader-overlay" class="absolute inset-0 z-50 bg-[#020306] flex flex-col items-center justify-center transition-opacity duration-150 pointer-events-none">
-    <div class="w-10 h-10 rounded-full border-2 border-indigo-500/20 border-t-cyan-400 animate-spin mb-3.0"></div>
+    <div class="w-10 h-10 rounded-full border-2 border-indigo-500/20 border-t-cyan-400 animate-spin mb-2.5"></div>
     <div id="loader-text" class="text-xs font-scifi tracking-widest text-cyan-300 uppercase">COSMOS INITIALIZING...</div>
     <div id="loader-sub" class="text-[10px] text-slate-500 font-scifi mt-1">SEOULTECH GALAXY SIMULATION</div>
   </div>
@@ -1137,8 +1137,12 @@
       }
       return result;
     }
+const yieldToBrowser = () => new Promise(resolve => {
+      if (document.hidden) setTimeout(resolve, 0);
+      else requestAnimationFrame(resolve);
+    });
 
-    function buildUnifiedPersonNameIndex() {
+    async function buildUnifiedPersonNameIndexAsync() {
       PERSON_ROMAN_TO_HANGUL_GLOBAL.clear();
       PERSON_ROMAN_BY_DEPT.clear();
       PERSON_NORM_CACHE.clear();
@@ -1170,6 +1174,7 @@
           if (d.advisor || d.advisor_name) registerHangulPerson(d.advisor || d.advisor_name, dept);
           if (d.author) registerHangulPerson(d.author, dept);
         }
+        if (i > 0 && i % 600 === 0) await yieldToBrowser();
       }
 
       for (let i = 0; i < hangulPersonEntries.length; i++) {
@@ -1185,6 +1190,7 @@
           if (deptMap && !deptMap.has(rk)) deptMap.set(rk, hangul);
           if (!PERSON_ROMAN_TO_HANGUL_GLOBAL.has(rk)) PERSON_ROMAN_TO_HANGUL_GLOBAL.set(rk, hangul);
         }
+        if (i > 0 && i % 60 === 0) await yieldToBrowser();
       }
     }
 
@@ -1688,34 +1694,54 @@
       return /[가-힣]/.test(titleStr) ? 'ko' : 'en';
     }
 
-    function startCosmicIgnitionReveal() {
+    function startCosmicIgnitionReveal(onRevealComplete) {
       cosmicRevealProgress = 0.0;
       const targetCenterY = galaxyCenterYGlobal;
       camera.position.set(0, 1280, 0.001);
       controls.target.set(0, targetCenterY, 0);
+      controls.update();
 
-      const revealState = { brightness: 0.0 };
-      new TWEEN.Tween(revealState)
-        .to({ brightness: 1.0 }, 2500)
-        .easing(TWEEN.Easing.Cubic.Out)
-        .onUpdate(() => { cosmicRevealProgress = revealState.brightness; })
-        .onComplete(() => { cosmicRevealProgress = 1.0; })
-        .start();
+      // Biên dịch sẵn toàn bộ Shader & dựng 1 frame nháp trước khi chạy Tween để triệt tiêu cú khựng đầu tiên
+      renderer.compile(scene, camera);
+      renderer.render(scene, camera);
 
-      new TWEEN.Tween(camera.position)
-        .to({ x: 0, y: 950, z: 0.001 }, 2500)
-        .easing(TWEEN.Easing.Cubic.Out)
-        .start();
+      const loader = document.getElementById('loader-overlay');
+
+      // Chờ 2 nhịp frame cho GPU ổn định hẳn rồi mới tắt màn hình chờ và bắt đầu bay vào
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          if (loader) {
+            loader.classList.add('opacity-0');
+            setTimeout(() => loader.remove(), 180);
+          }
+
+          const revealState = { brightness: 0.0 };
+          new TWEEN.Tween(revealState)
+            .to({ brightness: 1.0 }, 2500)
+            .easing(TWEEN.Easing.Cubic.Out)
+            .onUpdate(() => { cosmicRevealProgress = revealState.brightness; })
+            .onComplete(() => {
+              cosmicRevealProgress = 1.0;
+              if (typeof onRevealComplete === 'function') onRevealComplete();
+            })
+            .start();
+
+          new TWEEN.Tween(camera.position)
+            .to({ x: 0, y: 950, z: 0.001 }, 2500)
+            .easing(TWEEN.Easing.Cubic.Out)
+            .start();
+        });
+      });
     }
 
     function getStrictClusterColor(clusterCat) {
       return CLUSTER_COLOR_MAP[clusterCat] || '#94A3B8';
     }
 
-    // XÂY DỰNG BẢNG TRA CỨU CHÍNH XÁC CHO TỪNG GIÁO SƯ (LOẠI BỎ HOÀN TOÀN SAI LỆCH 54 VS 55)
-    function rebuildAdvisorThesesIndex() {
-      ADVISOR_THESES_GLOBAL_MAP.clear();
-      ADVISOR_THESES_BY_DEPT_MAP.clear();
+    // XÂY DỰNG BẢNG TRA CỨU CHIA NHỎ THEO TỪNG NHỊP FRAME (KHÔNG GÂY ĐƠ MÁY)
+    async function rebuildAdvisorThesesIndexAsync() {
+      const nextGlobalMap = new Map();
+      const nextByDeptMap = new Map();
 
       for (let i = 0; i < THESIS_NODES_ALL.length; i++) {
         const n = THESIS_NODES_ALL[i];
@@ -1726,18 +1752,22 @@
         for (let a = 0; a < advList.length; a++) {
           const advName = advList[a];
 
-          if (!ADVISOR_THESES_GLOBAL_MAP.has(advName)) {
-            ADVISOR_THESES_GLOBAL_MAP.set(advName, []);
-          }
-          ADVISOR_THESES_GLOBAL_MAP.get(advName).push(n);
+          if (!nextGlobalMap.has(advName)) nextGlobalMap.set(advName, []);
+          nextGlobalMap.get(advName).push(n);
 
           const deptAdvKey = `${deptName}||${advName}`;
-          if (!ADVISOR_THESES_BY_DEPT_MAP.has(deptAdvKey)) {
-            ADVISOR_THESES_BY_DEPT_MAP.set(deptAdvKey, []);
-          }
-          ADVISOR_THESES_BY_DEPT_MAP.get(deptAdvKey).push(n);
+          if (!nextByDeptMap.has(deptAdvKey)) nextByDeptMap.set(deptAdvKey, []);
+          nextByDeptMap.get(deptAdvKey).push(n);
         }
+
+        if (i > 0 && i % 300 === 0) await yieldToBrowser();
       }
+
+      ADVISOR_THESES_GLOBAL_MAP.clear();
+      nextGlobalMap.forEach((v, k) => ADVISOR_THESES_GLOBAL_MAP.set(k, v));
+
+      ADVISOR_THESES_BY_DEPT_MAP.clear();
+      nextByDeptMap.forEach((v, k) => ADVISOR_THESES_BY_DEPT_MAP.set(k, v));
     }
 
     function getExactThesesForAdvisor(advisorName, deptHint = '') {
@@ -1751,12 +1781,23 @@
           return ADVISOR_THESES_BY_DEPT_MAP.get(exactDeptKey);
         }
       }
-      return ADVISOR_THESES_GLOBAL_MAP.get(targetName) || [];
+      if (ADVISOR_THESES_GLOBAL_MAP.has(targetName)) {
+        return ADVISOR_THESES_GLOBAL_MAP.get(targetName);
+      }
+
+      // Fallback an toàn nếu người dùng bấm vào giáo sư trong 2 giây đầu khi index ngầm chưa build xong
+      return THESIS_NODES_ALL.filter(n => {
+        const det = getCleanDetail(n);
+        if (deptHint && det.dept !== deptHint) return false;
+        return det.advisorList.includes(targetName);
+      });
     }
 
-    function syncAllNodeCategoriesAndColors() {
+    async function syncAllNodeCategoriesAndColorsAsync() {
       consolidateJeongongIntoHakgwa();
-      buildUnifiedPersonNameIndex();
+      await yieldToBrowser();
+      await buildUnifiedPersonNameIndexAsync();
+
       DEPT_MAP.clear();
       THESIS_NODES_ALL = [];
 
@@ -1803,15 +1844,19 @@
             sprite.userData.isPhd = isPhd;
           }
         }
+
+        if (i > 0 && i % 300 === 0) await yieldToBrowser();
       }
 
-      rebuildAdvisorThesesIndex();
+      await rebuildAdvisorThesesIndexAsync();
     }
 
 const fetchJsonQuiet = (url) =>
   fetch(url, { cache: 'force-cache' })
     .then(r => (r.ok ? r.json() : null))
     .catch(() => null);
+
+  let isAnimationLoopStarted = false;
 
 async function initializeCosmos() {
   let nodeData = await fetchJsonQuiet('galaxy_nodes_2.json');
@@ -1832,19 +1877,16 @@ async function initializeCosmos() {
   }
 
   buildCosmicScene();
-  rebuildAdvisorThesesIndex();
   setupDepartmentFilterUI();
   refreshVisibleSpritesCache();
 
-  const loader = document.getElementById('loader-overlay');
-  if (loader) {
-    loader.classList.add('opacity-0');
-    setTimeout(() => loader.remove(), 150);
+  // Chỉ bắt đầu vòng lặp render 3D sau khi scene đã dựng xong hoàn toàn
+  if (!isAnimationLoopStarted) {
+    isAnimationLoopStarted = true;
+    clock.start();
+    animate();
   }
-  startCosmicIgnitionReveal();
 
-  // Tải dữ liệu chi tiết sau khi giao diện chính đã xuất hiện.
-  // Chia thành từng nhóm nhỏ để tránh nghẽn mạng/CPU khi khởi động.
   const loadDetails = async () => {
     const detailUrls = [];
     for (let i = 0; i <= 16; i++) {
@@ -1853,7 +1895,7 @@ async function initializeCosmos() {
     }
 
     let anyMerged = false;
-    const batchSize = 4;
+    const batchSize = 2; // Tải từng cặp 2 file để giữ 60fps ổn định
 
     for (let start = 0; start < detailUrls.length; start += batchSize) {
       const batchUrls = detailUrls.slice(start, start + batchSize);
@@ -1863,30 +1905,26 @@ async function initializeCosmos() {
         if (results[j]) {
           mergeDetails(results[j]);
           anyMerged = true;
+          await yieldToBrowser();
         }
       }
-
-      // Nhường một nhịp cho trình duyệt cập nhật hình ảnh/animation.
-      await new Promise(resolve => setTimeout(resolve, 0));
+      await yieldToBrowser();
     }
 
     if (anyMerged) {
-      syncAllNodeCategoriesAndColors();
+      await syncAllNodeCategoriesAndColorsAsync();
       setupDepartmentFilterUI();
       applyFilters();
+    } else {
+      await rebuildAdvisorThesesIndexAsync();
     }
   };
 
-  const scheduleDetailLoading = () => {
+  // Chạy hiệu ứng bay vào 2.5s mượt mà trước, bay xong mới tải & xử lý ngầm dữ liệu chi tiết
+  startCosmicIgnitionReveal(() => {
     loadDetails().catch(err => console.warn('Detail data loading failed:', err));
-  };
-
-  if ('requestIdleCallback' in window) {
-    requestIdleCallback(scheduleDetailLoading, { timeout: 1800 });
-  } else {
-    setTimeout(scheduleDetailLoading, 900);
-  }
-}    
+  });
+}
 
     function mergeDetails(dataObj) {
       const entries = Object.entries(dataObj);
@@ -4661,7 +4699,7 @@ syncMusicIcon();
     // Boot
     syncFilterPanelVisibility();
     initializeCosmos();
-    animate();
+    
   </script>
 </body>
 </html>
