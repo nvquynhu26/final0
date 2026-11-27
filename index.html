@@ -8,27 +8,25 @@
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="theme-color" content="#020306" />
   <title>서울과학기술대학교 학술 유니버스</title>
-  <!-- Icon cho trình duyệt máy tính -->
-<link rel="icon" type="image/png" href="icon.png">
-<!-- Icon riêng cho Web App trên iPhone / iPad -->
-<link rel="apple-touch-icon" sizes="180x180" href="icon.png">
+  <link rel="icon" type="image/png" href="icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icon.png">
   
-  <!-- Preconnect & Preload for Instant Startup -->
+  <!-- Preconnect & Preload -->
   <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
-<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" href="galaxy_nodes_2.json" as="fetch" crossorigin>
-<link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" as="script" crossorigin>
-<link rel="preload" href="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js" as="script" crossorigin>
-<link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js" as="script" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="galaxy_nodes_2.json" as="fetch" crossorigin>
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" as="script" crossorigin>
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js" as="script" crossorigin>
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js" as="script" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
 
   <style>
     * { box-sizing: border-box; user-select: none; }
@@ -46,19 +44,18 @@
     }
     .font-scifi { font-family: 'Space Grotesk', monospace; }
     
-    /* Kính mờ siêu trong suốt để nhìn rõ dải ngân hà lấp lánh phía sau */
     .scifi-panel {
-      background: linear-gradient(145deg, rgba(6, 8, 16, 0.36) 0%, rgba(2, 4, 10, 0.44) 100%);
-      backdrop-filter: blur(10px) saturate(125%);
-      -webkit-backdrop-filter: blur(10px) saturate(125%);
+      background: linear-gradient(145deg, rgba(6, 8, 16, 0.52) 0%, rgba(2, 4, 10, 0.62) 100%);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
       border: 1px solid rgba(255, 255, 255, 0.14);
       box-shadow: 0 10px 32px rgba(0, 0, 0, 0.48);
+      transform: translateZ(0);
     }
     .scifi-btn {
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.12);
-      backdrop-filter: blur(6px);
-      transition: all 0.2s ease;
+      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
     }
     .scifi-btn:hover {
       background: rgba(99, 102, 241, 0.25);
@@ -70,13 +67,11 @@
       color: #FFFFFF;
     }
     
-    /* Scrollbar */
     ::-webkit-scrollbar { width: 5px; }
     ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.2); border-radius: 3px; }
     ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.4); border-radius: 3px; }
     ::-webkit-scrollbar-thumb:hover { background: rgba(236, 72, 153, 0.75); }
     
-    /* Horizontal Range Slider */
     .slider-horizontal {
       -webkit-appearance: none;
       width: 100%;
@@ -98,7 +93,6 @@
       cursor: pointer;
     }
 
-    /* Compact Mode Switch Slider */
     .switch-container {
       position: relative;
       width: 52px;
@@ -135,7 +129,6 @@
       pointer-events: none;
     }
 
-    /* Safe Area for iPhone Notch / Dynamic Island on Mobile */
     .header-safe {
       padding-top: calc(env(safe-area-inset-top, 0px) + 3.25rem);
     }
@@ -143,7 +136,6 @@
       bottom: calc(env(safe-area-inset-bottom, 0px) + 4.5rem);
     }
 
-    /* Mobile: Cả 2 panel đều nằm ngay bên dưới nút (+), căn chính giữa màn hình và không che thanh tìm kiếm phía dưới */
     .mobile-panel-pos {
       left: 50%;
       right: auto;
@@ -153,30 +145,18 @@
     }
 
     @media (min-width: 768px) {
-      .search-bottom-safe {
-        bottom: 1.5rem;
-      }
-      .header-safe {
-        padding-top: 1.15rem;
-      }
+      .search-bottom-safe { bottom: 1.5rem; }
+      .header-safe { padding-top: 1.15rem; }
       .left-panel-desktop {
-        left: 1.5rem;
-        right: auto;
-        transform: none;
-        top: 3.75rem;
-        max-height: 84vh;
+        left: 1.5rem; right: auto; transform: none;
+        top: 3.75rem; max-height: 84vh;
       }
       .right-panel-desktop {
-        left: auto;
-        right: 1.5rem;
-        transform: none;
-        top: 3.75rem;
-        bottom: 1.5rem;
-        max-height: calc(100vh - 5.25rem);
+        left: auto; right: 1.5rem; transform: none;
+        top: 3.75rem; bottom: 1.5rem; max-height: calc(100vh - 5.25rem);
       }
     }
 
-    /* Mini Analytics Neon Glows */
     .neon-segment {
       transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1), filter 0.2s ease, transform 0.15s ease;
     }
@@ -188,21 +168,17 @@
       transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    /* Cụm nút góc phải: mobile = nút loa nằm góc trên phải; PC = hàng ngang như cũ */
-.header-right-pos {
-  position: absolute;
-  right: 1rem;
-  /* nút loa 32px canh giữa dòng tiêu đề 24px (mobile) */
-  top: calc(env(safe-area-inset-top, 0px) + 3.25rem - 0.25rem);
-}
-@media (min-width: 640px) and (max-width: 767px) {
-  /* tiêu đề cao 28px ở breakpoint sm */
-  .header-right-pos { top: calc(env(safe-area-inset-top, 0px) + 3.25rem - 0.125rem); }
-}
-@media (min-width: 768px) {
-  .header-right-pos { position: static; }
-}
-    
+    .header-right-pos {
+      position: absolute;
+      right: 1rem;
+      top: calc(env(safe-area-inset-top, 0px) + 3.25rem - 0.25rem);
+    }
+    @media (min-width: 640px) and (max-width: 767px) {
+      .header-right-pos { top: calc(env(safe-area-inset-top, 0px) + 3.25rem - 0.125rem); }
+    }
+    @media (min-width: 768px) {
+      .header-right-pos { position: static; }
+    }
   </style>
 </head>
 <body class="relative w-screen h-screen overflow-hidden">
@@ -226,63 +202,57 @@
 
   <!-- HEADER -->
   <header class="absolute top-0 left-0 right-0 z-20 flex justify-between items-start px-4 md:px-6 header-safe pointer-events-none">
-  <div class="pointer-events-auto flex flex-col min-w-0 flex-1 pr-0 md:pr-2">
-    <div class="flex items-center space-x-2 pr-10 md:pr-0">
-      <div class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_10px_#22D3EE] shrink-0"></div>
-      <h1 id="app-title" class="text-base sm:text-lg md:text-2xl font-black tracking-widest uppercase bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-indigo-200 to-pink-500 truncate">
-        서울과학기술대학교 학술 유니버스
-      </h1>
+    <div class="pointer-events-auto flex flex-col min-w-0 flex-1 pr-0 md:pr-2">
+      <div class="flex items-center space-x-2 pr-10 md:pr-0">
+        <div class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_10px_#22D3EE] shrink-0"></div>
+        <h1 id="app-title" class="text-base sm:text-lg md:text-2xl font-black tracking-widest uppercase bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-indigo-200 to-pink-500 truncate">
+          서울과학기술대학교 학술 유니버스
+        </h1>
+      </div>
+
+      <div class="flex items-center justify-between mt-2 w-full">
+        <button id="btn-panel-expand" class="flex items-center justify-center w-8 h-8 scifi-panel rounded-lg text-cyan-300 border border-cyan-400/50 text-base font-bold leading-none active:scale-95 transition-all shadow-[0_0_14px_rgba(6,182,212,0.35)]" title="패널 열기">
+          +
+        </button>
+        <button data-open-overview class="flex md:hidden h-8 px-3.5 items-center space-x-2 scifi-panel rounded-full text-pink-300 border border-pink-500/50 hover:bg-pink-500/25 active:scale-95 transition-all shadow-[0_0_14px_rgba(236,72,153,0.35)] ml-auto">
+          <span class="w-2 h-2 rounded-full bg-pink-400 animate-ping shrink-0"></span>
+          <span class="text-xs font-bold tracking-wider leading-none">연구 통계</span>
+        </button>
+      </div>
     </div>
 
-    <!-- Mobile: nút (+) bên trái, nút 연구 통계 canh lề phải cùng hàng -->
-    <div class="flex items-center justify-between mt-2 w-full">
-      <button id="btn-panel-expand" class="flex items-center justify-center w-8 h-8 scifi-panel rounded-lg text-cyan-300 border border-cyan-400/50 text-base font-bold leading-none active:scale-95 transition-all shadow-[0_0_14px_rgba(6,182,212,0.35)]" title="패널 열기">
-        +
-      </button>
-      <button data-open-overview class="flex md:hidden h-8 px-3.5 items-center space-x-2 scifi-panel rounded-full text-pink-300 border border-pink-500/50 hover:bg-pink-500/25 active:scale-95 transition-all shadow-[0_0_14px_rgba(236,72,153,0.35)] ml-auto">
+    <div class="header-right-pos pointer-events-auto shrink-0 flex items-center space-x-2">
+      <button id="btn-open-overview-analytics" data-open-overview class="hidden md:flex h-8 px-3.5 items-center space-x-2 scifi-panel rounded-full text-pink-300 border border-pink-500/50 hover:bg-pink-500/25 active:scale-95 transition-all shadow-[0_0_14px_rgba(236,72,153,0.35)]">
         <span class="w-2 h-2 rounded-full bg-pink-400 animate-ping shrink-0"></span>
         <span class="text-xs font-bold tracking-wider leading-none">연구 통계</span>
       </button>
+
+      <button id="btn-music-toggle" class="flex w-8 h-8 items-center justify-center scifi-panel rounded-full text-cyan-300 border border-cyan-400/50 hover:bg-cyan-500/25 active:scale-95 transition-all shadow-[0_0_14px_rgba(6,182,212,0.35)]" title="배경 음악 재생">
+        <svg id="icon-music-off" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M17 9l4 6M21 9l-4 6"/>
+        </svg>
+        <svg id="icon-music-on" class="w-4 h-4 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12"/>
+        </svg>
+      </button>
+
+      <button id="btn-fullscreen-toggle" class="hidden md:flex w-8 h-8 items-center justify-center scifi-panel rounded-full text-cyan-300 border border-cyan-400/50 hover:bg-cyan-500/25 active:scale-95 transition-all shadow-[0_0_14px_rgba(6,182,212,0.35)]" title="전체 화면 (Fullscreen)">
+        <svg id="icon-fs-enter" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 8V4h4M20 8V4h-4M4 16v4h4M20 16v4h-4" />
+        </svg>
+        <svg id="icon-fs-exit" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M8 4v4H4M16 4v4h4M8 20v-4H4M16 20v-4h4" />
+        </svg>
+      </button>
     </div>
-  </div>
-
-  <div class="header-right-pos pointer-events-auto shrink-0 flex items-center space-x-2">
-    <!-- PC: 연구 통계 -->
-    <button id="btn-open-overview-analytics" data-open-overview class="hidden md:flex h-8 px-3.5 items-center space-x-2 scifi-panel rounded-full text-pink-300 border border-pink-500/50 hover:bg-pink-500/25 active:scale-95 transition-all shadow-[0_0_14px_rgba(236,72,153,0.35)]">
-      <span class="w-2 h-2 rounded-full bg-pink-400 animate-ping shrink-0"></span>
-      <span class="text-xs font-bold tracking-wider leading-none">연구 통계</span>
-    </button>
-
-    <!-- Nút loa (PC: giữa 연구 통계 và Fullscreen | Mobile: thay vị trí 연구 통계 cũ) -->
-    <button id="btn-music-toggle" class="flex w-8 h-8 items-center justify-center scifi-panel rounded-full text-cyan-300 border border-cyan-400/50 hover:bg-cyan-500/25 active:scale-95 transition-all shadow-[0_0_14px_rgba(6,182,212,0.35)]" title="배경 음악 재생">
-      <svg id="icon-music-off" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M17 9l4 6M21 9l-4 6"/>
-      </svg>
-      <svg id="icon-music-on" class="w-4 h-4 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12"/>
-      </svg>
-    </button>
-
-    <button id="btn-fullscreen-toggle" class="hidden md:flex w-8 h-8 items-center justify-center scifi-panel rounded-full text-cyan-300 border border-cyan-400/50 hover:bg-cyan-500/25 active:scale-95 transition-all shadow-[0_0_14px_rgba(6,182,212,0.35)]" title="전체 화면 (Fullscreen)">
-      <svg id="icon-fs-enter" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 8V4h4M20 8V4h-4M4 16v4h4M20 16v4h-4" />
-      </svg>
-      <svg id="icon-fs-exit" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M8 4v4H4M16 4v4h4M8 20v-4H4M16 20v-4h4" />
-      </svg>
-    </button>
-  </div>
-</header>
-
-<!-- Trình phát YouTube: 1x1px, opacity 0, đẩy ra ngoài rìa màn hình (KHÔNG display:none) -->
-<audio id="bg-music" src="music.mp3" loop preload="none" playsinline></audio>
   </header>
+
+  <audio id="bg-music" src="music.mp3" loop preload="none" playsinline></audio>
 
   <!-- UNIFIED FILTER & TIMELINE PANEL -->
   <div id="dept-panel-container" class="hidden fixed md:absolute mobile-panel-pos left-panel-desktop z-30 pointer-events-none transition-all duration-300">
     <div class="w-[90vw] max-w-[340px] md:w-80 scifi-panel p-3.5 md:p-4 rounded-xl pointer-events-auto border border-white/15 flex flex-col space-y-2.5 max-h-full overflow-y-auto">
       
-      <!-- TOP ROW: 3 NÚT VIEW + NÚT THU NHỎ (-) -->
       <div class="flex items-center space-x-1.5 pb-2 border-b border-white/10">
         <div class="flex-1 grid grid-cols-3 gap-1.5 text-xs">
           <button id="btn-view-top" class="scifi-btn px-2 py-1.5 rounded text-slate-300 font-medium text-center active">평면 뷰</button>
@@ -292,13 +262,11 @@
         <button id="btn-panel-minimize" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-white/5 hover:bg-indigo-500/30 border border-white/15 text-slate-200 hover:text-white text-base font-bold leading-none transition shrink-0" title="패널 축소">-</button>
       </div>
 
-      <!-- DEPARTMENT FILTER HEADER -->
       <div class="flex items-center justify-between pt-0.5">
         <span id="label-college-filters" class="text-xs font-bold text-indigo-300 tracking-widest uppercase font-scifi">학과</span>
         <button id="btn-reset-filters" class="text-[10px] text-cyan-400 hover:underline font-scifi">초기화</button>
       </div>
 
-      <!-- Quick Group Buttons -->
       <div class="grid grid-cols-3 gap-1.5 text-[11px]" id="cluster-btn-group">
         <button class="cluster-btn scifi-btn py-1.5 px-1 rounded flex items-center justify-center active" data-cluster="all">
           <span>전체</span>
@@ -325,14 +293,12 @@
         </button>
       </div>
 
-      <!-- Department Dropdown -->
       <div class="relative pt-0.5">
         <select id="dept-dropdown" class="w-full bg-black/35 text-slate-200 text-xs rounded-lg p-2 border border-white/15 focus:outline-none focus:border-cyan-400 cursor-pointer">
           <option value="ALL">전체 학과</option>
         </select>
       </div>
 
-      <!-- DEGREE FILTER -->
       <div class="pt-2 border-t border-white/10 flex flex-col space-y-1.5">
         <span id="label-degree-filter" class="text-xs font-bold text-indigo-300 tracking-widest uppercase font-scifi">학위</span>
         <div class="grid grid-cols-3 gap-1.5 text-[11px]" id="degree-btn-group">
@@ -342,7 +308,6 @@
         </div>
       </div>
 
-      <!-- THESIS LANGUAGE FILTER -->
       <div class="pt-2 border-t border-white/10 flex flex-col space-y-1.5">
         <span id="label-thesis-lang-filter" class="text-xs font-bold text-indigo-300 tracking-widest uppercase font-scifi">언어</span>
         <div class="grid grid-cols-3 gap-1.5 text-[11px]" id="thesis-lang-btn-group">
@@ -352,7 +317,6 @@
         </div>
       </div>
 
-      <!-- MERGED TIMELINE SECTION -->
       <div class="pt-2 border-t border-white/10 flex flex-col space-y-1.5">
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-2">
@@ -400,7 +364,6 @@
     
     <!-- 1. VIEW: LIST RESULTS + CONTEXTUAL MINI-ANALYTICS -->
     <div id="panel-list-view" class="hidden flex flex-col h-full p-3.5 md:p-5 min-h-0">
-      <!-- Fixed Header -->
       <div class="flex justify-between items-start pb-2.5 border-b border-white/10 shrink-0">
         <div class="min-w-0 pr-2 flex flex-col space-y-1">
           <div class="flex items-center space-x-1.5 flex-wrap gap-y-1">
@@ -415,13 +378,10 @@
         <button id="btn-close-list-panel" class="text-slate-400 hover:text-white p-1 text-base shrink-0">✕</button>
       </div>
 
-      <!-- Scrollable Analytics + Sub-Departments + Advisors + Thesis Cards Container -->
       <div class="flex-1 overflow-y-auto pr-1 space-y-2.5 mt-2.5 min-h-0">
         
-        <!-- CONTEXTUAL MINI-ANALYTICS COMPACT MODULE -->
         <div id="mini-analytics-box" class="p-3 rounded-xl bg-black/20 border border-white/10 flex flex-col space-y-2.5">
           
-          <!-- 1. 6-CLUSTER STACKED BAR -->
           <div id="mini-chart-stacked-section" class="flex flex-col space-y-1.5">
             <div class="flex items-center justify-between text-[10px]">
               <span class="font-bold text-slate-200 tracking-wide">계열별 비중</span>
@@ -431,7 +391,6 @@
             <div id="mini-stacked-legend" class="flex flex-wrap gap-x-2.5 gap-y-1 text-[9px] text-slate-200 pt-0.5"></div>
           </div>
 
-          <!-- 2. OVERVIEW ONLY: BIỂU ĐỒ TỐI GIẢN ĐA TUYẾN THEO NĂM -->
           <div id="mini-chart-yearly-cluster-section" class="hidden pt-2 border-t border-white/10 flex flex-col space-y-1.5">
             <div class="flex items-center justify-between text-[10px]">
               <span class="font-bold text-slate-200 tracking-wide">연도별 계열 추이</span>
@@ -448,7 +407,6 @@
             </div>
           </div>
 
-          <!-- 3. ADVISOR / DEPARTMENT / CLUSTER CONTEXT -> YEARLY TREND SPARKLINE -->
           <div id="mini-chart-sparkline-section" class="hidden flex-col space-y-1 flex">
             <div class="flex items-center justify-between text-[10px]">
               <span class="font-bold text-slate-200 tracking-wide">연도별 추이</span>
@@ -463,7 +421,6 @@
             </div>
           </div>
 
-          <!-- 4. CLUSTER ONLY: SUB-DEPARTMENTS & YEARLY THESIS COUNTS -->
           <div id="mini-cluster-subdepts-section" class="hidden pt-2 border-t border-white/10 flex flex-col space-y-1.5">
             <div class="flex items-center justify-between text-[10px]">
               <span class="font-bold text-slate-200 tracking-wide">세부 학과별 추이</span>
@@ -472,7 +429,6 @@
             <div id="mini-cluster-subdepts-list" class="max-h-52 overflow-y-auto space-y-1.5 pr-1"></div>
           </div>
 
-          <!-- 5. TOP KEYWORDS MINI TAG BARS -->
           <div id="mini-chart-keywords-section" class="pt-2 border-t border-white/10 flex flex-col space-y-1">
             <div class="flex items-center justify-between text-[10px]">
               <span id="mini-keywords-title" class="font-bold text-slate-200 tracking-wide">핵심 주제어 TOP 5</span>
@@ -481,7 +437,6 @@
           </div>
         </div>
 
-        <!-- DEPARTMENT ADVISORS DIRECTORY -->
         <div id="dept-advisors-section" class="hidden p-2.5 rounded-xl bg-black/20 border border-amber-500/25 flex flex-col space-y-2">
           <div class="flex items-center justify-between text-[10px]">
             <div class="flex items-center space-x-1.5">
@@ -493,12 +448,10 @@
           <div id="dept-advisors-list" class="max-h-[275px] overflow-y-auto space-y-1.5 pr-1"></div>
         </div>
 
-        <!-- Thesis List Subhint -->
         <div id="thesis-list-header-bar" class="text-[10px] text-indigo-300 pt-0.5 flex justify-between items-center">
           <span>논문 목록</span>
         </div>
 
-        <!-- Thesis Cards -->
         <div id="search-theses-list" class="space-y-2 text-xs pb-3"></div>
       </div>
     </div>
@@ -541,7 +494,6 @@
           </div>
         </div>
 
-        <!-- UCI IDENTIFIER ONLY -->
         <div class="p-3 rounded-lg bg-black/20 border border-white/10 flex flex-col space-y-1.5">
           <div class="flex items-center justify-between">
             <span id="detail-label-uci" class="text-[9px] uppercase font-bold text-indigo-300 font-scifi tracking-widest">UCI 등록번호</span>
@@ -589,36 +541,22 @@
 
     function syncFullscreenIcon() {
       const active = isFullscreenActive();
-      if (active) {
-        iconFsEnter.classList.add('hidden');
-        iconFsExit.classList.remove('hidden');
-        fsToggleBtn.classList.add('active');
-      } else {
-        iconFsEnter.classList.remove('hidden');
-        iconFsExit.classList.add('hidden');
-        fsToggleBtn.classList.remove('active');
-      }
+      iconFsEnter.classList.toggle('hidden', active);
+      iconFsExit.classList.toggle('hidden', !active);
+      fsToggleBtn.classList.toggle('active', active);
     }
 
     async function toggleFullscreenMode() {
       const docEl = document.documentElement;
       try {
         if (!isFullscreenActive()) {
-          if (docEl.requestFullscreen) {
-            await docEl.requestFullscreen({ navigationUI: 'hide' });
-          } else if (docEl.webkitRequestFullscreen) {
-            await docEl.webkitRequestFullscreen();
-          } else if (docEl.msRequestFullscreen) {
-            await docEl.msRequestFullscreen();
-          }
+          if (docEl.requestFullscreen) await docEl.requestFullscreen({ navigationUI: 'hide' });
+          else if (docEl.webkitRequestFullscreen) await docEl.webkitRequestFullscreen();
+          else if (docEl.msRequestFullscreen) await docEl.msRequestFullscreen();
         } else {
-          if (document.exitFullscreen) {
-            await document.exitFullscreen();
-          } else if (document.webkitExitFullscreen) {
-            await document.webkitExitFullscreen();
-          } else if (document.msExitFullscreen) {
-            await document.msExitFullscreen();
-          }
+          if (document.exitFullscreen) await document.exitFullscreen();
+          else if (document.webkitExitFullscreen) await document.webkitExitFullscreen();
+          else if (document.msExitFullscreen) await document.msExitFullscreen();
         }
       } catch (err) {
         window.scrollTo(0, 1);
@@ -663,44 +601,25 @@
        2. HANJA -> HANGUL DEPARTMENT TRANSLATION & NORMALIZATION
        ========================================================================== */
     const HANJA_PHRASE_REPLACEMENTS = [
-      [/機械工學科/g, "기계공학과"],
-      [/機械시스템디자인工學科/g, "기계시스템디자인공학과"],
-      [/機械設計·로봇工學科/g, "기계설계·로봇공학과"],
-      [/電氣情報工學科/g, "전기정보공학과"],
-      [/電子工學科/g, "전자공학과"],
-      [/컴퓨터工學科/g, "컴퓨터공학과"],
-      [/化工生命工學科/g, "화공생명공학과"],
-      [/化學工學科/g, "화학공학과"],
-      [/新素材工學科/g, "신소재공학과"],
-      [/環境工學科/g, "환경공학과"],
-      [/建設시스템工學科/g, "건설시스템공학과"],
-      [/建築工學科/g, "건축공학과"],
-      [/建築學科/g, "건축학과"],
-      [/建築設計專攻/g, "건축설계전공"],
-      [/都市計劃專攻/g, "도시계획전공"],
-      [/安全工學科/g, "안전공학과"],
-      [/食品生命工學科/g, "식품생명공학과"],
-      [/眼鏡光學科/g, "안경광학과"],
-      [/産業工學科/g, "산업공학과"],
-      [/産業情報시스템專攻/g, "산업정보시스템전공"],
-      [/視覺디자인專攻/g, "시각디자인전공"],
-      [/産業디자인專攻/g, "산업디자인전공"],
-      [/陶藝學科/g, "도예학과"],
-      [/金屬工藝디자인學科/g, "금속공예디자인학과"],
-      [/造形藝術學科/g, "조형예술학과"],
-      [/經營學科/g, "경영학과"],
-      [/技術經營學科/g, "기술경영학과"],
-      [/行政學科/g, "행정학과"],
-      [/英語英文學科/g, "영어영문학과"],
-      [/文藝創作學科/g, "문예창작학과"],
-      [/人工智能應用學科/g, "인공지능응용학과"],
-      [/知能型半導體工學科/g, "지능형반도체공학과"],
-      [/一般大學院/g, "일반대학원"],
-      [/産業大學院/g, "산업대학원"],
-      [/鐵道專門大學院/g, "철도전문대학원"],
-      [/住宅大學院/g, "주택대학원"],
-      [/エネルギー環境大學院/g, "에너지환경대학원"],
-      [/IT政策專門大學院/g, "IT정책전문대학원"],
+      [/機械工學科/g, "기계공학과"], [/機械시스템디자인工學科/g, "기계시스템디자인공학과"],
+      [/機械設計·로봇工學科/g, "기계설계·로봇공학과"], [/電氣情報工學科/g, "전기정보공학과"],
+      [/電子工學科/g, "전자공학과"], [/컴퓨터工學科/g, "컴퓨터공학과"],
+      [/化工生命工學科/g, "화공생명공학과"], [/化學工學科/g, "화학공학과"],
+      [/新素材工學科/g, "신소재공학과"], [/環境工學科/g, "환경공학과"],
+      [/建設시스템工學科/g, "건설시스템공학과"], [/建築工學科/g, "건축공학과"],
+      [/建築學科/g, "건축학과"], [/建築設計專攻/g, "건축설계전공"],
+      [/都市計劃專攻/g, "도시계획전공"], [/安全工學科/g, "안전공학과"],
+      [/食品生命工學科/g, "식품생명공학과"], [/眼鏡光學科/g, "안경광학과"],
+      [/産業工學科/g, "산업공학과"], [/産業情報시스템專攻/g, "산업정보시스템전공"],
+      [/視覺디자인專攻/g, "시각디자인전공"], [/産業디자인專攻/g, "산업디자인전공"],
+      [/陶藝學科/g, "도예학과"], [/金屬工藝디자인學科/g, "금속공예디자인학과"],
+      [/造形藝術學科/g, "조형예술학과"], [/經營學科/g, "경영학과"],
+      [/技術經營學科/g, "기술경영학과"], [/行政學科/g, "행정학과"],
+      [/英語英文學科/g, "영어영문학과"], [/文藝創作學科/g, "문예창작학과"],
+      [/人工智能應用學科/g, "인공지능응용학과"], [/知能型半導體工學科/g, "지능형반도체공학과"],
+      [/一般大學院/g, "일반대학원"], [/産業大學院/g, "산업대학원"],
+      [/鐵道專門大學院/g, "철도전문대학원"], [/住宅大學院/g, "주택대학원"],
+      [/エネルギー環境大學院/g, "에너지환경대학원"], [/IT政策專門大學院/g, "IT정책전문대학원"],
       [/ナノIT디자인融合大學院/g, "나노IT디자인융합대학원"]
     ];
 
@@ -738,67 +657,39 @@
     }
 
     const KOREAN_SPACED_HEADINGS = [
-      [/국\s*문\s*초\s*록/g, '국문초록'],
-      [/영\s*문\s*초\s*록/g, '영문초록'],
-      [/초\s+록/g, '초록'],
-      [/제\s+목/g, '제목'],
-      [/요\s+약/g, '요약'],
-      [/서\s+론/g, '서론'],
-      [/본\s+론/g, '본론'],
-      [/결\s+론/g, '결론'],
-      [/고\s+찰/g, '고찰'],
-      [/목\s+차/g, '목차'],
-      [/목\s+적/g, '목적'],
-      [/배\s+경/g, '배경'],
-      [/방\s+법/g, '방법'],
-      [/결\s+과/g, '결과'],
-      [/기\s+간/g, '기간'],
-      [/대\s+상/g, '대상'],
-      [/사\s+사/g, '사사'],
-      [/감\s*사의\s*글/g, '감사의 글'],
-      [/주\s*제\s*어/g, '주제어'],
-      [/핵\s*심\s*어/g, '핵심어'],
-      [/키\s*워\s*드/g, '키워드'],
-      [/참\s*고\s*문\s*헌/g, '참고문헌'],
-      [/연\s*구\s*목\s*적/g, '연구목적'],
-      [/연\s*구\s*방\s*법/g, '연구방법'],
-      [/연\s*구\s*결\s*과/g, '연구결과'],
-      [/연\s*구\s*배\s*경/g, '연구배경'],
-      [/연\s*구\s*대\s*상/g, '연구대상'],
-      [/연\s*구\s*기\s*간/g, '연구기간'],
-      [/논\s*문\s*제\s*목/g, '논문제목']
+      [/국\s*문\s*초\s*록/g, '국문초록'], [/영\s*문\s*초\s*록/g, '영문초록'],
+      [/초\s+록/g, '초록'], [/제\s+목/g, '제목'], [/요\s+약/g, '요약'],
+      [/서\s+론/g, '서론'], [/본\s+론/g, '본론'], [/결\s+론/g, '결론'],
+      [/고\s+찰/g, '고찰'], [/목\s+차/g, '목차'], [/목\s+적/g, '목적'],
+      [/배\s+경/g, '배경'], [/방\s+법/g, '방법'], [/결\s+과/g, '결과'],
+      [/기\s+간/g, '기간'], [/대\s+상/g, '대상'], [/사\s+사/g, '사사'],
+      [/감\s*사의\s*글/g, '감사의 글'], [/주\s*제\s*어/g, '주제어'],
+      [/핵\s*심\s*어/g, '핵심어'], [/키\s*워\s*드/g, '키워드'],
+      [/참\s*고\s*문\s*헌/g, '참고문헌'], [/연\s*구\s*목\s*적/g, '연구목적'],
+      [/연\s*구\s*방\s*법/g, '연구방법'], [/연\s*구\s*결\s*과/g, '연구결과'],
+      [/연\s*구\s*배\s*경/g, '연구배경'], [/연\s*구\s*대\s*상/g, '연구대상'],
+      [/연\s*구\s*기\s*간/g, '연구기간'], [/논\s*문\s*제\s*목/g, '논문제목']
     ];
 
     function cleanAbstractText(rawText) {
       if (!rawText || typeof rawText !== 'string') return '';
       let text = rawText
-        .replace(/&#x0*D;/gi, '\n')
-        .replace(/&#13;/g, '\n')
-        .replace(/&#x0*A;/gi, '\n')
-        .replace(/&#10;/g, '\n')
-        .replace(/&amp;/g, '&')
-        .replace(/&lt;/g, '<')
-        .replace(/&gt;/g, '>')
-        .replace(/&quot;/g, '"')
-        .replace(/&apos;/g, "'")
+        .replace(/&#x0*D;|&#13;|&#x0*A;|&#10;/gi, '\n')
+        .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"').replace(/&apos;/g, "'")
         .replace(/[\u00A0\u2000-\u200B\u3000]/g, ' ')
-        .replace(/\r\n/g, '\n')
-        .replace(/\r/g, '\n');
+        .replace(/\r\n?/g, '\n');
 
       for (let i = 0; i < KOREAN_SPACED_HEADINGS.length; i++) {
         text = text.replace(KOREAN_SPACED_HEADINGS[i][0], KOREAN_SPACED_HEADINGS[i][1]);
       }
 
       text = text.replace(/(^|\n)\s*([가-힣])\s+([가-힣])(?=\s*[:：\-\(\[\n]|$)/gm, '$1$2$3');
-
       text = text.replace(/(^|[\s(\["'‘“])([가-힣])\s+([가-힣])\s+([가-힣])(?:\s+([가-힣]))?(?:\s+([가-힣]))?(?=[\s.,;:!?)\]"'’”]|$)/g, (m, prefix, c1, c2, c3, c4, c5) => {
         return prefix + c1 + c2 + c3 + (c4 || '') + (c5 || '');
       });
 
-      return text
-        .replace(/[ \t]{2,}/g, ' ')
-        .replace(/\n{3,}/g, '\n\n')
-        .trim();
+      return text.replace(/[ \t]{2,}/g, ' ').replace(/\n{3,}/g, '\n\n').trim();
     }
 
     const EXACT_DEPT_CANONICAL_RULES = [
@@ -815,7 +706,6 @@
       { pattern: /^건축과\s*architectural\s*engineering/i, canonical: "건축공학과" },
       { pattern: /^건축과\s*architectural\s*design/i, canonical: "건축과 건축설계전공" },
       { pattern: /^건축과\s*construction\s*it/i, canonical: "건축과 건설IT전공" },
-
       { pattern: /^(dept\.?\s*of\s*)?(applied\s+artificial\s+intelligence|artificial\s+intelligence)$/i, canonical: "인공지능응용학과" },
       { pattern: /^(dept\.?\s*of\s*)?data\s*science$/i, canonical: "데이터사이언스학과" },
       { pattern: /^(dept\.?\s*of\s*)?semiconductor\s*engineering$/i, canonical: "지능형반도체공학과" },
@@ -1003,7 +893,7 @@
     }
 
     /* ==========================================================================
-       2B. KOREAN <-> ROMANIZED ENGLISH ADVISOR & AUTHOR NAME UNIFICATION ENGINE
+       2B. KOREAN <-> ROMANIZED ENGLISH ADVISOR & AUTHOR NAME UNIFICATION
        ========================================================================== */
     const CHO_ROMAN = {
       'ㄱ': ['g', 'k'], 'ㄲ': ['kk', 'k'], 'ㄴ': ['n'], 'ㄷ': ['d', 't'], 'ㄸ': ['tt', 't'],
@@ -1082,7 +972,7 @@
 
       const keys = new Set();
       function combine(idx, acc) {
-        if (keys.size > 160) return;
+        if (keys.size > 80) return;
         if (idx === sylLists.length) { keys.add(acc); return; }
         for (let i = 0; i < sylLists[idx].length; i++) combine(idx + 1, acc + sylLists[idx][i]);
       }
@@ -1092,7 +982,7 @@
         const givenPart = sylLists.slice(1);
         const surPart = sylLists[0];
         function combineRev(idx, acc) {
-          if (keys.size > 260) return;
+          if (keys.size > 140) return;
           if (idx === givenPart.length) {
             for (let s = 0; s < surPart.length; s++) keys.add(acc + surPart[s]);
             return;
@@ -1118,7 +1008,6 @@
         .trim();
     }
 
-    // Tách chính xác từng giáo sư nếu có đồng hướng dẫn (vd: "박달재, 김민수" -> ["박달재", "김민수"])
     function extractAdvisorList(rawAdvisorStr, dept = '') {
       if (!rawAdvisorStr) return [];
       const str = String(rawAdvisorStr).trim();
@@ -1232,32 +1121,9 @@
 
     const starTexture = createRadialTexture(64, [
       [0.0, 'rgba(255, 255, 255, 1.0)'],
-      [0.18, 'rgba(255, 255, 255, 0.95)'],
-      [0.42, 'rgba(255, 255, 255, 0.6)'],
-      [0.74, 'rgba(255, 255, 255, 0.16)'],
-      [1.0, 'rgba(0, 0, 0, 0)']
-    ]);
-
-    const doctoralStarTexture = createRadialTexture(128, [
-      [0.0, 'rgba(255, 255, 255, 1.0)'],
-      [0.28, 'rgba(255, 255, 255, 0.92)'],
-      [0.52, 'rgba(255, 255, 255, 0.45)'],
-      [0.76, 'rgba(255, 255, 255, 0.10)'],
-      [1.0, 'rgba(0, 0, 0, 0)']
-    ]);
-
-    const moderateSunTexture = createRadialTexture(64, [
-      [0.0, 'rgba(255, 255, 255, 1.0)'],
-      [0.24, 'rgba(254, 240, 138, 0.9)'],
-      [0.55, 'rgba(234, 179, 8, 0.28)'],
-      [1.0, 'rgba(0, 0, 0, 0)']
-    ]);
-
-    const redDeptSunTexture = createRadialTexture(64, [
-      [0.0, 'rgba(255, 255, 255, 1.0)'],
-      [0.22, 'rgba(252, 165, 165, 0.96)'],
-      [0.52, 'rgba(239, 68, 68, 0.65)'],
-      [0.80, 'rgba(185, 28, 28, 0.22)'],
+      [0.22, 'rgba(255, 255, 255, 0.92)'],
+      [0.48, 'rgba(255, 255, 255, 0.45)'],
+      [0.78, 'rgba(255, 255, 255, 0.12)'],
       [1.0, 'rgba(0, 0, 0, 0)']
     ]);
 
@@ -1277,8 +1143,8 @@
     const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 9000);
     camera.position.set(0, 950, 0.001);
 
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: "high-performance" });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false, powerPreference: "high-performance" });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
     renderer.setSize(window.innerWidth, window.innerHeight);
 
     const controls = new THREE.OrbitControls(camera, renderer.domElement);
@@ -1296,7 +1162,7 @@
     cosmosGroup.add(arcLinksGroup);
 
     /* ==========================================================================
-       5. SHADERS
+       5. SHADERS (INCLUDING SINGLE-DRAW-CALL GPU STARFIELD)
        ========================================================================== */
     let funnelHazeMesh;
     const volumetricNebulaMat = new THREE.ShaderMaterial({
@@ -1326,17 +1192,13 @@
           float angle = atan(vPos.z, vPos.x);
           float radNorm = length(vPos.xz) / 520.0;
           float coreBoost = 1.0 + (1.0 - smoothstep(0.0, 0.4, radNorm)) * 0.35;
-          
           float swirl = sin(angle * 3.0 + vPos.y * 0.012 - uTime * 0.4) * 0.35;
           float fade = smoothstep(0.0, 0.08, vUv.y) * smoothstep(1.0, 0.9, vUv.y);
-          
           vec3 pink = vec3(0.96, 0.28, 0.62);
           vec3 violet = vec3(0.60, 0.35, 0.95);
           vec3 cyan = vec3(0.05, 0.82, 0.95);
-          
           vec3 col = mix(cyan, violet, clamp(vUv.y + swirl * 0.3, 0.0, 1.0));
           col = mix(col, pink, clamp(sin(angle * 2.5 + uTime * 0.3) * 0.5 + 0.5, 0.0, 1.0));
-          
           float alpha = fade * (0.4 + swirl * 0.15) * uIntensity * coreBoost;
           gl_FragColor = vec4(col * alpha * 1.8, alpha);
         }
@@ -1350,26 +1212,21 @@
       side: THREE.DoubleSide,
       uniforms: {
         uTime: { value: 0 },
-        uOpacity: { value: 0.92 },
-        uPhase: { value: 0 }
+        uOpacity: { value: 0.92 }
       },
       vertexShader: `
         varying vec2 vUv;
         uniform float uTime;
-        uniform float uPhase;
         void main() {
           vUv = uv;
           vec3 pos = position;
-          
+          float phase = pos.x * 0.05 + pos.z * 0.05;
           float envelope = sin(uv.x * 3.14159265);
-          float wave1 = sin(uv.x * 16.0 + uTime * 1.5 + uPhase);
-          float wave2 = cos(uv.x * 11.0 - uTime * 1.15 + uPhase * 0.8);
-          float wave3 = sin(uv.x * 22.0 + uTime * 2.1 - uPhase * 0.5);
-          
-          pos.x += (wave1 * 0.55 + wave3 * 0.22) * envelope;
-          pos.y += (wave2 * 0.45) * envelope;
-          pos.z += (cos(uv.x * 14.0 + uTime * 1.35 - uPhase) * 0.55) * envelope;
-          
+          float wave1 = sin(uv.x * 16.0 + uTime * 1.5 + phase);
+          float wave2 = cos(uv.x * 11.0 - uTime * 1.15 + phase * 0.8);
+          pos.x += wave1 * 0.55 * envelope;
+          pos.y += wave2 * 0.45 * envelope;
+          pos.z += cos(uv.x * 14.0 + uTime * 1.35 - phase) * 0.55 * envelope;
           gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
         }
       `,
@@ -1377,26 +1234,118 @@
         varying vec2 vUv;
         uniform float uTime;
         uniform float uOpacity;
-        uniform float uPhase;
         void main() {
           vec3 pink = vec3(0.98, 0.28, 0.58);
           vec3 purple = vec3(0.68, 0.35, 0.98);
           vec3 cyan = vec3(0.05, 0.78, 0.95);
-
-          float flow = fract(vUv.x * 2.0 - uTime * 0.4 + uPhase * 0.1);
-          
-          vec3 col = (flow < 0.5)
-            ? mix(pink, purple, flow * 2.0)
-            : mix(purple, cyan, (flow - 0.5) * 2.0);
-
-          float pulse = sin(vUv.x * 14.0 - uTime * 3.0 + uPhase) * 0.20 + 0.85;
+          float flow = fract(vUv.x * 2.0 - uTime * 0.4);
+          vec3 col = (flow < 0.5) ? mix(pink, purple, flow * 2.0) : mix(purple, cyan, (flow - 0.5) * 2.0);
+          float pulse = sin(vUv.x * 14.0 - uTime * 3.0) * 0.20 + 0.85;
           col *= pulse * 1.35;
-
           float entryFade = smoothstep(0.0, 0.03, vUv.x) * smoothstep(1.0, 0.97, vUv.x);
           float edge = sin(vUv.y * 3.14159265);
-          float alpha = edge * entryFade * uOpacity;
+          gl_FragColor = vec4(col, edge * entryFade * uOpacity);
+        }
+      `
+    });
 
-          gl_FragColor = vec4(col, alpha);
+    // GPU Shader cho toàn bộ hàng nghìn ngôi sao (1 Draw Call duy nhất)
+    const galaxyStarsShaderMat = new THREE.ShaderMaterial({
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+      uniforms: {
+        uTime: { value: 0 },
+        uPixelRatio: { value: Math.min(window.devicePixelRatio, 1.75) },
+        uReveal: { value: 0.0 },
+        uDistFactor: { value: 1.0 },
+        uZoomOutDim: { value: 1.0 },
+        uZoomOutFocusDamp: { value: 1.0 },
+        uHasFocus: { value: 0.0 },
+        uMap: { value: starTexture }
+      },
+      vertexShader: `
+        attribute vec3 aColor;
+        attribute float aBaseSize;
+        attribute vec4 aAnim; // x: pulseOffset, y: twinkleSpeed, z: shimmerAmp, w: nodeType (0=master, 1=phd, 2=advisor, 3=dept)
+        attribute vec2 aState; // x: visible (1/0), y: highlightState (0=normal, 1=highlight, 2=related, 3=focusedSun)
+
+        uniform float uTime;
+        uniform float uPixelRatio;
+        uniform float uReveal;
+        uniform float uDistFactor;
+        uniform float uZoomOutDim;
+        uniform float uZoomOutFocusDamp;
+        uniform float uHasFocus;
+
+        varying vec3 vColor;
+        varying float vAlpha;
+        varying float vType;
+
+        void main() {
+          if (aState.x < 0.5) {
+            gl_Position = vec4(2.0, 2.0, 2.0, 1.0);
+            gl_PointSize = 0.0;
+            vAlpha = 0.0;
+            return;
+          }
+
+          vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+          gl_Position = projectionMatrix * mvPosition;
+
+          float revealScale = 0.4 + 0.6 * uReveal;
+          float shimmer = sin(uTime * aAnim.y + aAnim.x) * cos(uTime * (aAnim.y * 0.5)) * aAnim.z;
+          float sizeMult = aBaseSize;
+          float alphaVal = 0.85;
+
+          if (uHasFocus > 0.5) {
+            float strobe = 1.0 + abs(sin(uTime * 7.5)) * 0.16;
+            if (aState.y > 2.5) { // focusedSun
+              sizeMult = aBaseSize * 3.2 * uZoomOutFocusDamp * strobe;
+              alphaVal = 1.0 * uReveal;
+            } else if (aState.y > 1.5) { // related
+              float relShim = sin(uTime * 3.2 + aAnim.x) * 0.08;
+              sizeMult = aBaseSize * 3.0 * uZoomOutFocusDamp * (1.0 + relShim);
+              alphaVal = 0.94 * uReveal * uZoomOutDim;
+            } else if (aState.y > 0.5) { // highlight
+              sizeMult = aBaseSize * 5.0 * uZoomOutFocusDamp * strobe;
+              alphaVal = 1.0 * uReveal;
+            } else { // dimmed background
+              sizeMult = aBaseSize * uDistFactor * 0.42;
+              alphaVal = 0.04 * uReveal * uZoomOutDim;
+            }
+          } else {
+            sizeMult = aBaseSize * uDistFactor * revealScale * (1.0 + shimmer);
+            float baseTarget = (aAnim.w > 2.5) ? 0.96 : ((aAnim.w > 0.5) ? 0.92 : min(0.92, 0.80 + abs(shimmer) * 0.25));
+            alphaVal = baseTarget * uReveal * uZoomOutDim;
+          }
+
+          float perspectiveScale = 520.0 / max(15.0, -mvPosition.z);
+          gl_PointSize = clamp(sizeMult * perspectiveScale * uPixelRatio, 1.5, 110.0);
+          vColor = aColor;
+          vAlpha = alphaVal;
+          vType = aAnim.w;
+        }
+      `,
+      fragmentShader: `
+        uniform sampler2D uMap;
+        varying vec3 vColor;
+        varying float vAlpha;
+        varying float vType;
+
+        void main() {
+          if (vAlpha <= 0.005) discard;
+          vec2 uv = gl_PointCoord;
+          vec4 tex = texture2D(uMap, uv);
+          float dist = length(uv - vec2(0.5)) * 2.0;
+
+          // Tạo lõi sáng sắc nét hơn cho luận văn tiến sĩ & mặt trời khoa/giáo sư
+          float coreBoost = (vType > 0.5) ? smoothstep(0.55, 0.0, dist) * 0.45 : 0.0;
+          float a = clamp(tex.a + coreBoost, 0.0, 1.0) * vAlpha;
+          if (a <= 0.005) discard;
+
+          vec3 finalCol = vColor * (1.0 + coreBoost * 0.8);
+          gl_FragColor = vec4(finalCol, a);
         }
       `
     });
@@ -1407,20 +1356,20 @@
     let ALL_NODES = [];
     let THESIS_NODES_ALL = [];
     let NODE_BY_ID = new Map();
-    let NODE_SPRITES = [];
-    let VISIBLE_SPRITES_CACHE = [];
-    let SPRITE_BY_ID = new Map();
-    let ADVISOR_SPRITE_BY_NAME = new Map();
+    let STAR_RECORDS = [];
+    let STAR_RECORD_BY_ID = new Map();
+    let ADVISOR_RECORD_BY_NAME = new Map();
+    let galaxyPointsMesh = null;
+    let galaxyGeo = null;
     let DEPT_MAP = new Map();
     const DETAILS_STORE = new Map();
     let isSearchActive = false;
 
-    // BỘ CHỈ MỤC THỐNG NHẤT 100% GIỮA DANH SÁCH KHOA VÀ TRANG RIÊNG CỦA GIÁO SƯ
     const ADVISOR_THESES_GLOBAL_MAP = new Map();
     const ADVISOR_THESES_BY_DEPT_MAP = new Map();
 
     let lockedTargetNode = null;
-    let lockedTargetSprite = null;
+    let lockedTargetRecord = null;
 
     let cosmicBeamMesh, cosmicBeamGlowMesh;
     let stardustMistPoints;
@@ -1695,14 +1644,20 @@
 
       const revealState = { brightness: 0.0 };
       new TWEEN.Tween(revealState)
-        .to({ brightness: 1.0 }, 2500)
+        .to({ brightness: 1.0 }, 2200)
         .easing(TWEEN.Easing.Cubic.Out)
-        .onUpdate(() => { cosmicRevealProgress = revealState.brightness; })
-        .onComplete(() => { cosmicRevealProgress = 1.0; })
+        .onUpdate(() => {
+          cosmicRevealProgress = revealState.brightness;
+          galaxyStarsShaderMat.uniforms.uReveal.value = cosmicRevealProgress;
+        })
+        .onComplete(() => {
+          cosmicRevealProgress = 1.0;
+          galaxyStarsShaderMat.uniforms.uReveal.value = 1.0;
+        })
         .start();
 
       new TWEEN.Tween(camera.position)
-        .to({ x: 0, y: 950, z: 0.001 }, 2500)
+        .to({ x: 0, y: 950, z: 0.001 }, 2200)
         .easing(TWEEN.Easing.Cubic.Out)
         .start();
     }
@@ -1711,7 +1666,6 @@
       return CLUSTER_COLOR_MAP[clusterCat] || '#94A3B8';
     }
 
-    // XÂY DỰNG BẢNG TRA CỨU CHÍNH XÁC CHO TỪNG GIÁO SƯ (LOẠI BỎ HOÀN TOÀN SAI LỆCH 54 VS 55)
     function rebuildAdvisorThesesIndex() {
       ADVISOR_THESES_GLOBAL_MAP.clear();
       ADVISOR_THESES_BY_DEPT_MAP.clear();
@@ -1724,16 +1678,11 @@
 
         for (let a = 0; a < advList.length; a++) {
           const advName = advList[a];
-
-          if (!ADVISOR_THESES_GLOBAL_MAP.has(advName)) {
-            ADVISOR_THESES_GLOBAL_MAP.set(advName, []);
-          }
+          if (!ADVISOR_THESES_GLOBAL_MAP.has(advName)) ADVISOR_THESES_GLOBAL_MAP.set(advName, []);
           ADVISOR_THESES_GLOBAL_MAP.get(advName).push(n);
 
           const deptAdvKey = `${deptName}||${advName}`;
-          if (!ADVISOR_THESES_BY_DEPT_MAP.has(deptAdvKey)) {
-            ADVISOR_THESES_BY_DEPT_MAP.set(deptAdvKey, []);
-          }
+          if (!ADVISOR_THESES_BY_DEPT_MAP.has(deptAdvKey)) ADVISOR_THESES_BY_DEPT_MAP.set(deptAdvKey, []);
           ADVISOR_THESES_BY_DEPT_MAP.get(deptAdvKey).push(n);
         }
       }
@@ -1746,9 +1695,7 @@
 
       if (deptHint) {
         const exactDeptKey = `${deptHint}||${targetName}`;
-        if (ADVISOR_THESES_BY_DEPT_MAP.has(exactDeptKey)) {
-          return ADVISOR_THESES_BY_DEPT_MAP.get(exactDeptKey);
-        }
+        if (ADVISOR_THESES_BY_DEPT_MAP.has(exactDeptKey)) return ADVISOR_THESES_BY_DEPT_MAP.get(exactDeptKey);
       }
       return ADVISOR_THESES_GLOBAL_MAP.get(targetName) || [];
     }
@@ -1761,6 +1708,9 @@
 
       const reusableColor = new THREE.Color();
       const reusableHsl = { h: 0, s: 0, l: 0 };
+      const colorAttr = galaxyGeo ? galaxyGeo.getAttribute('aColor') : null;
+      const animAttr = galaxyGeo ? galaxyGeo.getAttribute('aAnim') : null;
+      const sizeAttr = galaxyGeo ? galaxyGeo.getAttribute('aBaseSize') : null;
 
       for (let i = 0; i < ALL_NODES.length; i++) {
         const n = ALL_NODES[i];
@@ -1787,108 +1737,102 @@
         if (n.type === 'thesis_planet') {
           THESIS_NODES_ALL.push(n);
           const isPhd = detectDoctoralDegree(n, DETAILS_STORE.get(n.id) || n.cachedDetail);
-          const sprite = SPRITE_BY_ID.get(n.id);
-          if (sprite) {
+          const rec = STAR_RECORD_BY_ID.get(n.id);
+          if (rec && colorAttr && animAttr && sizeAttr) {
             const strictHex = getStrictClusterColor(clusterCat);
             reusableColor.set(strictHex);
             reusableColor.getHSL(reusableHsl);
             if (isPhd) {
-              sprite.material.color.setHSL(reusableHsl.h, Math.min(0.92, Math.max(0.80, reusableHsl.s)), Math.min(0.60, Math.max(0.50, reusableHsl.l)));
-              sprite.material.map = doctoralStarTexture;
+              reusableColor.setHSL(reusableHsl.h, Math.min(0.92, Math.max(0.80, reusableHsl.s)), Math.min(0.60, Math.max(0.50, reusableHsl.l)));
             } else {
-              sprite.material.color.setHSL(reusableHsl.h, Math.max(0.78, reusableHsl.s * 0.90), Math.min(0.68, Math.max(0.54, reusableHsl.l * 1.04)));
-              sprite.material.map = starTexture;
+              reusableColor.setHSL(reusableHsl.h, Math.max(0.78, reusableHsl.s * 0.90), Math.min(0.68, Math.max(0.54, reusableHsl.l * 1.04)));
             }
-            sprite.userData.isPhd = isPhd;
+            const idx = rec.index;
+            colorAttr.setXYZ(idx, reusableColor.r, reusableColor.g, reusableColor.b);
+            animAttr.setW(idx, isPhd ? 1.0 : 0.0);
+            const newSize = isPhd ? 7.8 : 2.6;
+            sizeAttr.setX(idx, newSize);
+            rec.baseSize = newSize;
+            rec.isPhd = isPhd;
           }
         }
       }
 
+      if (colorAttr) colorAttr.needsUpdate = true;
+      if (animAttr) animAttr.needsUpdate = true;
+      if (sizeAttr) sizeAttr.needsUpdate = true;
+
       rebuildAdvisorThesesIndex();
     }
 
-const fetchJsonQuiet = (url) =>
-  fetch(url, { cache: 'force-cache' })
-    .then(r => (r.ok ? r.json() : null))
-    .catch(() => null);
+    const fetchJsonQuiet = (url) =>
+      fetch(url, { cache: 'force-cache' })
+        .then(r => (r.ok ? r.json() : null))
+        .catch(() => null);
 
-async function initializeCosmos() {
-  const detailUrls = [];
-  for (let i = 0; i <= 16; i++) {
-    if (i <= 8) detailUrls.push(`details_${i}_2.json`);
-    detailUrls.push(`details_${i}.json`);
-  }
+    // Tải dần từng đợt nhỏ để không làm giựt khung hình lúc khởi động
+    async function loadDetailsInBackground() {
+      const detailUrls = [];
+      for (let i = 0; i <= 16; i++) {
+        if (i <= 8) detailUrls.push(`details_${i}_2.json`);
+        detailUrls.push(`details_${i}.json`);
+      }
 
-  // Tải details SONG SONG với node ngay từ đầu
-  const detailPromise = Promise.all(detailUrls.map(fetchJsonQuiet));
+      const BATCH_SIZE = 4;
+      let anyMerged = false;
 
-  let nodeData = await fetchJsonQuiet('galaxy_nodes_2.json');
-  if (!nodeData || !nodeData.nodes || nodeData.nodes.length === 0) {
-    nodeData = await fetchJsonQuiet('galaxy_nodes.json');
-  }
+      for (let i = 0; i < detailUrls.length; i += BATCH_SIZE) {
+        const batch = detailUrls.slice(i, i + BATCH_SIZE);
+        const results = await Promise.all(batch.map(fetchJsonQuiet));
+        for (let j = 0; j < results.length; j++) {
+          if (results[j]) {
+            mergeDetails(results[j]);
+            anyMerged = true;
+          }
+        }
+        // Nhường lại main thread cho requestAnimationFrame render mượt
+        await new Promise(r => setTimeout(r, 40));
+      }
 
-  ALL_NODES = (nodeData && nodeData.nodes && nodeData.nodes.length > 0)
-    ? nodeData.nodes
-    : generateRealisticNodes();
-
-  for (let i = 0; i < ALL_NODES.length; i++) {
-    const n = ALL_NODES[i];
-    if (n.dept) n.dept = normalizeDepartmentName(n.dept);
-    n._clusterCat = getDeptClusterCategory(n.dept);
-    NODE_BY_ID.set(n.id, n);
-    if (n.type === 'thesis_planet') THESIS_NODES_ALL.push(n);
-  }
-
-  // Chờ details rồi gộp MỘT LẦN, trước khi dựng cảnh (không còn đợt xử lý thứ 2)
-  const detailResults = await detailPromise;
-  for (let j = 0; j < detailResults.length; j++) {
-    if (detailResults[j]) mergeDetails(detailResults[j]);
-  }
-  syncAllNodeCategoriesAndColors();
-
-  buildCosmicScene();
-  setupDepartmentFilterUI();
-  refreshVisibleSpritesCache();
-
-  // Làm nóng GPU (biên dịch shader + nạp texture) khi loader còn che màn hình
-  renderer.compile(scene, camera);
-  renderer.render(scene, camera);
-
-  // Chỉ bắt đầu hiệu ứng sau khi mọi việc nặng đã xong
-  requestAnimationFrame(() => {
-    const loader = document.getElementById('loader-overlay');
-    if (loader) {
-      loader.classList.add('opacity-0');
-      setTimeout(() => loader.remove(), 150);
+      if (anyMerged) {
+        syncAllNodeCategoriesAndColors();
+        setupDepartmentFilterUI();
+        applyFilters();
+      }
     }
-    startCosmicIgnitionReveal();
-  });
-}
 
-  buildCosmicScene();
-  rebuildAdvisorThesesIndex();
-  setupDepartmentFilterUI();
-  refreshVisibleSpritesCache();
+    async function initializeCosmos() {
+      let nodeData = await fetchJsonQuiet('galaxy_nodes_2.json');
+      if (!nodeData || !nodeData.nodes || nodeData.nodes.length === 0) {
+        nodeData = await fetchJsonQuiet('galaxy_nodes.json');
+      }
 
-  const loader = document.getElementById('loader-overlay');
-  if (loader) {
-    loader.classList.add('opacity-0');
-    setTimeout(() => loader.remove(), 150);
-  }
-  startCosmicIgnitionReveal();
+      ALL_NODES = (nodeData && nodeData.nodes && nodeData.nodes.length > 0)
+        ? nodeData.nodes
+        : generateRealisticNodes();
 
-  detailPromise.then(results => {
-    let anyMerged = false;
-    for (let j = 0; j < results.length; j++) {
-      if (results[j]) { mergeDetails(results[j]); anyMerged = true; }
-    }
-    if (anyMerged) {
-      syncAllNodeCategoriesAndColors();
+      for (let i = 0; i < ALL_NODES.length; i++) {
+        const n = ALL_NODES[i];
+        if (n.dept) n.dept = normalizeDepartmentName(n.dept);
+        n._clusterCat = getDeptClusterCategory(n.dept);
+        NODE_BY_ID.set(n.id, n);
+        if (n.type === 'thesis_planet') THESIS_NODES_ALL.push(n);
+      }
+
+      buildCosmicScene();
+      rebuildAdvisorThesesIndex();
       setupDepartmentFilterUI();
-      applyFilters();
+
+      const loader = document.getElementById('loader-overlay');
+      if (loader) {
+        loader.classList.add('opacity-0');
+        setTimeout(() => loader.remove(), 150);
+      }
+      startCosmicIgnitionReveal();
+
+      // Nạp chi tiết sau khi khung hình đầu tiên đã chạy
+      setTimeout(loadDetailsInBackground, 300);
     }
-  });
-}    
 
     function mergeDetails(dataObj) {
       const entries = Object.entries(dataObj);
@@ -2000,12 +1944,12 @@ async function initializeCosmos() {
     }
 
     /* ==========================================================================
-       7. 3D GALAXY SCENE CONSTRUCTION
+       7. 3D GALAXY SCENE CONSTRUCTION (SINGLE GPU POINTS BUFFER)
        ========================================================================== */
     function buildCosmicScene() {
-      NODE_SPRITES = [];
-      SPRITE_BY_ID.clear();
-      ADVISOR_SPRITE_BY_NAME.clear();
+      STAR_RECORDS = [];
+      STAR_RECORD_BY_ID.clear();
+      ADVISOR_RECORD_BY_NAME.clear();
       DEPT_MAP.clear();
 
       const minYear = 2001;
@@ -2030,18 +1974,28 @@ async function initializeCosmos() {
 
       const yearNodeCounters = new Map();
       const yearNodeTotals = new Map();
+      let renderableCount = 0;
+
       for (let i = 0; i < ALL_NODES.length; i++) {
         const node = ALL_NODES[i];
         if (node.type === 'galactic_core') continue;
+        renderableCount++;
         const yr = Math.max(minYear, Math.min(maxYear, node.year || 2020));
         yearNodeTotals.set(yr, (yearNodeTotals.get(yr) || 0) + 1);
       }
+
+      const positions = new Float32Array(renderableCount * 3);
+      const colors = new Float32Array(renderableCount * 3);
+      const baseSizes = new Float32Array(renderableCount);
+      const anims = new Float32Array(renderableCount * 4);
+      const states = new Float32Array(renderableCount * 2);
 
       let actualMinY = Infinity;
       let actualMaxY = -Infinity;
       const goldenAngle = Math.PI * (3 - Math.sqrt(5));
       const reusableColor = new THREE.Color();
       const reusableHsl = { h: 0, s: 0, l: 0 };
+      let ptr = 0;
 
       for (let i = 0; i < ALL_NODES.length; i++) {
         const node = ALL_NODES[i];
@@ -2098,89 +2052,87 @@ async function initializeCosmos() {
 
         const isDept = node.type === 'dept_sun';
         const isAdvisor = node.type === 'advisor_sun';
-
-        let spriteMat;
-        let scaleSize = 1.0;
+        let scaleSize = 2.6;
         let isPhd = false;
+        let nodeTypeCode = 0.0;
 
         if (isDept) {
-          scaleSize = 2.8;
-          spriteMat = new THREE.SpriteMaterial({
-            map: redDeptSunTexture,
-            color: new THREE.Color("#EF4444"),
-            transparent: true,
-            opacity: 0.0,
-            blending: THREE.AdditiveBlending,
-            depthWrite: false
-          });
+          scaleSize = 3.2;
+          nodeTypeCode = 3.0;
+          reusableColor.set("#EF4444");
         } else if (isAdvisor) {
-          scaleSize = 2.8;
-          spriteMat = new THREE.SpriteMaterial({
-            map: moderateSunTexture,
-            color: new THREE.Color("#FDE047"),
-            transparent: true,
-            opacity: 0.0,
-            blending: THREE.AdditiveBlending,
-            depthWrite: false
-          });
+          scaleSize = 3.2;
+          nodeTypeCode = 2.0;
+          reusableColor.set("#FDE047");
         } else {
           isPhd = detectDoctoralDegree(node, DETAILS_STORE.get(node.id) || node.cachedDetail);
-          const masterBase = 2.6;
-          scaleSize = isPhd ? (masterBase * 3.0) : masterBase;
+          scaleSize = isPhd ? 7.8 : 2.6;
+          nodeTypeCode = isPhd ? 1.0 : 0.0;
 
           const clusterCat = getDeptClusterCategory(normalizedDept);
           node._clusterCat = clusterCat;
-          const strictHex = getStrictClusterColor(clusterCat);
-
-          reusableColor.set(strictHex);
+          reusableColor.set(getStrictClusterColor(clusterCat));
           reusableColor.getHSL(reusableHsl);
 
-          const baseColor = new THREE.Color();
           if (isPhd) {
-            baseColor.setHSL(reusableHsl.h, Math.min(0.92, Math.max(0.80, reusableHsl.s)), Math.min(0.60, Math.max(0.50, reusableHsl.l)));
+            reusableColor.setHSL(reusableHsl.h, Math.min(0.92, Math.max(0.80, reusableHsl.s)), Math.min(0.60, Math.max(0.50, reusableHsl.l)));
           } else {
-            baseColor.setHSL(reusableHsl.h, Math.max(0.78, reusableHsl.s * 0.90), Math.min(0.68, Math.max(0.54, reusableHsl.l * 1.04)));
+            reusableColor.setHSL(reusableHsl.h, Math.max(0.78, reusableHsl.s * 0.90), Math.min(0.68, Math.max(0.54, reusableHsl.l * 1.04)));
           }
-
-          spriteMat = new THREE.SpriteMaterial({
-            map: isPhd ? doctoralStarTexture : starTexture,
-            color: baseColor,
-            transparent: true,
-            opacity: 0.0,
-            blending: THREE.AdditiveBlending,
-            depthWrite: false
-          });
         }
 
-        const sprite = new THREE.Sprite(spriteMat);
-        sprite.position.set(node.fx, node.fy, node.fz);
-        sprite.scale.set(scaleSize, scaleSize, 1);
+        const idx = ptr++;
+        positions[idx * 3] = node.fx;
+        positions[idx * 3 + 1] = node.fy;
+        positions[idx * 3 + 2] = node.fz;
 
-        sprite.userData = {
+        colors[idx * 3] = reusableColor.r;
+        colors[idx * 3 + 1] = reusableColor.g;
+        colors[idx * 3 + 2] = reusableColor.b;
+
+        baseSizes[idx] = scaleSize;
+
+        anims[idx * 4] = Math.random() * Math.PI * 2;
+        anims[idx * 4 + 1] = 2.0 + Math.random() * 4.0;
+        anims[idx * 4 + 2] = 0.14 + Math.random() * 0.18;
+        anims[idx * 4 + 3] = nodeTypeCode;
+
+        states[idx * 2] = 1.0; // visible
+        states[idx * 2 + 1] = 0.0; // normal
+
+        const rec = {
+          index: idx,
           nodeData: node,
+          position: new THREE.Vector3(node.fx, node.fy, node.fz),
           baseSize: scaleSize,
           isSun: isDept || isAdvisor,
           isDeptSun: isDept,
           isPhd: isPhd,
-          pulseOffset: Math.random() * Math.PI * 2,
-          twinkleSpeed: 2.0 + Math.random() * 4.0,
-          shimmerAmp: 0.14 + Math.random() * 0.18,
-          isHighlight: false,
-          isRelated: false
+          visible: true
         };
 
-        cosmosGroup.add(sprite);
-        NODE_SPRITES.push(sprite);
-        SPRITE_BY_ID.set(node.id, sprite);
+        STAR_RECORDS.push(rec);
+        STAR_RECORD_BY_ID.set(node.id, rec);
 
         if (isAdvisor) {
           const cleanAdvName = normalizePersonName(node.name, node.dept);
           if (cleanAdvName) {
-            ADVISOR_SPRITE_BY_NAME.set(`${node.dept}||${cleanAdvName}`, sprite);
-            if (!ADVISOR_SPRITE_BY_NAME.has(cleanAdvName)) ADVISOR_SPRITE_BY_NAME.set(cleanAdvName, sprite);
+            ADVISOR_RECORD_BY_NAME.set(`${node.dept}||${cleanAdvName}`, rec);
+            if (!ADVISOR_RECORD_BY_NAME.has(cleanAdvName)) ADVISOR_RECORD_BY_NAME.set(cleanAdvName, rec);
           }
         }
       }
+
+      galaxyGeo = new THREE.BufferGeometry();
+      galaxyGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      galaxyGeo.setAttribute('aColor', new THREE.BufferAttribute(colors, 3));
+      galaxyGeo.setAttribute('aBaseSize', new THREE.BufferAttribute(baseSizes, 1));
+      galaxyGeo.setAttribute('aAnim', new THREE.BufferAttribute(anims, 4));
+      galaxyGeo.setAttribute('aState', new THREE.BufferAttribute(states, 2));
+      galaxyGeo.computeBoundingSphere();
+
+      galaxyPointsMesh = new THREE.Points(galaxyGeo, galaxyStarsShaderMat);
+      cosmosGroup.add(galaxyPointsMesh);
 
       const finalMinY = Math.min(baseBottomY, actualMinY);
       const finalMaxY = Math.max(baseTopY, actualMaxY);
@@ -2193,7 +2145,7 @@ async function initializeCosmos() {
 
       // Central Beam
       const beamHeight = galaxyHeight;
-      const beamGeo = new THREE.CylinderGeometry(1.6, 1.6, beamHeight, 24, 1, true);
+      const beamGeo = new THREE.CylinderGeometry(1.6, 1.6, beamHeight, 20, 1, true);
       const beamMat = new THREE.ShaderMaterial({
         transparent: true,
         depthWrite: false,
@@ -2201,25 +2153,15 @@ async function initializeCosmos() {
         side: THREE.DoubleSide,
         uniforms: { uTime: { value: 0 }, uAlphaScale: { value: 0.0 } },
         vertexShader: `
-          varying vec2 vUv;
-          varying vec3 vPos;
-          void main() {
-            vUv = uv;
-            vPos = position;
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-          }
+          varying vec2 vUv; varying vec3 vPos;
+          void main() { vUv = uv; vPos = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }
         `,
         fragmentShader: `
-          varying vec2 vUv;
-          varying vec3 vPos;
-          uniform float uTime;
-          uniform float uAlphaScale;
+          varying vec2 vUv; varying vec3 vPos; uniform float uTime; uniform float uAlphaScale;
           void main() {
             float fade = smoothstep(0.0, 0.05, vUv.y) * smoothstep(1.0, 0.95, vUv.y);
-            vec3 cyan = vec3(0.02, 0.75, 0.90);
-            vec3 pink = vec3(0.98, 0.25, 0.65);
             float wave = sin(vPos.y * 0.03 - uTime * 2.0) * 0.5 + 0.5;
-            vec3 col = mix(cyan, pink, wave);
+            vec3 col = mix(vec3(0.02, 0.75, 0.90), vec3(0.98, 0.25, 0.65), wave);
             float alpha = fade * (0.85 + sin(uTime * 3.0 + vPos.y * 0.04) * 0.15) * uAlphaScale;
             gl_FragColor = vec4(col * alpha * 2.0, alpha);
           }
@@ -2227,10 +2169,9 @@ async function initializeCosmos() {
       });
       cosmicBeamMesh = new THREE.Mesh(beamGeo, beamMat);
       cosmicBeamMesh.position.y = galaxyCenterY;
-      cosmicBeamMesh.userData = { isCentralBeam: true };
       cosmosGroup.add(cosmicBeamMesh);
 
-      const beamGlowGeo = new THREE.CylinderGeometry(14, 14, beamHeight, 24, 1, true);
+      const beamGlowGeo = new THREE.CylinderGeometry(14, 14, beamHeight, 20, 1, true);
       const beamGlowMat = new THREE.ShaderMaterial({
         transparent: true,
         depthWrite: false,
@@ -2238,24 +2179,14 @@ async function initializeCosmos() {
         side: THREE.DoubleSide,
         uniforms: { uTime: { value: 0 }, uAlphaScale: { value: 0.0 } },
         vertexShader: `
-          varying vec2 vUv;
-          varying vec3 vPos;
-          void main() {
-            vUv = uv;
-            vPos = position;
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-          }
+          varying vec2 vUv; varying vec3 vPos;
+          void main() { vUv = uv; vPos = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }
         `,
         fragmentShader: `
-          varying vec2 vUv;
-          varying vec3 vPos;
-          uniform float uTime;
-          uniform float uAlphaScale;
+          varying vec2 vUv; varying vec3 vPos; uniform float uTime; uniform float uAlphaScale;
           void main() {
             float fade = smoothstep(0.0, 0.05, vUv.y) * smoothstep(1.0, 0.95, vUv.y);
-            vec3 violet = vec3(0.55, 0.36, 0.96);
-            vec3 pink = vec3(0.95, 0.25, 0.55);
-            vec3 col = mix(violet, pink, sin(vUv.y * 6.0 + uTime) * 0.5 + 0.5);
+            vec3 col = mix(vec3(0.55, 0.36, 0.96), vec3(0.95, 0.25, 0.55), sin(vUv.y * 6.0 + uTime) * 0.5 + 0.5);
             float alpha = fade * 0.28 * uAlphaScale;
             gl_FragColor = vec4(col * alpha * 1.4, alpha);
           }
@@ -2263,17 +2194,16 @@ async function initializeCosmos() {
       });
       cosmicBeamGlowMesh = new THREE.Mesh(beamGlowGeo, beamGlowMat);
       cosmicBeamGlowMesh.position.y = galaxyCenterY;
-      cosmicBeamGlowMesh.userData = { isCentralBeam: true };
       cosmosGroup.add(cosmicBeamGlowMesh);
 
       // Funnel Haze
-      const funnelHazeGeo = new THREE.CylinderGeometry(490, 52, galaxyHeight, 36, 16, true);
+      const funnelHazeGeo = new THREE.CylinderGeometry(490, 52, galaxyHeight, 28, 12, true);
       funnelHazeMesh = new THREE.Mesh(funnelHazeGeo, volumetricNebulaMat);
       funnelHazeMesh.position.y = galaxyCenterY;
       cosmosGroup.add(funnelHazeMesh);
 
-      // Spiral Arms
-      const spiralRibbonCount = 4200;
+      // Spiral Arms (tối ưu số lượng hạt giữ nguyên độ rực rỡ)
+      const spiralRibbonCount = 2600;
       const ribbonGeo = new THREE.BufferGeometry();
       const ribbonPositions = new Float32Array(spiralRibbonCount * 3);
       const ribbonColors = new Float32Array(spiralRibbonCount * 3);
@@ -2286,14 +2216,14 @@ async function initializeCosmos() {
       const tempC = new THREE.Color();
 
       for (let i = 0; i < spiralRibbonCount; i++) {
-        const arm = i % 2; 
+        const arm = i % 2;
         const armAngleOffset = arm * Math.PI;
         const progress = Math.pow(Math.random(), 0.78);
         const radius = 12 + progress * 425;
         const theta = armAngleOffset + progress * 6.8 + (Math.random() - 0.5) * 0.35;
         const y = finalMinY + progress * baseGalaxyHeight + Math.sin(theta * 2.0) * 14.0 + (Math.random() - 0.5) * 10.0;
-        
         const spread = (Math.random() - 0.5) * (10.0 + progress * 38.0);
+
         ribbonPositions[i * 3] = Math.cos(theta) * (radius + spread);
         ribbonPositions[i * 3 + 1] = y;
         ribbonPositions[i * 3 + 2] = Math.sin(theta) * (radius + spread);
@@ -2310,20 +2240,19 @@ async function initializeCosmos() {
       ribbonGeo.setAttribute('position', new THREE.BufferAttribute(ribbonPositions, 3));
       ribbonGeo.setAttribute('color', new THREE.BufferAttribute(ribbonColors, 3));
 
-      const ribbonMat = new THREE.PointsMaterial({
-        size: 7.8,
+      spiralArmRibbonPoints = new THREE.Points(ribbonGeo, new THREE.PointsMaterial({
+        size: 8.6,
         map: softDustTexture,
         vertexColors: true,
         transparent: true,
         opacity: 0.0,
         blending: THREE.AdditiveBlending,
         depthWrite: false
-      });
-      spiralArmRibbonPoints = new THREE.Points(ribbonGeo, ribbonMat);
+      }));
       cosmosGroup.add(spiralArmRibbonPoints);
 
       // Cosmic Dust
-      const mistCount = 1800;
+      const mistCount = 1100;
       const mistGeo = new THREE.BufferGeometry();
       const mistPositions = new Float32Array(mistCount * 3);
       const mistColors = new Float32Array(mistCount * 3);
@@ -2347,16 +2276,15 @@ async function initializeCosmos() {
       mistGeo.setAttribute('position', new THREE.BufferAttribute(mistPositions, 3));
       mistGeo.setAttribute('color', new THREE.BufferAttribute(mistColors, 3));
 
-      const mistMat = new THREE.PointsMaterial({
-        size: 6.2,
+      stardustMistPoints = new THREE.Points(mistGeo, new THREE.PointsMaterial({
+        size: 6.8,
         map: softDustTexture,
         vertexColors: true,
         transparent: true,
         opacity: 0.0,
         blending: THREE.AdditiveBlending,
         depthWrite: false
-      });
-      stardustMistPoints = new THREE.Points(mistGeo, mistMat);
+      }));
       cosmosGroup.add(stardustMistPoints);
     }
 
@@ -2397,12 +2325,8 @@ async function initializeCosmos() {
 
             nodes.push({
               id: id++,
-              name: isEngThesis
-                ? `Optimization Study in ${d} with ${kws[0]} Vol.${t}`
-                : `[연구] ${d} ${kws[0]} 기반 응용 분석 Vol.${t}`,
-              title_ko: isEngThesis
-                ? `Optimization Study in ${d} with ${kws[0]} Vol.${t}`
-                : `[연구] ${d} ${kws[0]} 기반 응용 분석 Vol.${t}`,
+              name: isEngThesis ? `Optimization Study in ${d} with ${kws[0]} Vol.${t}` : `[연구] ${d} ${kws[0]} 기반 응용 분석 Vol.${t}`,
+              title_ko: isEngThesis ? `Optimization Study in ${d} with ${kws[0]} Vol.${t}` : `[연구] ${d} ${kws[0]} 기반 응용 분석 Vol.${t}`,
               type: 'thesis_planet',
               dept: d,
               degree: isPhd ? "학위논문(박사)" : "학위논문(석사)",
@@ -2433,13 +2357,6 @@ async function initializeCosmos() {
     let isCumulativeMode = true;
     let isFilterPanelExpanded = false;
 
-    function refreshVisibleSpritesCache() {
-      VISIBLE_SPRITES_CACHE = [];
-      for (let i = 0; i < NODE_SPRITES.length; i++) {
-        if (NODE_SPRITES[i].visible) VISIBLE_SPRITES_CACHE.push(NODE_SPRITES[i]);
-      }
-    }
-
     function syncFilterPanelVisibility() {
       const deptPanelContainer = document.getElementById('dept-panel-container');
       const expandBtn = document.getElementById('btn-panel-expand');
@@ -2460,21 +2377,11 @@ async function initializeCosmos() {
     function getDeptClusterCategory(deptName) {
       if (!deptName) return '기타';
       const d = deptName.toLowerCase();
-      if (d.includes('융합') || d.includes('인공지능') || d.includes('반도체') || d.includes('미래') || d.includes('에너지') || d.includes('데이터사이언스') || d.includes('의공학')) {
-        return '융합';
-      }
-      if (d.includes('디자인') || d.includes('예술') || d.includes('도예') || d.includes('금속') || d.includes('조형')) {
-        return '디자인';
-      }
-      if (d.includes('공학') || d.includes('기계') || d.includes('전자') || d.includes('전기') || d.includes('컴퓨터') || d.includes('건설') || d.includes('화학') || d.includes('신소재') || d.includes('ict') || d.includes('건축') || d.includes('도시계획') || d.includes('국방') || d.includes('스마트생산') || d.includes('안전') || d.includes('환경') || d.includes('식품') || d.includes('안경')) {
-        return '공학';
-      }
-      if (d.includes('경영') || d.includes('기술경영') || d.includes('글로벌') || d.includes('msde') || d.includes('산업정보')) {
-        return '경영';
-      }
-      if (d.includes('인문') || d.includes('tesol') || d.includes('영어') || d.includes('어학') || d.includes('문학') || d.includes('창작') || d.includes('행정') || d.includes('스포츠')) {
-        return '인문';
-      }
+      if (d.includes('융합') || d.includes('인공지능') || d.includes('반도체') || d.includes('미래') || d.includes('에너지') || d.includes('데이터사이언스') || d.includes('의공학')) return '융합';
+      if (d.includes('디자인') || d.includes('예술') || d.includes('도예') || d.includes('금속') || d.includes('조형')) return '디자인';
+      if (d.includes('공학') || d.includes('기계') || d.includes('전자') || d.includes('전기') || d.includes('컴퓨터') || d.includes('건설') || d.includes('화학') || d.includes('신소재') || d.includes('ict') || d.includes('건축') || d.includes('도시계획') || d.includes('국방') || d.includes('스마트생산') || d.includes('안전') || d.includes('환경') || d.includes('식품') || d.includes('안경')) return '공학';
+      if (d.includes('경영') || d.includes('기술경영') || d.includes('글로벌') || d.includes('msde') || d.includes('산업정보')) return '경영';
+      if (d.includes('인문') || d.includes('tesol') || d.includes('영어') || d.includes('어학') || d.includes('문학') || d.includes('창작') || d.includes('행정') || d.includes('스포츠')) return '인문';
       return '기타';
     }
 
@@ -2500,7 +2407,7 @@ async function initializeCosmos() {
     }
 
     function setupDepartmentFilterUI() {
-  syncFilterPanelVisibility();
+      syncFilterPanelVisibility();
 
       const dropdown = document.getElementById('dept-dropdown');
       const prevSelected = selectedDept;
@@ -2527,9 +2434,7 @@ async function initializeCosmos() {
           applyFilters();
 
           const rightPanel = document.getElementById('right-panel');
-          if (!rightPanel.classList.contains('hidden')) {
-            showFilteredOverviewAnalytics(false);
-          }
+          if (!rightPanel.classList.contains('hidden')) showFilteredOverviewAnalytics(false);
         };
       });
 
@@ -2542,9 +2447,7 @@ async function initializeCosmos() {
         } else {
           applyFilters();
           const rightPanel = document.getElementById('right-panel');
-          if (!rightPanel.classList.contains('hidden')) {
-            showFilteredOverviewAnalytics(false);
-          }
+          if (!rightPanel.classList.contains('hidden')) showFilteredOverviewAnalytics(false);
         }
       };
 
@@ -2600,9 +2503,7 @@ async function initializeCosmos() {
       });
 
       document.getElementById('btn-panel-expand').onclick = () => {
-        if (isMobileView()) {
-          document.getElementById('right-panel').classList.add('hidden');
-        }
+        if (isMobileView()) document.getElementById('right-panel').classList.add('hidden');
         isFilterPanelExpanded = true;
         syncFilterPanelVisibility();
       };
@@ -2614,22 +2515,16 @@ async function initializeCosmos() {
     }
 
     function applyFilters() {
-      for (let i = 0; i < NODE_SPRITES.length; i++) {
-        const s = NODE_SPRITES[i];
-        const n = s.userData.nodeData;
-        const visible = passGlobalNodeFilters(n);
-        s.visible = visible;
-
-        if (!visible) {
-          s.material.opacity = 0.0;
-        } else if (!isSearchActive && !lockedTargetNode) {
-          const baseOp = s.userData.isDeptSun ? 0.96 : (s.userData.isPhd ? 0.92 : 0.88);
-          s.material.opacity = baseOp * cosmicRevealProgress;
-          s.scale.set(s.userData.baseSize, s.userData.baseSize, 1);
+      const stateAttr = galaxyGeo ? galaxyGeo.getAttribute('aState') : null;
+      if (stateAttr) {
+        for (let i = 0; i < STAR_RECORDS.length; i++) {
+          const rec = STAR_RECORDS[i];
+          const visible = passGlobalNodeFilters(rec.nodeData);
+          rec.visible = visible;
+          stateAttr.setX(rec.index, visible ? 1.0 : 0.0);
         }
+        stateAttr.needsUpdate = true;
       }
-
-      refreshVisibleSpritesCache();
 
       const rightPanel = document.getElementById('right-panel');
       const listView = document.getElementById('panel-list-view');
@@ -2648,8 +2543,8 @@ async function initializeCosmos() {
       }
 
       if (lockedTargetNode) {
-        const activeSprite = SPRITE_BY_ID.get(lockedTargetNode.id);
-        if (activeSprite && activeSprite.visible) {
+        const activeRec = STAR_RECORD_BY_ID.get(lockedTargetNode.id);
+        if (activeRec && activeRec.visible) {
           if (lockedTargetNode.type === 'thesis_planet') highlightSelectedThesisConnections(lockedTargetNode);
         } else {
           resetSearchHighlight();
@@ -2682,14 +2577,13 @@ async function initializeCosmos() {
       while (arcLinksGroup.children.length > 0) {
         const obj = arcLinksGroup.children[0];
         if (obj.geometry) obj.geometry.dispose();
-        if (obj.material) obj.material.dispose();
         arcLinksGroup.remove(obj);
       }
     }
 
-    function createSpiralSpiderWebRibbon(sprite1, sprite2, linkIndex) {
-      const p1 = sprite1.position;
-      const p2 = sprite2.position;
+    function createSpiralSpiderWebRibbon(rec1, rec2, linkIndex) {
+      const p1 = rec1.position;
+      const p2 = rec2.position;
       if (p1.distanceTo(p2) < 1.5) return null;
 
       const r1 = Math.hypot(p1.x, p1.z);
@@ -2701,8 +2595,8 @@ async function initializeCosmos() {
       while (dTheta > Math.PI) dTheta -= Math.PI * 2;
       while (dTheta < -Math.PI) dTheta += Math.PI * 2;
 
-      const year1 = sprite1.userData.nodeData.year || 2020;
-      const year2 = sprite2.userData.nodeData.year || 2020;
+      const year1 = rec1.nodeData.year || 2020;
+      const year2 = rec2.nodeData.year || 2020;
       const yearDiff = year2 - year1;
 
       const spiralTwist = (yearDiff !== 0)
@@ -2710,7 +2604,7 @@ async function initializeCosmos() {
         : (Math.sin(linkIndex * 1.9) * 0.28);
       const totalTwist = dTheta + spiralTwist;
 
-      const steps = 28;
+      const steps = 20;
       const rawPoints = [];
       for (let i = 0; i <= steps; i++) {
         const t = i / steps;
@@ -2730,13 +2624,33 @@ async function initializeCosmos() {
       }
 
       const fullCurve = new THREE.CatmullRomCurve3(rawPoints);
-      const geometry = new THREE.TubeGeometry(fullCurve, 40, 0.095, 6, false);
+      const geometry = new THREE.TubeGeometry(fullCurve, 28, 0.095, 5, false);
+      return new THREE.Mesh(geometry, arcRibbonShaderMat);
+    }
 
-      const mat = arcRibbonShaderMat.clone();
-      mat.uniforms.uOpacity.value = 0.92;
-      mat.uniforms.uPhase.value = linkIndex * 1.25;
+    function updateStarHighlightAttributes(matchIdSet, rootId = null, relatedIdSet = null) {
+      const stateAttr = galaxyGeo ? galaxyGeo.getAttribute('aState') : null;
+      if (!stateAttr) return;
 
-      return new THREE.Mesh(geometry, mat);
+      const hasFocus = isSearchActive || lockedTargetNode !== null;
+      galaxyStarsShaderMat.uniforms.uHasFocus.value = hasFocus ? 1.0 : 0.0;
+
+      for (let i = 0; i < STAR_RECORDS.length; i++) {
+        const rec = STAR_RECORDS[i];
+        const nid = rec.nodeData.id;
+        let stateVal = 0.0;
+
+        if (rootId !== null && nid === rootId) {
+          stateVal = (lockedTargetRecord && lockedTargetRecord.nodeData.id === nid && rec.isSun) ? 3.0 : 1.0;
+        } else if (relatedIdSet && relatedIdSet.has(nid)) {
+          stateVal = 2.0;
+        } else if (matchIdSet && matchIdSet.has(nid)) {
+          stateVal = (lockedTargetRecord && lockedTargetRecord.nodeData.id === nid && rec.isSun) ? 3.0 : 1.0;
+        }
+
+        stateAttr.setY(rec.index, stateVal);
+      }
+      stateAttr.needsUpdate = true;
     }
 
     function highlightSelectedThesisConnections(rootNode) {
@@ -2747,53 +2661,48 @@ async function initializeCosmos() {
       const rootConcepts = det.concepts || [];
       const hasValidRootConcepts = rootConcepts.length > 0;
 
-      let rootSprite = null;
-      const relatedSprites = [];
+      const rootRec = STAR_RECORD_BY_ID.get(rootNode.id) || null;
+      const relatedRecs = [];
+      const relatedIds = new Set();
 
-      for (let i = 0; i < VISIBLE_SPRITES_CACHE.length; i++) {
-        const s = VISIBLE_SPRITES_CACHE[i];
-        const n = s.userData.nodeData;
-
-        if (n.id === rootNode.id) {
-          rootSprite = s;
-          s.userData.isHighlight = true;
-          s.userData.isRelated = false;
-        } else if (n.type === 'thesis_planet' && hasValidRootConcepts) {
-          const d = getCleanDetail(n);
-          if (calculateConceptSimilarity(rootConcepts, d.concepts) >= 0.60) {
-            s.userData.isHighlight = false;
-            s.userData.isRelated = true;
-            relatedSprites.push(s);
-          } else {
-            s.userData.isHighlight = false;
-            s.userData.isRelated = false;
+      if (hasValidRootConcepts) {
+        for (let i = 0; i < STAR_RECORDS.length; i++) {
+          const rec = STAR_RECORDS[i];
+          if (!rec.visible) continue;
+          const n = rec.nodeData;
+          if (n.id !== rootNode.id && n.type === 'thesis_planet') {
+            const d = getCleanDetail(n);
+            if (calculateConceptSimilarity(rootConcepts, d.concepts) >= 0.60) {
+              relatedRecs.push(rec);
+              relatedIds.add(n.id);
+            }
           }
-        } else {
-          s.userData.isHighlight = false;
-          s.userData.isRelated = false;
         }
       }
 
-      if (rootSprite && relatedSprites.length > 0) {
-        relatedSprites.forEach((relSprite, idx) => {
-          const webRibbon = createSpiralSpiderWebRibbon(rootSprite, relSprite, idx);
+      updateStarHighlightAttributes(null, rootNode.id, relatedIds);
+
+      if (rootRec && relatedRecs.length > 0) {
+        const cappedRelated = relatedRecs.slice(0, 60);
+        for (let idx = 0; idx < cappedRelated.length; idx++) {
+          const webRibbon = createSpiralSpiderWebRibbon(rootRec, cappedRelated[idx], idx);
           if (webRibbon) arcLinksGroup.add(webRibbon);
-        });
+        }
       }
     }
 
     const _worldPosHelper = new THREE.Vector3();
-    function getSpriteCurrentWorldPos(sprite) {
+    function getRecordCurrentWorldPos(rec) {
       cosmosGroup.updateMatrixWorld();
-      return sprite.getWorldPosition(_worldPosHelper).clone();
+      return _worldPosHelper.copy(rec.position).applyMatrix4(cosmosGroup.matrixWorld).clone();
     }
 
-    function flyCameraAndAnchorToSprite(targetSprite, offsetVec = { x: 34, y: 18, z: 44 }) {
-      if (!targetSprite) return;
-      lockedTargetSprite = targetSprite;
-      lockedTargetNode = targetSprite.userData.nodeData;
+    function flyCameraAndAnchorToRecord(targetRec, offsetVec = { x: 34, y: 18, z: 44 }) {
+      if (!targetRec) return;
+      lockedTargetRecord = targetRec;
+      lockedTargetNode = targetRec.nodeData;
       lockedZoomAnchorWorld = null;
-      lockedZoomAnchorSprite = null;
+      lockedZoomAnchorRecord = null;
 
       if (activeCameraFlyTween) activeCameraFlyTween.stop();
       isCameraFlying = true;
@@ -2806,8 +2715,8 @@ async function initializeCosmos() {
         .to({ progress: 1 }, 850)
         .easing(TWEEN.Easing.Cubic.Out)
         .onUpdate(() => {
-          if (!lockedTargetSprite) return;
-          const liveWorldPos = getSpriteCurrentWorldPos(lockedTargetSprite);
+          if (!lockedTargetRecord) return;
+          const liveWorldPos = getRecordCurrentWorldPos(lockedTargetRecord);
           const desiredCamPos = new THREE.Vector3(
             liveWorldPos.x + offsetVec.x,
             liveWorldPos.y + offsetVec.y,
@@ -2818,26 +2727,23 @@ async function initializeCosmos() {
         })
         .onComplete(() => {
           isCameraFlying = false;
-          if (lockedTargetSprite) {
-            controls.target.copy(getSpriteCurrentWorldPos(lockedTargetSprite));
-          }
+          if (lockedTargetRecord) controls.target.copy(getRecordCurrentWorldPos(lockedTargetRecord));
         })
         .start();
     }
 
     /* ==========================================================================
-       10. ZOOM & RAYCAST INTERACTION
+       10. ZOOM & RAYCAST INTERACTION (ON SINGLE POINTS MESH)
        ========================================================================== */
     const raycaster = new THREE.Raycaster();
-    raycaster.params.Sprite = { threshold: 5.5 };
     const mouse = new THREE.Vector2();
-    let hoveredSprite = null;
+    let hoveredRecord = null;
     let isHoveringCentralBeam = false;
     let activeCameraFlyTween = null;
     let isCameraFlying = false;
 
     let lockedZoomAnchorWorld = null;
-    let lockedZoomAnchorSprite = null;
+    let lockedZoomAnchorRecord = null;
     let lastAnchorCursorPx = { x: -9999, y: -9999 };
     const _zoomRaycaster = new THREE.Raycaster();
     const _zoomMouseNDC = new THREE.Vector2();
@@ -2846,28 +2752,35 @@ async function initializeCosmos() {
     const _anchorHitPoint = new THREE.Vector3();
     const _anchorWorldHelper = new THREE.Vector3();
 
+    function pickStarRecordFromRay(rc, threshold = 6.0) {
+      if (!galaxyPointsMesh) return null;
+      rc.params.Points = { threshold };
+      const hits = rc.intersectObject(galaxyPointsMesh, false);
+      if (hits.length === 0) return null;
+
+      let chosen = null;
+      for (let i = 0; i < hits.length; i++) {
+        const rec = STAR_RECORDS[hits[i].index];
+        if (!rec || !rec.visible) continue;
+        if (!chosen) chosen = rec;
+        if (rec.nodeData.type === 'thesis_planet') return rec;
+      }
+      return chosen;
+    }
+
     function computeZoomAnchorAtScreen(clientX, clientY) {
       const rect = canvas.getBoundingClientRect();
       _zoomMouseNDC.x = ((clientX - rect.left) / rect.width) * 2 - 1;
       _zoomMouseNDC.y = -((clientY - rect.top) / rect.height) * 2 + 1;
 
-      _zoomRaycaster.params.Sprite = { threshold: 8.0 };
       _zoomRaycaster.setFromCamera(_zoomMouseNDC, camera);
+      const chosen = pickStarRecordFromRay(_zoomRaycaster, 8.0);
 
-      const hits = _zoomRaycaster.intersectObjects(VISIBLE_SPRITES_CACHE);
-
-      if (hits.length > 0) {
-        let chosen = hits[0].object;
-        for (let i = 0; i < hits.length; i++) {
-          if (hits[i].object.userData.nodeData.type === 'thesis_planet') {
-            chosen = hits[i].object;
-            break;
-          }
-        }
+      if (chosen) {
         cosmosGroup.updateMatrixWorld();
         return {
-          point: chosen.getWorldPosition(_anchorWorldHelper).clone(),
-          sprite: chosen
+          point: _anchorWorldHelper.copy(chosen.position).applyMatrix4(cosmosGroup.matrixWorld).clone(),
+          record: chosen
         };
       }
 
@@ -2878,10 +2791,10 @@ async function initializeCosmos() {
         _anchorHitPoint.x = THREE.MathUtils.clamp(_anchorHitPoint.x, -420, 420);
         _anchorHitPoint.y = THREE.MathUtils.clamp(_anchorHitPoint.y, -20, 490);
         _anchorHitPoint.z = THREE.MathUtils.clamp(_anchorHitPoint.z, -420, 420);
-        return { point: _anchorHitPoint.clone(), sprite: null };
+        return { point: _anchorHitPoint.clone(), record: null };
       }
 
-      return { point: controls.target.clone(), sprite: null };
+      return { point: controls.target.clone(), record: null };
     }
 
     function applyAnchoredZoom(zoomScaleFactor, anchorWorldPoint) {
@@ -2905,12 +2818,12 @@ async function initializeCosmos() {
       if (!lockedZoomAnchorWorld) {
         const anchorData = computeZoomAnchorAtScreen(e.clientX, e.clientY);
         lockedZoomAnchorWorld = anchorData.point;
-        lockedZoomAnchorSprite = anchorData.sprite;
+        lockedZoomAnchorRecord = anchorData.record;
         lastAnchorCursorPx.x = e.clientX;
         lastAnchorCursorPx.y = e.clientY;
-      } else if (lockedZoomAnchorSprite && lockedZoomAnchorSprite.visible) {
+      } else if (lockedZoomAnchorRecord && lockedZoomAnchorRecord.visible) {
         cosmosGroup.updateMatrixWorld();
-        lockedZoomAnchorSprite.getWorldPosition(lockedZoomAnchorWorld);
+        lockedZoomAnchorWorld.copy(lockedZoomAnchorRecord.position).applyMatrix4(cosmosGroup.matrixWorld);
       }
 
       const rawDelta = THREE.MathUtils.clamp(e.deltaY, -120, 120);
@@ -2970,7 +2883,7 @@ async function initializeCosmos() {
 
       if (Math.hypot(e.clientX - lastAnchorCursorPx.x, e.clientY - lastAnchorCursorPx.y) > 4) {
         lockedZoomAnchorWorld = null;
-        lockedZoomAnchorSprite = null;
+        lockedZoomAnchorRecord = null;
       }
     });
 
@@ -2978,22 +2891,14 @@ async function initializeCosmos() {
       if (isMobileView() || !pointerMovedSinceLastRay) return;
       pointerMovedSinceLastRay = false;
 
-      raycaster.params.Sprite.threshold = 5.5;
       raycaster.setFromCamera(mouse, camera);
-      const intersects = raycaster.intersectObjects(VISIBLE_SPRITES_CACHE);
+      const rec = pickStarRecordFromRay(raycaster, 5.5);
 
-      if (intersects.length > 0) {
+      if (rec) {
         isHoveringCentralBeam = false;
-        const sprite = intersects[0].object;
-        if (hoveredSprite !== sprite) {
-          clearHover();
-          hoveredSprite = sprite;
-          if (!lockedTargetNode && !isSearchActive) {
-            const s = sprite.userData.baseSize * 1.35;
-            sprite.scale.set(s, s, 1);
-          }
-
-          const n = sprite.userData.nodeData;
+        if (hoveredRecord !== rec) {
+          hoveredRecord = rec;
+          const n = rec.nodeData;
           const detail = getCleanDetail(n);
 
           hoverBadgeEl.classList.remove('hidden');
@@ -3026,7 +2931,7 @@ async function initializeCosmos() {
       if (cosmicBeamGlowMesh) {
         const beamHits = raycaster.intersectObject(cosmicBeamGlowMesh, false);
         if (beamHits.length > 0) {
-          if (hoveredSprite) clearHover();
+          hoveredRecord = null;
           if (!isHoveringCentralBeam) {
             isHoveringCentralBeam = true;
             hoverBadgeEl.classList.add('hidden');
@@ -3039,19 +2944,11 @@ async function initializeCosmos() {
         }
       }
 
-      if (hoveredSprite || isHoveringCentralBeam) clearHover();
-    }
-
-    function clearHover() {
-      if (hoveredSprite) {
-        if (!lockedTargetNode && !isSearchActive) {
-          const s = hoveredSprite.userData.baseSize;
-          hoveredSprite.scale.set(s, s, 1);
-        }
-        hoveredSprite = null;
+      if (hoveredRecord || isHoveringCentralBeam) {
+        hoveredRecord = null;
+        isHoveringCentralBeam = false;
+        tooltipEl.classList.add('hidden');
       }
-      isHoveringCentralBeam = false;
-      tooltipEl.classList.add('hidden');
     }
 
     window.addEventListener('pointerup', (e) => {
@@ -3075,39 +2972,30 @@ async function initializeCosmos() {
       mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
       mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
 
-      raycaster.params.Sprite.threshold = isMobileView() ? 9.5 : 6.0;
       raycaster.setFromCamera(mouse, camera);
+      const targetRec = pickStarRecordFromRay(raycaster, isMobileView() ? 9.5 : 6.0);
 
-      const hits = raycaster.intersectObjects(VISIBLE_SPRITES_CACHE);
-
-      if (hits.length > 0) {
-        let targetHit = hits[0];
-        for (let i = 0; i < hits.length; i++) {
-          if (hits[i].object.userData.nodeData.type === 'thesis_planet') {
-            targetHit = hits[i];
-            break;
-          }
-        }
-
-        const targetSprite = targetHit.object;
-        const node = targetSprite.userData.nodeData;
+      if (targetRec) {
+        const node = targetRec.nodeData;
         panelNavigationStack = [];
 
         if (node.type === 'advisor_sun') {
-          showThesesOfAdvisor(normalizePersonName(node.name, node.dept), false, node.dept, targetSprite);
+          showThesesOfAdvisor(normalizePersonName(node.name, node.dept), false, node.dept, targetRec);
         } else if (node.type === 'dept_sun') {
           showThesesOfDepartment(node.dept, false);
         } else {
-          openSingleDetailView(node, targetSprite, false);
+          openSingleDetailView(node, targetRec, false);
         }
       } else if (lockedTargetNode || isSearchActive || !document.getElementById('right-panel').classList.contains('hidden')) {
         closeRightPanel();
       }
     });
 
-    function openSingleDetailView(node, sprite = null, fromList = false) {
-      const targetSprite = sprite || SPRITE_BY_ID.get(node.id);
+    function openSingleDetailView(node, rec = null, fromList = false) {
+      const targetRec = rec || STAR_RECORD_BY_ID.get(node.id);
       isSearchActive = false;
+      lockedTargetNode = node;
+      lockedTargetRecord = targetRec;
 
       highlightSelectedThesisConnections(node);
       renderDetailContent(node, getCleanDetail(node));
@@ -3126,7 +3014,7 @@ async function initializeCosmos() {
 
       document.getElementById('right-panel').classList.remove('hidden');
 
-      if (targetSprite) flyCameraAndAnchorToSprite(targetSprite, { x: 34, y: 18, z: 44 });
+      if (targetRec) flyCameraAndAnchorToRecord(targetRec, { x: 34, y: 18, z: 44 });
     }
 
     function renderDetailContent(node, detail) {
@@ -3152,7 +3040,7 @@ async function initializeCosmos() {
       advisorBtn.innerText = detail.advisor;
       advisorBtn.onclick = () => {
         if (!detail.advisor || detail.advisor === '-' || detail.advisor === '지도교수') return;
-        panelNavigationStack.push({ view: 'detail', node: node, sprite: lockedTargetSprite });
+        panelNavigationStack.push({ view: 'detail', node: node, record: lockedTargetRecord });
         const targetAdv = (detail.advisorList && detail.advisorList.length > 0) ? detail.advisorList[0] : detail.advisor;
         showThesesOfAdvisor(targetAdv, true, detail.dept, null);
       };
@@ -3161,7 +3049,7 @@ async function initializeCosmos() {
       deptBtn.innerText = detail.dept;
       deptBtn.onclick = () => {
         if (!detail.dept || detail.dept === '-') return;
-        panelNavigationStack.push({ view: 'detail', node: node, sprite: lockedTargetSprite });
+        panelNavigationStack.push({ view: 'detail', node: node, record: lockedTargetRecord });
         showThesesOfDepartment(detail.dept, true);
       };
 
@@ -3193,7 +3081,7 @@ async function initializeCosmos() {
           tag.className = 'px-2 py-0.5 rounded text-[10px] font-medium bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 cursor-pointer hover:bg-indigo-500/40 transition';
           tag.innerText = `#${displayKw}`;
           tag.onclick = () => {
-            panelNavigationStack.push({ view: 'detail', node: node, sprite: lockedTargetSprite });
+            panelNavigationStack.push({ view: 'detail', node: node, record: lockedTargetRecord });
             filterByKeywordWithHistory(displayKw, true);
           };
           kwBox.appendChild(tag);
@@ -3246,7 +3134,6 @@ async function initializeCosmos() {
         listContainer.classList.remove('hidden');
 
         keywordsTitleEl.innerText = '핵심 주제어 TOP 10';
-
         renderYearSparkline(theses);
         renderClusterSubDepartmentsByYear(theses, clusterKey);
         renderTopKeywordsMiniBars(theses, 10, true, false);
@@ -3257,7 +3144,6 @@ async function initializeCosmos() {
         listContainer.classList.remove('hidden');
 
         keywordsTitleEl.innerText = '핵심 주제어 TOP 5';
-
         renderYearSparkline(theses);
         renderTopKeywordsMiniBars(theses, 5, false, true);
 
@@ -3272,7 +3158,6 @@ async function initializeCosmos() {
         listContainer.classList.remove('hidden');
 
         keywordsTitleEl.innerText = '핵심 주제어 TOP 5';
-
         renderClusterStackedBar(theses);
         renderTopKeywordsMiniBars(theses, 5, false, true);
       }
@@ -3290,7 +3175,6 @@ async function initializeCosmos() {
       }
 
       const accentColor = getStrictClusterColor(clusterKey);
-
       let minY = 2026;
       let maxY = 2001;
       const subDeptMap = new Map();
@@ -3302,9 +3186,7 @@ async function initializeCosmos() {
         if (yr < minY) minY = yr;
         if (yr > maxY) maxY = yr;
 
-        if (!subDeptMap.has(dName)) {
-          subDeptMap.set(dName, { dept: dName, total: 0, yearCounts: new Map() });
-        }
+        if (!subDeptMap.has(dName)) subDeptMap.set(dName, { dept: dName, total: 0, yearCounts: new Map() });
         const entry = subDeptMap.get(dName);
         entry.total++;
         entry.yearCounts.set(yr, (entry.yearCounts.get(yr) || 0) + 1);
@@ -3336,7 +3218,6 @@ async function initializeCosmos() {
 
         const row = document.createElement('div');
         row.className = "p-2 rounded-lg bg-white/[0.04] hover:bg-white/[0.1] border border-white/10 transition cursor-pointer flex items-center justify-between space-x-2";
-
         row.innerHTML = `
           <div class="min-w-0 flex-1 flex flex-col">
             <div class="flex items-center space-x-1.5">
@@ -3358,9 +3239,7 @@ async function initializeCosmos() {
         `;
 
         row.addEventListener('click', () => {
-          if (currentListContext) {
-            panelNavigationStack.push({ view: 'list', context: { ...currentListContext } });
-          }
+          if (currentListContext) panelNavigationStack.push({ view: 'list', context: { ...currentListContext } });
           showThesesOfDepartment(item.dept, true);
         });
 
@@ -3404,9 +3283,7 @@ async function initializeCosmos() {
       let maxSingleVal = 1;
       years.forEach(y => {
         const rec = yearCounts.get(y);
-        clusterKeys.forEach(k => {
-          if (rec[k] > maxSingleVal) maxSingleVal = rec[k];
-        });
+        clusterKeys.forEach(k => { if (rec[k] > maxSingleVal) maxSingleVal = rec[k]; });
       });
 
       const width = 340;
@@ -3450,7 +3327,6 @@ async function initializeCosmos() {
         linePath.setAttribute('stroke-width', '2.0');
         linePath.setAttribute('stroke-linecap', 'round');
         linePath.setAttribute('stroke-opacity', '0.9');
-        linePath.style.filter = `drop-shadow(0 0 4px ${meta.glow})`;
         svg.appendChild(linePath);
       });
 
@@ -3528,9 +3404,7 @@ async function initializeCosmos() {
       };
 
       hitRect.addEventListener('mousemove', (e) => onChartMove(e.clientX));
-      hitRect.addEventListener('touchmove', (e) => {
-        if (e.touches.length > 0) onChartMove(e.touches[0].clientX);
-      }, { passive: true });
+      hitRect.addEventListener('touchmove', (e) => { if (e.touches.length > 0) onChartMove(e.touches[0].clientX); }, { passive: true });
       hitRect.addEventListener('mouseleave', onChartLeave);
       hitRect.addEventListener('touchend', onChartLeave);
     }
@@ -3554,9 +3428,7 @@ async function initializeCosmos() {
 
         for (let a = 0; a < advList.length; a++) {
           const advName = advList[a];
-          if (!advisorStatsMap.has(advName)) {
-            advisorStatsMap.set(advName, { name: advName, count: 0, kwFreq: new Map() });
-          }
+          if (!advisorStatsMap.has(advName)) advisorStatsMap.set(advName, { name: advName, count: 0, kwFreq: new Map() });
           const entry = advisorStatsMap.get(advName);
           entry.count++;
 
@@ -3601,21 +3473,17 @@ async function initializeCosmos() {
               ${adv.count}건
             </span>
           </div>
-          <div class="flex flex-wrap gap-1 pt-0.5">
-            ${kwTagsHtml}
-          </div>
+          <div class="flex flex-wrap gap-1 pt-0.5">${kwTagsHtml}</div>
         `;
 
         row.addEventListener('click', () => {
-          if (currentListContext) {
-            panelNavigationStack.push({ view: 'list', context: { ...currentListContext } });
-          }
-          const advSprite =
-            ADVISOR_SPRITE_BY_NAME.get(`${deptName}||${adv.name}`) ||
-            ADVISOR_SPRITE_BY_NAME.get(adv.name) ||
+          if (currentListContext) panelNavigationStack.push({ view: 'list', context: { ...currentListContext } });
+          const advRec =
+            ADVISOR_RECORD_BY_NAME.get(`${deptName}||${adv.name}`) ||
+            ADVISOR_RECORD_BY_NAME.get(adv.name) ||
             null;
 
-          showThesesOfAdvisor(adv.name, true, deptName, advSprite);
+          showThesesOfAdvisor(adv.name, true, deptName, advRec);
         });
 
         listEl.appendChild(row);
@@ -3660,9 +3528,7 @@ async function initializeCosmos() {
 
       stats.forEach(item => {
         const openClusterDrilldown = () => {
-          if (currentListContext) {
-            panelNavigationStack.push({ view: 'list', context: { ...currentListContext } });
-          }
+          if (currentListContext) panelNavigationStack.push({ view: 'list', context: { ...currentListContext } });
           showThesesOfClusterGroup(item.key, item.label, true);
         };
 
@@ -3773,7 +3639,6 @@ async function initializeCosmos() {
       pathEl.setAttribute('stroke-width', '2.2');
       pathEl.setAttribute('stroke-linecap', 'round');
       pathEl.setAttribute('stroke-linejoin', 'round');
-      pathEl.style.filter = 'drop-shadow(0 0 5px rgba(236, 72, 153, 0.65))';
       svg.appendChild(pathEl);
 
       coords.forEach((p, idx) => {
@@ -3803,7 +3668,6 @@ async function initializeCosmos() {
       hoverDot.setAttribute('fill', '#22D3EE');
       hoverDot.setAttribute('stroke', '#FFFFFF');
       hoverDot.setAttribute('stroke-width', '1.5');
-      hoverDot.style.filter = 'drop-shadow(0 0 6px #22D3EE)';
       hoverDot.style.display = 'none';
       svg.appendChild(hoverDot);
 
@@ -3879,9 +3743,7 @@ async function initializeCosmos() {
       };
 
       hitRect.addEventListener('mousemove', (e) => updateSparklineHover(e.clientX));
-      hitRect.addEventListener('touchmove', (e) => {
-        if (e.touches.length > 0) updateSparklineHover(e.touches[0].clientX);
-      }, { passive: true });
+      hitRect.addEventListener('touchmove', (e) => { if (e.touches.length > 0) updateSparklineHover(e.touches[0].clientX); }, { passive: true });
       hitRect.addEventListener('mouseleave', hideSparklineHover);
       hitRect.addEventListener('touchend', hideSparklineHover);
     }
@@ -3988,9 +3850,7 @@ async function initializeCosmos() {
 
         if (clickable) {
           row.addEventListener('click', () => {
-            if (currentListContext) {
-              panelNavigationStack.push({ view: 'list', context: { ...currentListContext } });
-            }
+            if (currentListContext) panelNavigationStack.push({ view: 'list', context: { ...currentListContext } });
             filterByKeywordWithHistory(label, true);
           });
         }
@@ -4022,11 +3882,7 @@ async function initializeCosmos() {
       if (!lockedTargetNode) {
         clearArcLinks();
         const matchIdSet = new Set(matchedTheses.map(m => m.id));
-        for (let i = 0; i < NODE_SPRITES.length; i++) {
-          const s = NODE_SPRITES[i];
-          s.userData.isHighlight = matchIdSet.has(s.userData.nodeData.id);
-          s.userData.isRelated = false;
-        }
+        updateStarHighlightAttributes(matchIdSet);
       }
 
       const visibleMatches = matchedTheses.filter(t => passGlobalNodeFilters(t));
@@ -4064,7 +3920,6 @@ async function initializeCosmos() {
       const normalizedKwQuery = normalizeKeywordDisplayLanguage(rawQuery).toLowerCase();
       const queryConcepts = normalizeKeywordToConcepts(rawQuery);
 
-      // Nếu tìm kiếm chính xác tên giáo sư trong 지도교수, dùng trực tiếp bộ chỉ mục thống nhất
       if (type === 'advisor' && ADVISOR_THESES_GLOBAL_MAP.has(cleanProfName)) {
         showThesesOfAdvisor(cleanProfName, false, '', null);
         return;
@@ -4094,15 +3949,11 @@ async function initializeCosmos() {
 
       isSearchActive = true;
       lockedTargetNode = null;
-      lockedTargetSprite = null;
+      lockedTargetRecord = null;
       clearArcLinks();
 
       const matchIdSet = new Set(matchedTheses.map(m => m.id));
-      for (let i = 0; i < NODE_SPRITES.length; i++) {
-        const s = NODE_SPRITES[i];
-        s.userData.isHighlight = matchIdSet.has(s.userData.nodeData.id);
-        s.userData.isRelated = false;
-      }
+      updateStarHighlightAttributes(matchIdSet);
 
       const visibleMatches = matchedTheses.filter(t => passGlobalNodeFilters(t));
       renderThesesListPanel({
@@ -4117,30 +3968,25 @@ async function initializeCosmos() {
       });
     }
 
-    // ĐỒNG BỘ TUYỆT ĐỐI SỐ LƯỢNG LUẬN VĂN GIỮA DANH SÁCH KHOA VÀ TRANG RIÊNG CỦA GIÁO SƯ
-    function showThesesOfAdvisor(advisorName, pushHistory = false, deptHint = '', explicitAdvSprite = null) {
+    function showThesesOfAdvisor(advisorName, pushHistory = false, deptHint = '', explicitAdvRec = null) {
       const cleanList = extractAdvisorList(advisorName, deptHint);
       const clean = cleanList.length > 0 ? cleanList[0] : normalizePersonName(advisorName, deptHint);
       const effectiveDeptHint = deptHint || (selectedDept !== 'ALL' ? selectedDept : '');
 
       const finalTheses = getExactThesesForAdvisor(clean, effectiveDeptHint);
 
-      const advSprite =
-        explicitAdvSprite ||
-        (effectiveDeptHint ? ADVISOR_SPRITE_BY_NAME.get(`${effectiveDeptHint}||${clean}`) : null) ||
-        ADVISOR_SPRITE_BY_NAME.get(clean) ||
+      const advRec =
+        explicitAdvRec ||
+        (effectiveDeptHint ? ADVISOR_RECORD_BY_NAME.get(`${effectiveDeptHint}||${clean}`) : null) ||
+        ADVISOR_RECORD_BY_NAME.get(clean) ||
         null;
 
       isSearchActive = true;
       clearArcLinks();
 
       const matchIdSet = new Set(finalTheses.map(m => m.id));
-      for (let i = 0; i < NODE_SPRITES.length; i++) {
-        const s = NODE_SPRITES[i];
-        const isAdvSun = advSprite && s.id === advSprite.id;
-        s.userData.isHighlight = matchIdSet.has(s.userData.nodeData.id) || isAdvSun;
-        s.userData.isRelated = false;
-      }
+      if (advRec) matchIdSet.add(advRec.nodeData.id);
+      updateStarHighlightAttributes(matchIdSet);
 
       const visibleMatches = finalTheses.filter(t => passGlobalNodeFilters(t));
       renderThesesListPanel({
@@ -4154,7 +4000,7 @@ async function initializeCosmos() {
         pushHistory: pushHistory
       });
 
-      if (advSprite) flyCameraAndAnchorToSprite(advSprite, { x: 46, y: 24, z: 58 });
+      if (advRec) flyCameraAndAnchorToRecord(advRec, { x: 46, y: 24, z: 58 });
     }
 
     function showThesesOfDepartment(deptName, pushHistory = false) {
@@ -4162,15 +4008,11 @@ async function initializeCosmos() {
 
       isSearchActive = true;
       lockedTargetNode = null;
-      lockedTargetSprite = null;
+      lockedTargetRecord = null;
       clearArcLinks();
 
       const matchIdSet = new Set(theses.map(m => m.id));
-      for (let i = 0; i < NODE_SPRITES.length; i++) {
-        const s = NODE_SPRITES[i];
-        s.userData.isHighlight = matchIdSet.has(s.userData.nodeData.id);
-        s.userData.isRelated = false;
-      }
+      updateStarHighlightAttributes(matchIdSet);
 
       const visibleMatches = theses.filter(t => passGlobalNodeFilters(t));
       renderThesesListPanel({
@@ -4190,15 +4032,11 @@ async function initializeCosmos() {
 
       isSearchActive = true;
       lockedTargetNode = null;
-      lockedTargetSprite = null;
+      lockedTargetRecord = null;
       clearArcLinks();
 
       const matchIdSet = new Set(theses.map(m => m.id));
-      for (let i = 0; i < NODE_SPRITES.length; i++) {
-        const s = NODE_SPRITES[i];
-        s.userData.isHighlight = matchIdSet.has(s.userData.nodeData.id);
-        s.userData.isRelated = false;
-      }
+      updateStarHighlightAttributes(matchIdSet);
 
       const visibleMatches = theses.filter(t => passGlobalNodeFilters(t));
       renderThesesListPanel({
@@ -4219,13 +4057,9 @@ async function initializeCosmos() {
 
       isSearchActive = false;
       lockedTargetNode = null;
-      lockedTargetSprite = null;
+      lockedTargetRecord = null;
       clearArcLinks();
-
-      for (let i = 0; i < NODE_SPRITES.length; i++) {
-        NODE_SPRITES[i].userData.isHighlight = false;
-        NODE_SPRITES[i].userData.isRelated = false;
-      }
+      updateStarHighlightAttributes(null);
 
       const isSingleDept = selectedDept !== 'ALL';
       const isClusterSelected = !isSingleDept && selectedCluster !== 'all';
@@ -4286,14 +4120,11 @@ async function initializeCosmos() {
       detailView.classList.add('hidden');
       rightPanel.classList.remove('hidden');
 
-      if (panelNavigationStack.length > 0) historyBackBtn.classList.remove('hidden');
-      else historyBackBtn.classList.add('hidden');
+      historyBackBtn.classList.toggle('hidden', panelNavigationStack.length === 0);
 
       badgeEl.innerText = subMode === 'department'
         ? 'DEPARTMENT'
-        : (subMode === 'cluster'
-          ? 'CLUSTER'
-          : (contextMode === 'entity' ? 'TREND' : 'UNIVERSE'));
+        : (subMode === 'cluster' ? 'CLUSTER' : (contextMode === 'entity' ? 'TREND' : 'UNIVERSE'));
       document.getElementById('list-view-title').innerText = queryText;
       document.getElementById('list-view-count').innerText = TEXT_KO.searchResultsCount(theses.length);
 
@@ -4337,10 +4168,8 @@ async function initializeCosmos() {
         `;
 
         card.addEventListener('click', () => {
-          if (currentListContext) {
-            panelNavigationStack.push({ view: 'list', context: { ...currentListContext } });
-          }
-          openSingleDetailView(n, SPRITE_BY_ID.get(n.id), true);
+          if (currentListContext) panelNavigationStack.push({ view: 'list', context: { ...currentListContext } });
+          openSingleDetailView(n, STAR_RECORD_BY_ID.get(n.id), true);
         });
 
         frag.appendChild(card);
@@ -4367,20 +4196,16 @@ async function initializeCosmos() {
 
       const prevState = panelNavigationStack.pop();
       if (prevState.view === 'detail') {
-        openSingleDetailView(prevState.node, prevState.sprite, panelNavigationStack.length > 0);
+        openSingleDetailView(prevState.node, prevState.record, panelNavigationStack.length > 0);
       } else if (prevState.view === 'list') {
         const ctx = prevState.context;
         const filteredSubset = ctx.baseTheses.filter(t => passGlobalNodeFilters(t));
         if (!lockedTargetNode || lockedTargetNode.type === 'advisor_sun') {
           lockedTargetNode = null;
-          lockedTargetSprite = null;
+          lockedTargetRecord = null;
           const matchIdSet = new Set(ctx.baseTheses.map(m => m.id));
           isSearchActive = ctx.baseTheses.length < THESIS_NODES_ALL.length;
-          for (let i = 0; i < NODE_SPRITES.length; i++) {
-            const s = NODE_SPRITES[i];
-            s.userData.isHighlight = isSearchActive ? matchIdSet.has(s.userData.nodeData.id) : false;
-            s.userData.isRelated = false;
-          }
+          updateStarHighlightAttributes(isSearchActive ? matchIdSet : null);
         }
         renderThesesListPanel({
           theses: filteredSubset,
@@ -4409,19 +4234,9 @@ async function initializeCosmos() {
       isCameraFlying = false;
       isSearchActive = false;
       lockedTargetNode = null;
-      lockedTargetSprite = null;
+      lockedTargetRecord = null;
       clearArcLinks();
-
-      for (let i = 0; i < NODE_SPRITES.length; i++) {
-        const s = NODE_SPRITES[i];
-        s.userData.isHighlight = false;
-        s.userData.isRelated = false;
-        if (s.visible) {
-          const baseOp = s.userData.isDeptSun ? 0.96 : (s.userData.isPhd ? 0.92 : 0.88);
-          s.material.opacity = baseOp * cosmicRevealProgress;
-          s.scale.set(s.userData.baseSize, s.userData.baseSize, 1);
-        }
-      }
+      updateStarHighlightAttributes(null);
     }
 
     document.getElementById('btn-list-history-back').addEventListener('click', navigateBackInPanel);
@@ -4435,16 +4250,14 @@ async function initializeCosmos() {
     // Camera Presets
     function setActiveCameraBtn(activeId) {
       ['btn-view-top', 'btn-view-galaxy', 'btn-view-3d'].forEach(id => {
-        const el = document.getElementById(id);
-        if (id === activeId) el.classList.add('active');
-        else el.classList.remove('active');
+        document.getElementById(id).classList.toggle('active', id === activeId);
       });
     }
 
     document.getElementById('btn-view-top').addEventListener('click', () => {
       if (lockedTargetNode) closeRightPanel();
       lockedZoomAnchorWorld = null;
-      lockedZoomAnchorSprite = null;
+      lockedZoomAnchorRecord = null;
       setActiveCameraBtn('btn-view-top');
       new TWEEN.Tween(camera.position).to({ x: 0, y: 950, z: 0.001 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
       new TWEEN.Tween(controls.target).to({ x: 0, y: galaxyCenterYGlobal, z: 0 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
@@ -4453,7 +4266,7 @@ async function initializeCosmos() {
     document.getElementById('btn-view-galaxy').addEventListener('click', () => {
       if (lockedTargetNode) closeRightPanel();
       lockedZoomAnchorWorld = null;
-      lockedZoomAnchorSprite = null;
+      lockedZoomAnchorRecord = null;
       setActiveCameraBtn('btn-view-galaxy');
       new TWEEN.Tween(camera.position).to({ x: 0, y: galaxyCenterYGlobal + 180, z: 720 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
       new TWEEN.Tween(controls.target).to({ x: 0, y: galaxyCenterYGlobal, z: 0 }, 1400).easing(TWEEN.Easing.Cubic.Out).start();
@@ -4462,7 +4275,7 @@ async function initializeCosmos() {
     document.getElementById('btn-view-3d').addEventListener('click', () => {
       if (lockedTargetNode) closeRightPanel();
       lockedZoomAnchorWorld = null;
-      lockedZoomAnchorSprite = null;
+      lockedZoomAnchorRecord = null;
       setActiveCameraBtn('btn-view-3d');
       const centerTargetY = galaxyCenterYGlobal - 10;
       const dist = 660;
@@ -4512,17 +4325,17 @@ async function initializeCosmos() {
       requestAnimationFrame(animate);
       const elapsed = clock.getElapsedTime();
 
-      const hasLockedTarget = lockedTargetSprite && lockedTargetSprite.visible && !isCameraFlying;
+      const hasLockedTarget = lockedTargetRecord && lockedTargetRecord.visible && !isCameraFlying;
       if (hasLockedTarget) {
         cosmosGroup.updateMatrixWorld();
-        lockedTargetSprite.getWorldPosition(_prevTrackedWorldPos);
+        _prevTrackedWorldPos.copy(lockedTargetRecord.position).applyMatrix4(cosmosGroup.matrixWorld);
       }
 
       cosmosGroup.rotation.y += 0.00018;
 
       if (hasLockedTarget) {
         cosmosGroup.updateMatrixWorld();
-        lockedTargetSprite.getWorldPosition(_currTrackedWorldPos);
+        _currTrackedWorldPos.copy(lockedTargetRecord.position).applyMatrix4(cosmosGroup.matrixWorld);
         _trackDelta.subVectors(_currTrackedWorldPos, _prevTrackedWorldPos);
 
         camera.position.add(_trackDelta);
@@ -4559,52 +4372,16 @@ async function initializeCosmos() {
         cosmicBeamGlowMesh.material.uniforms.uAlphaScale.value = cosmicRevealProgress * (1.0 - zoomOutT * 0.55);
       }
 
-      const links = arcLinksGroup.children;
-      for (let i = 0; i < links.length; i++) {
-        const mesh = links[i];
-        if (mesh.material && mesh.material.uniforms && mesh.material.uniforms.uTime) {
-          mesh.material.uniforms.uTime.value = elapsed;
-        }
+      if (arcLinksGroup.children.length > 0) {
+        arcRibbonShaderMat.uniforms.uTime.value = elapsed;
       }
 
+      // Chỉ cập nhật uniform GPU thay vì lặp qua hàng nghìn ngôi sao mỗi frame
       const distFactor = Math.min(1.35, Math.max(0.95, camDist / 560)) * zoomOutSizeDamp;
-      const hasActiveFocus = isSearchActive || lockedTargetNode !== null;
-      const revealScale = 0.4 + 0.6 * cosmicRevealProgress;
-      const strobeGlobal = 1.0 + Math.abs(Math.sin(elapsed * 7.5)) * 0.16;
-
-      for (let i = 0; i < VISIBLE_SPRITES_CACHE.length; i++) {
-        const s = VISIBLE_SPRITES_CACHE[i];
-        const ud = s.userData;
-
-        if (hasActiveFocus) {
-          if (ud.isHighlight) {
-            const isFocusedSun = lockedTargetSprite && s.id === lockedTargetSprite.id && ud.isSun;
-            const mult = isFocusedSun ? 3.2 : 5.0;
-            const b = ud.baseSize * mult * (1.0 - zoomOutT * 0.25);
-            s.scale.set(b * strobeGlobal, b * strobeGlobal, 1);
-            s.material.opacity = 1.0 * cosmicRevealProgress;
-          } else if (ud.isRelated) {
-            const b = ud.baseSize * 3.0 * (1.0 - zoomOutT * 0.25);
-            const shimmer = Math.sin(elapsed * 3.2 + ud.pulseOffset) * 0.08;
-            s.scale.set(b * (1.0 + shimmer), b * (1.0 + shimmer), 1);
-            s.material.opacity = 0.94 * cosmicRevealProgress * (1.0 - zoomOutT * 0.35);
-          } else {
-            const b = ud.baseSize * distFactor * 0.42;
-            s.scale.set(b, b, 1);
-            s.material.opacity = 0.04 * cosmicRevealProgress * zoomOutDimFactor;
-          }
-        } else {
-          const tSpeed = ud.twinkleSpeed;
-          const shimmer = Math.sin(elapsed * tSpeed + ud.pulseOffset) * Math.cos(elapsed * (tSpeed * 0.5)) * ud.shimmerAmp;
-          const b = ud.baseSize * distFactor * revealScale;
-          s.scale.set(b * (1.0 + shimmer), b * (1.0 + shimmer), 1);
-
-          const baseTargetOpacity = ud.isDeptSun
-            ? 0.96
-            : (ud.isPhd ? 0.92 : Math.min(0.92, 0.80 + Math.abs(shimmer) * 0.25));
-          s.material.opacity = baseTargetOpacity * cosmicRevealProgress * zoomOutDimFactor;
-        }
-      }
+      galaxyStarsShaderMat.uniforms.uTime.value = elapsed;
+      galaxyStarsShaderMat.uniforms.uDistFactor.value = distFactor;
+      galaxyStarsShaderMat.uniforms.uZoomOutDim.value = zoomOutDimFactor;
+      galaxyStarsShaderMat.uniforms.uZoomOutFocusDamp.value = 1.0 - zoomOutT * 0.25;
 
       checkRaycast();
       renderer.render(scene, camera);
@@ -4613,55 +4390,55 @@ async function initializeCosmos() {
     window.addEventListener('resize', () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
+      const pr = Math.min(window.devicePixelRatio, 1.75);
+      renderer.setPixelRatio(pr);
+      galaxyStarsShaderMat.uniforms.uPixelRatio.value = pr;
       renderer.setSize(window.innerWidth, window.innerHeight);
       syncFilterPanelVisibility();
       syncFullscreenIcon();
     });
+
     /* ==========================================================================
-   14. BACKGROUND MUSIC (music.mp3, loop)
-   ========================================================================== */
-const bgAudio = document.getElementById('bg-music');
-const musicBtn = document.getElementById('btn-music-toggle');
-const iconMusicOn = document.getElementById('icon-music-on');
-const iconMusicOff = document.getElementById('icon-music-off');
-let userWantsMusic = false;
+       14. BACKGROUND MUSIC (music.mp3, loop)
+       ========================================================================== */
+    const bgAudio = document.getElementById('bg-music');
+    const musicBtn = document.getElementById('btn-music-toggle');
+    const iconMusicOn = document.getElementById('icon-music-on');
+    const iconMusicOff = document.getElementById('icon-music-off');
+    let userWantsMusic = false;
 
-function syncMusicIcon() {
-  iconMusicOn.classList.toggle('hidden', !userWantsMusic);
-  iconMusicOff.classList.toggle('hidden', userWantsMusic);
-  musicBtn.classList.toggle('active', userWantsMusic);
-  musicBtn.title = userWantsMusic ? '배경 음악 끄기' : '배경 음악 재생';
-}
+    function syncMusicIcon() {
+      iconMusicOn.classList.toggle('hidden', !userWantsMusic);
+      iconMusicOff.classList.toggle('hidden', userWantsMusic);
+      musicBtn.classList.toggle('active', userWantsMusic);
+      musicBtn.title = userWantsMusic ? '배경 음악 끄기' : '배경 음악 재생';
+    }
 
-function playMusic() {
-  const p = bgAudio.play();
-  if (p && p.catch) {
-    p.catch(() => {
-      // Không phát được (file lỗi / bị chặn): trả nút về trạng thái tắt
-      userWantsMusic = false;
+    function playMusic() {
+      const p = bgAudio.play();
+      if (p && p.catch) {
+        p.catch(() => {
+          userWantsMusic = false;
+          syncMusicIcon();
+        });
+      }
+    }
+
+    musicBtn.addEventListener('click', () => {
+      userWantsMusic = !userWantsMusic;
       syncMusicIcon();
+      if (userWantsMusic) playMusic();
+      else bgAudio.pause();
     });
-  }
-}
 
-musicBtn.addEventListener('click', () => {
-  userWantsMusic = !userWantsMusic;
-  syncMusicIcon();
-  if (userWantsMusic) playMusic();
-  else bgAudio.pause();
-});
+    bgAudio.addEventListener('pause', () => {
+      if (userWantsMusic && !bgAudio.ended) setTimeout(() => { if (userWantsMusic) playMusic(); }, 300);
+    });
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && userWantsMusic && bgAudio.paused) playMusic();
+    });
 
-// Nếu hệ thống tự tạm dừng (cuộc gọi, chuyển tab...) mà người dùng chưa tắt -> phát lại
-bgAudio.addEventListener('pause', () => {
-  if (userWantsMusic && !bgAudio.ended) setTimeout(() => { if (userWantsMusic) playMusic(); }, 300);
-});
-document.addEventListener('visibilitychange', () => {
-  if (!document.hidden && userWantsMusic && bgAudio.paused) playMusic();
-});
-
-syncMusicIcon();
-    
-    // Boot
+    syncMusicIcon();
     initializeCosmos();
     animate();
   </script>
